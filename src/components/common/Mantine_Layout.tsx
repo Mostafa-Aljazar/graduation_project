@@ -38,7 +38,9 @@ export default function Mantine_Layout({
       </AppShell.Navbar>
       {/* <Navbar /> */}
 
-      <AppShell.Main className='!flex-1 !w-full'>{children}</AppShell.Main>
+      <AppShell.Main bg={'white'} className='!flex-1 !w-full'>
+        {children}
+      </AppShell.Main>
 
       {/*<Footer /> */}
     </AppShell>

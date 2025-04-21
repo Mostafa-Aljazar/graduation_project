@@ -1,12 +1,10 @@
+import Hero_Section from '@/components/home/Hero_Section';
 import { Button, Stack } from '@mantine/core';
 
 export default function Home() {
   return (
-    <Stack
-      pt={60}
-      className='xs:bg-red-500 md:bg-second w-full h-screen text-third'
-    >
-      <Button w={100}>HOME</Button>
+    <Stack pt={60} className='!bg-sky-200 w-full h-screen text-third'>
+      <Hero_Section />
     </Stack>
   );
 }
