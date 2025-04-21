@@ -20,13 +20,9 @@ export default function Mantine_Layout({
       header={{ height: 60, collapsed: !pinned, offset: false }}
       // footer={{ height: 40, collapsed: !pinned, offset: false }}
       navbar={{
-        width: {
-          base: 0,
-          md: 225,
-          lg: 300,
-        },
+        width: 0,
         breakpoint: 'md',
-        collapsed: { mobile: false, desktop: false },
+        collapsed: { mobile: !pinned },
       }}
       className='w-full min-h-screen'
     >
@@ -42,14 +38,8 @@ export default function Mantine_Layout({
       </AppShell.Navbar>
       {/* <Navbar /> */}
 
-      <AppShell.Main
-        // pt={pathname.includes(ROUTES.MESSAGES) ? 0 : 60}
-        className='!flex-1 !bg-amber-400 !w-full'
-      >
-        {/* {children} */}
-      </AppShell.Main>
+      <AppShell.Main className='!flex-1 !w-full'>{children}</AppShell.Main>
 
-      {/* <Aside /> */}
       {/*<Footer /> */}
     </AppShell>
   );
