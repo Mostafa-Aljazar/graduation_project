@@ -9,6 +9,10 @@
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
 
+  
+  /* Custom font family */
+  --font-family-sf-pro-display: "SF Pro Display", sans-serif;
+
   /* Custom Colors */
   --color-primary: #345E40;
   --color-second: #97A483;

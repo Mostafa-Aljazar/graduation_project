@@ -41,7 +41,7 @@ export default function Hero_Section({ title, desc, imgs }: Props) {
       <Overlay color='black' opacity={0.7} zIndex={0} />
       <Box ta={'start'} className='!z-10 !text-white'>
         <Text
-          fw={700}
+          fw={500}
           fz={{ base: 25, md: 30, lg: 40 }}
           pos='absolute'
           top={'25%'}
