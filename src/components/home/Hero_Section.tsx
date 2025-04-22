@@ -4,20 +4,17 @@ import { Text, Box, Overlay } from '@mantine/core';
 import Image, { StaticImageData } from 'next/image';
 import { useRef } from 'react';
 import Autoplay from 'embla-carousel-autoplay';
-import { img_1, img_2, img_3 } from '@/assets/home';
 
-// Define shared title and category
-const SHARED_TITLE = 'رسالتُنا :';
-const SHARED_DESCRIPTION = `نسعى لخلق الحياة لأناسٍ سُلبت منهم الحياة  \n طفولة بريئة و عيون تبحث عن الأمل `;
-
-// Image array
-const imgs = [img_1, img_2, img_3];
-
-export default function Hero_Section() {
-  const autoplay = useRef(Autoplay({ delay: 3000 }));
+type Props = {
+  title: string;
+  desc: string;
+  imgs: StaticImageData[];
+};
+export default function Hero_Section({ title, desc, imgs }: Props) {
+  const autoplay = useRef(Autoplay({ delay: 4000 }));
 
   const slides = imgs.map((item, index) => (
-    <Carousel.Slide key={index}>
+    <Carousel.Slide key={index} h={{ base: 250, md: 300, lg: 350 }}>
       <Box style={{ position: 'relative', width: '100%', height: '100%' }}>
         <Image
           alt={`Hero Image ${index + 1}`}
@@ -30,43 +27,36 @@ export default function Hero_Section() {
   ));
 
   return (
-    <Box style={{ position: 'relative', width: '100%', height: 350 }}>
+    <Box pos={'relative'} w={'100%'} h={{ base: 250, md: 300, lg: 350 }}>
       <Carousel
-        withIndicators
         dir='ltr'
-        height={350}
         slideSize='100%'
         align='end'
         loop
         plugins={[autoplay.current]}
-        // onMouseEnter={autoplay.current.stop}
-        // onMouseLeave={autoplay.current.reset}
+        withControls={false}
       >
         {slides}
       </Carousel>
-      <Overlay color='black' opacity={0.5} zIndex={10} />{' '}
-      {/* Restored for text readability */}
-      <Box
-        style={{
-          //   position: 'absolute',
-          //   top: '50%',
-          //   left: '50%',
-          //   transform: 'translate(-50%, -50%)',
-          zIndex: 20,
-          //   textAlign: 'center',
-          color: 'white',
-        }}
-        // pos='absolute'
-        // top={'20%'}
-        // right={'10%'}
-        ta={'start'}
-        className=''
-      >
-        <Text fw={700} size='xl' pos='absolute' top={'30%'} right={'10%'}>
-          {SHARED_TITLE}
+      <Overlay color='black' opacity={0.7} zIndex={0} />
+      <Box ta={'start'} className='!z-10 !text-white'>
+        <Text
+          fw={700}
+          fz={{ base: 25, md: 30, lg: 40 }}
+          pos='absolute'
+          top={'25%'}
+          right={'10%'}
+        >
+          {title}
         </Text>
-        <Text size='md' pos='absolute' top={'50%'} right={'10%'} left={'10%'}>
-          {SHARED_DESCRIPTION}
+        <Text
+          fz={{ base: 16, md: 20, lg: 25 }}
+          pos='absolute'
+          top={'50%'}
+          right={'10%'}
+          left={'10%'}
+        >
+          {desc}
         </Text>
       </Box>
     </Box>
