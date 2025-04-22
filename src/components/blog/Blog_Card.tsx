@@ -1,5 +1,13 @@
 import { img_1 } from '@/assets/home';
-import { Button, Card, CardSection, Group, Stack, Text } from '@mantine/core';
+import {
+  Button,
+  Card,
+  CardSection,
+  Flex,
+  Group,
+  Stack,
+  Text,
+} from '@mantine/core';
 import Image, { StaticImageData } from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -15,20 +23,29 @@ export default function Blog_Card({ img, date, title, desc, link }: Props) {
   return (
     <Card
       shadow='sm'
+      w={{ base: 350, md: '80%' }}
       p={0}
-      w={{ base: '100%', md: 500, lg: 800 }}
-      className='!shadow-lg !rounded-md !overflow-hidden'
+      className='!shadow-lg !rounded-md md:h-[200px] !overflow-hidden'
     >
-      <Group wrap='nowrap' p={0} h={200}>
-        <Image src={img} width={300} alt='No way!' className='!h-full' />
+      <Flex
+        direction={{ base: 'column', md: 'row' }}
+        wrap='nowrap'
+        p={0}
+        gap={0}
+      >
+        <Image
+          src={img}
+          alt={title}
+          className='w-full md:w-[300px] h-[150px] md:h-[200px]'
+        />
         <Stack gap={5} justify='space-between' h={'100%'} py={20} px={20}>
           <Text fw={400} fz={12} className='!text-primary'>
             {date}
           </Text>
-          <Text fw={500} fz={20} className='!text-primary'>
+          <Text fw={500} fz={{ base: 16, lg: 20 }} className='!text-primary'>
             {title}
           </Text>
-          <Text fw={500} fz={12} size='sm' className='!text-dark'>
+          <Text fw={500} fz={14} size='sm' className='!text-dark'>
             {desc}
           </Text>
 
@@ -44,7 +61,7 @@ export default function Blog_Card({ img, date, title, desc, link }: Props) {
             </Button>
           </Link>
         </Stack>
-      </Group>
+      </Flex>
     </Card>
   );
 }

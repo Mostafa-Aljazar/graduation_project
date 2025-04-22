@@ -12,19 +12,20 @@ import {
 
 export default function Our_Blog() {
   const [activePage, setPage] = useState(1);
-  console.log('🚀 ~ Our_Blog ~ activePage:', activePage);
+  // console.log('🚀 ~ Our_Blog ~ activePage:', activePage);
 
   return (
-    <Stack pt={30} px={100} pb={100}>
+    <Stack py={30} px={20} gap={30} align='center'>
       <Text
         fw={500}
-        fz={{ base: 25, md: 30, lg: 35 }}
+        fz={{ base: 30, lg: 35 }}
+        w={{ base: '100%', md: '80%' }}
         className='!text-primary'
       >
         مدونتنا :
       </Text>
 
-      <Stack justify='center' align='center' w={'100%'}>
+      <Stack justify='center' align='center' w={'100%'} gap={30}>
         {Array(5)
           .fill('')
           .map((_, index) => (
