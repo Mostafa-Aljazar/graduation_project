@@ -10,6 +10,8 @@ import {
 import Image from 'next/image';
 import { logo } from '@/assets/common';
 import Header_Links from './Header_Links';
+import Link from 'next/link';
+import { AUTH_ROUTES } from '@/content/routes';
 
 type Props = {
   opened: boolean;
@@ -40,9 +42,11 @@ export default function Header({ opened, toggle }: Props) {
           <Header_Links />
         </Group>
 
-        <Button variant='outline' w={100} h={32} p={0} fw={600}>
-          تسجيل دخول
-        </Button>
+        <Link href={AUTH_ROUTES.LOGIN}>
+          <Button variant='outline' w={100} h={32} p={0} fw={600}>
+            تسجيل دخول
+          </Button>
+        </Link>
       </Flex>
 
       <Drawer

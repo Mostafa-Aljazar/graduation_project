@@ -1,14 +1,11 @@
-import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
-
 import './globals.css';
 import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import type { Metadata } from 'next';
 import Providers from '@/providers/providers';
-import Mantine_Layout from '@/components/common/Mantine_Layout';
 import sfProDisplay from '@/fonts';
-// import sfProDisplay from '@/fonts';
 
 export const metadata: Metadata = {
   title: 'AL-AQSA Camp',
@@ -27,9 +24,7 @@ export default function RootLayout({
       </head>
       <body className={`${sfProDisplay.className} antialiased`}>
         <Providers>
-          <Mantine_Layout>
-            <>{children}</>
-          </Mantine_Layout>
+          <>{children}</>
         </Providers>
       </body>
     </html>

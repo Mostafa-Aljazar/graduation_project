@@ -1,14 +1,15 @@
-import successStory from '@/@types/successStories';
-import { Carousel } from '@mantine/carousel';
+import successStoryResponse from '@/@types/successStoryResponse';
+import { ROUTES } from '@/content/routes';
 import { Flex, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 
-type Props = successStory;
+type Props = successStoryResponse;
 
 export default function Story_Card(story: Props) {
   return (
-    <Carousel.Slide h={{ base: 200, md: 200 }}>
+    <Link href={`${ROUTES.SUCCESS_STORY}/${story.id}`}>
       <Flex
         direction={'row'}
         wrap='nowrap'
@@ -33,6 +34,6 @@ export default function Story_Card(story: Props) {
           </Text>
         </Stack>
       </Flex>
-    </Carousel.Slide>
+    </Link>
   );
 }

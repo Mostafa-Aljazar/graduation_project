@@ -1,7 +1,7 @@
 import { StaticImageData } from "next/image";
 
 
-export default interface successStory {
+export default interface successStoryResponse {
     id: number;
     img: StaticImageData | string;
     title: string;

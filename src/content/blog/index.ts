@@ -1,3 +1,4 @@
+import successStoryResponse from "@/@types/successStoryResponse";
 import { img_1, img_2, img_3 } from "@/assets/home";
 
 
@@ -11,7 +12,7 @@ export const OUR_BLOG_TITLE = 'الصعوبات التي يواجهها النا
 export const OUR_BLOG_DESC = 'يواجه  النازحون في الخيام  تحديات يومية تجعل حياتهم مليئة بالمعاناة. من الظروف البيئية القاسية إلى نقص الخدمات الأساسية، ومن المشكلات الصحية إلى التحديات الاقتصادية والاجتماعية، فإن حياة النازحين تحتاج إلى تدخلات عاجلة ومستدامة  و ...';
 export const OUR_BLOG_LINK = 'blog/1';
 
-export const STORIES = [{
+export const STORIES: successStoryResponse[] = [{
     id: 1,
     img: img_1,
     title: " خالد و رحلة التعلم",
