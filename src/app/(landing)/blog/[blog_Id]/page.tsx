@@ -7,7 +7,7 @@ import Blog_Card from '@/components/blog/Blog_Card';
 import Blog_Article from '@/components/blog/Blog_Article';
 import Image_Div from '@/components/common/Image_Div';
 import Footer from '@/components/common/Footer';
-
+import { article } from '@/content/blog/index';
 const Page = () => {
   return (
     <>
@@ -19,7 +19,7 @@ const Page = () => {
           pt={40}
         >
           {/* المقال */}
-          <Blog_Article /> {/* الجهة الجانبية */}
+          <Blog_Article article={article} />
           <div className='flex flex-col items-center w-full md:w-[40%]'>
             <Image
               alt='Blog Image'
@@ -38,16 +38,13 @@ const Page = () => {
             >
               مقالات أخرى
             </Title>
-            {/* الكروت */}      
+            {/* الكروت */}
             <div className='flex flex-col items-center gap-4 w-full'>
-                            <Blog_Card />
-                            <Blog_Card />           
+              <Blog_Card article={article} />
+              <Blog_Card article={article} />
             </div>
-                     
           </div>
-                 
         </Flex>
-             
       </Container>
       <Image_Div />
       <Footer />
