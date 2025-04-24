@@ -1,6 +1,7 @@
 import About_Us from '@/components/home/About_Us';
 import Child_Home from '@/components/home/Child_Home';
 import Hero_Section from '@/components/home/Hero_Section';
+import Statistics from '@/components/home/Statistics';
 import Success_Stories from '@/components/home/Success_Stories';
 import { HERO_DESCRIPTION, HERO_IMAGES, HERO_TITLE } from '@/content/home';
 import { Stack } from '@mantine/core';
@@ -13,7 +14,11 @@ export default function Home() {
         desc={HERO_DESCRIPTION}
         imgs={HERO_IMAGES}
       />
+
       <About_Us />
+
+      <Statistics />
+
       <Child_Home />
 
       <Success_Stories />
