@@ -213,7 +213,7 @@ interface Props {
 }
 export default function Mantine_Provider({ children }: Props) {
   return (
-    <DirectionProvider initialDirection='rtl'>
+    <DirectionProvider detectDirection>
       <MantineProvider theme={theme}>
         <Notifications />
         <> {children}</>

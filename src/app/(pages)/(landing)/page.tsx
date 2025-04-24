@@ -1,3 +1,4 @@
+import About_Us from '@/components/home/About_Us';
 import Child_Home from '@/components/home/Child_Home';
 import Hero_Section from '@/components/home/Hero_Section';
 import Success_Stories from '@/components/home/Success_Stories';
@@ -12,7 +13,7 @@ export default function Home() {
         desc={HERO_DESCRIPTION}
         imgs={HERO_IMAGES}
       />
-
+      <About_Us />
       <Child_Home />
 
       <Success_Stories />

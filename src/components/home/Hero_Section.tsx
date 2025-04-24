@@ -29,11 +29,12 @@ export default function Hero_Section({ title, desc, imgs }: Props) {
   return (
     <Box pos={'relative'} w={'100%'} h={{ base: 250, md: 300, lg: 350 }}>
       <Carousel
-        dir='ltr'
-        slideSize='100%'
+        dir='ltr' // important for avoid direction problems
         align='end'
-        loop
+        loop={true}
         plugins={[autoplay.current]}
+        onMouseEnter={autoplay.current.stop}
+        onMouseLeave={autoplay.current.reset}
         withControls={false}
       >
         {slides}

@@ -32,7 +32,7 @@ export default function Stories_Cards() {
         align='start'
         withControls
         slideSize='100%'
-        loop
+        loop={true}
         slidesToScroll={1}
         plugins={[autoplay.current]}
         onMouseEnter={autoplay.current.stop}
