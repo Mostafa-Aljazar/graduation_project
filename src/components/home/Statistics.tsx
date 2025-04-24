@@ -27,9 +27,9 @@ export default function Statistics() {
     >
       <Text
         fw={600}
-        fz={{ base: 20, md: 25 }}
         c={'primary.8'}
-        ta={'start'}
+        fz={{ base: 20, md: 25 }}
+        ta={{ base: 'center', md: 'start' }}
         w={'100%'}
       >
         {Statistics_TITLE}
@@ -40,13 +40,24 @@ export default function Statistics() {
         justify='space-between'
       >
         <Stack justify='center' gap='lg'>
-          <Text fz={{ base: 16, md: 20 }} fw={500} c={'dark'}>
+          <Text
+            fz={{ base: 16, md: 20 }}
+            fw={500}
+            c={'dark'}
+            ta={{ base: 'center', md: 'start' }}
+          >
             {Statistics_MESSAGE}
           </Text>
 
-          <SimpleGrid cols={2} spacing='lg'>
+          <SimpleGrid cols={2} spacing='lg' w={'100%'}>
             {Statistics_Data.map((stat, index) => (
-              <Group key={index} gap='sm' wrap='nowrap' align='center'>
+              <Group
+                key={index}
+                gap='sm'
+                wrap='nowrap'
+                align='center'
+                className='!justify-center md:!justify-start'
+              >
                 <ThemeIcon variant='transparent' className='!text-primary'>
                   <stat.icon size={30} />
                 </ThemeIcon>

@@ -6,10 +6,10 @@ export default function Success_Stories() {
   return (
     <Stack w={'100%'} align='center' gap={20} pt={{ base: 20, md: 30 }}>
       <Stack align='center'>
-        <Title fz={{ base: 25, md: 35 }} className='text-primary'>
+        <Title fz={{ base: 20, md: 35 }} className='text-primary'>
           قصص نجاح
         </Title>
-        <Text fz={{ base: 18, md: 25 }} c={'dark'}>
+        <Text fz={{ base: 16, md: 25 }} c={'dark'}>
           في كل خيمة يسكن الألم، لكن العزيمة لا تعرف الاستسلام
         </Text>
       </Stack>

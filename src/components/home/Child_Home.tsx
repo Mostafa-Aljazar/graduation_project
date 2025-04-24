@@ -11,7 +11,7 @@ export default function Child_Home() {
       <Text
         w={'100%'}
         fw={500}
-        fz={{ base: 20, sm: 30, lg: 50 }}
+        fz={{ base: 30, lg: 50 }}
         pos='absolute'
         top={'5%'}
         right={'50%'}
