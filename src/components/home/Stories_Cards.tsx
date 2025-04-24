@@ -26,7 +26,7 @@ export default function Stories_Cards() {
   return (
     <Box px={10} w='100%'>
       <Carousel
-        dir='ltr' // important for avoid direction problems
+        dir='rtl' // important for avoid direction problems
         h={200}
         w='100%'
         align='start'
