@@ -4,8 +4,10 @@ export const ROUTES = {
   OUR_SERVICES: '/#our-service',
   CONTACT_US: '/#contact-us',
   BLOG: '/blog',
+  SUCCESS_STORY: '/success-story',
 } as const;
 
-export const AUT_ROUTES = {
-  LOGIN: '/login',
+export const AUTH_ROUTES = {
+  LOGIN: '/auth/login',
+  FORGET_PASSWORD: '/auth/forget-password'
 } as const;

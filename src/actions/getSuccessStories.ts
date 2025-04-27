@@ -1,9 +1,9 @@
-import successStory from "@/@types/successStories";
-import { STORIES } from "@/content/blog"
+import successStoryResponse from "@/@types/successStoryResponse.type";
+import { STORIES } from "@/content/home";
 
 
 // RETURN FAKE DATA
-export const getSuccessStories = async (): Promise<successStory[]> => {
+export const getSuccessStories = async (): Promise<successStoryResponse[]> => {
     return await STORIES;
 }
 

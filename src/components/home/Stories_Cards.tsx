@@ -1,42 +1,63 @@
 'use client';
-import { Carousel } from '@mantine/carousel';
-import { useRef } from 'react';
-import Autoplay from 'embla-carousel-autoplay';
 import Story_Card from './Story_Card';
 import { useQuery } from '@tanstack/react-query';
 import { getSuccessStories } from '@/actions/getSuccessStories';
-import { Loader } from '@mantine/core';
+import { Box, Loader, Text } from '@mantine/core';
+import { useRef } from 'react';
+import Autoplay from 'embla-carousel-autoplay';
+import { Carousel } from '@mantine/carousel';
+import successStoryResponse from '@/@types/successStoryResponse.type';
 
 export default function Stories_Cards() {
   const autoplay = useRef(Autoplay({ delay: 3000 }));
 
-  const { data: storiesData, isLoading: isLoading } = useQuery({
+  const {
+    data: storiesData,
+    isLoading,
+    error,
+  } = useQuery<successStoryResponse[]>({
     queryKey: ['SuccessStories'],
-    queryFn: async () => {
-      const data = await getSuccessStories();
-      return data;
-    },
+    queryFn: getSuccessStories,
   });
 
   if (isLoading) {
-    return <Loader />;
+    return (
+      <Loader
+        mx={'auto'}
+        className='!mt-[200px]'
+        size={'lg'}
+        color={'primary'}
+      />
+    );
   }
+  if (error) return <Text>Error loading stories: {error.message}</Text>;
 
   return (
-    <Carousel
-      dir='ltr'
-      align='start'
-      plugins={[autoplay.current]}
-      loop={true}
-      withControls={true}
-      h={200}
-      classNames={{
-        controls: '!text-black  !px-10 !hidden md:!flex',
-        control: '!bg-second',
-      }}
-    >
-      {storiesData &&
-        storiesData.map((item) => <Story_Card {...item} key={item.id} />)}
-    </Carousel>
+    <Box px={10} w='100%'>
+      <Carousel
+        dir='rtl' // important for avoid direction problems
+        h={200}
+        w='100%'
+        align='start'
+        withControls
+        slideSize='100%'
+        loop={true}
+        slidesToScroll={1}
+        plugins={[autoplay.current]}
+        onMouseEnter={autoplay.current.stop}
+        onMouseLeave={autoplay.current.reset}
+        classNames={{
+          controls: '!text-black !px-10 !hidden md:!flex',
+          control: '!bg-second',
+        }}
+      >
+        {storiesData &&
+          storiesData.map((item, index) => (
+            <Carousel.Slide h={'100%'} w={'100%'} key={item.id || index}>
+              <Story_Card {...item} key={item.id || index} />
+            </Carousel.Slide>
+          ))}
+      </Carousel>
+    </Box>
   );
 }

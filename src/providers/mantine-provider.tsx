@@ -1,5 +1,6 @@
 import {
   createTheme,
+  DirectionProvider,
   MantineColorsTuple,
   MantineProvider,
   rem,
@@ -212,9 +213,11 @@ interface Props {
 }
 export default function Mantine_Provider({ children }: Props) {
   return (
-    <MantineProvider theme={theme}>
-      <Notifications />
-      <> {children}</>
-    </MantineProvider>
+    <DirectionProvider detectDirection>
+      <MantineProvider theme={theme}>
+        <Notifications />
+        <> {children}</>
+      </MantineProvider>
+    </DirectionProvider>
   );
 }

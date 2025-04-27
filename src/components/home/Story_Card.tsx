@@ -1,14 +1,16 @@
-import successStory from '@/@types/successStories';
-import { Carousel } from '@mantine/carousel';
+import successStoryResponse from '@/@types/successStoryResponse.type';
+import { ROUTES } from '@/content/routes';
+import getLimitedWords from '@/utility/getLimitedWords';
 import { Flex, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 
-type Props = successStory;
+type Props = successStoryResponse;
 
 export default function Story_Card(story: Props) {
   return (
-    <Carousel.Slide h={{ base: 200, md: 200 }}>
+    <Link href={`${ROUTES.SUCCESS_STORY}/${story.id}`}>
       <Flex
         direction={'row'}
         wrap='nowrap'
@@ -25,14 +27,19 @@ export default function Story_Card(story: Props) {
           className='w-[150px] md:w-[200px] md:h-36'
         />
         <Stack gap={5} justify='start' h={'100%'} py={20} px={20} ta={'right'}>
-          <Text fw={500} fz={{ base: 20, lg: 25 }} className='!text-primary'>
+          <Text fw={500} fz={{ base: 18, lg: 25 }} className='!text-primary'>
             {story.title}
           </Text>
-          <Text fw={400} fz={16} className='!text-dark'>
-            {story.content}
-          </Text>
+          <>
+            <Text fw={400} fz={16} className='!text-dark' hiddenFrom='md'>
+              {getLimitedWords(story.content, 10) + ' ...'}
+            </Text>
+            <Text fw={400} fz={16} className='!text-dark' visibleFrom='md'>
+              {getLimitedWords(story.content, 50) + ' ...'}
+            </Text>
+          </>
         </Stack>
       </Flex>
-    </Carousel.Slide>
+    </Link>
   );
 }
