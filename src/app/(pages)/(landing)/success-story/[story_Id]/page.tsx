@@ -1,5 +1,6 @@
 // TODO: fisal do this , it is like blog page
 
+import Footer from '@/components/common/Footer';
 import { Stack } from '@mantine/core';
 
 export default async function Page({
@@ -8,5 +9,10 @@ export default async function Page({
   params: Promise<{ story_Id: string }>;
 }) {
   const { story_Id } = await params;
-  return <Stack pt={60}>My Post: {story_Id}</Stack>;
+  return (
+    <>
+      <Stack pt={60}>My Post: {story_Id}</Stack>
+      <Footer />
+    </>
+  );
 }

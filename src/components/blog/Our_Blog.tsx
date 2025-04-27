@@ -21,7 +21,14 @@ export default function Our_Blog() {
   //   console.log('🚀 ~ Suggestions_Article ~ articles:', articles);
 
   if (isLoading) {
-    return <Loader my={100} mx={'auto'} />;
+    return (
+      <Loader
+        mx={'auto'}
+        className='!mt-[200px]'
+        size={'lg'}
+        color={'primary'}
+      />
+    );
   }
 
   if (error) {

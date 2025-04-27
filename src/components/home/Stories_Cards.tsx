@@ -20,7 +20,16 @@ export default function Stories_Cards() {
     queryFn: getSuccessStories,
   });
 
-  if (isLoading) return <Loader />;
+  if (isLoading) {
+    return (
+      <Loader
+        mx={'auto'}
+        className='!mt-[200px]'
+        size={'lg'}
+        color={'primary'}
+      />
+    );
+  }
   if (error) return <Text>Error loading stories: {error.message}</Text>;
 
   return (

@@ -1,3 +1,4 @@
+import Footer from '@/components/common/Footer';
 import About_Us from '@/components/home/About_Us';
 import Child_Home from '@/components/home/Child_Home';
 import Hero_Section from '@/components/home/Hero_Section';
@@ -25,6 +26,8 @@ export default function Home() {
       <Child_Home />
 
       <Success_Stories />
+
+      <Footer />
     </Stack>
   );
 }

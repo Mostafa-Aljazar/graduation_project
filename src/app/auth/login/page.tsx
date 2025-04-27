@@ -99,8 +99,16 @@ export default function Login() {
       setError(error?.message as string);
     }
   });
+
   if (loading) {
-    return <Loader />;
+    return (
+      <Loader
+        mx={'auto'}
+        className='!mt-[200px]'
+        size={'lg'}
+        color={'primary'}
+      />
+    );
   }
 
   return (

@@ -6,9 +6,5 @@ export default function Pages_Layout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <Mantine_Layout>
-      <>{children}</>
-    </Mantine_Layout>
-  );
+  return <Mantine_Layout>{children}</Mantine_Layout>;
 }
