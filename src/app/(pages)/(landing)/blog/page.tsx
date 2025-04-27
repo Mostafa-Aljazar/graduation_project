@@ -6,7 +6,12 @@ import { Stack } from '@mantine/core';
 
 export default function Blog() {
   return (
-    <Stack pt={60} gap={0} className='!relative w-full !h-screen text-third'>
+    <Stack
+      pt={60}
+      gap={0}
+      w={'100%'}
+      className='!relative !h-screen text-third'
+    >
       <Hero_Section
         title={HERO_TITLE}
         desc={HERO_DESCRIPTION}

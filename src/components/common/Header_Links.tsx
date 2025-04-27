@@ -36,7 +36,12 @@ export default function Header_Links() {
       return pathname === ROUTES.HOME && currentHash === linkHash;
     }
 
-    return pathname === link && !currentHash;
+    // Check for exact match or if pathname starts with the link (for blog routes)
+    return (
+      (pathname === link ||
+        (link === '/blog' && pathname.startsWith('/blog'))) &&
+      !currentHash
+    );
   };
 
   const handleLinkClick = (link: string) => {

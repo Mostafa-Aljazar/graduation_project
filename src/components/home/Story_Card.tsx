@@ -1,4 +1,4 @@
-import successStoryResponse from '@/@types/successStoryResponse';
+import successStoryResponse from '@/@types/successStoryResponse.type';
 import { ROUTES } from '@/content/routes';
 import getLimitedWords from '@/utility/getLimitedWords';
 import { Flex, Stack, Text } from '@mantine/core';

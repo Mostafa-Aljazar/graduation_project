@@ -1,5 +1,5 @@
-import successStoryResponse from "@/@types/successStoryResponse";
-import { STORIES } from "@/content/blog"
+import successStoryResponse from "@/@types/successStoryResponse.type";
+import { STORIES } from "@/content/home";
 
 
 // RETURN FAKE DATA

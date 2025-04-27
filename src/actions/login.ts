@@ -1,5 +1,5 @@
 "use server";
-import loginResponse from "@/@types/loginResponse";
+import loginResponse from "@/@types/loginResponse.type";
 
 
 // RETURN FAKE DATA

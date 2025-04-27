@@ -17,7 +17,7 @@ import Link from 'next/link';
 import { loginSchema, loginType } from '@/validation/loginSchema';
 import { useMutation } from '@tanstack/react-query';
 import { login } from '@/actions/login';
-import loginResponse from '@/@types/loginResponse';
+import loginResponse from '@/@types/loginResponse.type';
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
 import { toFormData } from '@/utility/objectToFormData';
