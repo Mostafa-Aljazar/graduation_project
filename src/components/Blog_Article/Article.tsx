@@ -2,7 +2,6 @@
 import { Group, Loader, Stack, Text, Box } from '@mantine/core';
 import Image from 'next/image';
 import React from 'react';
-
 import { useQuery } from '@tanstack/react-query';
 import { getArticle } from '@/actions/getArticle';
 import Suggestions_Article from './Suggestions_Article';
