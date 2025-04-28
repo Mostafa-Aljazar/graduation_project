@@ -6,7 +6,7 @@ import {
   Button,
   Divider,
   Group,
-  Loader,
+  LoadingOverlay,
   PasswordInput,
   Stack,
   Text,
@@ -16,18 +16,19 @@ import { AUTH_ROUTES, ROUTES } from '@/content/routes';
 import Link from 'next/link';
 import { loginSchema, loginType } from '@/validation/loginSchema';
 import { useMutation } from '@tanstack/react-query';
-import { login } from '@/actions/login';
-import loginResponse from '@/@types/loginResponse.type';
+import { login } from '@/actions/auth/login';
+import { loginResponse } from '@/@types/auth/loginResponse.type';
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
-import { toFormData } from '@/utility/objectToFormData';
-
-export const USER_TYPE = {
-  DISPLACED: 'DISPLACED',
-  EMPLOYEE: 'EMPLOYEE',
-} as const;
+import { toFormData } from '@/utils/objectToFormData';
+import { USER_TYPE, UserType } from '@/constants/userTypes';
+import { LOCALSTORAGE_SESSION_KEY } from '@/constants/sessionKey';
 
 export default function Login() {
+  const [userType, setUserType] = useState<UserType>(USER_TYPE.DISPLACED);
+  const [error, setError] = useState('');
+  const router = useRouter();
+
   // Define the form schema
   const form = useForm<loginType>({
     mode: 'uncontrolled',
@@ -35,81 +36,61 @@ export default function Login() {
     validate: zodResolver(loginSchema),
   });
 
-  const [userType, setUserType] = useState<keyof typeof USER_TYPE>(
-    USER_TYPE.DISPLACED
-  );
-  console.log('🚀 ~ Login ~ userType:', userType);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
   const loginMutation = useMutation<loginResponse, Error, FormData>({
     mutationFn: login,
     onSuccess: (data) => {
-      console.log('🚀 ~ Login ~ data:', data);
-      notifications.show({
-        title: 'Message : ',
-        message:
-          Number(data.status) == 200
-            ? 'Hi !'
-            : String(data.status) == '500'
-            ? 'Check your internet'
-            : 'Failed to login',
-        color: data.error ? 'red' : 'grape',
-        position: 'top-left',
-        withBorder: true,
-        loading: Number(data.status) == 200,
-      });
-      if (!data.error) {
-        // TODO: chang route to user profile
-        // router.push(ROUTES.HOME);
+      // console.log('🚀 ~ Login ~ data:', data);
+      if (Number(data.status) == 200) {
+        notifications.show({
+          title: 'مرحبا بك',
+          message: 'تم تسجيل الدخول بنجاح',
+          color: 'grape',
+          position: 'top-left',
+          withBorder: true,
+          loading: true,
+        });
+
+        // Save the login data to local storage
+        localStorage.setItem(LOCALSTORAGE_SESSION_KEY, JSON.stringify(data));
+
+        // TODO: change route to user profile
+        if (data.user.role === 'DISPLACED') {
+          router.push(ROUTES.HOME);
+        } else {
+          router.push(ROUTES.HOME);
+        }
+        return;
+      } else {
         form.reset();
+        throw new Error(data.error || 'فشل في تسجيل الدخول');
       }
-      setLoading(false);
     },
     onError: (error: any) => {
-      const errorMessage =
-        error?.response?.data?.error || error?.message || 'Failed to login';
+      const errorMessage = error?.response?.data?.error || error?.message;
+      setError(errorMessage);
+
       notifications.show({
-        title: 'Error',
+        title: 'خطأ',
         message: errorMessage,
         color: 'red',
         position: 'top-left',
         withBorder: true,
       });
-      setLoading(false);
     },
   });
 
   const handleSubmit = form.onSubmit((data: loginType) => {
-    setLoading(true);
-
     try {
-      console.log('🚀 ~ handleSubmit ~ data:', data);
-
       const formData = toFormData({
         ...data,
         userType,
       });
-      console.log('🚀 ~ handleSubmit ~ formData:', formData);
 
       loginMutation.mutate(formData);
     } catch (error: any) {
-      console.log('🚀 ~ onSubmit ~ error:', error);
       setError(error?.message as string);
     }
   });
-
-  if (loading) {
-    return (
-      <Loader
-        mx={'auto'}
-        className='!mt-[200px]'
-        size={'lg'}
-        color={'primary'}
-      />
-    );
-  }
 
   return (
     <>
@@ -130,9 +111,15 @@ export default function Login() {
 
         <Stack justify='center' align='center' gap={20}>
           <form
-            className='flex flex-col items-center gap-0'
+            className='relative flex flex-col items-center gap-0'
             onSubmit={handleSubmit}
           >
+            {/* Loading Overlay */}
+            <LoadingOverlay
+              visible={loginMutation.isPending}
+              zIndex={1000}
+              overlayProps={{ radius: 'sm', blur: 0.3 }}
+            />
             {/* Email Id */}
             <TextInput
               type='email'
@@ -184,14 +171,19 @@ export default function Login() {
             </Group>
 
             <Button
-              loading={form.submitting}
+              loading={loginMutation.isPending}
               type='submit'
               mt={32}
               fz={20}
               fw={500}
               c={'white'}
-              className={'!shadow-lg max-lg:!mt-10 !bg-primary'}
               w={228}
+              className={`!shadow-lg max-lg:!mt-10 ${
+                !form.getValues().password || !form.getValues().email
+                  ? '!bg-primary/70'
+                  : '!bg-primary'
+              }`}
+              disabled={!form.getValues().password || !form.getValues().email}
             >
               دخول
             </Button>
@@ -216,7 +208,7 @@ export default function Login() {
               className='!text-primary hover:!cursor-pointer'
               onClick={() =>
                 userType == USER_TYPE.DISPLACED
-                  ? setUserType(USER_TYPE.EMPLOYEE)
+                  ? setUserType(USER_TYPE.DELEGATOR) //DELEGATOR | MANAGER | SECRETARY | SECURITY_OFFICER
                   : setUserType(USER_TYPE.DISPLACED)
               }
             >

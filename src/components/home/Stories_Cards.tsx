@@ -6,7 +6,7 @@ import { Box, Loader, Text } from '@mantine/core';
 import { useRef } from 'react';
 import Autoplay from 'embla-carousel-autoplay';
 import { Carousel } from '@mantine/carousel';
-import successStoryResponse from '@/@types/successStoryResponse.type';
+import successStoryResponse from '@/@types/landing/successStoryResponse.type';
 
 export default function Stories_Cards() {
   const autoplay = useRef(Autoplay({ delay: 3000 }));

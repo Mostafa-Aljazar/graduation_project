@@ -1,4 +1,4 @@
-import successStoryResponse from '@/@types/successStoryResponse.type';
+import successStoryResponse from '@/@types/landing/successStoryResponse.type';
 import { home_child, img_1, img_2, img_3 } from '@/assets/home';
 import {
   Smile,
