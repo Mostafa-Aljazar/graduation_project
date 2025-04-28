@@ -1,12 +1,12 @@
-import articleResponse from "@/@types/articleResponse.type";
-import successStoryResponse from "@/@types/successStoryResponse.type";
-import { home_child, img_1, img_2, img_3 } from "@/assets/home";
-
+import articleResponse from '@/@types/articleResponse.type';
+import successStoryResponse from '@/@types/successStoryResponse.type';
+import { home_child, img_1, img_2, img_3 } from '@/assets/home';
 
 // HERO
 
 export const HERO_TITLE = 'قيمُنا :';
-export const HERO_DESCRIPTION = 'الإنسانية , الشفافية . الجودة , الحيادية ,العمل التطوعي , التنمية المستدامة';
+export const HERO_DESCRIPTION =
+  'الإنسانية , الشفافية . الجودة , الحيادية ,العمل التطوعي , التنمية المستدامة';
 export const HERO_IMAGES = [img_1, img_2, img_3];
 
 // OUR_BLOG
@@ -16,7 +16,6 @@ export const OUR_BLOG_TITLE = 'مدونتنا :';
 // export const OUR_BLOG_TITLE = 'الصعوبات التي يواجهها النازحون في الخيام؟';
 // export const OUR_BLOG_DESC = 'يواجه  النازحون في الخيام  تحديات يومية تجعل حياتهم مليئة بالمعاناة. من الظروف البيئية القاسية إلى نقص الخدمات الأساسية، ومن المشكلات الصحية إلى التحديات الاقتصادية والاجتماعية، فإن حياة النازحين تحتاج إلى تدخلات عاجلة ومستدامة  و ...';
 // export const OUR_BLOG_LINK = 'blog/1';
-
 
 // ARTICLES
 export const ARTICLES_TITLE_ANOTHER = 'مقالات أخرى :';
@@ -69,9 +68,47 @@ export const ARTICLE_EXAMPLE: articleResponse = {
       </p>
     </div>
   </div>
-`
-  ,
-  image: "https://nbrdqfucz2.ufs.sh/f/PCSTGU6DUS94IG816rCYcRDMP0JG93E2lV7IBpoSgbUkrNQC",
+`,
+  image:
+    'https://nbrdqfucz2.ufs.sh/f/PCSTGU6DUS94IG816rCYcRDMP0JG93E2lV7IBpoSgbUkrNQC',
   createdAt: new Date(Date.now()),
   updatedAt: new Date(Date.now()),
+};
+
+export const SUCCESS_STORY_EXAMPLE: successStoryResponse = {
+  id: '1',
+  title: 'خالد ورحلة التعلم',
+  content: `
+<div class="max-w-7xl mx-auto bg-white rounded-2xl">
+
+
+  <div class="mb-10">
+    <p class="text-xl text-gray-700 text-right leading-loose">
+      خالد، شابٌ في الثالثة والعشرين من عمره، يجسد قوة الإرادة والصبر. رغم التحديات الصعبة التي يواجهها، بما فيها الإعاقة الجسدية والعقلية، وقيود اجتماعية تعيق وصوله إلى الفرص التعليمية، إلا أن خالد لم يسمح لأي عائق أن يقف بينه وبين حلمه.
+    </p>
+  </div>
+
+  <div class="mb-10">
+    <p class="text-xl text-gray-700 text-right leading-loose">
+      يوميًا، يستعد خالد لرحلته الشاقة نحو إحدى مساحات العمل المشتركة. رحلة قد تبدو بسيطة لغيره، لكنها بالنسبة له مغامرة حقيقية، مليئة بالتحديات اليومية: عبور الحفر العميقة، تفادي مستنقعات مياه الصرف، وتخطي طرق محفوفة بكارات الحمير وعراقيل الحياة اليومية.
+    </p>
+  </div>
+
+  <div class="mb-10">
+    <p class="text-xl text-gray-700 text-right leading-loose">
+      وعلى الرغم من كل ذلك، يصل خالد بابتسامته المعهودة، وطاقته التي تلهم كل من حوله. في مساحة العمل، لا يختلف عن زملائه في الجامعة؛ يشاركهم الطموح، الاجتهاد، والأمل. يتعلم، يتفاعل، ويثبت في كل يوم أن التحديات قد تعيق الجسد لكنها لا تكسر الروح.
+    </p>
+  </div>
+
+  <div class="mb-10">
+    <p class="text-xl text-gray-700 text-right leading-loose">
+      قصة خالد ليست مجرد قصة طالب يتحدى الظروف، بل قصة إنسان يؤمن بأن التعليم هو مفتاح الحياة الأفضل، وأن الإصرار يمكن أن يحطم أصعب القيود. خالد اليوم هو رمز حي للأمل والصمود، ودعوة مفتوحة لكل من يعتقد أن الطريق مستحيل.
+    </p>
+  </div>
+</div>
+`,
+  img:
+    // 'https://nbrdqfucz2.ufs.sh/f/PCSTGU6DUS94IG816rCYcRDMP0JG93E2lV7IBpoSgbUkrNQC',
+    'https://images.unsplash.com/photo-1469474968028-56623f02e42e',
+  createdAt: new Date(),
 };
