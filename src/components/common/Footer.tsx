@@ -12,6 +12,9 @@ export default function Footer() {
   return (
     <Box
       component='footer'
+      bg='#12100DEB'
+      c='white'
+      pos='relative'
       pt={20}
       pb={20}
       style={{ borderTop: '1px solid #e5e7eb' }}

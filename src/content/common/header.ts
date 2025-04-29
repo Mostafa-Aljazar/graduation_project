@@ -21,6 +21,12 @@ export const NAVBAR_LINKS = [
         label: 'المدونة',
         link: ROUTES.BLOG,
     },
+    ,
+    {
+        key: 'SUCCESS_STORY',
+        label: 'قصص نجاح',
+        link: ROUTES.SUCCESS_STORY,
+    },
     {
         key: 'CONTACT_US',
         label: 'تواصل معنا',

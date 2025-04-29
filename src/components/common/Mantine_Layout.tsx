@@ -2,6 +2,7 @@
 import { AppShell, Skeleton } from '@mantine/core';
 import { useDisclosure, useHeadroom } from '@mantine/hooks';
 import Header from './Header';
+import Footer from './Footer';
 
 export default function Mantine_Layout({
   children,
@@ -19,23 +20,24 @@ export default function Mantine_Layout({
         breakpoint: 'md',
         collapsed: { mobile: !pinned },
       }}
-      className='w-full min-h-screen'
+      flex={1}
+      withBorder={false}
+      className='!flex !flex-col !w-full !min-h-screen'
     >
       <Header opened={opened} toggle={toggle} />
-
-      <AppShell.Navbar p='md' mt={60} className='' hidden>
-        Navbar
-        {Array(15)
-          .fill(0)
-          .map((_, index) => (
-            <Skeleton key={index} h={28} mt='sm' animate={false} />
-          ))}
-      </AppShell.Navbar>
       {/* <Navbar /> */}
-
-      <AppShell.Main bg={'white'} flex={1} className='!flex-1 !w-full !h-full'>
+      <AppShell.Main
+        pt={60}
+        flex={1}
+        w={'100%'}
+        h={'100%'}
+        bg={'white'}
+        className='!flex !flex-col !flex-1 !w-full !h-full'
+      >
         {children}
       </AppShell.Main>
+
+      <Footer />
     </AppShell>
   );
 }

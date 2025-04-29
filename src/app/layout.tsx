@@ -6,6 +6,7 @@ import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import type { Metadata } from 'next';
 import Providers from '@/providers/providers';
 import sfProDisplay from '@/fonts';
+import Footer from '@/components/common/Footer';
 
 export const metadata: Metadata = {
   title: 'AL-AQSA Camp',

@@ -1,6 +1,6 @@
 'use client';
 
-import { getStory } from '@/actions/getStory';
+import { getStory } from '@/actions/landing/getStory';
 import formatDateInArabic from '@/utility/formatDateInArabic';
 import {
   Box,
@@ -63,7 +63,7 @@ const Success_Story = ({ story_Id }: Props) => {
               fw={600}
               fz={20}
               c='#000'
-              className='text-4xl text-start text-gray-800 pb-6 border-b-4 border-[#345E40]'
+              className='pb-6 border-[#345E40] border-b-4 text-gray-800 text-4xl text-start'
             >
               {story.title}
             </Text>
@@ -90,7 +90,7 @@ const Success_Story = ({ story_Id }: Props) => {
         {/* Content Section */}
         <Box p='xl'>
           <Box
-            className='prose prose-lg max-w-none'
+            className='max-w-none prose prose-lg'
             dangerouslySetInnerHTML={{ __html: story.content }}
           />
         </Box>

@@ -6,9 +6,15 @@ import {
   SUCCESS_STORIES_TITLE,
 } from '@/content/home';
 
-export default function Success_Stories() {
+export default function Success_Stories_Landing() {
   return (
-    <Stack w={'100%'} align='center' gap={20} pt={{ base: 20, md: 30 }}>
+    <Stack
+      w={'100%'}
+      h={'100%'}
+      align='center'
+      gap={20}
+      pt={{ base: 20, md: 30 }}
+    >
       <Stack align='center'>
         <Title fz={{ base: 20, md: 35 }} className='text-primary'>
           {SUCCESS_STORIES_TITLE}

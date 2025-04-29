@@ -5,8 +5,17 @@ import React from 'react';
 
 export default function Child_Home() {
   return (
-    <Box pos={'relative'} w={'100%'} mah={330}>
-      <Image src={home_child} alt='child' className='w-full h-full' />
+    <Box
+      pos={'relative'}
+      w={'100%'}
+      h={{ base: 250, md: 350, lg: 450 }}
+      className='!overflow-hidden'
+    >
+      <Image
+        src={home_child}
+        alt='child'
+        className='w-full h-full object-cover'
+      />
       <Overlay color='black' opacity={0.2} zIndex={0} />
       <Text
         w={'100%'}

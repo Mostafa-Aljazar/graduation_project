@@ -1,10 +1,10 @@
 'use client';
-import { Loader, Pagination, Stack, Text } from '@mantine/core';
+import { LoadingOverlay, Pagination, Stack, Text } from '@mantine/core';
 import React, { useState } from 'react';
 import Blog_Card from './Blog_Card';
 import { OUR_BLOG_TITLE } from '@/content/blog';
 import { useQuery } from '@tanstack/react-query';
-import { getArticles } from '@/actions/getArticles';
+import { getArticles } from '@/actions/landing/getArticles';
 
 export default function Our_Blog() {
   const [activePage, setPage] = useState(1);
@@ -18,18 +18,6 @@ export default function Our_Blog() {
     queryKey: ['articles'],
     queryFn: () => getArticles(activePage, 5),
   });
-  //   console.log('🚀 ~ Suggestions_Article ~ articles:', articles);
-
-  if (isLoading) {
-    return (
-      <Loader
-        mx={'auto'}
-        className='!mt-[200px]'
-        size={'lg'}
-        color={'primary'}
-      />
-    );
-  }
 
   if (error) {
     return (
@@ -55,7 +43,16 @@ export default function Our_Blog() {
         align='center'
         gap={30}
         w={{ base: '100%', md: '80%' }}
+        mih={400}
+        pos={'relative'}
       >
+        {/* Loading Overlay */}
+        <LoadingOverlay
+          visible={isLoading}
+          zIndex={1000}
+          overlayProps={{ radius: 'sm', blur: 0.3 }}
+        />
+
         {articles?.map((article, index) => (
           <Blog_Card
             destination='blogs'
@@ -68,20 +65,20 @@ export default function Our_Blog() {
             brief={article.brief}
           />
         ))}
-        <Pagination
-          total={5}
-          pt={30}
-          size='sm'
-          radius='xl'
-          withControls={false}
-          classNames={{
-            dots: '!rounded-full !text-gray-300 border-1',
-            control: '!rounded-full  ',
-          }}
-          value={activePage}
-          onChange={setPage}
-        />
       </Stack>
+      <Pagination
+        total={5}
+        pt={30}
+        size='sm'
+        radius='xl'
+        withControls={false}
+        classNames={{
+          dots: '!rounded-full !text-gray-300 border-1',
+          control: '!rounded-full  ',
+        }}
+        value={activePage}
+        onChange={setPage}
+      />
     </Stack>
   );
 }

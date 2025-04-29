@@ -1,7 +1,7 @@
 'use client';
 import Story_Card from './Story_Card';
 import { useQuery } from '@tanstack/react-query';
-import { getSuccessStories } from '@/actions/getSuccessStories';
+import { getSuccessStories } from '@/actions/landing/getSuccessStories';
 import { Box, Loader, Text } from '@mantine/core';
 import { useRef } from 'react';
 import Autoplay from 'embla-carousel-autoplay';
