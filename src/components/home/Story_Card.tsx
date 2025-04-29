@@ -1,6 +1,6 @@
-import successStoryResponse from '@/@types/successStoryResponse.type';
+import successStoryResponse from '@/@types/landing/successStoryResponse.type';
 import { ROUTES } from '@/content/routes';
-import getLimitedWords from '@/utility/getLimitedWords';
+import getLimitedWords from '@/utils/getLimitedWords';
 import { Flex, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
 import Link from 'next/link';

@@ -9,5 +9,7 @@ export const ROUTES = {
 
 export const AUTH_ROUTES = {
   LOGIN: '/auth/login',
-  FORGET_PASSWORD: '/auth/forget-password'
+  FORGET_PASSWORD: '/auth/forget-password',
+  OTP: '/auth/otp',
+  CREATE_NEW_PASSWORD: '/auth/create-new-password',
 } as const;

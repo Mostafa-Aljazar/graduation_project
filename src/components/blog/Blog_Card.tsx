@@ -1,9 +1,9 @@
 'use client';
-import articleResponse from '@/@types/articleResponse.type';
+import articleResponse from '@/@types/landing/articleResponse.type';
 import { img_1 } from '@/assets/home';
 import { ROUTES } from '@/content/routes';
-import { cn } from '@/utility/cn';
-import getLimitedWords from '@/utility/getLimitedWords';
+import { cn } from '@/utils/cn';
+import getLimitedWords from '@/utils/getLimitedWords';
 import {
   Box,
   Button,

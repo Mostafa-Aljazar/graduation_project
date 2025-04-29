@@ -5,7 +5,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { getArticle } from '@/actions/landing/getArticle';
 import Suggestions_Article from './Suggestions_Article';
-import formatDateInArabic from '@/utility/formatDateInArabic';
+import formatDateInArabic from '@/utils/formatDateInArabic';
 
 type Props = { article_Id: string };
 export default function Article({ article_Id }: Props) {

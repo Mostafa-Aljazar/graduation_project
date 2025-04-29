@@ -1,4 +1,4 @@
-import articleResponse from "@/@types/articleResponse.type";
+import articleResponse from "@/@types/landing/articleResponse.type";
 import { ARTICLE_EXAMPLE } from "@/content/blog";
 
 // RETURN FAKE DATA - Multiple Articles with pagination

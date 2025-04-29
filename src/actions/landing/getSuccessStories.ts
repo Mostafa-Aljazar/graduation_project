@@ -1,4 +1,4 @@
-import successStoryResponse from "@/@types/successStoryResponse.type";
+import successStoryResponse from "@/@types/landing/successStoryResponse.type";
 import { STORIES } from "@/content/home";
 
 

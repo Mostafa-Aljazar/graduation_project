@@ -1,6 +1,7 @@
-import articleResponse from '@/@types/articleResponse.type';
-import successStoryResponse from '@/@types/successStoryResponse.type';
-import { home_child, img_1, img_2, img_3 } from '@/assets/home';
+import articleResponse from "@/@types/landing/articleResponse.type";
+import successStoryResponse from "@/@types/landing/successStoryResponse.type";
+import { img_1, img_2, img_3 } from "@/assets/home";
+
 
 // HERO
 
@@ -11,11 +12,7 @@ export const HERO_IMAGES = [img_1, img_2, img_3];
 
 // OUR_BLOG
 export const OUR_BLOG_TITLE = 'مدونتنا :';
-// export const OUR_BLOG_IMAGE = img_1;
-// export const OUR_BLOG_DATE = 'الخميس, 30 مايو 2024';
-// export const OUR_BLOG_TITLE = 'الصعوبات التي يواجهها النازحون في الخيام؟';
-// export const OUR_BLOG_DESC = 'يواجه  النازحون في الخيام  تحديات يومية تجعل حياتهم مليئة بالمعاناة. من الظروف البيئية القاسية إلى نقص الخدمات الأساسية، ومن المشكلات الصحية إلى التحديات الاقتصادية والاجتماعية، فإن حياة النازحين تحتاج إلى تدخلات عاجلة ومستدامة  و ...';
-// export const OUR_BLOG_LINK = 'blog/1';
+
 
 // ARTICLES
 export const ARTICLES_TITLE_ANOTHER = 'مقالات أخرى :';

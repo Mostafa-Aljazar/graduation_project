@@ -1,7 +1,7 @@
 'use client';
 import { NAVBAR_LINKS } from '@/content/common/header';
 import { ROUTES } from '@/content/routes';
-import { cn } from '@/utility/cn';
+import { cn } from '@/utils/cn';
 import { Text } from '@mantine/core';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
