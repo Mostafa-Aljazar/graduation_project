@@ -11,8 +11,9 @@ const SessionSchema = z.object({
     name: z.string(),
     email: z.string().email(),
     phone_number: z.string(),
-    created_at: z.date(),
-    role: z.enum(['DISPLACED', 'DELEGATOR', 'MANAGER', 'SECRETARY', 'SECURITY_OFFICER'])
+    created_at: z.union([z.string(), z.date()]), // Accept both string and date
+    role: z.enum(['DISPLACED', 'DELEGATOR', 'MANAGER', 'SECRETARY', 'SECURITY_OFFICER']),
+    image: z.string().nullable()
   })
 })
 
@@ -31,16 +32,41 @@ const SessionSchema = z.object({
 export const getSession = (): { token: string; user: User } | null => {
   try {
     const rawSession = localStorage.getItem(LOCALSTORAGE_SESSION_KEY)
+    console.log("🚀 ~ rawSession:", rawSession)
     if (!rawSession) return null
 
     // Parse the session data from localStorage
     const parsedSession = JSON.parse(rawSession)
+    console.log("🚀 ~ parsedSession:", parsedSession)
 
-    // Validate the session data structure
-    const session = SessionSchema.safeParse(parsedSession)
+    // Extract the relevant data
+    const sessionData = {
+      token: parsedSession.token,
+      user: {
+        id: parsedSession.user.id,
+        name: parsedSession.user.name,
+        email: parsedSession.user.email,
+        phone_number: parsedSession.user.phone_number,
+        created_at: parsedSession.user.created_at,
+        role: parsedSession.user.role,
+        image: parsedSession.user.image || null
+      }
+    }
 
-    // Return the validated session data or null if invalid
-    return session.success ? session.data : null
+    // Validate the data structure
+    const session = SessionSchema.safeParse(sessionData)
+    console.log("🚀 ~ session:", session)
+
+    if (!session.success) return null
+
+    // Transform the validated data to match the expected return type
+    return {
+      token: session.data.token,
+      user: {
+        ...session.data.user,
+        created_at: new Date(session.data.user.created_at)
+      }
+    }
   } catch (error) {
     console.error("Error parsing session:", error)
     return null

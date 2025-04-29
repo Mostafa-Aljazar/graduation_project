@@ -13,3 +13,11 @@ export const AUTH_ROUTES = {
   OTP: '/auth/otp',
   CREATE_NEW_PASSWORD: '/auth/create-new-password',
 } as const;
+
+export const ACTOR_ROUTES = {
+  ACTOR: '/actor',
+  DELEGATE: '/actor/delegate',
+  DISPLACED: '/actor/displaced',
+  MANAGER: '/actor/manager',
+  SECURITY: '/actor/security',
+} as const;

@@ -55,20 +55,20 @@ export default function Header_Links() {
 
   return (
     <>
-      {NAVBAR_LINKS.map((item) => (
+      {NAVBAR_LINKS.map((item, index) => (
         <Link
-          href={item.link}
-          key={item.key}
-          onClick={() => handleLinkClick(item.link)}
+          href={item?.link || ''}
+          key={index}
+          onClick={() => handleLinkClick(item?.link || '')}
         >
           <Text
             fz={18}
             className={cn(
               '!text-primary font-medium',
-              isLinkActive(item.link) && '!font-bold'
+              isLinkActive(item?.link || '') && '!font-bold'
             )}
           >
-            {item.label}
+            {item?.label || ''}
           </Text>
         </Link>
       ))}

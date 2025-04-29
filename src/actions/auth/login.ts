@@ -64,18 +64,18 @@ export const login = async (formData: FormData): Promise<loginResponse> => {
 
         if (response.data) {
             // Store the session in localStorage
-            localStorage.setItem(LOCALSTORAGE_SESSION_KEY, JSON.stringify({
-                token: response.data.token,
-                // TODO: fix this => common type for user
-                user: {
-                    id: response.data.user.id,
-                    name: response.data.user.name,
-                    email: response.data.user.email,
-                    phone_number: response.data.user.phone_number,
-                    created_at: response.data.user.created_at,
-                    role: response.data.user.role
-                }
-            }));
+            // localStorage.setItem(LOCALSTORAGE_SESSION_KEY, JSON.stringify({
+            //     token: response.data.token,
+            //     // TODO: fix this => common type for user
+            //     user: {
+            //         id: response.data.user.id,
+            //         name: response.data.user.name,
+            //         email: response.data.user.email,
+            //         phone_number: response.data.user.phone_number,
+            //         created_at: response.data.user.created_at,
+            //         role: response.data.user.role
+            //     }
+            // }));
 
             return {
                 status: "200",

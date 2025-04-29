@@ -1,12 +1,12 @@
 import React from 'react';
 import { Box, Stack, Text, Divider, Flex } from '@mantine/core';
-import Footer_Form from './Footer_Form';
 import {
   FOOTER_COPYRIGHT,
   FOOTER_DESC,
   FOOTER_TITLE,
 } from '@/content/common/footer';
 import Footer_ContactInfo from './Footer_ContactInfo';
+import Footer_Form from './Footer_Form';
 
 export default function Footer() {
   return (
