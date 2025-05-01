@@ -1,5 +1,5 @@
 import { LOCALSTORAGE_SESSION_KEY } from "@/constants/sessionKey"
-import { AUTH_ROUTES } from "@/content/routes"
+import { AUTH_ROUTES } from "@/constants/routes"
 
 export const logout = () => {
   localStorage.removeItem(LOCALSTORAGE_SESSION_KEY) // remove session from local storage

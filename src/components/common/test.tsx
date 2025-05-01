@@ -1,8 +1,6 @@
 'use client';
-import { AppShell, Burger, Group, Skeleton } from '@mantine/core';
+import { AppShell, Skeleton } from '@mantine/core';
 import { useDisclosure, useHeadroom } from '@mantine/hooks';
-import { ROUTES } from '@/content/routes';
-import { usePathname } from 'next/navigation';
 import Header from './Header/Header';
 import Image from 'next/image';
 import { logo } from '@/assets/common';

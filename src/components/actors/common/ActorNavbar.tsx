@@ -118,7 +118,7 @@ export default function ActorNavbar() {
                 )}
               >
                 <ThemeIcon variant='transparent' className='!text-primary'>
-                  <item.icon size={22} className='!text-dark' />
+                  <item.icon size={20} className='!text-dark' />
                 </ThemeIcon>
 
                 <Text fw={600} fz={20} c={'dark'} ps={15}>

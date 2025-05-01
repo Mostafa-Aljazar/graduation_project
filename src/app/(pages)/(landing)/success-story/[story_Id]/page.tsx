@@ -17,7 +17,6 @@ export default async function Page({
         {/* My Post: {story_Id} */}
         <Success_Story story_Id={story_Id} />
       </Stack>
-      <Footer />
     </>
   );
 }

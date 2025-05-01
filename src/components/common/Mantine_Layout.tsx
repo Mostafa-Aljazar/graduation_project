@@ -5,7 +5,7 @@ import Header from './Header/Header';
 import Footer from './Footer/Footer';
 import Navbar from './Navbar/Navbar';
 import { usePathname } from 'next/navigation';
-import { ACTOR_ROUTES } from '@/content/routes';
+import { ACTOR_ROUTES } from '@/constants/routes';
 export default function Mantine_Layout({
   children,
 }: Readonly<{

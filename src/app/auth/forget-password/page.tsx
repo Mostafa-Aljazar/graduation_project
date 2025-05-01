@@ -12,7 +12,7 @@ import {
 import { useForm, zodResolver } from '@mantine/form';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { AUTH_ROUTES } from '@/content/routes';
+import { AUTH_ROUTES } from '@/constants/routes';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { forgetPassword } from '@/actions/auth/forgetPassword';
@@ -21,7 +21,7 @@ import { toFormData } from '@/utils/objectToFormData';
 import {
   forgetPasswordSchema,
   forgetPasswordType,
-} from '@/validation/forgetPasswordSchema';
+} from '@/validation/auth/forgetPasswordSchema';
 
 export default function Forget_Password() {
   const form = useForm<forgetPasswordType>({

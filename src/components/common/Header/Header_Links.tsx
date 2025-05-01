@@ -1,6 +1,6 @@
 'use client';
 import { NAVBAR_LINKS } from '@/content/common/header';
-import { ROUTES } from '@/content/routes';
+import { LANDING_ROUTES } from '@/constants/routes';
 import { cn } from '@/utils/cn';
 import { Text } from '@mantine/core';
 import Link from 'next/link';
@@ -23,7 +23,7 @@ export default function Header_Links() {
   }, []);
 
   useEffect(() => {
-    if (pathname !== ROUTES.HOME || !window.location.hash) {
+    if (pathname !== LANDING_ROUTES.HOME || !window.location.hash) {
       setCurrentHash('');
     }
   }, [pathname]);
@@ -33,7 +33,7 @@ export default function Header_Links() {
     const linkHash = isAnchorLink ? link.slice(1) : '';
 
     if (isAnchorLink) {
-      return pathname === ROUTES.HOME && currentHash === linkHash;
+      return pathname === LANDING_ROUTES.HOME && currentHash === linkHash;
     }
 
     // Check for exact match or if pathname starts with the link (for blog routes)

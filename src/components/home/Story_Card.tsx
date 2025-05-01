@@ -1,5 +1,5 @@
 import successStoryResponse from '@/@types/landing/successStoryResponse.type';
-import { ROUTES } from '@/content/routes';
+import { LANDING_ROUTES } from '@/constants/routes';
 import getLimitedWords from '@/utils/getLimitedWords';
 import { Flex, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
@@ -10,7 +10,7 @@ type Props = successStoryResponse;
 
 export default function Story_Card(story: Props) {
   return (
-    <Link href={`${ROUTES.SUCCESS_STORY}/${story.id}`}>
+    <Link href={`${LANDING_ROUTES.SUCCESS_STORY}/${story.id}`}>
       <Flex
         direction={'row'}
         wrap='nowrap'

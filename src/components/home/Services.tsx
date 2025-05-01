@@ -41,7 +41,7 @@ export default function Services() {
               bg={'white'}
               p={10}
               w={{ base: '100%', xs: 350, md: '100%' }}
-              className='!shadow-xs rounded-sm'
+              className='!shadow-xs hover:!shadow-md rounded-sm !transition-all !duration-300 !ease-in-out'
             >
               <ThemeIcon variant='transparent' className='!text-primary'>
                 <stat.icon size={30} />

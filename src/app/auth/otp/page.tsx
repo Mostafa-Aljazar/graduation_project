@@ -20,8 +20,8 @@ import { toFormData } from '@/utils/objectToFormData';
 import verifyOtpResponse from '@/@types/auth/verifyOtpResponse.type';
 import { forgetPassword } from '@/actions/auth/forgetPassword';
 import forgetPasswordResponse from '@/@types/auth/forgetPasswordResponse.type';
-import { AUTH_ROUTES } from '@/content/routes';
-import { otpSchema, otpType } from '@/validation/otpSchema';
+import { AUTH_ROUTES } from '@/constants/routes';
+import { otpSchema, otpType } from '@/validation/auth/otpSchema';
 
 export default function OTP() {
   return (

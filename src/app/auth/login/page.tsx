@@ -12,9 +12,9 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import { AUTH_ROUTES, ROUTES } from '@/content/routes';
+import { AUTH_ROUTES, LANDING_ROUTES } from '@/constants/routes';
 import Link from 'next/link';
-import { loginSchema, loginType } from '@/validation/loginSchema';
+import { loginSchema, loginType } from '@/validation/auth/loginSchema';
 import { useMutation } from '@tanstack/react-query';
 import { login } from '@/actions/auth/login';
 import { loginResponse } from '@/@types/auth/loginResponse.type';
@@ -55,9 +55,9 @@ export default function Login() {
 
         // TODO: change route to user profile
         if (data.user.role === 'DISPLACED') {
-          router.push(ROUTES.HOME);
+          router.push(LANDING_ROUTES.HOME);
         } else {
-          router.push(ROUTES.HOME);
+          router.push(LANDING_ROUTES.HOME);
         }
         return;
       } else {

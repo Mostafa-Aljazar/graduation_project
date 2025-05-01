@@ -4,7 +4,7 @@ import { Handshake } from "lucide-react";
 import { ShieldUser, Database } from "lucide-react";
 import { Users } from "lucide-react";
 import { User } from "lucide-react";
-import { MANAGER_ROUTES } from "../routes";
+import { MANAGER_ROUTES } from "../../constants/routes";
 
 
 export const managerNavLinks = [

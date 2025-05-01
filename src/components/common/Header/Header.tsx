@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { logo } from '@/assets/common';
 import Header_Links from './Header_Links';
 import Link from 'next/link';
-import { ACTOR_ROUTES, AUTH_ROUTES } from '@/content/routes';
+import { ACTOR_ROUTES, AUTH_ROUTES } from '@/constants/routes';
 import Header_Drawer from './Header_Drawer';
 import { usePathname } from 'next/navigation';
 import { logout } from '@/utils/auth/logout';
