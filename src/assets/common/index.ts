@@ -1,2 +1,4 @@
 import logo from './logo.png';
-export { logo, };
+import man from './man.svg';
+import woman from './woman.svg';
+export { logo, man, woman };

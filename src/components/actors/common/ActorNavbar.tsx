@@ -1,16 +1,8 @@
 'use client';
-import {
-  Box,
-  Button,
-  Group,
-  Stack,
-  Text,
-  ThemeIcon,
-  UnstyledButton,
-} from '@mantine/core';
+import { Box, Button, Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import React from 'react';
 import Image from 'next/image';
-import { logo, man } from '@/assets/common';
+import { man } from '@/assets/common';
 import {
   Database,
   FileChartLine,
@@ -26,20 +18,10 @@ import { logout } from '@/utils/auth/logout';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/utils/cn';
+import { managerNavLinks } from '@/content/manager';
 
-export default function Navbar() {
+export default function ActorNavbar() {
   const pathname = usePathname();
-
-  const navLinks = [
-    { label: 'الملف الشخصي', href: '/actor/manager', icon: User },
-    { label: 'بيانات النازحين', href: '/', icon: Users },
-    { label: 'بيانات المناديب', href: '/', icon: Database },
-    { label: 'بيانات الأمن', href: '/', icon: ShieldUser },
-    { label: 'إدارة المساعدات', href: '/', icon: Handshake },
-    { label: 'الشكاوي', href: '/', icon: Speech },
-    { label: 'التقارير', href: '/', icon: FileChartLine },
-    { label: 'الإعلانات و المدونات', href: '/', icon: Newspaper },
-  ];
 
   return (
     <Stack p={10} w={'100%'} h='100%' justify='flex-start' align='center'>
@@ -115,7 +97,7 @@ export default function Navbar() {
       </Stack>
       {/* Navigation Links */}
       <Box w={'100%'} className='!shadow-xl !rounded-[20px] !overflow-hidden'>
-        {navLinks.map((item, index) => {
+        {managerNavLinks.map((item, index) => {
           const isActive = pathname === item.href;
 
           return (

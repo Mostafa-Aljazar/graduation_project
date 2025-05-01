@@ -1,5 +1,4 @@
-import Mantine_Layout from '@/components/common/Mantine_Layout';
-import Navbar from '@/components/common/Navbar/Navbar';
+import ActorNavbar from '@/components/actors/common/ActorNavbar';
 import { Group, Stack } from '@mantine/core';
 import React from 'react';
 
@@ -10,8 +9,15 @@ export default function Actor_Layout({
 }) {
   return (
     <Group wrap='nowrap' gap={0}>
-      <Stack w={300} visibleFrom='md'>
-        <Navbar />
+      <Stack
+        pt={60}
+        w={250}
+        mih='100vh'
+        visibleFrom='md'
+        justify='flex-start'
+        align='center'
+      >
+        <ActorNavbar />
       </Stack>
       <>{children}</>
     </Group>

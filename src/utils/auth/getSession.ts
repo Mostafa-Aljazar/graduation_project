@@ -32,12 +32,12 @@ const SessionSchema = z.object({
 export const getSession = (): { token: string; user: User } | null => {
   try {
     const rawSession = localStorage.getItem(LOCALSTORAGE_SESSION_KEY)
-    console.log("🚀 ~ rawSession:", rawSession)
+    // console.log("🚀 ~ rawSession:", rawSession)
     if (!rawSession) return null
 
     // Parse the session data from localStorage
     const parsedSession = JSON.parse(rawSession)
-    console.log("🚀 ~ parsedSession:", parsedSession)
+    // console.log("🚀 ~ parsedSession:", parsedSession)
 
     // Extract the relevant data
     const sessionData = {
@@ -55,7 +55,7 @@ export const getSession = (): { token: string; user: User } | null => {
 
     // Validate the data structure
     const session = SessionSchema.safeParse(sessionData)
-    console.log("🚀 ~ session:", session)
+    // console.log("🚀 ~ session:", session)
 
     if (!session.success) return null
 

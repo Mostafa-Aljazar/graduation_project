@@ -33,7 +33,6 @@ export default function Mantine_Layout({
       </AppShell.Navbar> */}
 
       <AppShell.Main
-        pt={60}
         flex={1}
         w={'100%'}
         h={'100%'}

@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function page() {
+export default function Profile() {
   return (
-    <div className='flex flex-col gap-4 bg-amber-400 w-full h-screen'>
-      Manager
+    <div className='flex flex-col gap-4 bg-amber-400 pt-[60px] w-full min-h-screen'>
+      Manager Profile's
     </div>
   );
 }
