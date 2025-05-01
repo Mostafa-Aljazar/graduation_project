@@ -3,7 +3,7 @@ import { StaticImageData } from "next/image";
 
 export interface loginResponse {
     status: string
-    message: string
+    message?: string
     token: string
     user: User
     error?: string;

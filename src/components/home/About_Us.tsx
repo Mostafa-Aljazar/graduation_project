@@ -3,7 +3,7 @@ import {
   ABOUT_US_DESCRIPTION,
   ABOUT_US_OUR_MISSION,
   ABOUT_US_TITLE,
-} from '@/content/home';
+} from '@/content/landing/home';
 import { Flex, Group, Stack, Text, Title } from '@mantine/core';
 import Image from 'next/image';
 import React from 'react';

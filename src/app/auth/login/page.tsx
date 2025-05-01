@@ -12,7 +12,13 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import { AUTH_ROUTES, LANDING_ROUTES } from '@/constants/routes';
+import {
+  AUTH_ROUTES,
+  DELEGATE_ROUTES,
+  DISPLACED_ROUTES,
+  LANDING_ROUTES,
+  MANAGER_ROUTES,
+} from '@/constants/routes';
 import Link from 'next/link';
 import { loginSchema, loginType } from '@/validation/auth/loginSchema';
 import { useMutation } from '@tanstack/react-query';
@@ -55,7 +61,12 @@ export default function Login() {
 
         // TODO: change route to user profile
         if (data.user.role === 'DISPLACED') {
-          router.push(LANDING_ROUTES.HOME);
+          router.push(DISPLACED_ROUTES.PROFILE);
+        } else if (data.user.role === 'MANAGER') {
+          router.push(MANAGER_ROUTES.PROFILE);
+        }
+        if (data.user.role === 'DELEGATE') {
+          router.push(DELEGATE_ROUTES.PROFILE);
         } else {
           router.push(LANDING_ROUTES.HOME);
         }
@@ -208,7 +219,7 @@ export default function Login() {
               className='!text-primary hover:!cursor-pointer'
               onClick={() =>
                 userType == USER_TYPE.DISPLACED
-                  ? setUserType(USER_TYPE.DELEGATOR) //DELEGATOR | MANAGER | SECRETARY | SECURITY_OFFICER
+                  ? setUserType(USER_TYPE.DELEGATE) //DELEGATE | MANAGER | SECRETARY | SECURITY_OFFICER
                   : setUserType(USER_TYPE.DISPLACED)
               }
             >

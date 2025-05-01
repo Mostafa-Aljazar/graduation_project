@@ -4,7 +4,7 @@ import { Handshake } from "lucide-react";
 import { ShieldUser, Database } from "lucide-react";
 import { Users } from "lucide-react";
 import { User } from "lucide-react";
-import { MANAGER_ROUTES } from "../../constants/routes";
+import { MANAGER_ROUTES } from "../../../constants/routes";
 
 
 export const managerNavLinks = [
@@ -27,6 +27,6 @@ export const managerNavLinks = [
     },
     { label: 'الشكاوي', href: MANAGER_ROUTES.COMPLAINTS, icon: Speech },
     { label: 'التقارير', href: MANAGER_ROUTES.REPORTS, icon: FileChartLine },
-    { label: 'الإعلانات و المدونات', href: MANAGER_ROUTES.ADVERTISEMENTS_BLOGS, icon: Newspaper },
+    { label: 'الإعلانات و المدونات', href: MANAGER_ROUTES.ADS_BLOGS, icon: Newspaper },
 ];
 

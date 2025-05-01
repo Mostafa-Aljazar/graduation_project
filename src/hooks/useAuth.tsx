@@ -6,7 +6,7 @@ import { User } from '@/@types/auth/loginResponse.type';
 export default function useAuth() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isManager, setIsManager] = useState(false);
-  const [isDelegator, setIsDelegator] = useState(false);
+  const [isDelegate, setIsDelegate] = useState(false);
   const [isDisplaced, setIsDisplaced] = useState(false);
   const [isSecretary, setIsSecretary] = useState(false);
   const [isSecurityOfficer, setIsSecurityOfficer] = useState(false);
@@ -17,7 +17,7 @@ export default function useAuth() {
     if (session) {
       setIsAuthenticated(!!session.token);
       setIsManager(session.user.role === 'MANAGER');
-      setIsDelegator(session.user.role === 'DELEGATOR');
+      setIsDelegate(session.user.role === 'DELEGATE');
       setIsDisplaced(session.user.role === 'DISPLACED');
       setIsSecretary(session.user.role === 'SECRETARY');
       setIsSecurityOfficer(session.user.role === 'SECURITY_OFFICER');
@@ -28,7 +28,7 @@ export default function useAuth() {
   return {
     isAuthenticated,
     isManager,
-    isDelegator,
+    isDelegate,
     isDisplaced,
     isSecretary,
     isSecurityOfficer,

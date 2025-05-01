@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image'; // Assuming Next.js Image component
 import { home_tent } from '@/assets/home';
 import { Box, Flex, SimpleGrid, Stack, Text, ThemeIcon } from '@mantine/core';
-import { SERVICES_Data, SERVICES_TITLE } from '@/content/home';
+import { SERVICES_Data, SERVICES_TITLE } from '@/content/landing/home';
 
 export default function Services() {
   return (

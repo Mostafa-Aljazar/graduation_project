@@ -5,7 +5,11 @@ import Hero_Section from '@/components/home/Hero_Section';
 import Services from '@/components/home/Services';
 import Statistics from '@/components/home/Statistics';
 import Success_Stories_Landing from '@/components/home/Success_Stories_Landing';
-import { HERO_DESCRIPTION, HERO_IMAGES, HERO_TITLE } from '@/content/home';
+import {
+  HERO_DESCRIPTION,
+  HERO_IMAGES,
+  HERO_TITLE,
+} from '@/content/landing/home';
 
 export default function Home() {
   return (

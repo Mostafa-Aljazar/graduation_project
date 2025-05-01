@@ -77,9 +77,9 @@ export const MANAGER_ROUTES = {
   PROFILE: '/actor/manager',
   REPORTS: '/actor/manager/reports',
 
-  // ADVERTISEMENTS_BLOGS
-  ADVERTISEMENTS_BLOGS: '/actor/manager/advertisements-blogs',
-  ADD_ADVERTISEMENTS_BLOGS: '/actor/manager/advertisements-blogs/add',
+  // ADS_BLOGS
+  ADS_BLOGS: '/actor/manager/ads-blogs',
+  ADD_ADS_BLOGS: '/actor/manager/ads-blogs/add',
 
   // AIDS_MANAGEMENT
   AIDS_MANAGEMENT: '/actor/manager/aids-management',

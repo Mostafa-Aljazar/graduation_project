@@ -3,25 +3,29 @@ import { Box, Button, Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import React from 'react';
 import Image from 'next/image';
 import { man } from '@/assets/common';
-import {
-  Database,
-  FileChartLine,
-  Handshake,
-  LogOut,
-  Newspaper,
-  ShieldUser,
-  Speech,
-  User,
-  Users,
-} from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { logout } from '@/utils/auth/logout';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/utils/cn';
-import { managerNavLinks } from '@/content/manager';
+import { managerNavLinks } from '@/content/actor/manager';
+import useAuth from '@/hooks/useAuth';
+import { delegateNavLinks } from '@/content/actor/delegate';
+import { securityNavLinks } from '@/content/actor/security';
+import { displacedNavLinks } from '@/content/actor/displaced';
 
 export default function ActorNavbar() {
   const pathname = usePathname();
+
+  const { user, isDelegate, isDisplaced, isSecretary, isManager } = useAuth();
+
+  const navLinks = isManager
+    ? managerNavLinks
+    : isDelegate
+    ? delegateNavLinks
+    : isSecretary
+    ? securityNavLinks
+    : displacedNavLinks;
 
   return (
     <Stack p={10} w={'100%'} h='100%' justify='flex-start' align='center'>
@@ -58,18 +62,31 @@ export default function ActorNavbar() {
           </Box>
         </Box>
 
-        <Group justify='center' align='baseline' px={5} mt={30} wrap='nowrap'>
+        <Group
+          justify='center'
+          align='baseline'
+          gap={3}
+          px={5}
+          mt={30}
+          wrap='nowrap'
+        >
           <Text
             fw={500}
-            fz={20}
+            fz={18}
             c={'white'}
             className='!text-primary !text-nowrap'
           >
-            المدير :
+            {isManager
+              ? 'المدير :'
+              : isDelegate
+              ? 'المندوب :'
+              : isSecretary
+              ? 'الأمن :'
+              : 'النازح :'}
           </Text>
 
-          <Text fw={500} fz={20} c={'white'} className='!text-primary'>
-            مصطفي الجزار
+          <Text fw={500} fz={18} c={'white'} className='!text-primary'>
+            {user?.name ?? 'no name'}
           </Text>
         </Group>
         <Text
@@ -78,8 +95,9 @@ export default function ActorNavbar() {
           c={'white'}
           ta={'center'}
           className='!text-primary'
+          dir='ltr'
         >
-          960128155
+          {user?.phone_number ?? 'no phone number'}
         </Text>
 
         <Button
@@ -97,7 +115,7 @@ export default function ActorNavbar() {
       </Stack>
       {/* Navigation Links */}
       <Box w={'100%'} className='!shadow-xl !rounded-[20px] !overflow-hidden'>
-        {managerNavLinks.map((item, index) => {
+        {navLinks.map((item, index) => {
           const isActive = pathname === item.href;
 
           return (
