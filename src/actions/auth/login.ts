@@ -6,6 +6,11 @@ import { LOCALSTORAGE_SESSION_KEY } from "@/constants/sessionKey";
 
 export const login = async (formData: FormData): Promise<loginResponse> => {
 
+    // Get form data values
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const userType = formData.get("userType");
+
     //FIXME: remove this => just as  an example
     const FakeData: loginResponse = {
         status: "200",
@@ -17,7 +22,7 @@ export const login = async (formData: FormData): Promise<loginResponse> => {
             email: formData.get("email") as string,
             phone_number: "+1234567890",
             created_at: new Date("2024-01-20T12:00:00.000Z"),
-            role: "DISPLACED",
+            role: userType as "DISPLACED" | "DELEGATE" | "MANAGER" | "SECURITY" | "SECURITY_OFFICER",
             image: null
         },
         error: "Error message in Arabic"

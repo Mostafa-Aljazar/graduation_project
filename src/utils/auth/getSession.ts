@@ -12,7 +12,7 @@ const SessionSchema = z.object({
     email: z.string().email(),
     phone_number: z.string(),
     created_at: z.union([z.string(), z.date()]), // Accept both string and date
-    role: z.enum(['DISPLACED', 'DELEGATE', 'MANAGER', 'SECRETARY', 'SECURITY_OFFICER']),
+    role: z.enum(['DISPLACED', 'DELEGATE', 'MANAGER', 'SECURITY', 'SECURITY_OFFICER']),
     image: z.string().nullable()
   })
 })
