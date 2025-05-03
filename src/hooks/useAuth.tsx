@@ -8,7 +8,7 @@ export default function useAuth() {
   const [isManager, setIsManager] = useState(false);
   const [isDelegate, setIsDelegate] = useState(false);
   const [isDisplaced, setIsDisplaced] = useState(false);
-  const [isSecretary, setIsSecretary] = useState(false);
+  const [isSecurity, setIsSecurity] = useState(false);
   const [isSecurityOfficer, setIsSecurityOfficer] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
@@ -19,7 +19,7 @@ export default function useAuth() {
       setIsManager(session.user.role === 'MANAGER');
       setIsDelegate(session.user.role === 'DELEGATE');
       setIsDisplaced(session.user.role === 'DISPLACED');
-      setIsSecretary(session.user.role === 'SECRETARY');
+      setIsSecurity(session.user.role === 'SECURITY');
       setIsSecurityOfficer(session.user.role === 'SECURITY_OFFICER');
       setUser(session.user);
     }
@@ -30,7 +30,7 @@ export default function useAuth() {
     isManager,
     isDelegate,
     isDisplaced,
-    isSecretary,
+    isSecurity,
     isSecurityOfficer,
     user,
   };

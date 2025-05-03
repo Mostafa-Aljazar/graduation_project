@@ -17,15 +17,22 @@ import { displacedNavLinks } from '@/content/actor/displaced';
 export default function ActorNavbar() {
   const pathname = usePathname();
 
-  const { user, isDelegate, isDisplaced, isSecretary, isManager } = useAuth();
+  const {
+    user,
+    isDelegate,
+    isDisplaced,
+    isSecurity,
+    isSecurityOfficer,
+    isManager,
+  } = useAuth();
 
   const navLinks = isManager
     ? managerNavLinks
     : isDelegate
     ? delegateNavLinks
-    : isSecretary
-    ? securityNavLinks
-    : displacedNavLinks;
+    : isDisplaced
+    ? displacedNavLinks
+    : securityNavLinks;
 
   return (
     <Stack p={10} w={'100%'} h='100%' justify='flex-start' align='center'>
@@ -80,18 +87,20 @@ export default function ActorNavbar() {
               ? 'المدير :'
               : isDelegate
               ? 'المندوب :'
-              : isSecretary
+              : isSecurity
               ? 'الأمن :'
+              : isSecurityOfficer
+              ? 'مسؤول الأمن :'
               : 'النازح :'}
           </Text>
 
-          <Text fw={500} fz={18} c={'white'} className='!text-primary'>
+          <Text fw={400} fz={16} c={'white'} className='!text-primary'>
             {user?.name ?? 'no name'}
           </Text>
         </Group>
         <Text
-          fw={500}
-          fz={16}
+          fw={400}
+          fz={14}
           c={'white'}
           ta={'center'}
           className='!text-primary'
@@ -125,6 +134,7 @@ export default function ActorNavbar() {
                 size='xs'
                 w={'100%'}
                 h={45}
+                px={5}
                 ta={'start'}
                 className={cn(
                   // Using cn here
@@ -139,7 +149,7 @@ export default function ActorNavbar() {
                   <item.icon size={20} className='!text-dark' />
                 </ThemeIcon>
 
-                <Text fw={600} fz={20} c={'dark'} ps={15}>
+                <Text fw={600} fz={18} c={'dark'} ps={10}>
                   {item.label}
                 </Text>
               </Button>

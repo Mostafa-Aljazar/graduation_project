@@ -10,3 +10,9 @@ export const displacedNavLinks = [
     { label: 'الشكاوي', href: DISPLACED_ROUTES.COMPLAINTS, icon: Speech },
 ];
 
+//what appear when manger or delegate or security open displaced pages
+// export const guestDisplacedNavLinks = [
+//     { label: 'الملف الشخصي', href: DISPLACED_ROUTES.PROFILE, icon: User },
+//     { label: 'الإعانات المستلمة', href: DISPLACED_ROUTES.RECEIVED_AIDS, icon: Handshake },
+//     { label: 'الشكاوي', href: DISPLACED_ROUTES.COMPLAINTS, icon: Speech },
+// ];
