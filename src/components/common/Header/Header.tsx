@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { logo } from '@/assets/common';
 import Header_Links from './Header_Links';
 import Link from 'next/link';
-import { ACTOR_ROUTES, AUTH_ROUTES } from '@/constants/routes';
+import { AUTH_ROUTES } from '@/constants/routes';
 import Header_Drawer from './Header_Drawer';
 import { usePathname } from 'next/navigation';
 import { logout } from '@/utils/auth/logout';
@@ -17,7 +17,7 @@ type Props = {
 
 export default function Header({ opened, toggle }: Props) {
   const pathname = usePathname();
-  const isActor = pathname.includes(ACTOR_ROUTES.ACTOR);
+  const isActor = pathname.includes('actor');
   const { isAuthenticated } = useAuth();
 
   return (

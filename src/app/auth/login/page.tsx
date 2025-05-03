@@ -13,7 +13,13 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import { ACTOR_ROUTES, AUTH_ROUTES } from '@/constants/routes';
+import {
+  AUTH_ROUTES,
+  DELEGATE_ROUTES_fUNC,
+  DISPLACED_ROUTES_fUNC,
+  MANAGER_ROUTES_fUNC,
+  SECURITY_ROUTES_fUNC,
+} from '@/constants/routes';
 import Link from 'next/link';
 import { loginSchema, loginType } from '@/validation/auth/loginSchema';
 import { useMutation } from '@tanstack/react-query';
@@ -55,13 +61,13 @@ export default function Login() {
 
         // TODO: change route to user profile
         if (data.user.role === 'DISPLACED') {
-          router.push(ACTOR_ROUTES.DISPLACED);
+          router.push(DISPLACED_ROUTES_fUNC(data.user.id).PROFILE);
         } else if (data.user.role === 'MANAGER') {
-          router.push(ACTOR_ROUTES.MANAGER);
+          router.push(MANAGER_ROUTES_fUNC(data.user.id).PROFILE);
         } else if (data.user.role === 'DELEGATE') {
-          router.push(ACTOR_ROUTES.DELEGATE);
+          router.push(DELEGATE_ROUTES_fUNC(data.user.id).PROFILE);
         } else if (data.user.role === 'SECURITY') {
-          router.push(ACTOR_ROUTES.SECURITY);
+          router.push(SECURITY_ROUTES_fUNC(data.user.id).PROFILE);
         }
         return;
       } else {

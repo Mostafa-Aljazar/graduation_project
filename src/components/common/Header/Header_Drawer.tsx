@@ -1,13 +1,18 @@
+'use client';
 import { Stack } from '@mantine/core';
 import { Drawer } from '@mantine/core';
 import React from 'react';
 import Header_Links from './Header_Links';
+import { usePathname } from 'next/navigation';
+import ActorNavbar from '@/components/actors/common/ActorNavbar';
 
 type Props = {
   opened: boolean;
   toggle: () => void;
 };
 export default function Header_Drawer({ opened, toggle }: Props) {
+  const pathname = usePathname();
+
   return (
     <Drawer
       position='left'
@@ -19,7 +24,8 @@ export default function Header_Drawer({ opened, toggle }: Props) {
       hiddenFrom='md'
     >
       <Stack h='100%' px='md'>
-        <Header_Links />
+        {/* In actor pages  or In landing page */}
+        {pathname.includes('actor') ? <ActorNavbar /> : <Header_Links />}
       </Stack>
     </Drawer>
   );

@@ -11,7 +11,7 @@ export default function Actor_Layout({
     <Group wrap='nowrap' gap={0}>
       <Stack
         pt={60}
-        w={250}
+        w={{ md: 200, lg: 250 }}
         mih='100vh'
         visibleFrom='md'
         justify='flex-start'
