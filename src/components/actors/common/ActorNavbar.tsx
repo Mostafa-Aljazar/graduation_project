@@ -32,7 +32,7 @@ export default function ActorNavbar() {
     isDisplaced,
     isSecurity,
     isSecurityOfficer,
-    isManager,
+    // isManager,
   } = useAuth();
 
   // Determine navigation links based on user role and pathname
@@ -156,13 +156,14 @@ export default function ActorNavbar() {
       <Box w='100%' className='!shadow-xl !rounded-[20px] !overflow-hidden'>
         <Stack gap={0}>
           {navLinks.map((link, index) => {
+            const isActive = pathname.includes(link.href);
             return (
               <Link
                 key={index}
                 href={link.href}
                 className={cn(
                   'flex items-center gap-2 p-4 text-dark hover:bg-gray-200 transition-colors !border-0 !border-gray-100 !border-b-1',
-                  pathname.includes(link.href) &&
+                  isActive &&
                     '!bg-gradient-to-l !from-primary !to-white  !font-semibold  '
                 )}
               >
