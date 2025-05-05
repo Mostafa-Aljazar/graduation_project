@@ -8,18 +8,19 @@ export default function Actor_Layout({
   children: React.ReactNode;
 }) {
   return (
-    <Group wrap='nowrap' gap={0}>
+    <Group wrap='nowrap' gap={0} justify='start' align='start' pt={60}>
       <Stack
-        pt={60}
-        w={{ md: 200, lg: 250 }}
-        mih='100vh'
+        w={250}
+        // mih='100vh'
         visibleFrom='md'
         justify='flex-start'
         align='center'
       >
         <ActorNavbar />
       </Stack>
-      <>{children}</>
+      <Stack mih='100vh' w={'100%'} h={'100%'} justify='start'>
+        {children}
+      </Stack>
     </Group>
   );
 }

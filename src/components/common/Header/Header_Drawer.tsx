@@ -13,6 +13,7 @@ type Props = {
 export default function Header_Drawer({ opened, toggle }: Props) {
   const pathname = usePathname();
 
+  const isActorPage = pathname.includes('actor');
   return (
     <Drawer
       position='left'
@@ -20,12 +21,12 @@ export default function Header_Drawer({ opened, toggle }: Props) {
       onClose={toggle}
       size={300}
       overlayProps={{ backgroundOpacity: 0.5, blur: 4 }}
-      dir='ltr'
+      dir='rtl'
       hiddenFrom='md'
     >
       <Stack h='100%' px='md'>
         {/* In actor pages  or In landing page */}
-        {pathname.includes('actor') ? <ActorNavbar /> : <Header_Links />}
+        {isActorPage ? <ActorNavbar /> : <Header_Links />}
       </Stack>
     </Drawer>
   );

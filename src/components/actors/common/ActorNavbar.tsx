@@ -25,7 +25,7 @@ import {
 
 export default function ActorNavbar() {
   const pathname = usePathname();
-  console.log('🚀 ~ ActorNavbar ~ pathname:', pathname);
+  // console.log('🚀 ~ ActorNavbar ~ pathname:', pathname);
   const {
     user,
     isDelegate,
@@ -67,7 +67,13 @@ export default function ActorNavbar() {
   const navLinks = getNavLinks();
 
   return (
-    <Stack p={10} w='100%' h='100%' justify='flex-start' align='center'>
+    <Stack
+      p={{ base: 5, md: 10 }}
+      w='100%'
+      h='100%'
+      justify='flex-start'
+      align='center'
+    >
       {/* User Profile Section */}
       <Stack
         w='100%'
@@ -162,7 +168,7 @@ export default function ActorNavbar() {
                 key={index}
                 href={link.href}
                 className={cn(
-                  'flex items-center gap-2 p-4 text-dark hover:bg-gray-200 transition-colors !border-0 !border-gray-100 !border-b-1',
+                  'flex items-center gap-2 px-2 py-4   text-dark hover:bg-gray-200 transition-colors !border-0 !border-gray-100 !border-b-1',
                   isActive &&
                     '!bg-gradient-to-l !from-primary !to-white  !font-semibold  '
                 )}
