@@ -9,8 +9,10 @@ export const managerProfileSchema = z.object({
         .min(2, { message: 'الاسم يجب أن يحتوي على 2 أحرف على الأقل' }),
     idNumber: z
         .number({ invalid_type_error: 'رقم الهوية يجب أن يكون رقمًا' })
-        .int({ message: 'رقم الهوية يجب أن يكون عددًا صحيحًا' })
-        .positive({ message: 'رقم الهوية يجب أن يكون موجبًا' }),
+        .refine(
+            (val) => val.toString().length === 9,
+            { message: 'رقم الهوية يجب أن يتكون من 9 أرقام بالضبط' }
+        ),
     gender: z.enum(['male', 'female'], { message: 'يجب اختيار الجنس' }),
     maritalStatus: z.enum(['single', 'married', 'divorced', 'widowed'], {
         message: 'يجب اختيار الحالة الاجتماعية',
@@ -24,12 +26,13 @@ export const managerProfileSchema = z.object({
     birthDate: z.date().nullable(), // Nullable and optional
     mobileNumber: z
         .string({ required_error: 'رقم الجوال مطلوب' })
-        .refine(isValidPhoneNumber, { message: 'رقم الجوال غير صالح' }) // Use imported isValidPhoneNumber
+        .min(1, { message: 'رقم الجوال مطلوب' })
+        .refine(isValidPhoneNumber, { message: 'رقم الجوال غير صالح' })
         .transform((val) => (val === '' ? undefined : val)),
     alternativeNumber: z
         .string({ required_error: 'رقم الجوال مطلوب' })
         .refine(isValidPhoneNumber, { message: 'رقم بديل غير صالح' })
-        .transform((val) => (val === '' ? undefined : val)).optional(),
+        .transform((val) => (val === '' ? undefined : val)),
 
 });
 

@@ -15,7 +15,7 @@ export const Custom_Phone_Input = forwardRef<
     label={label}
     ref={ref}
     value={value}
-    onChange={(event) => onChange?.(event.currentTarget.value)}
+    onChange={(event) => onChange?.(event.target.value)}
     size='sm'
     w='100%'
     classNames={{

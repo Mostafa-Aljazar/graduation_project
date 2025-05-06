@@ -4,16 +4,14 @@ import {
   ActionIcon,
   Box,
   Button,
-  Flex,
+  LoadingOverlay,
   NativeSelect,
   NumberInput,
-  // DateInput,
   SimpleGrid,
   Stack,
   Text,
   TextInput,
 } from '@mantine/core';
-
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { useForm, zodResolver } from '@mantine/form';
@@ -31,11 +29,79 @@ import { handleUploadMedia } from '@/utils/uploadthing/handleUploadMedia';
 import { notifications } from '@mantine/notifications';
 import Upload_Media from '@/components/actors/common/upload-files/Upload_Media';
 import Image from 'next/image';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { updateProfile } from '@/actions/actors/manager/updateProfileInfo';
+import { getProfile } from '@/actions/actors/manager/getProfileInfo';
+import { ProfileResponse } from '@/@types/actors/manager/profile/profileResponse.type';
+import { toFormData } from '@/utils/objectToFormData';
 
 export default function Profile() {
   const { startUpload } = useUploadThing('mediaUploader');
   const [avatarImage, setAvatarImage] = useState<File | string | null>(man.src);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  // Form setup
+  const form = useForm<managerProfileType>({
+    mode: 'uncontrolled',
+    initialValues: {
+      name: '',
+      idNumber: 0,
+      gender: 'male',
+      maritalStatus: 'single',
+      nationality: '',
+      email: '',
+      birthDate: new Date(),
+      mobileNumber: '',
+      alternativeNumber: '',
+    },
+    validate: zodResolver(managerProfileSchema),
+    validateInputOnChange: true, // validate Inputs On Change
+  });
+
+  // Fetch initial profile data
+  const { data: profileData, isLoading } = useQuery<ProfileResponse>({
+    queryKey: ['profile'],
+    queryFn: getProfile,
+  });
+
+  // Handle profile data and errors
+  useEffect(() => {
+    if (profileData && profileData.status === '200' && profileData.user) {
+      setAvatarImage(profileData.user.avatar || man.src);
+      form.setFieldValue('name', profileData.user.name);
+      form.setFieldValue('idNumber', profileData.user.idNumber);
+      form.setFieldValue('gender', profileData.user.gender);
+      form.setFieldValue('maritalStatus', profileData.user.maritalStatus);
+      form.setFieldValue('nationality', profileData.user.nationality);
+      form.setFieldValue('email', profileData.user.email);
+      form.setFieldValue('birthDate', profileData.user.birthDate || null);
+      form.setFieldValue('mobileNumber', profileData.user.mobileNumber);
+      form.setFieldValue(
+        'alternativeNumber',
+        profileData.user.alternativeNumber || ''
+      );
+    }
+    // if return error, show not
+    if (profileData && profileData.status !== '200') {
+      const errorMessage =
+        profileData?.error || 'فشل في تحميل بيانات الملف الشخصي';
+      notifications.show({
+        title: 'خطأ',
+        message: errorMessage,
+        color: 'red',
+        position: 'top-left',
+        withBorder: true,
+      });
+    }
+  }, [profileData]);
+
+  // Clear errors when entering edit mode
+  useEffect(() => {
+    if (isEditMode) {
+      form.clearErrors();
+    }
+  }, [isEditMode]);
 
   // Clean up URL.createObjectURL to prevent memory leaks
   useEffect(() => {
@@ -45,19 +111,64 @@ export default function Profile() {
     }
   }, [avatarImage]);
 
-  // handel upload avatar image
+  // Mutation for updating profile
+  const profileMutation = useMutation<ProfileResponse, Error, FormData>({
+    mutationFn: updateProfile,
+    onSuccess: (data) => {
+      setIsEditMode(false);
+
+      if (Number(data.status) === 200) {
+        notifications.show({
+          title: 'تم التحديث',
+          message: 'تم تحديث الملف الشخصي بنجاح',
+          color: 'grape',
+          position: 'top-left',
+          withBorder: true,
+        });
+        form.setValues({
+          name: data.user.name,
+          idNumber: data.user.idNumber,
+          gender: data.user.gender,
+          maritalStatus: data.user.maritalStatus,
+          nationality: data.user.nationality,
+          email: data.user.email,
+          birthDate: new Date(data.user.birthDate),
+          mobileNumber: data.user.mobileNumber,
+          alternativeNumber: data.user.alternativeNumber || '',
+        });
+        setAvatarImage(data.user.avatar || man.src);
+      } else {
+        throw new Error(data.error || 'فشل في تحديث الملف الشخصي');
+      }
+    },
+    onError: (error: any) => {
+      setIsEditMode(false);
+
+      const errorMessage = error?.message || 'حدث خطأ أثناء تحديث الملف الشخصي';
+      form.setErrors({ general: errorMessage });
+      notifications.show({
+        title: 'خطأ',
+        message: errorMessage,
+        color: 'red',
+        position: 'top-left',
+        withBorder: true,
+      });
+    },
+  });
+
+  // Handle image uploads
   const uploadImages = async (file: File | null): Promise<string | null> => {
     if (!file) return null;
     try {
       const mediaUrl = await handleUploadMedia(file, startUpload);
       if (!mediaUrl) {
-        throw new Error('Failed to upload image');
+        throw new Error('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.');
       }
       return mediaUrl;
     } catch (error) {
       notifications.show({
-        title: 'Upload Error',
-        message: 'Failed to upload image. Please try again.',
+        title: 'فشل الرفع',
+        message: 'فشل في رفع الصورة. يرجى المحاولة مرة أخرى.',
         color: 'red',
         position: 'top-left',
         withBorder: true,
@@ -66,44 +177,46 @@ export default function Profile() {
     }
   };
 
-  const form = useForm<managerProfileType>({
-    mode: 'uncontrolled',
-    initialValues: {
-      // avatar: man.src,
-      name: '',
-      idNumber: 0,
-      gender: 'male',
-      maritalStatus: 'single',
-      nationality: 'فلسطين',
-      email: '',
-      birthDate: new Date(Date.now()), // Changed to null for DateInput
-      mobileNumber: '+970595796456',
-      alternativeNumber: '',
-    },
-    validate: zodResolver(managerProfileSchema),
-    validateInputOnChange: false, // Validate only on submit to reduce re-renders
-  });
-
-  const handleSubmit = async (values: managerProfileType) => {
-    setUploading(true);
-
+  // Handle form submission
+  const handleSubmit = form.onSubmit(async (values: managerProfileType) => {
     try {
-      console.log('Form submitted:', values);
+      setUploading(true);
+      // Handle avatar image upload
       const avatarUrl =
-        avatarImage instanceof File
+        avatarImage && avatarImage instanceof File
           ? await uploadImages(avatarImage)
           : avatarImage;
-      console.log('🚀 ~ handleSubmit ~ avatarUrl:', avatarUrl);
-    } catch (error) {
-      console.error('Submission failed:', error);
-      form.setErrors({ general: 'فشل في حفظ الملف الشخصي' });
+
+      const formData = toFormData({
+        ...values,
+        avatar: avatarUrl ?? '',
+      });
+
+      profileMutation.mutate(formData);
+    } catch (error: any) {
+      const errorMessage = error?.message || 'فشل في حفظ الملف الشخصي';
+      form.setErrors({ general: errorMessage });
+      notifications.show({
+        title: 'خطأ',
+        message: errorMessage,
+        color: 'red',
+        position: 'top-left',
+        withBorder: true,
+      });
     } finally {
       setUploading(false);
     }
-  };
+  });
 
   return (
-    <Stack p={10}>
+    <Stack p={10} pos={'relative'}>
+      {/* Loading Overlay for initial fetch */}
+      <LoadingOverlay
+        visible={isLoading || profileMutation.isPending || uploading}
+        zIndex={49}
+        overlayProps={{ radius: 'sm', blur: 0.3 }}
+      />
+
       {/* Image */}
       <Box
         w='100%'
@@ -136,22 +249,24 @@ export default function Profile() {
               priority
             />
           )}
-          <Upload_Media File_Type='image' setFileObject={setAvatarImage}>
-            <ActionIcon
-              variant='outline'
-              color='gray.5'
-              radius='100%'
-              pos='absolute'
-              left='50%'
-              top='50%'
-              w={30}
-              h={30}
-              className='border-1 border-gray rounded-full -translate-x-1/2 -translate-y-1/2'
-              component='label'
-            >
-              <Camera size={20} />
-            </ActionIcon>
-          </Upload_Media>
+          {isEditMode && (
+            <Upload_Media File_Type='image' setFileObject={setAvatarImage}>
+              <ActionIcon
+                variant='outline'
+                color='gray.5'
+                radius='100%'
+                pos='absolute'
+                left='50%'
+                top='50%'
+                w={30}
+                h={30}
+                className='border-1 border-gray rounded-full -translate-x-1/2 -translate-y-1/2'
+                component='label'
+              >
+                <Camera size={20} />
+              </ActionIcon>
+            </Upload_Media>
+          )}
         </Box>
       </Box>
 
@@ -160,10 +275,7 @@ export default function Profile() {
         <Text w='100%' ta='start' fz={24} fw={600} className='!text-primary'>
           بياناتي الشخصية:
         </Text>
-        <form
-          className='flex flex-col items-center w-full'
-          onSubmit={form.onSubmit(handleSubmit)}
-        >
+        <form className='flex flex-col items-center w-full'>
           <SimpleGrid
             cols={{ base: 1, md: 2, lg: 3 }}
             verticalSpacing='sm'
@@ -183,6 +295,7 @@ export default function Profile() {
               }}
               key={form.key('name')}
               {...form.getInputProps('name')}
+              disabled={!isEditMode}
             />
             <NumberInput
               label={
@@ -196,8 +309,12 @@ export default function Profile() {
               classNames={{
                 input: 'placeholder:!text-sm !text-primary !font-medium',
               }}
+              maxLength={9}
+              min={0}
+              allowDecimal={false}
               key={form.key('idNumber')}
               {...form.getInputProps('idNumber')}
+              disabled={!isEditMode}
             />
             <NativeSelect
               label={
@@ -216,6 +333,7 @@ export default function Profile() {
               }}
               key={form.key('gender')}
               {...form.getInputProps('gender')}
+              disabled={!isEditMode}
             />
             <NativeSelect
               label={
@@ -236,6 +354,7 @@ export default function Profile() {
               }}
               key={form.key('maritalStatus')}
               {...form.getInputProps('maritalStatus')}
+              disabled={!isEditMode}
             />
             <TextInput
               label={
@@ -251,6 +370,7 @@ export default function Profile() {
               }}
               key={form.key('nationality')}
               {...form.getInputProps('nationality')}
+              disabled={!isEditMode}
             />
             <TextInput
               label={
@@ -267,6 +387,7 @@ export default function Profile() {
               }}
               key={form.key('email')}
               {...form.getInputProps('email')}
+              disabled={!isEditMode}
             />
             <DatePickerInput
               label={
@@ -282,11 +403,11 @@ export default function Profile() {
               }}
               leftSection={<Calendar size={16} className='text-[#B9B5B1]' />}
               valueFormat='DD/MM/YYYY'
-              excludeDate={(date) => date > new Date()} // Exclude future dates
+              excludeDate={(date) => date > new Date()}
               key={form.key('birthDate')}
               {...form.getInputProps('birthDate')}
+              disabled={!isEditMode}
             />
-
             <Stack w='100%' gap={0}>
               <Text
                 fz={18}
@@ -304,51 +425,69 @@ export default function Profile() {
                   defaultCountry='PS'
                   inputComponent={Custom_Phone_Input}
                   placeholder='ادخل رقم الجوال...'
-                  value={form.values.mobileNumber}
+                  value={form.getValues().mobileNumber as string}
                   key={form.key('mobileNumber')}
                   {...form.getInputProps('mobileNumber')}
+                  disabled={!isEditMode}
                 />
               </Box>
             </Stack>
-            <Stack w='100%' gap={0}>
-              <Text
-                fz={18}
-                fw={500}
-                w={'100%'}
-                className='!text-dark !text-nowrap'
-              >
-                رقم بديل :
-              </Text>
-              <Box dir='ltr' className='w-full'>
-                <PhoneInput
-                  name='alternativeNumber'
-                  international
-                  countryCallingCodeEditable={false}
-                  defaultCountry='PS'
-                  inputComponent={Custom_Phone_Input}
-                  placeholder='ادخل رقم بديل...'
-                  value={form.values.alternativeNumber}
-                  key={form.key('alternativeNumber')}
-                  {...form.getInputProps('alternativeNumber')}
-                />
-              </Box>
-            </Stack>
+            {/* Alternative Number may not exist */}
+            {isEditMode || profileData?.user.alternativeNumber ? (
+              <Stack w='100%' gap={0}>
+                <Text
+                  fz={18}
+                  fw={500}
+                  w='100%'
+                  className='!text-dark !text-nowrap'
+                >
+                  رقم بديل :
+                </Text>
+                <Box dir='ltr' className='w-full'>
+                  <PhoneInput
+                    name='alternativeNumber'
+                    international
+                    countryCallingCodeEditable={false}
+                    defaultCountry='PS'
+                    inputComponent={Custom_Phone_Input}
+                    placeholder='ادخل رقم بديل...'
+                    value={form.getValues().alternativeNumber as string}
+                    key={form.key('alternativeNumber')}
+                    {...form.getInputProps('alternativeNumber')}
+                    disabled={!isEditMode}
+                  />
+                </Box>
+              </Stack>
+            ) : null}
           </SimpleGrid>
-          <Button
-            loading={uploading}
-            type='submit'
-            mt={32}
-            fz={20}
-            fw={500}
-            w={228}
-            c={'white'}
-            className={`!shadow-lg max-lg:!mt-10 !bg-primary ${
-              !form.isValid() ? '!bg-primary/70' : '!bg-primary'
-            }`}
-            // disabled={!form.isValid()}
-          >
-            حفظ
-          </Button>
+          {isEditMode ? (
+            <Button
+              loading={profileMutation.isPending}
+              mt={32}
+              fz={20}
+              fw={500}
+              w={228}
+              c={'white'}
+              className={`!shadow-lg max-lg:!mt-10 !bg-primary ${
+                !form.isValid() ? '!bg-primary/70' : '!bg-primary'
+              }`}
+              onClick={() => handleSubmit()}
+            >
+              حفظ
+            </Button>
+          ) : (
+            <Button
+              mt={32}
+              fz={20}
+              fw={500}
+              w={228}
+              c={'white'}
+              className='!bg-primary !shadow-lg max-lg:!mt-10'
+              onClick={() => setIsEditMode(true)}
+            >
+              تعديل
+            </Button>
+          )}
         </form>
       </Stack>
     </Stack>
