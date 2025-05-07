@@ -4,7 +4,7 @@ import { Drawer } from '@mantine/core';
 import React from 'react';
 import Header_Links from './Header_Links';
 import { usePathname } from 'next/navigation';
-import ActorNavbar from '@/components/actors/common/ActorNavbar';
+import ActorNavbar from '@/components/actors/common/navbar/Actor_Navbar';
 
 type Props = {
   opened: boolean;

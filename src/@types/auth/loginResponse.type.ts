@@ -15,6 +15,7 @@ export interface User {
     id: number
     name: string
     email: string
+    idNumber: number,
     phone_number: string
     created_at: Date
     updated_at?: Date

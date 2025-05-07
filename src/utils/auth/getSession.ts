@@ -1,7 +1,6 @@
 import { LOCALSTORAGE_SESSION_KEY } from "@/constants/sessionKey"
 import { z } from "zod"
 import { User } from "@/@types/auth/loginResponse.type"
-import { USER_TYPE } from "@/constants/userTypes"
 
 // Schema to validate the session data structure
 const SessionSchema = z.object({
@@ -10,6 +9,7 @@ const SessionSchema = z.object({
     id: z.number(),
     name: z.string(),
     email: z.string().email(),
+    idNumber: z.number(),
     phone_number: z.string(),
     created_at: z.union([z.string(), z.date()]), // Accept both string and date
     role: z.enum(['DISPLACED', 'DELEGATE', 'MANAGER', 'SECURITY', 'SECURITY_OFFICER']),
@@ -32,12 +32,10 @@ const SessionSchema = z.object({
 export const getSession = (): { token: string; user: User } | null => {
   try {
     const rawSession = localStorage.getItem(LOCALSTORAGE_SESSION_KEY)
-    // console.log("🚀 ~ rawSession:", rawSession)
     if (!rawSession) return null
 
     // Parse the session data from localStorage
     const parsedSession = JSON.parse(rawSession)
-    // console.log("🚀 ~ parsedSession:", parsedSession)
 
     // Extract the relevant data
     const sessionData = {
@@ -46,6 +44,7 @@ export const getSession = (): { token: string; user: User } | null => {
         id: parsedSession.user.id,
         name: parsedSession.user.name,
         email: parsedSession.user.email,
+        idNumber: parsedSession.user.idNumber,
         phone_number: parsedSession.user.phone_number,
         created_at: parsedSession.user.created_at,
         role: parsedSession.user.role,
@@ -55,8 +54,6 @@ export const getSession = (): { token: string; user: User } | null => {
 
     // Validate the data structure
     const session = SessionSchema.safeParse(sessionData)
-    // console.log("🚀 ~ session:", session)
-
     if (!session.success) return null
 
     // Transform the validated data to match the expected return type

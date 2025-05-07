@@ -34,13 +34,14 @@ import { updateProfile } from '@/actions/actors/manager/updateProfileInfo';
 import { getProfile } from '@/actions/actors/manager/getProfileInfo';
 import { ProfileResponse } from '@/@types/actors/manager/profile/profileResponse.type';
 import { toFormData } from '@/utils/objectToFormData';
+import useAuth from '@/hooks/useAuth';
 
 export default function Profile() {
   const { startUpload } = useUploadThing('mediaUploader');
   const [avatarImage, setAvatarImage] = useState<File | string | null>(man.src);
   const [isEditMode, setIsEditMode] = useState(false);
   const [uploading, setUploading] = useState(false);
-
+  const { isAuthenticated, isManager } = useAuth();
   // Form setup
   const form = useForm<managerProfileType>({
     mode: 'uncontrolled',
@@ -460,34 +461,36 @@ export default function Profile() {
               </Stack>
             ) : null}
           </SimpleGrid>
-          {isEditMode ? (
-            <Button
-              loading={profileMutation.isPending}
-              mt={32}
-              fz={20}
-              fw={500}
-              w={228}
-              c={'white'}
-              className={`!shadow-lg max-lg:!mt-10 !bg-primary ${
-                !form.isValid() ? '!bg-primary/70' : '!bg-primary'
-              }`}
-              onClick={() => handleSubmit()}
-            >
-              حفظ
-            </Button>
-          ) : (
-            <Button
-              mt={32}
-              fz={20}
-              fw={500}
-              w={228}
-              c={'white'}
-              className='!bg-primary !shadow-lg max-lg:!mt-10'
-              onClick={() => setIsEditMode(true)}
-            >
-              تعديل
-            </Button>
-          )}
+          {isManager ? (
+            isEditMode ? (
+              <Button
+                loading={profileMutation.isPending}
+                mt={32}
+                fz={20}
+                fw={500}
+                w={228}
+                c={'white'}
+                className={`!shadow-lg max-lg:!mt-10 !bg-primary ${
+                  !form.isValid() ? '!bg-primary/70' : '!bg-primary'
+                }`}
+                onClick={() => handleSubmit()}
+              >
+                حفظ
+              </Button>
+            ) : (
+              <Button
+                mt={32}
+                fz={20}
+                fw={500}
+                w={228}
+                c={'white'}
+                className='!bg-primary !shadow-lg max-lg:!mt-10'
+                onClick={() => setIsEditMode(true)}
+              >
+                تعديل
+              </Button>
+            )
+          ) : null}
         </form>
       </Stack>
     </Stack>

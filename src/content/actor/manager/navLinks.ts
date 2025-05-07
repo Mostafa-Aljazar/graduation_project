@@ -31,3 +31,13 @@ export const managerNavLinks = () => {
         { label: 'الإعلانات و المدونات', href: managerRoutes.ADS_BLOGS, icon: Newspaper },
     ] as const;
 };
+
+
+//what appear when any user open manager pages
+export const guestManagerNavLinks = () => {
+    const managerRoutes = MANAGER_ROUTES_fUNC();
+
+    return [
+        { label: 'الملف الشخصي', href: managerRoutes.PROFILE, icon: User },
+    ] as const;
+};

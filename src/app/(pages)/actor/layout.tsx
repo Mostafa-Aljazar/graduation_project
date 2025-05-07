@@ -1,4 +1,4 @@
-import ActorNavbar from '@/components/actors/common/ActorNavbar';
+import ActorNavbar from '@/components/actors/common/navbar/Actor_Navbar';
 import { Group, Stack } from '@mantine/core';
 import React from 'react';
 
