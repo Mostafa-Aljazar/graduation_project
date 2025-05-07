@@ -54,23 +54,24 @@ export const DELEGATE_ROUTES_fUNC = (
 
 
 export const MANAGER_ROUTES_fUNC = (
+  manager_Id: string | number,
   aid_Id?: string | number
 ) => {
   return {
 
-    PROFILE: '/actor/manager/profile',
-    REPORTS: '/actor/manager/reports',
-    COMPLAINTS: '/actor/manager/complaints',
+    PROFILE: `/actor/manager/${manager_Id}/profile`,
+    REPORTS: `/actor/manager/${manager_Id}/reports`,
+    COMPLAINTS: `/actor/manager/${manager_Id}/complaints`,
 
     // ADS_BLOGS
-    ADS_BLOGS: '/actor/manager/ads-blogs',
-    ADD_ADS_BLOGS: '/actor/manager/ads-blogs/add',
+    ADS_BLOGS: `/actor/manager/${manager_Id}/ads-blogs`,
+    ADD_ADS_BLOGS: `/actor/manager/${manager_Id}/ads-blogs/add`,
 
 
     // AIDS_MANAGEMENT
-    AIDS_MANAGEMENT: '/actor/manager/aids-management',
-    ADD_AID: '/actor/manager/aid-management/add',
-    AID: `/actor/manager/aid-management/${aid_Id}`,
+    AIDS_MANAGEMENT: `/actor/manager/${manager_Id}/aids-management`,
+    ADD_AID: `/actor/manager/${manager_Id}/aid-management/add`,
+    AID: `/actor/manager/${manager_Id}/aid-management/${aid_Id}`,
 
   } as const;
 };

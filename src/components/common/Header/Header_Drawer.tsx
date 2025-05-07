@@ -4,7 +4,7 @@ import { Drawer } from '@mantine/core';
 import React from 'react';
 import Header_Links from './Header_Links';
 import { usePathname } from 'next/navigation';
-import ActorNavbar from '@/components/actors/common/navbar/Actor_Navbar';
+import Actor_Navbar from '@/components/actors/common/navbar/Actor_Navbar';
 
 type Props = {
   opened: boolean;
@@ -26,7 +26,7 @@ export default function Header_Drawer({ opened, toggle }: Props) {
     >
       <Stack h='100%' px='md'>
         {/* In actor pages  or In landing page */}
-        {isActorPage ? <ActorNavbar /> : <Header_Links />}
+        {isActorPage ? <Actor_Navbar /> : <Header_Links />}
       </Stack>
     </Drawer>
   );

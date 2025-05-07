@@ -1,4 +1,4 @@
-import ActorNavbar from '@/components/actors/common/navbar/Actor_Navbar';
+import Actor_Navbar from '@/components/actors/common/navbar/Actor_Navbar';
 import { Group, Stack } from '@mantine/core';
 import React from 'react';
 
@@ -16,7 +16,7 @@ export default function Actor_Layout({
         justify='flex-start'
         align='center'
       >
-        <ActorNavbar />
+        <Actor_Navbar />
       </Stack>
       <Stack mih='100vh' w={'100%'} h={'100%'} justify='start'>
         {children}

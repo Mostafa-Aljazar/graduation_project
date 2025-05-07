@@ -25,7 +25,7 @@ import {
 import ProfileInfo from './profile_Info';
 import Navigation_Links from './Navigation_Links';
 
-export default function ActorNavbar() {
+export default function Actor_Navbar() {
   return (
     <Stack
       p={{ base: 5, md: 10 }}

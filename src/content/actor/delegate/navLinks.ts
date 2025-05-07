@@ -36,12 +36,6 @@ export const guestDelegateNavLinks = (delegate_Id: number | string) => {
 
     return [
         { label: 'الملف الشخصي', href: delegateRoutes.PROFILE, icon: User },
-
-        {
-            label: 'بيانات النازحين',
-            href: `${GENERAL_ACTOR_ROUTES.DISPLACEDS}?delegate_Id=${delegate_Id}`,
-            icon: Users,
-        },
         {
             label: 'إدارة المساعدات',
             href: delegateRoutes.AIDS_MANAGEMENT,
@@ -49,6 +43,15 @@ export const guestDelegateNavLinks = (delegate_Id: number | string) => {
         },
         { label: 'التقارير', href: delegateRoutes.REPORTS, icon: FileChartLine },
         { label: 'الشكاوي', href: delegateRoutes.COMPLAINTS, icon: Speech },
+    ] as const;
+};
+
+//what appear when displaced open Delegate pages
+export const displacedAsGuestDelegateNavLinks = (delegate_Id: number | string) => {
+    const delegateRoutes = DELEGATE_ROUTES_fUNC(delegate_Id as number);
+
+    return [
+        { label: 'الملف الشخصي', href: delegateRoutes.PROFILE, icon: User },
     ] as const;
 };
 

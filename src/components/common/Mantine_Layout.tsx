@@ -20,15 +20,6 @@ export default function Mantine_Layout({
       className='!flex !flex-col !w-full !min-h-screen'
     >
       <Header opened={opened} toggle={toggle} />
-      {/* <Navbar /> */}
-      {/* <AppShell.Navbar p='md' mt={60} className=''>
-        Navbar
-        {Array(15)
-          .fill(0)
-          .map((_, index) => (
-            <Skeleton key={index} h={28} mt='sm' animate={false} bg={'red'} />
-          ))}
-      </AppShell.Navbar> */}
 
       <AppShell.Main
         flex={1}

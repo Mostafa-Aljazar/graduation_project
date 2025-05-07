@@ -4,9 +4,9 @@ import { GENERAL_ACTOR_ROUTES, MANAGER_ROUTES_fUNC } from "../../../constants/ro
 
 
 //what appear to manager 
-export const managerNavLinks = () => {
+export const managerNavLinks = (manager_Id: number | string) => {
 
-    const managerRoutes = MANAGER_ROUTES_fUNC();
+    const managerRoutes = MANAGER_ROUTES_fUNC(manager_Id);
 
     return [
         { label: 'الملف الشخصي', href: managerRoutes.PROFILE, icon: User },
@@ -34,8 +34,8 @@ export const managerNavLinks = () => {
 
 
 //what appear when any user open manager pages
-export const guestManagerNavLinks = () => {
-    const managerRoutes = MANAGER_ROUTES_fUNC();
+export const guestManagerNavLinks = (manager_Id: number | string) => {
+    const managerRoutes = MANAGER_ROUTES_fUNC(manager_Id);
 
     return [
         { label: 'الملف الشخصي', href: managerRoutes.PROFILE, icon: User },
