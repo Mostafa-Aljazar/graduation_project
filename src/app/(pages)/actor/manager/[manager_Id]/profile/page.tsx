@@ -404,7 +404,7 @@ export default function Profile() {
               }}
               leftSection={<Calendar size={16} className='text-[#B9B5B1]' />}
               valueFormat='DD/MM/YYYY'
-              excludeDate={(date) => date > new Date()}
+              excludeDate={(date) => new Date(date) > new Date()}
               key={form.key('birthDate')}
               {...form.getInputProps('birthDate')}
               disabled={!isEditMode}

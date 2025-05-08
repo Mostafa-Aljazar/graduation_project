@@ -8,6 +8,7 @@ import type { Metadata } from 'next';
 import Providers from '@/providers/providers';
 import sfProDisplay from '@/fonts';
 import Footer from '@/components/common/Footer/Footer';
+import { CacheProvider } from '@emotion/react';
 
 export const metadata: Metadata = {
   title: 'AL-AQSA Camp',

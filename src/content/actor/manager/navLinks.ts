@@ -10,11 +10,11 @@ export const managerNavLinks = (manager_Id: number | string) => {
 
     return [
         { label: 'الملف الشخصي', href: managerRoutes.PROFILE, icon: User },
-        { label: 'بيانات النازحين', href: GENERAL_ACTOR_ROUTES.DISPLACEDS, icon: Users },
+        { label: 'بيانات النازحين', href: GENERAL_ACTOR_ROUTES.DISPLACEDS, icon: Database },
         {
             label: 'بيانات المناديب',
             href: GENERAL_ACTOR_ROUTES.DELEGATES,
-            icon: Database,
+            icon: Users,
         },
         {
             label: 'بيانات الأمن',
