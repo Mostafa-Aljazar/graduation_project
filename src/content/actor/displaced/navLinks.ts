@@ -2,7 +2,7 @@ import { BellRing, Newspaper, Speech, Handshake, User } from 'lucide-react';
 import { DISPLACED_ROUTES_fUNC, GENERAL_ACTOR_ROUTES } from "../../../constants/routes";
 
 //what appear to displaced 
-export const displacedNavLinks = (displaced_Id: number | string) => {
+export const displaced_NavLinks = (displaced_Id: number | string) => {
 
     const displacedRoutes = DISPLACED_ROUTES_fUNC(displaced_Id as number);
 
@@ -16,7 +16,7 @@ export const displacedNavLinks = (displaced_Id: number | string) => {
 };
 
 //what appear when manger or delegate or security open displaced pages
-export const guestDisplacedNavLinks = (displaced_Id: number | string) => {
+export const guest_Displaced_NavLinks = (displaced_Id: number | string) => {
 
     const displacedRoutes = DISPLACED_ROUTES_fUNC(displaced_Id as number);
 

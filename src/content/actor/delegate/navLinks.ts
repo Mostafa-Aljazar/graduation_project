@@ -1,9 +1,9 @@
+import { DELEGATE_ROUTES_fUNC, GENERAL_ACTOR_ROUTES } from '@/constants/routes';
 import { BellRing, Newspaper, Speech, Handshake, User, Users, FileChartLine } from 'lucide-react';
-import { DELEGATE_ROUTES_fUNC, GENERAL_ACTOR_ROUTES } from "../../../constants/routes";
 
 
 //what appear to delegate 
-export const delegateNavLinks = (delegate_Id: number | string) => {
+export const delegate_NavLinks = (delegate_Id: number | string) => {
 
     const delegateRoutes = DELEGATE_ROUTES_fUNC(delegate_Id as number);
 
@@ -30,8 +30,8 @@ export const delegateNavLinks = (delegate_Id: number | string) => {
     ] as const;
 };
 
-//what appear when manger or security open Delegate pages
-export const guestDelegateNavLinks = (delegate_Id: number | string) => {
+//what appear when manger or security officer open Delegate pages
+export const guest_Delegate_NavLinks = (delegate_Id: number | string) => {
     const delegateRoutes = DELEGATE_ROUTES_fUNC(delegate_Id as number);
 
     return [
@@ -47,11 +47,22 @@ export const guestDelegateNavLinks = (delegate_Id: number | string) => {
 };
 
 //what appear when displaced open Delegate pages
-export const displacedAsGuestDelegateNavLinks = (delegate_Id: number | string) => {
+export const displaced_As_Guest_Delegate_NavLinks = (delegate_Id: number | string) => {
     const delegateRoutes = DELEGATE_ROUTES_fUNC(delegate_Id as number);
 
     return [
         { label: 'الملف الشخصي', href: delegateRoutes.PROFILE, icon: User },
+        { label: 'الشكاوي', href: delegateRoutes.COMPLAINTS, icon: Speech },
+
     ] as const;
 };
 
+//what appear when another delegate open Delegate pages as guest
+export const security_OR_delegate_As_Guest_Delegate_NavLinks = (delegate_Id: number | string) => {
+    const delegateRoutes = DELEGATE_ROUTES_fUNC(delegate_Id as number);
+
+    return [
+        { label: 'الملف الشخصي', href: delegateRoutes.PROFILE, icon: User },
+
+    ] as const;
+};

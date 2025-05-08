@@ -10,17 +10,19 @@ import {
 } from '@/content/actor/manager/navLinks';
 import useAuth from '@/hooks/useAuth';
 import {
-  delegateNavLinks,
-  displacedAsGuestDelegateNavLinks,
-  guestDelegateNavLinks,
+  delegate_NavLinks,
+  displaced_As_Guest_Delegate_NavLinks,
+  guest_Delegate_NavLinks,
+  security_OR_delegate_As_Guest_Delegate_NavLinks,
 } from '@/content/actor/delegate/navLinks';
 import {
-  guestSecurityNavLinks,
-  securityNavLinks,
+  guest_Security_NavLinks,
+  manager_OR_Security_Guest_Security_NavLinks,
+  security_NavLinks,
 } from '@/content/actor/security/navLinks';
 import {
-  displacedNavLinks,
-  guestDisplacedNavLinks,
+  displaced_NavLinks,
+  guest_Displaced_NavLinks,
 } from '@/content/actor/displaced/navLinks';
 
 // Define types for navigation links to ensure type safety
@@ -60,18 +62,26 @@ export default function Navigation_Links() {
         case 'displaced':
           // Return (authenticated or guest) displaced links
           return isOwnPage
-            ? displacedNavLinks(userId)
-            : guestDisplacedNavLinks(id);
+            ? displaced_NavLinks(userId)
+            : guest_Displaced_NavLinks(id);
+
         case 'delegate':
           // Handle delegate links, with special case for displaced users (get just profile)
-          if (isOwnPage) return delegateNavLinks(userId);
-          return isDisplaced
-            ? displacedAsGuestDelegateNavLinks(id)
-            : guestDelegateNavLinks(id);
+          return isOwnPage
+            ? delegate_NavLinks(userId)
+            : isDisplaced == true
+            ? displaced_As_Guest_Delegate_NavLinks(id)
+            : isDelegate || isSecurity == true
+            ? security_OR_delegate_As_Guest_Delegate_NavLinks(id)
+            : guest_Delegate_NavLinks(id); //manager or security officer guest delegate links
+
         case 'security':
           return isOwnPage
-            ? securityNavLinks(userId)
-            : guestSecurityNavLinks(id);
+            ? security_NavLinks(userId)
+            : isDisplaced
+            ? guest_Security_NavLinks(id)
+            : manager_OR_Security_Guest_Security_NavLinks(id);
+
         case 'manager':
           return isOwnPage ? managerNavLinks(userId) : guestManagerNavLinks(id);
         default:
@@ -89,6 +99,7 @@ export default function Navigation_Links() {
       );
     } else if (pathname.includes('/delegate/')) {
       const delegateId = getIdFromPathname('delegate');
+
       return selectNavLinks(
         'delegate',
         isDelegate && userId === delegateId,
@@ -111,13 +122,13 @@ export default function Navigation_Links() {
     }
 
     // Now, handle general pages (common pages) for registered users
-    if (isDisplaced) return displacedNavLinks(userId);
-    if (isDelegate) return delegateNavLinks(userId);
-    if (isSecurity || isSecurityOfficer) return securityNavLinks(userId);
+    if (isDisplaced) return displaced_NavLinks(userId);
+    if (isDelegate) return delegate_NavLinks(userId);
+    if (isSecurity || isSecurityOfficer) return security_NavLinks(userId);
     if (isManager) return managerNavLinks(userId);
 
     return null;
-  }, [pathname]);
+  }, [pathname, user]);
 
   return (
     <Box w='100%' className='shadow-xl rounded-[20px] !overflow-hidden'>

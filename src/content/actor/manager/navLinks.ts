@@ -39,5 +39,6 @@ export const guestManagerNavLinks = (manager_Id: number | string) => {
 
     return [
         { label: 'الملف الشخصي', href: managerRoutes.PROFILE, icon: User },
+        { label: 'الشكاوي', href: managerRoutes.COMPLAINTS, icon: Speech },
     ] as const;
 };

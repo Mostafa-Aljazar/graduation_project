@@ -81,7 +81,7 @@ export const SECURITY_ROUTES_fUNC = (
 ) => {
   return {
     PROFILE: `/actor/security/${security_Id}/profile`,
-    COMPLAINTS: '/actor/security/complaints',
-    TASKS: '/actor/security/tasks',
+    COMPLAINTS: `/actor/security/${security_Id}/complaints`,
+    TASKS: `/actor/security/${security_Id}/tasks`,
   } as const;
 };

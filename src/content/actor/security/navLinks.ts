@@ -2,7 +2,7 @@ import { ListTodo, User, Users, ShieldUser, Database, BellRing, Speech, Newspape
 import { GENERAL_ACTOR_ROUTES, SECURITY_ROUTES_fUNC } from "../../../constants/routes";
 
 //what appear to security 
-export const securityNavLinks = (security_Id: number | string) => {
+export const security_NavLinks = (security_Id: number | string) => {
 
     const securityRoutes = SECURITY_ROUTES_fUNC(security_Id as number);
 
@@ -14,7 +14,7 @@ export const securityNavLinks = (security_Id: number | string) => {
             href: GENERAL_ACTOR_ROUTES.SECURITIES,
             icon: ShieldUser,
         },
-        { label: 'المهام', href: securityRoutes.PROFILE, icon: ListTodo },
+        { label: 'المهام', href: securityRoutes.TASKS, icon: ListTodo },
         {
             label: 'بيانات النازحين',
             href: GENERAL_ACTOR_ROUTES.DISPLACEDS,
@@ -31,11 +31,21 @@ export const securityNavLinks = (security_Id: number | string) => {
 };
 
 //what appear when manger or security officer open security page
-export const guestSecurityNavLinks = (security_Id: number | string) => {
+export const manager_OR_Security_Guest_Security_NavLinks = (security_Id: number | string) => {
     const securityRoutes = SECURITY_ROUTES_fUNC(security_Id as number);
 
     return [
-        { label: 'الملف الشخصي', href: securityRoutes.PROFILE, icon: User }
+        { label: 'الملف الشخصي', href: securityRoutes.PROFILE, icon: User },
+        { label: 'المهام', href: securityRoutes.TASKS, icon: ListTodo },
+    ] as const;
+};
+
+//what appear when anu user open security page
+export const guest_Security_NavLinks = (security_Id: number | string) => {
+    const securityRoutes = SECURITY_ROUTES_fUNC(security_Id as number);
+
+    return [
+        { label: 'الملف الشخصي', href: securityRoutes.PROFILE, icon: User },
     ] as const;
 };
 
