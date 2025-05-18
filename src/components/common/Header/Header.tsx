@@ -28,7 +28,7 @@ export default function Header({ opened, toggle }: Props) {
     >
       <Flex justify='space-between' align='center' h='100%' px='md'>
         <Group h='100%' px='md'>
-          <Burger opened={opened} onClick={toggle} hiddenFrom='md' size='sm' />
+          <Burger opened={opened} onClick={toggle} hiddenFrom='lg' size='sm' />
           <Image
             src={logo}
             alt='Logo'
@@ -40,7 +40,7 @@ export default function Header({ opened, toggle }: Props) {
         </Group>
 
         {!isActor && (
-          <Group h='100%' px='md' gap={25} visibleFrom='md'>
+          <Group h='100%' px='md' gap={25} visibleFrom='lg'>
             <Header_Links />
           </Group>
         )}

@@ -22,7 +22,7 @@ export default function Header_Drawer({ opened, toggle }: Props) {
       size={300}
       overlayProps={{ backgroundOpacity: 0.5, blur: 4 }}
       dir='rtl'
-      hiddenFrom='md'
+      hiddenFrom='lg'
     >
       <Stack h='100%' px='md'>
         {/* In actor pages  or In landing page */}

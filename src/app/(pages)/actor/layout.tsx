@@ -12,7 +12,7 @@ export default function Actor_Layout({
       <Stack
         w={250}
         // mih='100vh'
-        visibleFrom='md'
+        visibleFrom='lg'
         justify='flex-start'
         align='center'
       >
