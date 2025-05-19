@@ -1,10 +1,11 @@
 'use client';
 
+import { getDelegates } from '@/actions/actors/general/delegates/getDelegatesInfo';
 import { changeDelegate } from '@/actions/actors/general/displaced/changeDelegate';
 import { Button, Group, Modal, Select, Stack, Text } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { z } from 'zod';
 
@@ -40,6 +41,21 @@ export default function Change_Delegate_Modal({
       delegateId: '',
     },
     validate: zodResolver(changeDelegateSchema),
+  });
+
+  // Fetch delegates using useQuery
+  const {
+    data: delegatesData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['delegates'],
+    queryFn: () => getDelegates({ page: 1, limit: 100 }), // Fetch up to 100 delegates
+    select: (data) =>
+      data.delegates.map((delegate) => ({
+        value: delegate.id.toString(),
+        label: delegate.name,
+      })),
   });
 
   const changeMutation = useMutation<
@@ -104,12 +120,13 @@ export default function Change_Delegate_Modal({
               </Text>
             }
             placeholder='اختر المندوب'
-            data={All_Delegates}
-            size='sm'
+            data={delegatesData || []} // Use fetched delegates or empty array            size='sm'
             w='100%'
             classNames={{
               input: '!text-primary !font-medium',
             }}
+            disabled={isLoading || !!error} // Disable while loading or on error
+            error={error ? 'فشل في جلب قائمة المناديب' : undefined}
             {...form.getInputProps('delegateId')}
           />
 
