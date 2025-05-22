@@ -1,7 +1,7 @@
 'use client';
 
 import { getStory } from '@/actions/landing/getStory';
-import formatDateInArabic from '@/utility/formatDateInArabic';
+import formatDateInArabic from '@/utils/formatDateInArabic';
 import {
   Box,
   Container,

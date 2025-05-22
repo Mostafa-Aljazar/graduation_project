@@ -7,14 +7,21 @@ import {
   Divider,
   Group,
   LoadingOverlay,
+  NativeSelect,
   PasswordInput,
   Stack,
   Text,
   TextInput,
 } from '@mantine/core';
-import { AUTH_ROUTES, ROUTES } from '@/content/routes';
+import {
+  AUTH_ROUTES,
+  DELEGATE_ROUTES_fUNC,
+  DISPLACED_ROUTES_fUNC,
+  MANAGER_ROUTES_fUNC,
+  SECURITY_ROUTES_fUNC,
+} from '@/constants/routes';
 import Link from 'next/link';
-import { loginSchema, loginType } from '@/validation/loginSchema';
+import { loginSchema, loginType } from '@/validation/auth/loginSchema';
 import { useMutation } from '@tanstack/react-query';
 import { login } from '@/actions/auth/login';
 import { loginResponse } from '@/@types/auth/loginResponse.type';
@@ -25,21 +32,20 @@ import { USER_TYPE, UserType } from '@/constants/userTypes';
 import { LOCALSTORAGE_SESSION_KEY } from '@/constants/sessionKey';
 
 export default function Login() {
-  const [userType, setUserType] = useState<UserType>(USER_TYPE.DISPLACED);
   const [error, setError] = useState('');
   const router = useRouter();
 
   // Define the form schema
   const form = useForm<loginType>({
     mode: 'uncontrolled',
-    initialValues: { email: '', password: '' },
+    initialValues: { email: '', password: '', userType: 'DISPLACED' },
     validate: zodResolver(loginSchema),
   });
 
   const loginMutation = useMutation<loginResponse, Error, FormData>({
     mutationFn: login,
     onSuccess: (data) => {
-      // console.log('🚀 ~ Login ~ data:', data);
+      console.log('🚀 ~ Login ~ data:', data);
       if (Number(data.status) == 200) {
         notifications.show({
           title: 'مرحبا بك',
@@ -55,9 +61,13 @@ export default function Login() {
 
         // TODO: change route to user profile
         if (data.user.role === 'DISPLACED') {
-          router.push(ROUTES.HOME);
-        } else {
-          router.push(ROUTES.HOME);
+          router.push(DISPLACED_ROUTES_fUNC(data.user.id).PROFILE);
+        } else if (data.user.role === 'MANAGER') {
+          router.push(MANAGER_ROUTES_fUNC(data.user.id).PROFILE);
+        } else if (data.user.role === 'DELEGATE') {
+          router.push(DELEGATE_ROUTES_fUNC(data.user.id).PROFILE);
+        } else if (data.user.role === 'SECURITY') {
+          router.push(SECURITY_ROUTES_fUNC(data.user.id).PROFILE);
         }
         return;
       } else {
@@ -81,9 +91,10 @@ export default function Login() {
 
   const handleSubmit = form.onSubmit((data: loginType) => {
     try {
+      // console.log('🚀 ~ handleSubmit ~ data:', data);
+
       const formData = toFormData({
         ...data,
-        userType,
       });
 
       loginMutation.mutate(formData);
@@ -111,7 +122,7 @@ export default function Login() {
 
         <Stack justify='center' align='center' gap={20}>
           <form
-            className='relative flex flex-col items-center gap-0'
+            className='relative flex flex-col items-center gap-3'
             onSubmit={handleSubmit}
           >
             {/* Loading Overlay */}
@@ -120,6 +131,33 @@ export default function Login() {
               zIndex={1000}
               overlayProps={{ radius: 'sm', blur: 0.3 }}
             />
+
+            {/*  userType */}
+            <NativeSelect
+              data={[
+                { label: 'نازح', value: 'DISPLACED' },
+                { label: 'مدير', value: 'MANAGER' },
+                { label: 'مندوب', value: 'DELEGATE' },
+                { label: 'أمن', value: 'SECURITY' },
+                { label: 'مسؤول الأمن', value: 'SECURITY_OFFICER' },
+              ]}
+              label={
+                <Text fw={400} c={'#817C74'} fz={16}>
+                  تسجيل الدخول ك ؟
+                </Text>
+              }
+              size='md'
+              w={{ base: 343, md: 400 }}
+              className='!border-second !border-w-1 focus:!border-none !outline-none'
+              key={form.key('userType')}
+              {...form.getInputProps('userType')}
+              classNames={{
+                input: '!text-dark !font-medium !text-sm',
+                error:
+                  '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
+              }}
+            />
+
             {/* Email Id */}
             <TextInput
               type='email'
@@ -129,13 +167,13 @@ export default function Login() {
                 </Text>
               }
               placeholder={'ادخل البريد الاكتروني'}
+              size='md'
               w={{ base: 343, md: 400 }}
               className='!border-second !border-w-1 focus:!border-none !outline-none'
               key={form.key('email')}
               {...form.getInputProps('email')}
               classNames={{
-                input: '!text-sm',
-
+                input: '!text-dark !font-medium !text-sm',
                 error:
                   '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
               }}
@@ -150,12 +188,13 @@ export default function Login() {
                 </Text>
               }
               placeholder={'ادخل كلمة المرور'}
+              size='md'
               w={{ base: 343, md: 400 }}
               className='!border-second !border-w-1 focus:!border-none !outline-none'
               key={form.key('password')}
               {...form.getInputProps('password')}
               classNames={{
-                input: '!text-sm',
+                input: '!text-dark !font-medium !text-sm',
                 error:
                   '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
               }}
@@ -193,30 +232,6 @@ export default function Login() {
               </Text>
             ) : null}
           </form>
-          <Group wrap='nowrap' align='center' w={'100%'}>
-            <Divider h={1} bg={'#DFDEDC'} w={'100%'} flex={1} />
-            <Text mx={8} fw={400} c={'#817C74'}>
-              أو
-            </Text>
-            <Divider h={1} bg={'#DFDEDC'} w={'100%'} flex={1} />
-          </Group>
-
-          <ActionIcon className='!bg-transparent !w-fit'>
-            <Text
-              fw={500}
-              fz={16}
-              className='!text-primary hover:!cursor-pointer'
-              onClick={() =>
-                userType == USER_TYPE.DISPLACED
-                  ? setUserType(USER_TYPE.DELEGATOR) //DELEGATOR | MANAGER | SECRETARY | SECURITY_OFFICER
-                  : setUserType(USER_TYPE.DISPLACED)
-              }
-            >
-              {userType == USER_TYPE.DISPLACED
-                ? ' تسجيل الدخول كنازح ؟ '
-                : 'تسجيل الدخول كموظف ؟'}
-            </Text>
-          </ActionIcon>
         </Stack>
       </Stack>
     </>

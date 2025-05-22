@@ -4,7 +4,7 @@ import Stories_Cards from './Stories_Cards';
 import {
   SUCCESS_STORIES_DESCRIPTION,
   SUCCESS_STORIES_TITLE,
-} from '@/content/home';
+} from '@/content/landing/home';
 
 export default function Success_Stories_Landing() {
   return (

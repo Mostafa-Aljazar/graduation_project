@@ -1,12 +1,15 @@
-import Footer from '@/components/common/Footer';
+import Footer from '@/components/common/Footer/Footer';
 import About_Us from '@/components/home/About_Us';
 import Child_Home from '@/components/home/Child_Home';
 import Hero_Section from '@/components/home/Hero_Section';
 import Services from '@/components/home/Services';
 import Statistics from '@/components/home/Statistics';
 import Success_Stories_Landing from '@/components/home/Success_Stories_Landing';
-import { HERO_DESCRIPTION, HERO_IMAGES, HERO_TITLE } from '@/content/home';
-import { Stack } from '@mantine/core';
+import {
+  HERO_DESCRIPTION,
+  HERO_IMAGES,
+  HERO_TITLE,
+} from '@/content/landing/home';
 
 export default function Home() {
   return (

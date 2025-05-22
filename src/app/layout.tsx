@@ -1,12 +1,14 @@
 import '@mantine/notifications/styles.css';
 import '@mantine/core/styles.css';
 import '@mantine/carousel/styles.css';
+import '@mantine/dates/styles.css';
 import './globals.css';
 import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import type { Metadata } from 'next';
 import Providers from '@/providers/providers';
 import sfProDisplay from '@/fonts';
-import Footer from '@/components/common/Footer';
+import Footer from '@/components/common/Footer/Footer';
+import { CacheProvider } from '@emotion/react';
 
 export const metadata: Metadata = {
   title: 'AL-AQSA Camp',

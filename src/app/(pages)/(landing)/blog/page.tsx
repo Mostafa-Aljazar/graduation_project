@@ -1,7 +1,11 @@
 import Child_Blog from '@/components/blog/Child_Blog';
 import Our_Blog from '@/components/blog/Our_Blog';
 import Hero_Section from '@/components/home/Hero_Section';
-import { HERO_DESCRIPTION, HERO_IMAGES, HERO_TITLE } from '@/content/blog';
+import {
+  HERO_DESCRIPTION,
+  HERO_IMAGES,
+  HERO_TITLE,
+} from '@/content/landing/blog';
 
 export default function Blog() {
   return (

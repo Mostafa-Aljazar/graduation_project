@@ -14,7 +14,7 @@ import {
   Statistics_Data,
   Statistics_MESSAGE,
   Statistics_TITLE,
-} from '@/content/home';
+} from '@/content/landing/home';
 
 export default function Statistics() {
   return (

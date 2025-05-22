@@ -1,6 +1,6 @@
 export default interface createNewPasswordResponse {
     status: string;
-    message: string;
+    message?: string;
     error?: string;
 }
 

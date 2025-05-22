@@ -1,7 +1,7 @@
 'use client';
 import articleResponse from '@/@types/landing/articleResponse.type';
 import { img_1 } from '@/assets/home';
-import { ROUTES } from '@/content/routes';
+import { LANDING_ROUTES } from '@/constants/routes';
 import { cn } from '@/utils/cn';
 import getLimitedWords from '@/utils/getLimitedWords';
 import {
@@ -45,7 +45,7 @@ export default function Blog_Card({
         !isInBlogs && ' !h-full '
       )}
     >
-      <Link href={`${ROUTES.BLOG}/${id}`} className='w-full'>
+      <Link href={`${LANDING_ROUTES.BLOG}/${id}`} className='w-full'>
         <Flex
           direction={isInBlogs ? { base: 'column', md: 'row' } : 'column'}
           justify='flex-start'

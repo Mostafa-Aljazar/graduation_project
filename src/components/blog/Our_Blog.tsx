@@ -2,7 +2,7 @@
 import { LoadingOverlay, Pagination, Stack, Text } from '@mantine/core';
 import React, { useState } from 'react';
 import Blog_Card from './Blog_Card';
-import { OUR_BLOG_TITLE } from '@/content/blog';
+import { OUR_BLOG_TITLE } from '@/content/landing/blog';
 import { useQuery } from '@tanstack/react-query';
 import { getArticles } from '@/actions/landing/getArticles';
 

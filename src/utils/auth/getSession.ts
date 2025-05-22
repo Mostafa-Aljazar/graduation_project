@@ -1,7 +1,6 @@
 import { LOCALSTORAGE_SESSION_KEY } from "@/constants/sessionKey"
 import { z } from "zod"
 import { User } from "@/@types/auth/loginResponse.type"
-import { USER_TYPE } from "@/constants/userTypes"
 
 // Schema to validate the session data structure
 const SessionSchema = z.object({
@@ -10,9 +9,11 @@ const SessionSchema = z.object({
     id: z.number(),
     name: z.string(),
     email: z.string().email(),
+    idNumber: z.number(),
     phone_number: z.string(),
-    created_at: z.date(),
-    role: z.enum(['DISPLACED', 'DELEGATOR', 'MANAGER', 'SECRETARY', 'SECURITY_OFFICER'])
+    created_at: z.union([z.string(), z.date()]), // Accept both string and date
+    role: z.enum(['DISPLACED', 'DELEGATE', 'MANAGER', 'SECURITY', 'SECURITY_OFFICER']),
+    image: z.string().nullable()
   })
 })
 
@@ -36,11 +37,33 @@ export const getSession = (): { token: string; user: User } | null => {
     // Parse the session data from localStorage
     const parsedSession = JSON.parse(rawSession)
 
-    // Validate the session data structure
-    const session = SessionSchema.safeParse(parsedSession)
+    // Extract the relevant data
+    const sessionData = {
+      token: parsedSession.token,
+      user: {
+        id: parsedSession.user.id,
+        name: parsedSession.user.name,
+        email: parsedSession.user.email,
+        idNumber: parsedSession.user.idNumber,
+        phone_number: parsedSession.user.phone_number,
+        created_at: parsedSession.user.created_at,
+        role: parsedSession.user.role,
+        image: parsedSession.user.image || null
+      }
+    }
 
-    // Return the validated session data or null if invalid
-    return session.success ? session.data : null
+    // Validate the data structure
+    const session = SessionSchema.safeParse(sessionData)
+    if (!session.success) return null
+
+    // Transform the validated data to match the expected return type
+    return {
+      token: session.data.token,
+      user: {
+        ...session.data.user,
+        created_at: new Date(session.data.user.created_at)
+      }
+    }
   } catch (error) {
     console.error("Error parsing session:", error)
     return null

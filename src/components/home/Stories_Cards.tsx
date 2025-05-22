@@ -9,7 +9,7 @@ import { Carousel } from '@mantine/carousel';
 import successStoryResponse from '@/@types/landing/successStoryResponse.type';
 
 export default function Stories_Cards() {
-  const autoplay = useRef(Autoplay({ delay: 3000 }));
+  const autoplay = useRef(Autoplay({ delay: 5000 }));
 
   const {
     data: storiesData,
@@ -35,14 +35,16 @@ export default function Stories_Cards() {
   return (
     <Box px={10} w='100%'>
       <Carousel
-        dir='rtl' // important for avoid direction problems
+        // dir='rtl' // important for avoid direction problems
         h={200}
         w='100%'
-        align='start'
         withControls
         slideSize='100%'
-        loop={true}
-        slidesToScroll={1}
+        emblaOptions={{
+          loop: true,
+          align: 'start',
+          slidesToScroll: 1,
+        }}
         plugins={[autoplay.current]}
         onMouseEnter={autoplay.current.stop}
         onMouseLeave={autoplay.current.reset}

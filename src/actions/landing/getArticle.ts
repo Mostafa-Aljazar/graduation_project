@@ -1,5 +1,5 @@
 import articleResponse from "@/@types/landing/articleResponse.type";
-import { ARTICLE_EXAMPLE } from "@/content/blog";
+import { ARTICLE_EXAMPLE } from "@/content/landing/blog";
 
 
 // RETURN FAKE DATA

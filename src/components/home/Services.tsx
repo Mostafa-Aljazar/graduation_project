@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image'; // Assuming Next.js Image component
 import { home_tent } from '@/assets/home';
 import { Box, Flex, SimpleGrid, Stack, Text, ThemeIcon } from '@mantine/core';
-import { SERVICES_Data, SERVICES_TITLE } from '@/content/home';
+import { SERVICES_Data, SERVICES_TITLE } from '@/content/landing/home';
 
 export default function Services() {
   return (
@@ -41,7 +41,7 @@ export default function Services() {
               bg={'white'}
               p={10}
               w={{ base: '100%', xs: 350, md: '100%' }}
-              className='!shadow-xs rounded-sm'
+              className='!shadow-xs hover:!shadow-md rounded-sm !transition-all !duration-300 !ease-in-out'
             >
               <ThemeIcon variant='transparent' className='!text-primary'>
                 <stat.icon size={30} />

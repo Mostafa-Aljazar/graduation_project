@@ -2,7 +2,7 @@
 import { Loader, Text } from '@mantine/core';
 import React from 'react';
 import Blog_Card from '../blog/Blog_Card';
-import { ARTICLES_TITLE_ANOTHER } from '@/content/blog';
+import { ARTICLES_TITLE_ANOTHER } from '@/content/landing/blog';
 import { getArticles } from '@/actions/landing/getArticles';
 import { useQuery } from '@tanstack/react-query';
 

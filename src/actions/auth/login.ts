@@ -6,6 +6,11 @@ import { LOCALSTORAGE_SESSION_KEY } from "@/constants/sessionKey";
 
 export const login = async (formData: FormData): Promise<loginResponse> => {
 
+    // Get form data values
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const userType = formData.get("userType");
+
     //FIXME: remove this => just as  an example
     const FakeData: loginResponse = {
         status: "200",
@@ -15,9 +20,10 @@ export const login = async (formData: FormData): Promise<loginResponse> => {
             id: 1,
             name: "John Doe",
             email: formData.get("email") as string,
+            idNumber: 408656429,
             phone_number: "+1234567890",
             created_at: new Date("2024-01-20T12:00:00.000Z"),
-            role: "DISPLACED",
+            role: userType as "DISPLACED" | "DELEGATE" | "MANAGER" | "SECURITY" | "SECURITY_OFFICER",
             image: null
         },
         error: "Error message in Arabic"
@@ -48,9 +54,12 @@ export const login = async (formData: FormData): Promise<loginResponse> => {
                     id: 0,
                     name: "",
                     email: "",
+                    idNumber: 0,
                     phone_number: "",
                     created_at: new Date(),
-                    role: "MANAGER"
+                    role: "MANAGER",
+                    image: null
+
                 },
                 error: "جميع الحقول مطلوبة"
             };
@@ -63,20 +72,6 @@ export const login = async (formData: FormData): Promise<loginResponse> => {
         });
 
         if (response.data) {
-            // Store the session in localStorage
-            localStorage.setItem(LOCALSTORAGE_SESSION_KEY, JSON.stringify({
-                token: response.data.token,
-                // TODO: fix this => common type for user
-                user: {
-                    id: response.data.user.id,
-                    name: response.data.user.name,
-                    email: response.data.user.email,
-                    phone_number: response.data.user.phone_number,
-                    created_at: response.data.user.created_at,
-                    role: response.data.user.role
-                }
-            }));
-
             return {
                 status: "200",
                 message: "تم تسجيل الدخول بنجاح",
@@ -93,9 +88,11 @@ export const login = async (formData: FormData): Promise<loginResponse> => {
                 id: 0,
                 name: "",
                 email: "",
+                idNumber: 0,
                 phone_number: "",
                 created_at: new Date(),
-                role: "DISPLACED"
+                role: "DISPLACED",
+                image: null
             },
             error: "حدث خطأ في تسجيل الدخول"
         };
@@ -109,9 +106,11 @@ export const login = async (formData: FormData): Promise<loginResponse> => {
                 id: 0,
                 name: "",
                 email: "",
+                idNumber: 0,
                 phone_number: "",
                 created_at: new Date(),
-                role: "DISPLACED"
+                role: "DISPLACED",
+                image: null
             },
             error: error.response?.data?.error || "حدث خطأ في تسجيل الدخول"
         };

@@ -12,14 +12,14 @@ import { useRouter } from 'next/navigation';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { toFormData } from '@/utils/objectToFormData';
-import { AUTH_ROUTES } from '@/content/routes';
+import { AUTH_ROUTES } from '@/constants/routes';
 import { useQueryStates, parseAsString } from 'nuqs';
 import createNewPasswordResponse from '@/@types/auth/createNewPasswordResponse';
 import { createNewPassword } from '@/actions/auth/createNewPassword';
 import {
   createNewPasswordSchema,
   createNewPasswordType,
-} from '@/validation/createNewPasswordSchema';
+} from '@/validation/auth/createNewPasswordSchema';
 
 export default function Create_New_Password() {
   const [error, setError] = useState('');

@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 
-  
+@import 'uploadthing/tw/v4';
+@source "../node_modules/@uploadthing/react/dist"; /** <-- depends on your project structure */
+
 @theme {
   /* Custom Breakpoints */
   --breakpoint-xs: 450px;
@@ -9,21 +11,21 @@
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
 
-  
   /* Custom font family */
-  --font-family-sf-pro-display: "SF Pro Display", sans-serif;
+  --font-family-sf-pro-display: 'SF Pro Display', sans-serif;
 
   /* Custom Colors */
-  --color-primary: #345E40;
-  --color-second: #97A483;
-  --color-second-light: #EDEEF7;
-  --color-third: #F7F2DB;
-  --color-dark: #2D2D2D;
- }
+  --color-primary: #345e40;
+  --color-second: #97a483;
+  --color-second-light: #edeef7;
+  --color-third: #f7f2db;
+  --color-dark: #2e2e2e;
+  --color-white: #ffffff;
+}
 
 body {
-  color: #2D2D2D;
-  background: #ffffff;
+  color: var(--color-dark);
+  background: var(--color-white);
   font-family: Arial, Helvetica, sans-serif;
-  letter-spacing:0.04em;
+  letter-spacing: 0.04em;
 }

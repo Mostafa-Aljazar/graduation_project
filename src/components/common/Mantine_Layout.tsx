@@ -1,8 +1,8 @@
 'use client';
-import { AppShell, Skeleton } from '@mantine/core';
+import { AppShell } from '@mantine/core';
 import { useDisclosure, useHeadroom } from '@mantine/hooks';
-import Header from './Header';
-import Footer from './Footer';
+import Header from './Header/Header';
+import Footer from './Footer/Footer';
 
 export default function Mantine_Layout({
   children,
@@ -15,19 +15,13 @@ export default function Mantine_Layout({
   return (
     <AppShell
       header={{ height: 60, collapsed: !pinned, offset: false }}
-      navbar={{
-        width: 0,
-        breakpoint: 'md',
-        collapsed: { mobile: !pinned },
-      }}
       flex={1}
       withBorder={false}
       className='!flex !flex-col !w-full !min-h-screen'
     >
       <Header opened={opened} toggle={toggle} />
-      {/* <Navbar /> */}
+
       <AppShell.Main
-        pt={60}
         flex={1}
         w={'100%'}
         h={'100%'}

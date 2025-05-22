@@ -11,11 +11,14 @@ type Props = {
   imgs: StaticImageData[];
 };
 export default function Hero_Section({ title, desc, imgs }: Props) {
-  const autoplay = useRef(Autoplay({ delay: 6000 }));
+  const autoplay = useRef(Autoplay({ delay: 5000 }));
 
   const slides = imgs.map((item, index) => (
-    <Carousel.Slide key={index} h={{ base: 250, md: 300, lg: 350 }}>
-      <Box style={{ position: 'relative', width: '100%', height: '100%' }}>
+    <Carousel.Slide key={index} w={'100%'} h={'100%'}>
+      <Box
+        h={{ base: 250, md: 300, lg: 350 }}
+        style={{ position: 'relative', width: '100%' }}
+      >
         <Image
           alt={`Hero Image ${index + 1}`}
           src={item}
@@ -27,15 +30,20 @@ export default function Hero_Section({ title, desc, imgs }: Props) {
   ));
 
   return (
-    <Box pos={'relative'} w={'100%'} h={{ base: 250, md: 300, lg: 350 }}>
+    <Box pos={'relative'} w={'100%'}>
       <Carousel
-        dir='ltr' // important for avoid direction problems
-        align='end'
-        loop={true}
+        w='100%'
+        h={{ base: 250, md: 300, lg: 350 }}
+        withControls
+        slideSize='100%'
+        emblaOptions={{
+          loop: true,
+          align: 'start',
+          slidesToScroll: 1,
+        }}
         plugins={[autoplay.current]}
         onMouseEnter={autoplay.current.stop}
         onMouseLeave={autoplay.current.reset}
-        withControls={false}
       >
         {slides}
       </Carousel>
