@@ -1,4 +1,4 @@
-import { img_1, img_2 } from '@/assets/home';
+import { img_1, img_2 } from '@/assets/landing/home';
 import {
   Box,
   Group,

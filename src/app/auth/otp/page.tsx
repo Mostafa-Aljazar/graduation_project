@@ -2,7 +2,6 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import {
   Button,
-  Loader,
   PinInput,
   Stack,
   Text,
@@ -15,10 +14,12 @@ import { useRouter } from 'next/navigation';
 import { useQueryStates, parseAsString, parseAsInteger } from 'nuqs';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
-import { verifyOtp } from '@/actions/auth/verifyOtp';
-import { toFormData } from '@/utils/objectToFormData';
+import { verifyOtp, verifyOtpProps } from '@/actions/auth/verifyOtp';
 import verifyOtpResponse from '@/@types/auth/verifyOtpResponse.type';
-import { forgetPassword } from '@/actions/auth/forgetPassword';
+import {
+  forgetPassword,
+  forgetPasswordProps,
+} from '@/actions/auth/forgetPassword';
 import forgetPasswordResponse from '@/@types/auth/forgetPasswordResponse.type';
 import { AUTH_ROUTES } from '@/constants/routes';
 import { otpSchema, otpType } from '@/validation/auth/otpSchema';
@@ -88,7 +89,11 @@ function OTPContent() {
   });
 
   // Verify OTP mutation with better error handling
-  const verifyOtpMutation = useMutation<verifyOtpResponse, Error, FormData>({
+  const verifyOtpMutation = useMutation<
+    verifyOtpResponse,
+    Error,
+    verifyOtpProps
+  >({
     mutationFn: verifyOtp,
     onSuccess: (data) => {
       if (Number(data.status) == 200) {
@@ -126,23 +131,18 @@ function OTPContent() {
 
   // Handle submit with better validation
   const handleSubmit = form.onSubmit((values: otpType) => {
-    if (!seconds) {
-      setError('انتهى وقت الرمز. يرجى طلب رمز جديد');
-      return;
-    }
-
-    if (values.otp.length !== 4) {
-      setError('يجب إدخال 4 أرقام');
-      return;
-    }
-
-    setError('');
     try {
-      const formData = toFormData({
-        otp: values.otp,
-        email: query.email,
-      });
-      verifyOtpMutation.mutate(formData);
+      if (!seconds) {
+        setError('انتهى وقت الرمز. يرجى طلب رمز جديد');
+        return;
+      }
+      if (values.otp.length !== 4) {
+        setError('يجب إدخال 4 أرقام');
+        return;
+      }
+
+      setError('');
+      verifyOtpMutation.mutate({ email: query.email, otp: values.otp });
     } catch (error: any) {
       setError(error?.message as string);
     }
@@ -152,7 +152,7 @@ function OTPContent() {
   const resendOtpMutation = useMutation<
     forgetPasswordResponse,
     Error,
-    FormData
+    forgetPasswordProps
   >({
     mutationFn: forgetPassword,
     onSuccess: (data) => {
@@ -194,14 +194,7 @@ function OTPContent() {
   // Handle resend with better UX
   const handleResend = async () => {
     setError('');
-    try {
-      const formData = toFormData({
-        email: query.email,
-      });
-      resendOtpMutation.mutate(formData);
-    } catch (err: any) {
-      setError(err.message);
-    }
+    resendOtpMutation.mutate({ email: query.email });
   };
 
   return (
@@ -229,7 +222,7 @@ function OTPContent() {
             ta={'center'}
             w={{ base: 343, md: 400 }}
           >
-            لقد أرسلنا رمز التحقق إلى{' '}
+            لقد أرسلنا رمز التحقق إلى
             <span className='font-bold'>{query.email}</span>
           </Text>
 
@@ -294,7 +287,7 @@ function OTPContent() {
                 fw={500}
                 onClick={handleResend}
                 disabled={resendOtpMutation.isPending}
-                loading={resendOtpMutation.isPending}
+                // loading={resendOtpMutation.isPending}
                 className='!text-primary hover:!text-primary/80 !underline'
               >
                 إعادة إرسال الرمز
@@ -302,7 +295,7 @@ function OTPContent() {
             )}
 
             <Button
-              loading={verifyOtpMutation.isPending}
+              // loading={verifyOtpMutation.isPending}
               type='submit'
               mt={32}
               fz={20}

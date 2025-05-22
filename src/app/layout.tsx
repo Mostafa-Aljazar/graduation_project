@@ -7,8 +7,15 @@ import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import type { Metadata } from 'next';
 import Providers from '@/providers/providers';
 import sfProDisplay from '@/fonts';
-import Footer from '@/components/common/Footer/Footer';
-import { CacheProvider } from '@emotion/react';
+import { Tajawal } from 'next/font/google';
+
+// Configure Tajawal font from Google Fonts
+const tajawal = Tajawal({
+  weight: ['200', '300', '400', '500', '700', '800', '900'],
+  subsets: ['arabic'],
+  display: 'swap',
+  variable: '--tajawal-font',
+});
 
 export const metadata: Metadata = {
   title: 'AL-AQSA Camp',
@@ -25,7 +32,8 @@ export default function RootLayout({
       <head>
         <ColorSchemeScript />
       </head>
-      <body className={`${sfProDisplay.className} antialiased`}>
+      <body className={` ${tajawal.className} antialiased`}>
+        {/* <body className={`${sfProDisplay.className} antialiased`}> */}
         <Providers>
           <>{children}</>
         </Providers>

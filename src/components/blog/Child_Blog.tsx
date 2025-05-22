@@ -1,4 +1,4 @@
-import { img_child } from '@/assets/blog';
+import { img_child } from '@/assets/landing/blog';
 import { Box, Overlay, Text } from '@mantine/core';
 import Image from 'next/image';
 import React from 'react';

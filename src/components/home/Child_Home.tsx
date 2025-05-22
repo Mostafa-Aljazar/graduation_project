@@ -1,4 +1,4 @@
-import { home_child } from '@/assets/home';
+import { home_child } from '@/assets/landing/home';
 import { Box, Overlay, Text } from '@mantine/core';
 import Image from 'next/image';
 import React from 'react';

@@ -2,7 +2,12 @@
 import forgetPasswordResponse from "@/@types/auth/forgetPasswordResponse.type";
 import AqsaAPI from "@/services";
 
-export const forgetPassword = async (formData: FormData): Promise<forgetPasswordResponse> => {
+
+export type forgetPasswordProps = {
+    email: string
+}
+
+export const forgetPassword = async ({ email }: forgetPasswordProps): Promise<forgetPasswordResponse> => {
     //FIXME: remove this => just as an example
     const FakeData: forgetPasswordResponse = {
         status: "200", // 500 | 200
@@ -19,15 +24,7 @@ export const forgetPassword = async (formData: FormData): Promise<forgetPassword
     //FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const email = formData.get("email");
 
-        if (!email) {
-            return {
-                status: "400",
-                message: "البريد الإلكتروني مطلوب",
-                error: "البريد الإلكتروني مطلوب"
-            };
-        }
 
         const response = await AqsaAPI.post("/auth/forget-password", {
             email

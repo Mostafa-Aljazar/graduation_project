@@ -1,5 +1,5 @@
-import { Group, Stack, Text } from '@mantine/core';
-import { MoveRight } from 'lucide-react';
+import { Flex, Stack, Text } from '@mantine/core';
+import { MoveLeft } from 'lucide-react';
 export default function Left_Section() {
   return (
     <Stack justify='center' align='center' h={{ base: '100%', lg: '100vh' }}>
@@ -13,29 +13,28 @@ export default function Left_Section() {
           c={'white'}
           fw={500}
           ta={'start'}
-          lh={1.6}
-          w={{ base: 300, md: 600, lg: 390 }}
-          fz={{ base: 30, md: 40, lg: 45 }}
+          w={{ base: 350, md: 600, lg: 450 }}
+          fz={{ base: 30, md: 40 }}
         >
           مرحباً بك في مخيم الأقصى لأيواء النازحين 👋
-          {/* استكشف المساعدات أو قم بإدارة الخدمات */}
         </Text>
-        <Group
+        <Flex
+          direction={'row'}
           justify='space-between'
           align='center'
           px={16}
           py={8}
-          w={{ base: 300, md: 600, lg: 390 }}
+          w={{ base: '100%', md: 600, lg: 390 }}
           h={{ base: 43, lg: 39 }}
           c={'white'}
-          className='!bg-transparent !border-[#757474] !border-[1px] !rounded-lg !transition-colors !duration-300'
+          wrap='nowrap'
+          className='!bg-transparent !border-[1px] !border-gray-300 !rounded-lg !text-nowrap !transition-colors !duration-300'
         >
-          <Text fw={500} fz={16}>
+          <Text fw={500} fz={{ base: 14, md: 16 }}>
             استكشف المساعدات أو قم بإدارة الخدمات
-            {/* اختر دورك للبدء  */}
           </Text>
-          <MoveRight strokeWidth={1} className='rtl:!rotate-180' />
-        </Group>
+          <MoveLeft strokeWidth={1} />
+        </Flex>
       </Stack>
     </Stack>
   );

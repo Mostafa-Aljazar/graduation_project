@@ -1,6 +1,6 @@
 'use client';
 import articleResponse from '@/@types/landing/articleResponse.type';
-import { img_1 } from '@/assets/home';
+import { img_1 } from '@/assets/landing/home';
 import { LANDING_ROUTES } from '@/constants/routes';
 import { cn } from '@/utils/cn';
 import getLimitedWords from '@/utils/getLimitedWords';

@@ -1,4 +1,4 @@
-import { img_1 } from '@/assets/home';
+import { COVER_CAMP } from '@/assets/auth';
 import Left_Section from '@/components/auth/Left_Section';
 import { Box, Group, Overlay, Stack } from '@mantine/core';
 import Image from 'next/image';
@@ -15,12 +15,12 @@ export default function Auth_Layout({
       <Box visibleFrom='lg' pos={'relative'} w={'100%'}>
         {/* Image spanning the entire page */}
         <Image
-          src={img_1}
+          src={COVER_CAMP}
           alt='coverLogin'
           className='absolute inset-0 w-full h-full object-cover'
         />
         {/* Overlay */}
-        <Overlay zIndex={10} pos={'absolute'} bg={'black'} opacity={0.2} />
+        <Overlay zIndex={40} pos={'absolute'} bg={'black'} opacity={0.5} />
         {/* Content Above the Overlay */}
         <Group
           pos={'relative'}
@@ -29,7 +29,7 @@ export default function Auth_Layout({
           align='center'
           w={'100%'}
           mih={'100vh'}
-          className='!z-10'
+          className='!z-50'
         >
           <Box flex={1}>
             <Left_Section />
@@ -50,7 +50,7 @@ export default function Auth_Layout({
           {/* Image spanning the entire page */}
           <Box w={'100%'} h={285}>
             <Image
-              src={img_1}
+              src={COVER_CAMP}
               alt='Cover Login'
               objectFit='cover'
               className='w-full h-full object-cover'

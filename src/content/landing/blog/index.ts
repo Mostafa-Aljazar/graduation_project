@@ -1,6 +1,6 @@
 import articleResponse from "@/@types/landing/articleResponse.type";
 import successStoryResponse from "@/@types/landing/successStoryResponse.type";
-import { img_1, img_2, img_3 } from "@/assets/home";
+import { img_1, img_2, img_3 } from "@/assets/landing/home";
 
 
 // HERO

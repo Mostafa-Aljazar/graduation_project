@@ -2,13 +2,12 @@
 import { useForm, zodResolver } from '@mantine/form';
 import { useState } from 'react';
 import {
-  ActionIcon,
   Button,
-  Divider,
   Group,
   LoadingOverlay,
   NativeSelect,
   PasswordInput,
+  Select,
   Stack,
   Text,
   TextInput,
@@ -23,12 +22,10 @@ import {
 import Link from 'next/link';
 import { loginSchema, loginType } from '@/validation/auth/loginSchema';
 import { useMutation } from '@tanstack/react-query';
-import { login } from '@/actions/auth/login';
+import { login, loginProps } from '@/actions/auth/login';
 import { loginResponse } from '@/@types/auth/loginResponse.type';
 import { notifications } from '@mantine/notifications';
 import { useRouter } from 'next/navigation';
-import { toFormData } from '@/utils/objectToFormData';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
 import { LOCALSTORAGE_SESSION_KEY } from '@/constants/sessionKey';
 
 export default function Login() {
@@ -42,10 +39,9 @@ export default function Login() {
     validate: zodResolver(loginSchema),
   });
 
-  const loginMutation = useMutation<loginResponse, Error, FormData>({
+  const loginMutation = useMutation<loginResponse, Error, loginProps>({
     mutationFn: login,
     onSuccess: (data) => {
-      console.log('🚀 ~ Login ~ data:', data);
       if (Number(data.status) == 200) {
         notifications.show({
           title: 'مرحبا بك',
@@ -89,151 +85,136 @@ export default function Login() {
     },
   });
 
-  const handleSubmit = form.onSubmit((data: loginType) => {
-    try {
-      // console.log('🚀 ~ handleSubmit ~ data:', data);
-
-      const formData = toFormData({
-        ...data,
-      });
-
-      loginMutation.mutate(formData);
-    } catch (error: any) {
-      setError(error?.message as string);
-    }
+  const handleSubmit = form.onSubmit((values: loginType) => {
+    loginMutation.mutate({
+      email: values.email,
+      password: values.password,
+      userType: values.userType,
+    });
   });
 
   return (
-    <>
-      {/* Desktop & Mobile */}
-      <Stack
-        align='center'
-        gap={40}
-        bg={'white'}
-        pt={{ base: 0, lg: 64 }}
-        pb={20}
-        h={'100%'}
-        w={{ base: '100%', lg: 550 }}
-        className='!rounded-xl'
-      >
-        <Text fw={500} fz={{ base: 28, md: 36 }} ta={'center'}>
-          تسجيل الدخول
-        </Text>
+    <Stack
+      align='center'
+      gap={40}
+      bg={'white'}
+      pt={{ base: 0, lg: 64 }}
+      pb={20}
+      h={'100%'}
+      w={{ base: '100%', lg: 550 }}
+      className='!rounded-xl'
+    >
+      <Text fw={500} fz={{ base: 28, md: 36 }} ta={'center'}>
+        تسجيل الدخول
+      </Text>
 
-        <Stack justify='center' align='center' gap={20}>
-          <form
-            className='relative flex flex-col items-center gap-3'
-            onSubmit={handleSubmit}
-          >
-            {/* Loading Overlay */}
-            <LoadingOverlay
-              visible={loginMutation.isPending}
-              zIndex={1000}
-              overlayProps={{ radius: 'sm', blur: 0.3 }}
-            />
+      <Stack justify='center' align='center' gap={20}>
+        <form
+          className='relative flex flex-col items-center gap-3'
+          onSubmit={handleSubmit}
+        >
+          {/* Loading Overlay */}
+          <LoadingOverlay
+            visible={loginMutation.isPending}
+            zIndex={1000}
+            overlayProps={{ radius: 'sm', blur: 0.3 }}
+          />
 
-            {/*  userType */}
-            <NativeSelect
-              data={[
-                { label: 'نازح', value: 'DISPLACED' },
-                { label: 'مدير', value: 'MANAGER' },
-                { label: 'مندوب', value: 'DELEGATE' },
-                { label: 'أمن', value: 'SECURITY' },
-                { label: 'مسؤول الأمن', value: 'SECURITY_OFFICER' },
-              ]}
-              label={
-                <Text fw={400} c={'#817C74'} fz={16}>
-                  تسجيل الدخول ك ؟
-                </Text>
-              }
-              size='md'
-              w={{ base: 343, md: 400 }}
-              className='!border-second !border-w-1 focus:!border-none !outline-none'
-              key={form.key('userType')}
-              {...form.getInputProps('userType')}
-              classNames={{
-                input: '!text-dark !font-medium !text-sm',
-                error:
-                  '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
-              }}
-            />
-
-            {/* Email Id */}
-            <TextInput
-              type='email'
-              label={
-                <Text fw={400} c={'#817C74'} fz={16}>
-                  البريد الاكتروني
-                </Text>
-              }
-              placeholder={'ادخل البريد الاكتروني'}
-              size='md'
-              w={{ base: 343, md: 400 }}
-              className='!border-second !border-w-1 focus:!border-none !outline-none'
-              key={form.key('email')}
-              {...form.getInputProps('email')}
-              classNames={{
-                input: '!text-dark !font-medium !text-sm',
-                error:
-                  '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
-              }}
-            />
-
-            {/*  password */}
-            <PasswordInput
-              type='password'
-              label={
-                <Text fw={400} c={'#817C74'} fz={16}>
-                  كلمة المرور
-                </Text>
-              }
-              placeholder={'ادخل كلمة المرور'}
-              size='md'
-              w={{ base: 343, md: 400 }}
-              className='!border-second !border-w-1 focus:!border-none !outline-none'
-              key={form.key('password')}
-              {...form.getInputProps('password')}
-              classNames={{
-                input: '!text-dark !font-medium !text-sm',
-                error:
-                  '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
-              }}
-            />
-
-            <Group wrap='nowrap' align='center' w={'100%'}>
-              <Link
-                href={AUTH_ROUTES.FORGET_PASSWORD}
-                className='font-normal text-primary text-sm'
-              >
-                نسيت كلمة المرور ؟
-              </Link>
-            </Group>
-
-            <Button
-              loading={loginMutation.isPending}
-              type='submit'
-              mt={32}
-              fz={20}
-              fw={500}
-              c={'white'}
-              w={228}
-              className={`!shadow-lg max-lg:!mt-10 ${
-                !form.getValues().password || !form.getValues().email
-                  ? '!bg-primary/70'
-                  : '!bg-primary'
-              }`}
-              disabled={!form.getValues().password || !form.getValues().email}
-            >
-              دخول
-            </Button>
-            {error ? (
-              <Text fw={'500'} mt={'sm'} size='sm' ta='center' c={'red'}>
-                {error}
+          <Select
+            data={[
+              { label: 'نازح', value: 'DISPLACED' },
+              { label: 'مدير', value: 'MANAGER' },
+              { label: 'مندوب', value: 'DELEGATE' },
+              { label: 'أمن', value: 'SECURITY' },
+              { label: 'مسؤول الأمن', value: 'SECURITY_OFFICER' },
+            ]}
+            label={
+              <Text fw={400} c={'#817C74'} fz={16}>
+                تسجيل الدخول ك ؟
               </Text>
-            ) : null}
-          </form>
-        </Stack>
+            }
+            size='md'
+            w={{ base: 343, md: 400 }}
+            className='!border-second !border-w-1 focus:!border-none !outline-none'
+            key={form.key('userType')}
+            {...form.getInputProps('userType')}
+            classNames={{
+              input: '!text-dark !font-medium !text-sm',
+              error: '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
+            }}
+          />
+
+          <TextInput
+            type='email'
+            label={
+              <Text fw={400} c={'#817C74'} fz={16}>
+                البريد الاكتروني
+              </Text>
+            }
+            placeholder={'ادخل البريد الاكتروني'}
+            size='md'
+            w={{ base: 343, md: 400 }}
+            className='!border-second !border-w-1 focus:!border-none !outline-none'
+            key={form.key('email')}
+            {...form.getInputProps('email')}
+            classNames={{
+              input: '!text-dark !font-medium !text-sm',
+              error: '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
+            }}
+          />
+
+          <PasswordInput
+            type='password'
+            label={
+              <Text fw={400} c={'#817C74'} fz={16}>
+                كلمة المرور
+              </Text>
+            }
+            placeholder={'ادخل كلمة المرور'}
+            size='md'
+            w={{ base: 343, md: 400 }}
+            className='!border-second !border-w-1 focus:!border-none !outline-none'
+            key={form.key('password')}
+            {...form.getInputProps('password')}
+            classNames={{
+              input: '!text-dark !font-medium !text-sm',
+              error: '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
+            }}
+          />
+
+          <Group wrap='nowrap' align='center' w={'100%'}>
+            <Link
+              href={AUTH_ROUTES.FORGET_PASSWORD}
+              className='font-normal text-primary text-sm'
+            >
+              نسيت كلمة المرور ؟
+            </Link>
+          </Group>
+
+          <Button
+            // loading={loginMutation.isPending}
+            type='submit'
+            mt={32}
+            fz={20}
+            fw={500}
+            c={'white'}
+            w={228}
+            className={`!shadow-lg max-lg:!mt-10 ${
+              !form.getValues().password || !form.getValues().email
+                ? '!bg-primary/70'
+                : '!bg-primary'
+            }`}
+            disabled={!form.getValues().password || !form.getValues().email}
+          >
+            دخول
+          </Button>
+          {error ? (
+            <Text fw={'500'} mt={'sm'} size='sm' ta='center' c={'red'}>
+              {error}
+            </Text>
+          ) : null}
+        </form>
       </Stack>
-    </>
+    </Stack>
   );
 }

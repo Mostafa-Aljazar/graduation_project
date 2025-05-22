@@ -1,13 +1,13 @@
 import React from 'react';
-import { LoadingOverlay } from '@mantine/core';
+import { LoadingOverlay, Stack } from '@mantine/core';
 export default function loading() {
   return (
-    <div className='flex justify-center items-center w-screen h-screen'>
+    <Stack justify='center' align='center' w={'100vh'} h={'100vh'}>
       <LoadingOverlay
         visible={true}
         zIndex={1000}
         overlayProps={{ radius: 'sm', blur: 0.3 }}
       />
-    </div>
+    </Stack>
   );
 }
