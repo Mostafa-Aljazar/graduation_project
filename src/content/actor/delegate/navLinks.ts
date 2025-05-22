@@ -1,5 +1,5 @@
 import { DELEGATE_ROUTES_fUNC, GENERAL_ACTOR_ROUTES } from '@/constants/routes';
-import { BellRing, Newspaper, Speech, Handshake, User, Users, FileChartLine } from 'lucide-react';
+import { BellRing, Newspaper, Speech, Handshake, User, Users, FileChartLine, MessageCircleWarning } from 'lucide-react';
 
 
 //what appear to delegate 
@@ -26,7 +26,7 @@ export const delegate_NavLinks = (delegate_Id: number | string) => {
         },
         { label: 'التقارير', href: delegateRoutes.REPORTS, icon: FileChartLine },
         { label: 'الإعلانات', href: GENERAL_ACTOR_ROUTES.ADS, icon: Newspaper },
-        { label: 'الشكاوي', href: delegateRoutes.COMPLAINTS, icon: Speech },
+        { label: 'الشكاوي', href: delegateRoutes.COMPLAINTS, icon: MessageCircleWarning },
     ] as const;
 };
 
@@ -42,7 +42,7 @@ export const guest_Delegate_NavLinks = (delegate_Id: number | string) => {
             icon: Handshake,
         },
         { label: 'التقارير', href: delegateRoutes.REPORTS, icon: FileChartLine },
-        { label: 'الشكاوي', href: delegateRoutes.COMPLAINTS, icon: Speech },
+        { label: 'الشكاوي', href: delegateRoutes.COMPLAINTS, icon: MessageCircleWarning },
     ] as const;
 };
 
@@ -52,7 +52,7 @@ export const displaced_As_Guest_Delegate_NavLinks = (delegate_Id: number | strin
 
     return [
         { label: 'الملف الشخصي', href: delegateRoutes.PROFILE, icon: User },
-        { label: 'الشكاوي', href: delegateRoutes.COMPLAINTS, icon: Speech },
+        { label: 'الشكاوي', href: delegateRoutes.COMPLAINTS, icon: MessageCircleWarning },
 
     ] as const;
 };

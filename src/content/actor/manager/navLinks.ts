@@ -1,4 +1,4 @@
-import { ShieldUser, Database, Newspaper, Speech, Handshake, User, Users, FileChartLine } from 'lucide-react';
+import { ShieldUser, Database, Newspaper, Speech, Handshake, User, Users, FileChartLine, MessageCircleWarning } from 'lucide-react';
 
 import { GENERAL_ACTOR_ROUTES, MANAGER_ROUTES_fUNC } from "../../../constants/routes";
 
@@ -26,7 +26,7 @@ export const managerNavLinks = (manager_Id: number | string) => {
             href: managerRoutes.AIDS_MANAGEMENT,
             icon: Handshake,
         },
-        { label: 'الشكاوي', href: managerRoutes.COMPLAINTS, icon: Speech },
+        { label: 'الشكاوي', href: managerRoutes.COMPLAINTS, icon: MessageCircleWarning },
         { label: 'التقارير', href: managerRoutes.REPORTS, icon: FileChartLine },
         { label: 'الإعلانات و المدونات', href: managerRoutes.ADS_BLOGS, icon: Newspaper },
     ] as const;
@@ -39,6 +39,6 @@ export const guestManagerNavLinks = (manager_Id: number | string) => {
 
     return [
         { label: 'الملف الشخصي', href: managerRoutes.PROFILE, icon: User },
-        { label: 'الشكاوي', href: managerRoutes.COMPLAINTS, icon: Speech },
+        { label: 'الشكاوي', href: managerRoutes.COMPLAINTS, icon: MessageCircleWarning },
     ] as const;
 };

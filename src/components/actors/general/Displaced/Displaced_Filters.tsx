@@ -99,68 +99,6 @@ export default function Displaced_Filters({
 
   return (
     <Stack w='100%' mb={20} gap={20}>
-      {/* <Flex
-        direction={{ base: 'column', md: 'row' }}
-        justify='space-between'
-        align='center'
-        gap={10}
-        mb={10}
-      >
-        <Group>
-          <Text fw={600} fz={20} className='!text-primary'>
-            الفلاتر:
-          </Text>
-          <Text
-            fz={14}
-            px={5}
-            className='border-1 border-second rounded-md text-dark'
-          >
-            {700}
-          </Text>
-          <Text fw={500} fz={18} className='!text-dark'>
-            نازح
-          </Text>
-        </Group>
-
-        <Flex
-          flex={1}
-          gap={0}
-          className='border-1 border-gray-300 rounded-lg overflow-hidden'
-        >
-          <TextInput
-            placeholder='رقم الهوية/رقم الخيمة...'
-            value={searchInput}
-            size='sm'
-            w='100%'
-            onChange={(e) => setSearchInput(e.target.value)}
-            leftSection={<Search size={18} />}
-            classNames={{
-              input:
-                '!border-none !outline-none placeholder:!text-sm !text-primary !font-medium',
-            }}
-          />
-          <Button
-            onClick={handleSearch}
-            w={60}
-            size='sm'
-            c='dark'
-            className='!bg-gray-300 !rounded-none'
-          >
-            بحث
-          </Button>
-        </Flex>
-
-        <Button
-          w={120}
-          size='sm'
-          c='white'
-          className='!bg-primary !shadow-lg'
-          rightSection={<FileUp size={18} />}
-        >
-          تصدير
-        </Button>
-      </Flex> */}
-
       <Flex
         direction={{ base: 'column', md: 'row' }}
         gap={{ base: 10, md: 0 }}

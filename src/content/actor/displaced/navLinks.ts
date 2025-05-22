@@ -1,4 +1,4 @@
-import { BellRing, Newspaper, Speech, Handshake, User } from 'lucide-react';
+import { BellRing, Newspaper, Speech, Handshake, User, MessageCircleWarning } from 'lucide-react';
 import { DISPLACED_ROUTES_fUNC, GENERAL_ACTOR_ROUTES } from "../../../constants/routes";
 
 //what appear to displaced 
@@ -11,7 +11,7 @@ export const displaced_NavLinks = (displaced_Id: number | string) => {
         { label: 'الإشعارات', href: GENERAL_ACTOR_ROUTES.NOTIFICATIONS, icon: BellRing },
         { label: 'الإعلانات', href: GENERAL_ACTOR_ROUTES.ADS, icon: Newspaper },
         { label: 'الإعانات المستلمة', href: displacedRoutes.RECEIVED_AIDS, icon: Handshake },
-        { label: 'الشكاوي', href: displacedRoutes.COMPLAINTS, icon: Speech },
+        { label: 'الشكاوي', href: displacedRoutes.COMPLAINTS, icon: MessageCircleWarning },
     ] as const;
 };
 
@@ -23,6 +23,6 @@ export const guest_Displaced_NavLinks = (displaced_Id: number | string) => {
     return [
         { label: 'الملف الشخصي', href: displacedRoutes.PROFILE, icon: User },
         { label: 'الإعانات المستلمة', href: displacedRoutes.RECEIVED_AIDS, icon: Handshake },
-        { label: 'الشكاوي', href: displacedRoutes.COMPLAINTS, icon: Speech },
+        { label: 'الشكاوي', href: displacedRoutes.COMPLAINTS, icon: MessageCircleWarning },
     ] as const;
 };

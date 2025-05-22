@@ -16,6 +16,7 @@ import {
   FileChartLine,
   Handshake,
   LogOut,
+  MessageCircleWarning,
   Newspaper,
   ShieldUser,
   Speech,
@@ -36,7 +37,7 @@ export default function Navbar() {
     { label: 'بيانات المناديب', href: '/', icon: Database },
     { label: 'بيانات الأمن', href: '/', icon: ShieldUser },
     { label: 'إدارة المساعدات', href: '/', icon: Handshake },
-    { label: 'الشكاوي', href: '/', icon: Speech },
+    { label: 'الشكاوي', href: '/', icon: MessageCircleWarning },
     { label: 'التقارير', href: '/', icon: FileChartLine },
     { label: 'الإعلانات و المدونات', href: '/', icon: Newspaper },
   ];

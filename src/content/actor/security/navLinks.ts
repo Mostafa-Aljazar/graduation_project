@@ -1,4 +1,4 @@
-import { ListTodo, User, Users, ShieldUser, Database, BellRing, Speech, Newspaper } from "lucide-react";
+import { ListTodo, User, Users, ShieldUser, Database, BellRing, Speech, Newspaper, MessageCircleWarning } from "lucide-react";
 import { GENERAL_ACTOR_ROUTES, SECURITY_ROUTES_fUNC } from "../../../constants/routes";
 
 //what appear to security 
@@ -25,7 +25,7 @@ export const security_NavLinks = (security_Id: number | string) => {
             href: GENERAL_ACTOR_ROUTES.DELEGATES,
             icon: Database,
         },
-        { label: 'الشكاوي', href: securityRoutes.COMPLAINTS, icon: Speech },
+        { label: 'الشكاوي', href: securityRoutes.COMPLAINTS, icon: MessageCircleWarning },
         { label: 'الإعلانات', href: GENERAL_ACTOR_ROUTES.ADS, icon: Newspaper },
     ] as const;
 };
