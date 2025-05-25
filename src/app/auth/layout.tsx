@@ -1,5 +1,5 @@
 import { COVER_CAMP } from '@/assets/auth';
-import Left_Section from '@/components/auth/Left_Section';
+import Left_Section from '@/components/auth/left-section';
 import { Box, Group, Overlay, Stack } from '@mantine/core';
 import Image from 'next/image';
 import React from 'react';

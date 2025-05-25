@@ -198,132 +198,125 @@ function OTPContent() {
   };
 
   return (
-    <>
-      {/* Desktop & Mobile */}
-      <Stack
-        align='center'
-        gap={40}
-        bg={'white'}
-        pt={{ base: 0, lg: 64 }}
-        pb={20}
-        h={'100%'}
-        w={{ base: '100%', lg: 550 }}
-        className='!rounded-xl'
-      >
-        <Text fw={500} fz={{ base: 28, md: 36 }} ta={'center'}>
-          إدخال رمز التحقق
+    <Stack
+      align='center'
+      gap={40}
+      bg={'white'}
+      pt={{ base: 0, lg: 64 }}
+      pb={20}
+      h={'100%'}
+      w={{ base: '100%', lg: 550 }}
+      className='!rounded-xl'
+    >
+      <Text fw={500} fz={{ base: 28, md: 36 }} ta={'center'}>
+        إدخال رمز التحقق
+      </Text>
+
+      <Stack justify='center' align='center' gap={20}>
+        <Text
+          fw={500}
+          fz={16}
+          c={'#817C74'}
+          ta={'center'}
+          w={{ base: 343, md: 400 }}
+        >
+          لقد أرسلنا رمز التحقق إلى
+          <span className='font-bold'>{query.email}</span>
         </Text>
 
-        <Stack justify='center' align='center' gap={20}>
-          <Text
-            fw={500}
-            fz={16}
-            c={'#817C74'}
-            ta={'center'}
-            w={{ base: 343, md: 400 }}
-          >
-            لقد أرسلنا رمز التحقق إلى
-            <span className='font-bold'>{query.email}</span>
-          </Text>
+        <form
+          className='!relative flex flex-col items-center gap-0'
+          onSubmit={handleSubmit}
+        >
+          <LoadingOverlay
+            visible={verifyOtpMutation.isPending || resendOtpMutation.isPending}
+            zIndex={1000}
+            overlayProps={{ radius: 'sm', blur: 0.3 }}
+          />
 
-          <form
-            className='!relative flex flex-col items-center gap-0'
-            onSubmit={handleSubmit}
-          >
-            <LoadingOverlay
-              visible={
-                verifyOtpMutation.isPending || resendOtpMutation.isPending
-              }
-              zIndex={1000}
-              overlayProps={{ radius: 'sm', blur: 0.3 }}
-            />
+          <PinInput
+            disabled={
+              verifyOtpMutation.isPending ||
+              resendOtpMutation.isPending ||
+              seconds === 0
+            }
+            type='number'
+            size='md'
+            length={4}
+            placeholder=''
+            classNames={{
+              root: 'gap-5',
+              input:
+                'border-1 border-[#DFDEDC] w-12 h-12 rounded-lg focus:border-primary',
+            }}
+            key={form.key('otp')}
+            {...form.getInputProps('otp')}
+            autoFocus
+          />
 
-            <PinInput
-              disabled={
-                verifyOtpMutation.isPending ||
-                resendOtpMutation.isPending ||
-                seconds === 0
-              }
-              type='number'
-              size='md'
-              length={4}
-              placeholder=''
-              classNames={{
-                root: 'gap-5',
-                input:
-                  'border-1 border-[#DFDEDC] w-12 h-12 rounded-lg focus:border-primary',
-              }}
-              key={form.key('otp')}
-              {...form.getInputProps('otp')}
-              autoFocus
-            />
+          {!seconds && (
+            <Text fw={500} fz={16} c={'#FD6265'} ta={'center'} mt={'sm'}>
+              انتهى وقت الرمز
+            </Text>
+          )}
 
-            {!seconds && (
-              <Text fw={500} fz={16} c={'#FD6265'} ta={'center'} mt={'sm'}>
-                انتهى وقت الرمز
-              </Text>
-            )}
-
-            {seconds > 0 && (
-              <Group
-                align='center'
-                justify='center'
-                mt={20}
-                className='px-2 py-1 border-[#5F6F52] border-1 rounded-lg'
-                c={'#5F6F52'}
-              >
-                <Timer size={16} />
-                <Text fw={400} fz={14}>
-                  {timeDisplay}
-                </Text>
-              </Group>
-            )}
-
-            {!seconds && (
-              <Button
-                variant='transparent'
-                mt={20}
-                fz={16}
-                fw={500}
-                onClick={handleResend}
-                disabled={resendOtpMutation.isPending}
-                // loading={resendOtpMutation.isPending}
-                className='!text-primary hover:!text-primary/80 !underline'
-              >
-                إعادة إرسال الرمز
-              </Button>
-            )}
-
-            <Button
-              // loading={verifyOtpMutation.isPending}
-              type='submit'
-              mt={32}
-              fz={20}
-              fw={500}
-              c={'white'}
-              className={`!shadow-lg max-lg:!mt-10 ${
-                !seconds || form.getValues().otp.length !== 4
-                  ? '!bg-primary/70'
-                  : '!bg-primary hover:!bg-primary/90'
-              }`}
-              w={228}
-              disabled={
-                !seconds ||
-                form.getValues().otp.length !== 4 ||
-                verifyOtpMutation.isPending
-              }
+          {seconds > 0 && (
+            <Group
+              align='center'
+              justify='center'
+              mt={20}
+              className='px-2 py-1 border-[#5F6F52] border-1 rounded-lg'
+              c={'#5F6F52'}
             >
-              تحقق
-            </Button>
-
-            {error && (
-              <Text fw={500} mt={'sm'} size='sm' ta='center' c='red'>
-                {error}
+              <Timer size={16} />
+              <Text fw={400} fz={14}>
+                {timeDisplay}
               </Text>
-            )}
-          </form>
-        </Stack>
+            </Group>
+          )}
+
+          {!seconds && (
+            <Button
+              variant='transparent'
+              mt={20}
+              fz={16}
+              fw={500}
+              onClick={handleResend}
+              disabled={resendOtpMutation.isPending}
+              className='!text-primary hover:!text-primary/80 !underline'
+            >
+              إعادة إرسال الرمز
+            </Button>
+          )}
+
+          <Button
+            type='submit'
+            mt={32}
+            fz={20}
+            fw={500}
+            c={'white'}
+            className={`!shadow-lg max-lg:!mt-10 ${
+              !seconds || form.getValues().otp.length !== 4
+                ? '!bg-primary/70'
+                : '!bg-primary hover:!bg-primary/90'
+            }`}
+            w={228}
+            disabled={
+              !seconds ||
+              form.getValues().otp.length !== 4 ||
+              verifyOtpMutation.isPending
+            }
+          >
+            تحقق
+          </Button>
+
+          {error && (
+            <Text fw={500} mt={'sm'} size='sm' ta='center' c='red'>
+              {error}
+            </Text>
+          )}
+        </form>
       </Stack>
-    </>
+    </Stack>
   );
 }

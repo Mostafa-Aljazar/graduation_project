@@ -20,7 +20,6 @@ import {
   forgetPasswordProps,
 } from '@/actions/auth/forgetPassword';
 import forgetPasswordResponse from '@/@types/auth/forgetPasswordResponse.type';
-import { toFormData } from '@/utils/objectToFormData';
 import {
   forgetPasswordSchema,
   forgetPasswordType,
@@ -43,7 +42,6 @@ export default function Forget_Password() {
   >({
     mutationFn: forgetPassword,
     onSuccess: (data) => {
-      console.log('🚀 ~ Forget_Password ~ data:', data);
       if (Number(data.status) == 200) {
         notifications.show({
           title: data.message,
@@ -105,14 +103,12 @@ export default function Forget_Password() {
           className='!relative flex flex-col items-center gap-0'
           onSubmit={handleSubmit}
         >
-          {/* Loading Overlay */}
           <LoadingOverlay
             visible={forgetPasswordMutation.isPending}
             zIndex={1000}
             overlayProps={{ radius: 'sm', blur: 0.3 }}
           />
 
-          {/* Email Id */}
           <TextInput
             type='email'
             label={
@@ -132,7 +128,6 @@ export default function Forget_Password() {
           />
 
           <Button
-            // loading={forgetPasswordMutation.isPending}
             type='submit'
             mt={32}
             fz={20}
@@ -161,7 +156,7 @@ export default function Forget_Password() {
         </Group>
 
         <Text fw={500} fz={16} className='!text-primary'>
-          لديك حساب؟{' '}
+          لديك حساب؟
           <Link href={AUTH_ROUTES.LOGIN} className='hover:!cursor-pointer'>
             تسجيل الدخول
           </Link>

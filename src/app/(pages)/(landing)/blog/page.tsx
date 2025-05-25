@@ -1,11 +1,13 @@
-import Child_Blog from '@/components/blog/Child_Blog';
-import Our_Blog from '@/components/blog/Our_Blog';
-import Hero_Section from '@/components/home/Hero_Section';
 import {
-  HERO_DESCRIPTION,
-  HERO_IMAGES,
-  HERO_TITLE,
-} from '@/content/landing/blog';
+  BLOG_CHILD,
+  BLOG_HERO_SLIDER_1,
+  BLOG_HERO_SLIDER_2,
+  BLOG_HERO_SLIDER_3,
+} from '@/assets/landing/blog';
+import Our_Blog from '@/components/landing/blog/our-blog';
+import Child_Section from '@/components/landing/common/child-section';
+import Hero_Section from '@/components/landing/common/hero-section';
+import { HERO_DESCRIPTION, HERO_TITLE } from '@/content/landing/blog';
 
 export default function Blog() {
   return (
@@ -13,12 +15,24 @@ export default function Blog() {
       <Hero_Section
         title={HERO_TITLE}
         desc={HERO_DESCRIPTION}
-        imgs={HERO_IMAGES}
+        slider_images={[
+          BLOG_HERO_SLIDER_1,
+          BLOG_HERO_SLIDER_2,
+          BLOG_HERO_SLIDER_3,
+        ]}
       />
 
       <Our_Blog />
 
-      <Child_Blog />
+      <Child_Section
+        child_image={BLOG_CHILD}
+        desc={
+          <>
+            النزوح <span className='text-red-500'>يسرق</span> الطفولة ، لكنه لا
+            يستطيع <span className='text-red-500'>قتل</span> البراءة
+          </>
+        }
+      />
     </>
   );
 }

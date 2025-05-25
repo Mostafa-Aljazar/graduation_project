@@ -22,6 +22,7 @@ export default function Footer() {
       px={{ base: 20, lg: '5%' }}
       ta='right'
       className='!bg-second-light'
+      id='contact-us'
     >
       <Text fw={700} fz={24} mb={8} className='!text-primary'>
         {FOOTER_TITLE}

@@ -3,9 +3,10 @@ export const LANDING_ROUTES = {
   HOME: '/',
   ABOUT_US: '/#about-us',
   OUR_SERVICES: '/#our-service',
-  CONTACT_US: '/#contact-us',
+  // CONTACT_US: '/#contact-us',
+  CONTACT_US: '#contact-us',
   BLOG: '/blog',
-  SUCCESS_STORY: '/success-story',
+  SUCCESS_STORY: '/success-stories',
 } as const;
 
 export const AUTH_ROUTES = {

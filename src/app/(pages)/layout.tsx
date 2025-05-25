@@ -1,14 +1,6 @@
-import Mantine_Layout from '@/components/common/Mantine_Layout';
-import React from 'react';
+import Pages_Mantine_Layout from '@/components/common/layouts/pages-mantine-layout';
+import { ReactNode } from 'react';
 
-export default function Pages_Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <Mantine_Layout>
-      <>{children}</>
-    </Mantine_Layout>
-  );
+export default function Pages_Layout({ children }: { children: ReactNode }) {
+  return <Pages_Mantine_Layout>{children}</Pages_Mantine_Layout>;
 }

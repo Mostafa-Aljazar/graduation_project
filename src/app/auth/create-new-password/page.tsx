@@ -47,7 +47,6 @@ export default function Create_New_Password() {
   >({
     mutationFn: createNewPassword,
     onSuccess: (data) => {
-      console.log('🚀 ~ Create_New_Password ~ data:', data);
       if (Number(data.status) == 200) {
         notifications.show({
           title: data.message,
@@ -158,7 +157,6 @@ export default function Create_New_Password() {
           />
 
           <Button
-            // loading={createNewPasswordMutation.isPending}
             type='submit'
             mt={32}
             fz={20}

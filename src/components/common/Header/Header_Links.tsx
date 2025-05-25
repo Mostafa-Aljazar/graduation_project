@@ -38,9 +38,11 @@ export default function Header_Links() {
 
     // Check for exact match or if pathname starts with the link (for blog routes)
     return (
-      (pathname === link ||
-        (link === '/blog' && pathname.startsWith('/blog'))) &&
-      !currentHash
+      pathname === link ||
+      (link === '/blog' && pathname.startsWith('/blog')) ||
+      (link === '/success-stories' &&
+        pathname.startsWith('/success-stories') &&
+        !currentHash)
     );
   };
 
