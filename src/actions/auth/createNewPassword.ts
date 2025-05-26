@@ -2,7 +2,15 @@
 import createNewPasswordResponse from "@/@types/auth/createNewPasswordResponse";
 import AqsaAPI from "@/services";
 
-export const createNewPassword = async (formData: FormData): Promise<createNewPasswordResponse> => {
+
+
+export type createNewPasswordProps = {
+    email: string
+    password: string;
+    confirm_password: string;
+}
+
+export const createNewPassword = async ({ email, password, confirm_password }: createNewPasswordProps): Promise<createNewPasswordResponse> => {
     //FIXME: remove this => just as an example
     const FakeData: createNewPasswordResponse = {
         status: "200",
@@ -19,25 +27,6 @@ export const createNewPassword = async (formData: FormData): Promise<createNewPa
     //FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const password = formData.get("password");
-        const confirm_password = formData.get("confirm_password");
-        const email = formData.get("email");
-
-        if (!password || !confirm_password || !email) {
-            return {
-                status: "400",
-                message: "جميع الحقول مطلوبة",
-                error: "جميع الحقول مطلوبة"
-            };
-        }
-
-        if (password !== confirm_password) {
-            return {
-                status: "400",
-                message: "كلمات المرور غير متطابقة",
-                error: "كلمات المرور غير متطابقة"
-            };
-        }
 
         const response = await AqsaAPI.post("/auth/create-password", {
             password,

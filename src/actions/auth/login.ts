@@ -1,17 +1,18 @@
 "use server";
 import { loginResponse } from "@/@types/auth/loginResponse.type";
 import AqsaAPI from "@/services";
-import { LOCALSTORAGE_SESSION_KEY } from "@/constants/sessionKey";
+import { UserType } from "@/constants/userTypes";
 
 
-export const login = async (formData: FormData): Promise<loginResponse> => {
+export type loginProps = {
+    userType: UserType;
+    password: string;
+    email: string
+}
 
-    // Get form data values
-    const email = formData.get("email");
-    const password = formData.get("password");
-    const userType = formData.get("userType");
+export const login = async ({ email, password, userType }: loginProps): Promise<loginResponse> => {
 
-    //FIXME: remove this => just as  an example
+    // //FIXME: remove this => just as  an example
     const FakeData: loginResponse = {
         status: "200",
         message: "تم تسجيل الدخول بنجاح",
@@ -19,7 +20,7 @@ export const login = async (formData: FormData): Promise<loginResponse> => {
         user: {
             id: 1,
             name: "John Doe",
-            email: formData.get("email") as string,
+            email: email,
             idNumber: 408656429,
             phone_number: "+1234567890",
             created_at: new Date("2024-01-20T12:00:00.000Z"),
@@ -32,7 +33,7 @@ export const login = async (formData: FormData): Promise<loginResponse> => {
         // Return fake data after 3 seconds => Simulate API delay
         setTimeout(() => {
             resolve(FakeData);
-        }, 3000);
+        }, 2000);
     });
 
 
@@ -40,30 +41,6 @@ export const login = async (formData: FormData): Promise<loginResponse> => {
     //FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        // Get form data values
-        const email = formData.get("email");
-        const password = formData.get("password");
-        const userType = formData.get("userType");
-
-        if (!email || !password || !userType) {
-            return {
-                status: "400",
-                message: "جميع الحقول مطلوبة",
-                token: "",
-                user: {
-                    id: 0,
-                    name: "",
-                    email: "",
-                    idNumber: 0,
-                    phone_number: "",
-                    created_at: new Date(),
-                    role: "MANAGER",
-                    image: null
-
-                },
-                error: "جميع الحقول مطلوبة"
-            };
-        }
 
         const response = await AqsaAPI.post("/auth/login", {
             email,

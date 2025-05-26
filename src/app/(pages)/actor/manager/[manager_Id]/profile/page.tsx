@@ -1,5 +1,4 @@
 'use client';
-import { man } from '@/assets/common';
 import {
   ActionIcon,
   Box,

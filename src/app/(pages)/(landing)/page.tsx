@@ -1,15 +1,16 @@
-import Footer from '@/components/common/Footer/Footer';
-import About_Us from '@/components/home/About_Us';
-import Child_Home from '@/components/home/Child_Home';
-import Hero_Section from '@/components/home/Hero_Section';
-import Services from '@/components/home/Services';
-import Statistics from '@/components/home/Statistics';
-import Success_Stories_Landing from '@/components/home/Success_Stories_Landing';
 import {
-  HERO_DESCRIPTION,
-  HERO_IMAGES,
-  HERO_TITLE,
-} from '@/content/landing/home';
+  HOME_CHILD,
+  HOME_HERO_SLIDER_1,
+  HOME_HERO_SLIDER_2,
+  HOME_HERO_SLIDER_3,
+} from '@/assets/landing/home';
+import About_Us from '@/components/landing/home/about-us';
+import Child_Section from '@/components/landing/common/child-section';
+import Hero_Section from '@/components/landing/common/hero-section';
+import Services from '@/components/landing/home/services';
+import Statistics from '@/components/landing/home/statistics';
+import Success_Stories from '@/components/landing/home/success-stories/success-stories';
+import { HERO_DESCRIPTION, HERO_TITLE } from '@/content/landing/home';
 
 export default function Home() {
   return (
@@ -17,13 +18,26 @@ export default function Home() {
       <Hero_Section
         title={HERO_TITLE}
         desc={HERO_DESCRIPTION}
-        imgs={HERO_IMAGES}
+        slider_images={[
+          HOME_HERO_SLIDER_1,
+          HOME_HERO_SLIDER_2,
+          HOME_HERO_SLIDER_3,
+        ]}
       />
       <About_Us />
       <Statistics />
       <Services />
-      <Child_Home />
-      <Success_Stories_Landing />
+      <Child_Section
+        child_image={HOME_CHILD}
+        desc={
+          <>
+            رغم <span className='text-red-600'>الألم</span> إلا أنه هناك دائماً
+            <span className='text-green-600'>أمل</span>
+            💡
+          </>
+        }
+      />
+      <Success_Stories />
     </>
   );
 }

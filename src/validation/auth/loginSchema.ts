@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-    userType: z.enum(['DISPLACED', 'DELEGATE', 'MANAGER', 'SECRETARY', 'SECURITY_OFFICER']),
+    userType: z.enum(['DISPLACED', 'DELEGATE', 'MANAGER', 'SECURITY', 'SECURITY_OFFICER']),
     email: z
         .string({ required_error: 'required ' })
         .email('تنسيق بريد الكتروني خاطئ'),

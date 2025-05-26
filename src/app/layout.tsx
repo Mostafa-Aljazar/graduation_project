@@ -6,13 +6,39 @@ import './globals.css';
 import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import type { Metadata } from 'next';
 import Providers from '@/providers/providers';
-import sfProDisplay from '@/fonts';
-import Footer from '@/components/common/Footer/Footer';
-import { CacheProvider } from '@emotion/react';
+import { Tajawal } from 'next/font/google';
+
+const tajawal = Tajawal({
+  weight: ['200', '300', '400', '500', '700', '800', '900'],
+  subsets: ['arabic'],
+  display: 'swap',
+  variable: '--tajawal-font',
+});
 
 export const metadata: Metadata = {
-  title: 'AL-AQSA Camp',
-  description: 'Next.js social media application project',
+  title: 'AL-AQSA Camp | إدارة مخيمات النازحين في غزة',
+  description:
+    'منصة ويب لإدارة مخيمات النازحين في غزة باستخدام تقنيات حديثة لتوزيع المساعدات، التعامل مع الشكاوى، وتحسين التواصل في الوقت الحقيقي.',
+  keywords: [
+    'displacement camps',
+    'Gaza',
+    'humanitarian aid',
+    'web application',
+    'camp management',
+    'aid distribution',
+    'refugee support',
+    'transparency',
+    'resource management',
+    'مخيمات النازحين',
+    'النازحين',
+    'غزة',
+    'توزيع المساعدات',
+    'منصة ويب',
+    'إدارة الكوارث',
+    'اللاجئين',
+    'فلسطين',
+  ],
+  authors: [{ name: 'Mostafa Ibrahim Mostafa Aljazar' }],
 };
 
 export default function RootLayout({
@@ -25,10 +51,8 @@ export default function RootLayout({
       <head>
         <ColorSchemeScript />
       </head>
-      <body className={`${sfProDisplay.className} antialiased`}>
-        <Providers>
-          <>{children}</>
-        </Providers>
+      <body className={` ${tajawal.className} antialiased`}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

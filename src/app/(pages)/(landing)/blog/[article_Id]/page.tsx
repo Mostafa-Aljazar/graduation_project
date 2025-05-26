@@ -1,6 +1,5 @@
-import Article from '@/components/Blog_Article/Article';
+import Article_Story from '@/components/landing/common/article-story/article-story';
 import { Stack } from '@mantine/core';
-import React from 'react';
 
 export default async function Article_Page({
   params,
@@ -11,7 +10,7 @@ export default async function Article_Page({
 
   return (
     <Stack pt={60} className='w-full' mih={'100vh'}>
-      <Article article_Id={article_Id} />
+      <Article_Story article_story_Id={article_Id} destination={'article'} />
     </Stack>
   );
 }
