@@ -8,11 +8,14 @@ import {
   Box,
   Text,
   Flex,
+  LoadingOverlay,
 } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import React from 'react';
 import { notifications } from '@mantine/notifications';
 import { contactUsSchema, contactUsType } from '@/validation/contactUsSchema';
+import { useMutation } from '@tanstack/react-query';
+import { sendEmailFun } from '@/actions/landing/contact-us';
 
 export default function Footer_Form() {
   const form = useForm<contactUsType>({
@@ -27,27 +30,45 @@ export default function Footer_Form() {
     validate: zodResolver(contactUsSchema),
   });
 
+  const contactUSmutation = useMutation<unknown, unknown, contactUsType>({
+    mutationFn: sendEmailFun,
+    onSuccess: () => {
+      notifications.show({
+        title: 'تم الإرسال',
+        message: 'تم إرسال رسالتك بنجاح!',
+        color: 'green',
+        position: 'top-right',
+        withBorder: true,
+      });
+      form.reset();
+    },
+    onError: () => {
+      notifications.show({
+        title: 'خطأ',
+        message: 'فشل إرسال الرسالة. حاول مرة أخرى.',
+        color: 'red',
+        position: 'top-right',
+        withBorder: true,
+      });
+    },
+  });
+
   const handleSubmit = form.onSubmit((values: contactUsType) => {
-    // Simulate form submission (replace with actual API call)
-    console.log('Form submitted:', values);
-
-    notifications.show({
-      title: 'تم الإرسال',
-      message: 'تم إرسال رسالتك بنجاح!',
-      color: 'green',
-      position: 'top-right',
-      withBorder: true,
-    });
-
-    form.reset();
+    contactUSmutation.mutate(values);
   });
 
   return (
     <Box
       p={{ base: 10, md: 24 }}
       w={{ base: '100%', lg: '80%' }}
+      pos={'relative'}
       className='!shadow-gray-300 shadow-2xl !border-1 !border-gray-300 !rounded-md'
     >
+      <LoadingOverlay
+        visible={contactUSmutation.isPending}
+        zIndex={49}
+        overlayProps={{ radius: 'sm', blur: 0.3 }}
+      />
       <form className='space-y-4' onSubmit={handleSubmit}>
         <Flex direction={{ base: 'column', md: 'row' }} gap={16}>
           <TextInput

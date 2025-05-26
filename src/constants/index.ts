@@ -1,0 +1,3 @@
+
+
+export const AQSA_CAMP_EMAIL = "alaqsacamp@gmail.com";

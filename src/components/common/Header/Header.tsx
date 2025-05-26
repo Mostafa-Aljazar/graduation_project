@@ -3,7 +3,7 @@ import { AppShell, Burger, Button, Flex, Group } from '@mantine/core';
 import Image from 'next/image';
 import Header_Links from './Header_Links';
 import Link from 'next/link';
-import { AUTH_ROUTES } from '@/constants/routes';
+import { AUTH_ROUTES, LANDING_ROUTES } from '@/constants/routes';
 import Header_Drawer from './Header_Drawer';
 import { usePathname } from 'next/navigation';
 import { logout } from '@/utils/auth/logout';
@@ -30,14 +30,16 @@ export default function Header({ opened, toggle }: Props) {
       <Flex justify='space-between' align='center' h='100%' px='md'>
         <Group h='100%' px='md'>
           <Burger opened={opened} onClick={toggle} hiddenFrom='lg' size='sm' />
-          <Image
-            src={LOGO}
-            alt='Logo'
-            width={70}
-            height={70}
-            className='rounded-xl'
-            priority
-          />
+          <Link href={LANDING_ROUTES.HOME}>
+            <Image
+              src={LOGO}
+              alt='Logo'
+              width={70}
+              height={70}
+              className='rounded-xl'
+              priority
+            />
+          </Link>
         </Group>
 
         {!isActor && (
