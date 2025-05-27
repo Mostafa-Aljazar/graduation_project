@@ -12,7 +12,7 @@ export type loginProps = {
 
 export const login = async ({ email, password, userType }: loginProps): Promise<loginResponse> => {
 
-    // //FIXME: remove this => just as  an example
+    //FIXME: remove this => just as  an example
     const FakeData: loginResponse = {
         status: "200",
         message: "تم تسجيل الدخول بنجاح",

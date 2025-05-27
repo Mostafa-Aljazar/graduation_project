@@ -1,7 +1,7 @@
 "use server";
+import { AqsaAPI } from "@/services";
+import { FAKE_ARTICLES } from "@/content/landing/fake-data";
 import { Article_SuccessStory_Ad, Article_SuccessStory_Ad_Response } from "@/@types/common/article-successStories-adsResponse.type";
-import { FAKE_ARTICLE } from "@/content/landing/fake-data";
-import { AqsaGuestAPI } from "@/services";
 
 
 export const getArticle = async (articleId: string): Promise<Article_SuccessStory_Ad_Response> => {
@@ -17,7 +17,7 @@ export const getArticle = async (articleId: string): Promise<Article_SuccessStor
 
 
     //FIXME: Fake data implementation
-    let article_successStory_ad: Article_SuccessStory_Ad | undefined = FAKE_ARTICLE;
+    let article_successStory_ad: Article_SuccessStory_Ad | undefined = FAKE_ARTICLES[0];
 
     if (article_successStory_ad) {
         return {
@@ -37,13 +37,13 @@ export const getArticle = async (articleId: string): Promise<Article_SuccessStor
 
     // Real API implementation
     try {
-        const response = await AqsaGuestAPI.get(`/landing/articles/${articleId}`);
+        const response = await AqsaAPI.get<Article_SuccessStory_Ad_Response>(`/landing/articles/${articleId}`);
 
-        if (response.data && response.data.article) {
+        if (response.data && response.data.article_successStory_ad) {
             return {
                 status: "200",
                 message: response?.data?.message || "تم جلب المقال بنجاح",
-                article_successStory_ad: response.data.article as Article_SuccessStory_Ad,
+                article_successStory_ad: response.data.article_successStory_ad as Article_SuccessStory_Ad,
                 error: undefined,
             };
         }

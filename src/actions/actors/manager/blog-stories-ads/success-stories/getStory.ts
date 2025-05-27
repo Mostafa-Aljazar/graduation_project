@@ -1,5 +1,5 @@
 "use server";
-import { AqsaGuestAPI } from "@/services";
+import { AqsaAPI } from "@/services";
 import { FAKE_STORIES } from "@/content/landing/fake-data";
 import { Article_SuccessStory_Ad, Article_SuccessStory_Ad_Response } from "@/@types/common/article-successStories-adsResponse.type";
 
@@ -36,13 +36,13 @@ export const getStory = async (storyId: string): Promise<Article_SuccessStory_Ad
 
   // Real API implementation
   try {
-    const response = await AqsaGuestAPI.get(`/landing/success-stories/${storyId}`);
+    const response = await AqsaAPI.get<Article_SuccessStory_Ad_Response>(`/landing/success-stories/${storyId}`);
 
-    if (response.data && response.data.story) {
+    if (response.data && response.data.article_successStory_ad) {
       return {
         status: "200",
         message: response?.data?.message || "تم جلب القصة بنجاح",
-        article_successStory_ad: response.data.story as Article_SuccessStory_Ad,
+        article_successStory_ad: response.data.article_successStory_ad as Article_SuccessStory_Ad,
         error: undefined,
       };
     }

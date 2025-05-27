@@ -2,19 +2,19 @@
 
 import { AqsaAPI } from "@/services";
 
-export interface deleteDelegatesProps {
-    delegatesIds: (string | Number)[];
+export interface deleteAdProps {
+    adId: (string | number)
 }
 
-export const deleteDelegates = async ({
-    delegatesIds,
-}: deleteDelegatesProps): Promise<modalActionResponse> => {
+export const deleteAd = async ({
+    adId,
+}: deleteAdProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: "200",
-        message: `تم حذف ${delegatesIds.length} مندوب بنجاح`,
+        message: `تم حذف  الإعلان بنجاح`,
+    };
 
-    }
     // Simulate API delay for fake data
     return await new Promise((resolve) => {
         setTimeout(() => {
@@ -22,20 +22,21 @@ export const deleteDelegates = async ({
         }, 2000);
     });
 
-    // Real implementation with filters
-
+    // Real implementation
     try {
-        const response = await AqsaAPI.post("/delegates/delete", {
-            delegatesIds,
+        const response = await AqsaAPI.delete("/ads/delete", {
+            data: { adId },
         });
 
         return {
             status: "200",
-            message: `تم حذف ${delegatesIds.length} مندوب بنجاح`,
+            message: `تم حذف  الإعلان بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =
-            error.response?.data?.error || error.message || "حدث خطأ أثناء حذف المناديب";
+            error.response?.data?.error ||
+            error.message ||
+            "حدث خطأ أثناء حذف الإعلان";
         return {
             status: error.response?.status?.toString() || "500",
             message: errorMessage,

@@ -1,9 +1,9 @@
 import { StaticImageData } from "next/image";
 
-export interface Articles_SuccessStoriesResponse {
+export interface Articles_SuccessStories_Ads_Response {
     status: string;
     message: string;
-    articles_successStories: Article_SuccessStory[];
+    articles_successStories_ads: Article_SuccessStory_Ad[];
     error?: string;
     pagination?: {
         total: number;
@@ -12,14 +12,15 @@ export interface Articles_SuccessStoriesResponse {
         totalPages: number;
     };
 }
-export interface Article_SuccessStoryResponse {
+
+export interface Article_SuccessStory_Ad_Response {
     status: string
     message?: string
-    article_successStory: Article_SuccessStory | null
+    article_successStory_ad: Article_SuccessStory_Ad | null
     error?: string;
 }
 
-export interface Article_SuccessStory {
+export interface Article_SuccessStory_Ad {
     id: number | string;
     title: string;
     content: string;

@@ -1,5 +1,5 @@
 "use server";
-import { AqsaGuestAPI } from "@/services";
+import { AqsaAPI } from "@/services";
 import { FAKE_STORIES } from "@/content/landing/fake-data";
 import { Article_SuccessStory_Ad, Articles_SuccessStories_Ads_Response } from "@/@types/common/article-successStories-adsResponse.type";
 
@@ -69,19 +69,19 @@ export const getSuccessStories = async ({ page = 1, limit = 5 }: getSuccessStori
 
     // Real API implementation
     try {
-        const response = await AqsaGuestAPI.get(`/landing/success-stories?page=${page}&limit=${limit}`);
+        const response = await AqsaAPI.get<Articles_SuccessStories_Ads_Response>(`/landing/success-stories?page=${page}&limit=${limit}`);
 
-        if (response.data && Array.isArray(response.data.stories)) {
+        if (response.data && Array.isArray(response.data.articles_successStories_ads)) {
             return {
                 status: "200",
                 message: response?.data?.message || "تم جلب البيانات بنجاح",
-                articles_successStories_ads: response.data.stories as Article_SuccessStory_Ad[],
+                articles_successStories_ads: response.data.articles_successStories_ads as Article_SuccessStory_Ad[],
                 error: undefined,
                 pagination: response.data.pagination || {
-                    total: response.data.stories.length,
+                    total: response.data.articles_successStories_ads.length,
                     page,
                     limit,
-                    totalPages: Math.ceil(response.data.stories.length / limit),
+                    totalPages: Math.ceil(response.data.articles_successStories_ads.length / limit),
                 },
             };
         }
