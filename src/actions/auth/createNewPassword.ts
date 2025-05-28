@@ -1,6 +1,6 @@
 "use server";
 import createNewPasswordResponse from "@/@types/auth/createNewPasswordResponse";
-import AqsaAPI from "@/services";
+import { AqsaGuestAPI } from "@/services";
 
 
 
@@ -28,7 +28,7 @@ export const createNewPassword = async ({ email, password, confirm_password }: c
     /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.post("/auth/create-password", {
+        const response = await AqsaGuestAPI.post("/auth/create-password", {
             password,
             email
         });

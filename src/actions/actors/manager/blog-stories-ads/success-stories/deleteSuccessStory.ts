@@ -24,7 +24,7 @@ export const deleteSuccessStory = async ({
 
     // Real implementation
     try {
-        const response = await AqsaAPI.delete("/ads/delete", {
+        const response = await AqsaAPI.delete("/success-stories/delete", {
             data: { successStoryId },
         });
 

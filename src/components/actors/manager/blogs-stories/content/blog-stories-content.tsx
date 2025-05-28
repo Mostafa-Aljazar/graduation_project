@@ -9,8 +9,14 @@ import useAuth from '@/hooks/useAuth';
 import { Button, Group, Text } from '@mantine/core';
 import { MessageSquarePlus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { parseAsString, useQueryState } from 'nuqs';
+import { parseAsString, parseAsStringEnum, useQueryState } from 'nuqs';
 import Blog_Story_Ad_Cards from './blog-story-ads-cards';
+
+export enum typeAdd {
+  BLOG = 'BLOG',
+  SUCCESS_STORIES = 'SUCCESS_STORIES',
+  ADS = 'ADS',
+}
 
 export default function Blog_Stories_Content() {
   const { user } = useAuth();
@@ -18,8 +24,14 @@ export default function Blog_Stories_Content() {
 
   const [activeTab, setActiveTab] = useQueryState(
     'tab',
-    parseAsString.withDefault('BLOG')
+    parseAsStringEnum<typeAdd>(Object.values(typeAdd)) // pass a list of allowed values
+      .withDefault(typeAdd.BLOG)
   );
+
+  // const [activeTab, setActiveTab] = useQueryState(
+  //   'tab',
+  //   parseAsString.withDefault('BLOG')
+  // );
 
   const handelAdd = () =>
     router.push(

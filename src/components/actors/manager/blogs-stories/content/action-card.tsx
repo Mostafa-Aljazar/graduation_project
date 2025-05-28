@@ -3,10 +3,11 @@ import { ActionIcon, Button, Popover, Stack, ThemeIcon } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Edit, Eye, Trash2 } from 'lucide-react';
 import { EllipsisVertical } from 'lucide-react';
-import { LANDING_ROUTES } from '@/constants/routes';
+import { LANDING_ROUTES, MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import { cn } from '@/utils/cn';
 import Delete_Ad_Article_Story_Modal from './delete-ad-story-article-modal';
 import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
 
 type Props = {
   id: string | number;
@@ -17,7 +18,8 @@ export default function Action_Card({ id, destination = 'BLOG' }: Props) {
   const [openedModal, { open: openModal, close: closeModal }] =
     useDisclosure(false);
   const [opened, setOpened] = useState(false);
-
+  const path = usePathname();
+  const router = useRouter();
   const isInSuccessStories = destination === 'SUCCESS_STORIES';
 
   const ACTIONS = [
@@ -25,6 +27,7 @@ export default function Action_Card({ id, destination = 'BLOG' }: Props) {
       label: 'تعديل',
       icon: Edit,
       action: () => {
+        // router.push(MANAGER_ROUTES_fUNC(1));//FIXME:
         window.location.href = `/edit/${id}`;
       },
     },
