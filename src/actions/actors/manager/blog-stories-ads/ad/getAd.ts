@@ -1,16 +1,16 @@
 "use server";
 import { AqsaAPI } from "@/services";
-import { FAKE_ADS, FAKE_ARTICLE } from "@/content/landing/fake-data";
+import { FAKE_ADS, } from "@/content/landing/fake-data";
 import { Article_SuccessStory_Ad, Article_SuccessStory_Ad_Response } from "@/@types/common/article-successStories-adsResponse.type";
 
 
 
 export type getAdProps = {
-    ad: string
+    id: string
 }
 
-export const getAd = async ({ ad }: getAdProps): Promise<Article_SuccessStory_Ad_Response> => {
-    if (!ad || isNaN(parseInt(ad))) {
+export const getAd = async ({ id }: getAdProps): Promise<Article_SuccessStory_Ad_Response> => {
+    if (!id || isNaN(parseInt(id))) {
         return {
             status: "400",
             message: "رقم الاعلان غير صالح",
@@ -41,7 +41,7 @@ export const getAd = async ({ ad }: getAdProps): Promise<Article_SuccessStory_Ad
 
     // Real API implementation
     try {
-        const response = await AqsaAPI.get<Article_SuccessStory_Ad_Response>(`/landing/ads/${ad}`);
+        const response = await AqsaAPI.get<Article_SuccessStory_Ad_Response>(`/landing/ads/${id}`);
 
         if (response.data && response.data.article_successStory_ad) {
             return {

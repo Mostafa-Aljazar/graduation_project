@@ -1,12 +1,8 @@
 'use server';
 
+import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import { AqsaAPI } from '@/services';
 
-interface modalActionResponse {
-    status: string;
-    message: string;
-    error?: string;
-}
 
 interface addSuccessStoryProps {
     title: string;

@@ -1,15 +1,17 @@
 'use client';
 
+import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import { deleteAd } from '@/actions/actors/manager/blog-stories-ads/ad/deleteAd';
 import { deleteArticle } from '@/actions/actors/manager/blog-stories-ads/blog/deleteArticle';
 import { deleteSuccessStory } from '@/actions/actors/manager/blog-stories-ads/success-stories/deleteSuccessStory';
+import { TYPE_CONTENT } from '@/content/actor/manager/Ads_Blogs';
 import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type Props = {
   id: string | number;
-  destination?: 'BLOG' | 'SUCCESS_STORIES' | 'ADS';
+  destination?: TYPE_CONTENT;
   opened: boolean;
   close: () => void;
 };
@@ -19,8 +21,8 @@ export default function Delete_Ad_Article_Story_Modal({
   opened,
   close,
 }: Props) {
-  const isInSuccessStories = destination === 'SUCCESS_STORIES';
-  const isInAds = destination === 'ADS';
+  const isInSuccessStories = destination === TYPE_CONTENT.SUCCESS_STORIES;
+  const isInAds = destination === TYPE_CONTENT.ADS;
 
   const queryClient = useQueryClient();
   const deleteMutation = useMutation<

@@ -1,6 +1,6 @@
 "use server";
 import { AqsaGuestAPI } from "@/services";
-import { FAKE_ADS, FAKE_ARTICLE } from "@/content/landing/fake-data";
+import { FAKE_ADS } from "@/content/landing/fake-data";
 import { Article_SuccessStory_Ad, Articles_SuccessStories_Ads_Response } from "@/@types/common/article-successStories-adsResponse.type";
 
 
@@ -24,19 +24,8 @@ export const getAds = async ({ page = 1, limit = 5 }: getAdsProps): Promise<Arti
     const start = (page - 1) * limit;
     const end = start + limit;
 
-    let allAds: Article_SuccessStory_Ad[] = [];
-    if (Array.isArray(FAKE_ADS)) {
-        allAds = FAKE_ADS;
-    } else {
-        allAds = Array(totalArticles)
-            .fill(null)
-            .map((_, index) => ({
-                ...FAKE_ARTICLE,
-                id: index + 1,
-                title: `${FAKE_ARTICLE.title} ${index + 1}`,
-                createdAt: new Date(Date.now() - index * 86400000).toISOString(), // Vary dates
-            }));
-    }
+    let allAds: Article_SuccessStory_Ad[] = FAKE_ADS;
+
 
     // Apply pagination
     const paginatedArticles = allAds.slice(start, end);

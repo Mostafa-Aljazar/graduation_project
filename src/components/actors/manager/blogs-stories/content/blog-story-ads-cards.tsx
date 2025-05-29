@@ -8,9 +8,11 @@ import { Articles_SuccessStories_Ads_Response } from '@/@types/common/article-su
 import { getAds } from '@/actions/actors/manager/blog-stories-ads/ad/getAds';
 import { getSuccessStories } from '@/actions/landing/success-stories/getSuccessStories';
 import Article_Story_Ad_Card from './blog-story-ad-card';
+import { TYPE_CONTENT } from '@/content/actor/manager/Ads_Blogs';
+import { useCallback } from 'react';
 
 type Props = {
-  type: 'BLOG' | 'SUCCESS_STORIES' | 'ADS';
+  type: TYPE_CONTENT;
 };
 
 export default function Blog_Story_Ad_Cards({ type }: Props) {
@@ -19,27 +21,57 @@ export default function Blog_Story_Ad_Cards({ type }: Props) {
     parseAsInteger.withDefault(1)
   );
 
+  // Define the select function using useCallback for optimization
+  const selectData = useCallback(
+    (data: Articles_SuccessStories_Ads_Response | null) => {
+      if (!data || !data.articles_successStories_ads) {
+        return data;
+      }
+
+      return {
+        ...data,
+        articles_successStories_ads: data.articles_successStories_ads.map(
+          (item) => ({
+            id: item.id,
+            imgs: item.imgs,
+            createdAt: item.createdAt,
+            title: item.title,
+            brief: item.brief,
+            content: '',
+          })
+        ),
+      };
+    },
+    []
+  );
+
   const {
     data: articles_successStories_ads_Data,
     isLoading,
     error,
-  } = useQuery<Articles_SuccessStories_Ads_Response | null, Error>({
+  } = useQuery<
+    Articles_SuccessStories_Ads_Response | null,
+    Error,
+    Articles_SuccessStories_Ads_Response | null
+  >({
     queryKey: [activePage, type],
     queryFn: async () => {
-      if (type == 'BLOG')
+      if (type === TYPE_CONTENT.BLOG) {
         return await getArticles({ page: activePage, limit: 4 });
-      else if (type == 'SUCCESS_STORIES')
+      } else if (type === TYPE_CONTENT.SUCCESS_STORIES) {
         return await getSuccessStories({ page: activePage, limit: 4 });
-      else return await getAds({ page: activePage, limit: 4 });
+      } else {
+        return await getAds({ page: activePage, limit: 4 });
+      }
     },
+    select: selectData, // Apply the select function to transform the data
   });
 
   if (error) {
     return (
       <Stack align='center' justify='center' h={200} px={10}>
         <Text fw={500} fz={{ base: 18, lg: 22 }} c='red' ta='center'>
-          خطأ في التحميل:
-          {error.message || 'حدث خطأ غير متوقع'}
+          خطأ في التحميل: {error.message || 'حدث خطأ غير متوقع'}
         </Text>
       </Stack>
     );
@@ -66,9 +98,9 @@ export default function Blog_Story_Ad_Cards({ type }: Props) {
                   id={article.id}
                   createdAt={article.createdAt}
                   title={article.title}
-                  content={article.content}
-                  img={article.img}
+                  imgs={article.imgs}
                   brief={article.brief}
+                  content={article.content} // is empty ""
                 />
               )
             )}
@@ -81,7 +113,7 @@ export default function Blog_Story_Ad_Cards({ type }: Props) {
         withControls={false}
         classNames={{
           dots: '!rounded-full !text-gray-300 border-1',
-          control: '!rounded-full  ',
+          control: '!rounded-full',
         }}
         value={activePage}
         onChange={setPage}

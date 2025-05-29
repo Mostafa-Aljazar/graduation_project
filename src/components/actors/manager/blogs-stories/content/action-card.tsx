@@ -7,34 +7,45 @@ import { LANDING_ROUTES, MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import { cn } from '@/utils/cn';
 import Delete_Ad_Article_Story_Modal from './delete-ad-story-article-modal';
 import { useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import useAuth from '@/hooks/useAuth';
+import {
+  ACTION_ADD_EDIT,
+  TYPE_CONTENT,
+} from '@/content/actor/manager/Ads_Blogs';
 
 type Props = {
   id: string | number;
-  destination?: 'BLOG' | 'SUCCESS_STORIES' | 'ADS';
+  destination?: TYPE_CONTENT;
 };
 
-export default function Action_Card({ id, destination = 'BLOG' }: Props) {
+export default function Action_Card({
+  id,
+  destination = TYPE_CONTENT.BLOG,
+}: Props) {
   const [openedModal, { open: openModal, close: closeModal }] =
     useDisclosure(false);
   const [opened, setOpened] = useState(false);
-  const path = usePathname();
   const router = useRouter();
   const isInSuccessStories = destination === 'SUCCESS_STORIES';
-
+  const { user } = useAuth();
   const ACTIONS = [
     {
       label: 'تعديل',
       icon: Edit,
       action: () => {
-        // router.push(MANAGER_ROUTES_fUNC(1));//FIXME:
-        window.location.href = `/edit/${id}`;
+        router.push(
+          `${MANAGER_ROUTES_fUNC(user?.id as number).ADD_ADS_BLOGS}?action=${
+            ACTION_ADD_EDIT.EDIT
+          }&id=${id}&type=${TYPE_CONTENT[destination]}`
+        );
       },
     },
     {
       label: 'فتح',
       icon: Eye,
       action: () => {
+        //FIXME:
         window.location.href = isInSuccessStories
           ? `${LANDING_ROUTES.SUCCESS_STORY}/${id}`
           : `${LANDING_ROUTES.BLOG}/${id}`;

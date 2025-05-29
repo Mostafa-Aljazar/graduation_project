@@ -3,25 +3,34 @@
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import { AqsaAPI } from '@/services';
 
-
-interface addAdProps {
+interface updateAdProps {
+    id: string;
     title: string;
     content: string;
-    brief?: string,
+    brief?: string;
     imageUrls?: string[];
 }
 
-export const addAd = async ({
+export const updateAd = async ({
+    id,
     title,
     content,
     brief = "",
     imageUrls,
-}: addAdProps): Promise<modalActionResponse> => {
+}: updateAdProps): Promise<modalActionResponse> => {
+    // Validate the ID
+    if (!id || isNaN(parseInt(id))) {
+        return {
+            status: "400",
+            message: "رقم الإعلان غير صالح",
+            error: "يجب تقديم رقم إعلان صالح",
+        };
+    }
 
-    // FIXME:
+    // Simulate a fake response for now (similar to addAd)
     const fakeData: modalActionResponse = {
         status: "200",
-        message: `تم إضافة الإعلان بنجاح`,
+        message: `تم تحديث الإعلان بنجاح`,
     };
 
     // Simulate API delay for fake data
@@ -31,10 +40,9 @@ export const addAd = async ({
         }, 2000);
     });
 
-
     try {
-        // Send the payload directly without wrapping in a `data` object
-        const response = await AqsaAPI.post<modalActionResponse>('/ads/add', {
+        // Send the payload to update the ad using a PUT request
+        const response = await AqsaAPI.put<modalActionResponse>(`/ads/update/${id}`, {
             title,
             content,
             brief,
@@ -45,21 +53,22 @@ export const addAd = async ({
         if (response.status === 200) {
             return {
                 status: '200',
-                message: 'تم إضافة الإعلان بنجاح',
+                message: 'تم تحديث الإعلان بنجاح',
+                error: undefined,
             };
         }
 
         // If the response status is not 200, treat it as an error
         return {
             status: response.status.toString(),
-            message: 'حدث خطأ أثناء إضافة الإعلان',
+            message: 'حدث خطأ أثناء تحديث الإعلان',
             error: response.data?.error || 'حدث خطأ غير متوقع',
         };
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error ||
             error.message ||
-            'حدث خطأ أثناء إضافة الإعلان';
+            'حدث خطأ أثناء تحديث الإعلان';
         return {
             status: error.response?.status?.toString() || '500',
             message: errorMessage,

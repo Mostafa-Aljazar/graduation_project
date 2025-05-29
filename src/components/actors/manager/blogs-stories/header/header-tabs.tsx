@@ -1,19 +1,27 @@
 'use client';
 
-import { GET_ADDS_BLOG_STORIES_TABS } from '@/content/actor/manager/Ads_Blogs';
+import {
+  GET_ADDS_BLOG_STORIES_TABS,
+  TYPE_CONTENT,
+} from '@/content/actor/manager/Ads_Blogs';
 import { cn } from '@/utils/cn';
 import { Divider, Group, Stack, Tabs, Text, ThemeIcon } from '@mantine/core';
-import { parseAsString, useQueryState } from 'nuqs';
+import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs';
 
 export default function HEADER_TABS() {
   const [activeTab, setActiveTab] = useQueryState(
     'tab',
-    parseAsString.withDefault('BLOG')
+    parseAsStringEnum<TYPE_CONTENT>(Object.values(TYPE_CONTENT)).withDefault(
+      TYPE_CONTENT.BLOG
+    )
   );
 
-  const activeTabSection = (
-    tabKey: keyof typeof GET_ADDS_BLOG_STORIES_TABS
-  ) => {
+  const [activePage, setActivePage] = useQueryState(
+    'page',
+    parseAsInteger.withDefault(1)
+  );
+
+  const activeTabSection = (tabKey: TYPE_CONTENT) => {
     const IconComponent = GET_ADDS_BLOG_STORIES_TABS[tabKey].icon;
     return (
       <Tabs.Tab
@@ -68,10 +76,14 @@ export default function HEADER_TABS() {
   return (
     <Stack justify={'center'} align={'center'} pt={20} w={'100%'}>
       <Tabs
-        value={activeTab || 'BLOG'}
+        value={activeTab}
         variant='unstyled'
-        onChange={setActiveTab}
-        className='w-full'
+        onChange={(value: string | null) => {
+          const typedValue = value as TYPE_CONTENT;
+          setActiveTab(typedValue);
+          setActivePage(1);
+        }}
+        w={'100%'}
       >
         <Tabs.List
           w={{ base: '100%', md: '80%', lg: '70%' }}
@@ -86,7 +98,7 @@ export default function HEADER_TABS() {
             align='center'
             gap={0}
           >
-            {activeTabSection('BLOG')}
+            {activeTabSection(TYPE_CONTENT.BLOG)}
             <Divider
               orientation='vertical'
               h={'50%'}
@@ -95,7 +107,7 @@ export default function HEADER_TABS() {
               my={'auto'}
               className='flex-shrink-0 !bg-primary'
             />
-            {activeTabSection('ADS')}
+            {activeTabSection(TYPE_CONTENT.ADS)}
             <Divider
               orientation='vertical'
               h={'50%'}
@@ -104,7 +116,7 @@ export default function HEADER_TABS() {
               my={'auto'}
               className='flex-shrink-0 !bg-primary'
             />
-            {activeTabSection('SUCCESS_STORIES')}
+            {activeTabSection(TYPE_CONTENT.SUCCESS_STORIES)}
           </Group>
         </Tabs.List>
       </Tabs>

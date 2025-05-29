@@ -1,12 +1,16 @@
 "use server";
 import { Article_SuccessStory_Ad, Article_SuccessStory_Ad_Response } from "@/@types/common/article-successStories-adsResponse.type";
-import { FAKE_ARTICLE } from "@/content/landing/fake-data";
+import { FAKE_ARTICLES } from "@/content/landing/fake-data";
 import { AqsaGuestAPI } from "@/services";
 
 
-export const getArticle = async (articleId: string): Promise<Article_SuccessStory_Ad_Response> => {
+export type getArticleProps = {
+    id: string
+}
+
+export const getArticle = async ({ id }: getArticleProps): Promise<Article_SuccessStory_Ad_Response> => {
     // Validate articleId
-    if (!articleId || isNaN(parseInt(articleId))) {
+    if (!id || isNaN(parseInt(id))) {
         return {
             status: "400",
             message: "رقم المقال غير صالح",
@@ -17,7 +21,7 @@ export const getArticle = async (articleId: string): Promise<Article_SuccessStor
 
 
     //FIXME: Fake data implementation
-    let article_successStory_ad: Article_SuccessStory_Ad | undefined = FAKE_ARTICLE;
+    let article_successStory_ad: Article_SuccessStory_Ad | undefined = FAKE_ARTICLES[0];
 
     if (article_successStory_ad) {
         return {
@@ -37,7 +41,7 @@ export const getArticle = async (articleId: string): Promise<Article_SuccessStor
 
     // Real API implementation
     try {
-        const response = await AqsaGuestAPI.get(`/landing/articles/${articleId}`);
+        const response = await AqsaGuestAPI.get(`/landing/articles/${id}`);
 
         if (response.data && response.data.article) {
             return {

@@ -1,14 +1,15 @@
 "use server";
 
+import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
 import { AqsaAPI } from "@/services";
 
-export interface deleteBlogProps {
+export interface deleteArticleProps {
     articleId: string | number;
 }
 
 export const deleteArticle = async ({
     articleId,
-}: deleteBlogProps): Promise<modalActionResponse> => {
+}: deleteArticleProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: "200",

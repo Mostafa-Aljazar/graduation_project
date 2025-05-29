@@ -4,9 +4,13 @@ import { FAKE_ARTICLES } from "@/content/landing/fake-data";
 import { Article_SuccessStory_Ad, Article_SuccessStory_Ad_Response } from "@/@types/common/article-successStories-adsResponse.type";
 
 
-export const getArticle = async (articleId: string): Promise<Article_SuccessStory_Ad_Response> => {
+export type getArticleProps = {
+    id: string
+}
+
+export const getArticle = async ({ id }: getArticleProps): Promise<Article_SuccessStory_Ad_Response> => {
     // Validate articleId
-    if (!articleId || isNaN(parseInt(articleId))) {
+    if (!id || isNaN(parseInt(id))) {
         return {
             status: "400",
             message: "رقم المقال غير صالح",
@@ -37,7 +41,7 @@ export const getArticle = async (articleId: string): Promise<Article_SuccessStor
 
     // Real API implementation
     try {
-        const response = await AqsaAPI.get<Article_SuccessStory_Ad_Response>(`/landing/articles/${articleId}`);
+        const response = await AqsaAPI.get<Article_SuccessStory_Ad_Response>(`/landing/articles/${id}`);
 
         if (response.data && response.data.article_successStory_ad) {
             return {

@@ -4,15 +4,16 @@ import { cn } from '@/utils/cn';
 import { Box, Button, Flex, Group, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
 import Action_Card from './action-card';
+import { TYPE_CONTENT } from '@/content/actor/manager/Ads_Blogs';
 
 type Props = Article_SuccessStory_Ad & {
-  destination?: 'BLOG' | 'SUCCESS_STORIES' | 'ADS';
+  destination?: TYPE_CONTENT;
 };
 
 export default function Article_Story_Ad_Card({
-  destination = 'BLOG',
+  destination = TYPE_CONTENT.BLOG,
   id,
-  img,
+  imgs,
   createdAt,
   title,
   brief,
@@ -33,8 +34,8 @@ export default function Article_Story_Ad_Card({
         w={{ base: '100%', sm: 250, md: 300 }}
         h={{ base: 150, sm: 180, md: 200 }}
       >
-        {img && (
-          <Image alt='Blog Image' src={img} fill className='object-cover' />
+        {imgs && (
+          <Image alt='Blog Image' src={imgs[0]} fill className='object-cover' />
         )}
       </Box>
 

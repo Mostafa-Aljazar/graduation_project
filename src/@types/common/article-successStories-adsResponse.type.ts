@@ -25,7 +25,7 @@ export interface Article_SuccessStory_Ad {
     title: string;
     content: string;
     brief?: string;
-    img: string | StaticImageData;
+    imgs: (string | StaticImageData)[];
     createdAt: string | Date;
     updatedAt?: string | Date;
 }

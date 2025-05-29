@@ -1,7 +1,7 @@
 "use server";
 import { AqsaGuestAPI } from "@/services";
-import { FAKE_ARTICLE } from "@/content/landing/fake-data";
 import { Article_SuccessStory_Ad, Articles_SuccessStories_Ads_Response } from "@/@types/common/article-successStories-adsResponse.type";
+import { FAKE_ARTICLES } from "@/content/landing/fake-data";
 
 
 export type getArticlesProps = {
@@ -24,20 +24,8 @@ export const getArticles = async ({ page = 1, limit = 5 }: getArticlesProps): Pr
     const start = (page - 1) * limit;
     const end = start + limit;
 
-    // Generate varied fake articles if ARTICLE_EXAMPLE is a single object
-    let allArticles: Article_SuccessStory_Ad[] = [];
-    if (Array.isArray(FAKE_ARTICLE)) {
-        allArticles = FAKE_ARTICLE;
-    } else {
-        allArticles = Array(totalArticles)
-            .fill(null)
-            .map((_, index) => ({
-                ...FAKE_ARTICLE,
-                id: index + 1,
-                title: `${FAKE_ARTICLE.title} ${index + 1}`,
-                createdAt: new Date(Date.now() - index * 86400000).toISOString(), // Vary dates
-            }));
-    }
+    let allArticles: Article_SuccessStory_Ad[] = FAKE_ARTICLES;
+
 
     // Apply pagination
     const paginatedArticles = allArticles.slice(start, end);
