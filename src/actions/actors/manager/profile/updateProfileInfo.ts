@@ -1,8 +1,6 @@
 "use server";
 
-import AqsaAPI from "@/services";
-import { LOCALSTORAGE_SESSION_KEY } from "@/constants/sessionKey";
-import { handleUploadMedia } from "@/utils/uploadthing/handleUploadMedia";
+import { AqsaAPI } from "@/services";
 import { ProfileResponse } from "@/@types/actors/manager/profile/profileResponse.type";
 
 export const updateProfile = async (formData: FormData): Promise<ProfileResponse> => {

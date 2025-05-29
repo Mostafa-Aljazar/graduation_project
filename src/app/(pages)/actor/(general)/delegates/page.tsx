@@ -2,8 +2,8 @@
 import Delegate_Filters from '@/components/actors/general/delegates/Delegates_Filters';
 import Delegates_Table from '@/components/actors/general/delegates/Delegates_Table';
 import { Button, Group, Stack, Text } from '@mantine/core';
-import { Database, UserPlus, Users } from 'lucide-react';
-import React, { useState } from 'react';
+import { UserPlus, Users } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Delegates() {
   // Local state to hold filter input values until "Filter" is clicked
@@ -11,7 +11,6 @@ export default function Delegates() {
     displaceds_number: [] as number[],
     tents_number: [] as number[],
   });
-  console.log('🚀 ~ Delegates ~ localFilters:', localFilters);
 
   const [delegatesNum, setDelegatesNum] = useState(0);
   return (

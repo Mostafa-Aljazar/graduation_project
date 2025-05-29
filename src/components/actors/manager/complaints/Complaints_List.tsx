@@ -1,23 +1,9 @@
 'use client';
 
-import {
-  Card,
-  Stack,
-  Group,
-  Box,
-  Text,
-  ActionIcon,
-  Flex,
-  Pagination,
-  LoadingOverlay,
-} from '@mantine/core';
-import Image from 'next/image';
-import { EllipsisVertical, MessageCircleWarning, Trash2 } from 'lucide-react';
-import { cn } from '@/utils/cn';
-import { delegate, man } from '@/assets/common';
+import { Stack, Group, Text, Flex, Pagination } from '@mantine/core';
+import { MessageCircleWarning } from 'lucide-react';
 import { Complaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
 import Complaint_Skeleton from './complaint/Complaint_Skeleton';
-import Complaint_Actions from './complaint/Delete_Complaint';
 import Complaint_Card from './complaint/Complaint_Card';
 
 interface ComplaintsListProps {

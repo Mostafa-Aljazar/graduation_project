@@ -1,5 +1,6 @@
 'use client';
 import { Complaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import {
   replyComplaint,
   replyComplaintProps,
@@ -9,7 +10,6 @@ import { Button, Group, Modal, Stack, Text, Textarea } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
-import React from 'react';
 import { z } from 'zod';
 
 type Props = {

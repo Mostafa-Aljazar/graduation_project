@@ -34,10 +34,11 @@ import { getProfile } from '@/actions/actors/manager/profile/getProfileInfo';
 import { ProfileResponse } from '@/@types/actors/manager/profile/profileResponse.type';
 import { toFormData } from '@/utils/objectToFormData';
 import useAuth from '@/hooks/useAuth';
+import { MAN } from '@/assets/actor';
 
 export default function Profile() {
   const { startUpload } = useUploadThing('mediaUploader');
-  const [avatarImage, setAvatarImage] = useState<File | string | null>(man.src);
+  const [avatarImage, setAvatarImage] = useState<File | string | null>(MAN.src);
   const [isEditMode, setIsEditMode] = useState(false);
   const [uploading, setUploading] = useState(false);
   const { isAuthenticated, isManager } = useAuth();
@@ -68,7 +69,7 @@ export default function Profile() {
   // Handle profile data and errors
   useEffect(() => {
     if (profileData && profileData.status === '200' && profileData.user) {
-      setAvatarImage(profileData.user.avatar || man.src);
+      setAvatarImage(profileData.user.avatar || MAN.src);
       form.setFieldValue('name', profileData.user.name);
       form.setFieldValue('idNumber', profileData.user.idNumber);
       form.setFieldValue('gender', profileData.user.gender);
@@ -136,7 +137,7 @@ export default function Profile() {
           mobileNumber: data.user.mobileNumber,
           alternativeNumber: data.user.alternativeNumber || '',
         });
-        setAvatarImage(data.user.avatar || man.src);
+        setAvatarImage(data.user.avatar || MAN.src);
       } else {
         throw new Error(data.error || 'فشل في تحديث الملف الشخصي');
       }
@@ -243,7 +244,7 @@ export default function Profile() {
             />
           ) : (
             <Image
-              src={man}
+              src={MAN}
               alt='Avatar'
               className='w-[100px] h-[100px]'
               priority

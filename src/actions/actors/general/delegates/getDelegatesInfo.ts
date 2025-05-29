@@ -2,7 +2,7 @@
 
 import { delegatesResponse } from "@/@types/actors/general/delegates/delegatesResponse.type";
 import { ALL_DELEGATES } from "@/content/actor/general/delegates";
-import AqsaAPI from "@/services";
+import { AqsaAPI } from "@/services";
 
 type Props = {
     page?: number;

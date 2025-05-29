@@ -2,7 +2,7 @@
 
 import { displacedResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
 import { ALL_DISPLACED } from "@/content/actor/general/displaced";
-import AqsaAPI from "@/services";
+import { AqsaAPI } from "@/services";
 
 type Props = {
     page?: number;

@@ -64,7 +64,6 @@ export default function Complaints() {
         </Text>
       </Group>
 
-      {/* Filters */}
       <Complaints_Filters
         setLocalFilters={setLocalFilters}
         initialFilters={{
@@ -77,7 +76,6 @@ export default function Complaints() {
         setActivePage={setActivePage}
       />
 
-      {/* Complaints List */}
       {error || data?.error ? (
         <Text c='red'>{data?.error || 'حدث خطأ أثناء جلب الشكاوى'}</Text>
       ) : (

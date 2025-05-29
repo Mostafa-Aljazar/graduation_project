@@ -3,7 +3,7 @@ import Displaced_Filters from '@/components/actors/general/Displaced/Displaced_F
 import Displaced_Table from '@/components/actors/general/Displaced/Displaced_Table';
 import { Button, Group, Stack, Text } from '@mantine/core';
 import { Database, UserPlus } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export default function Displaced() {
   // Local state to hold filter input values until "Filter" is clicked
