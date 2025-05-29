@@ -1,7 +1,6 @@
 'use client';
-import { man } from '@/assets/common';
+import { MAN } from '@/assets/actor';
 import useAuth from '@/hooks/useAuth';
-import { getSession } from '@/utils/auth/getSession';
 import { logout } from '@/utils/auth/logout';
 import { Box, Button, Group, Stack, Text } from '@mantine/core';
 import { LogOut } from 'lucide-react';
@@ -36,7 +35,7 @@ export default function Profile_Info() {
           h={85}
         >
           <Image
-            src={user?.image || man}
+            src={user?.image || MAN}
             alt='Profile'
             width={85}
             height={85}

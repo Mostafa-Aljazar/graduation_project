@@ -147,7 +147,9 @@ export default function Navigation_Links() {
               )}
             >
               {link.icon && <link.icon size={20} />}
-              <Text fz={18}>{link.label}</Text>
+              <Text fz={16} fw={isActive ? 600 : 400} className='!text-nowrap'>
+                {link.label}
+              </Text>
             </Link>
           );
         })}

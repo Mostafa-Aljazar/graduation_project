@@ -1,6 +1,6 @@
 "use server";
 import verifyOtpResponse from "@/@types/auth/verifyOtpResponse.type";
-import AqsaAPI from "@/services";
+import { AqsaGuestAPI } from "@/services";
 
 
 export type verifyOtpProps = {
@@ -28,7 +28,7 @@ export const verifyOtp = async ({ email, otp }: verifyOtpProps): Promise<verifyO
     try {
 
 
-        const response = await AqsaAPI.post("/auth/verify-otp", {
+        const response = await AqsaGuestAPI.post("/auth/verify-otp", {
             otp,
             email
         });

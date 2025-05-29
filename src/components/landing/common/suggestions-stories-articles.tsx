@@ -7,9 +7,9 @@ import { useQuery } from '@tanstack/react-query';
 import Blog_Story_Card_Skeleton from './blog-story-card-skeleton';
 import Blog_Story_Card from './blog-story-card';
 import { getSuccessStories } from '@/actions/landing/success-stories/getSuccessStories';
-import { Articles_SuccessStoriesResponse } from '@/@types/landing/article-successStoriesResponse.type';
 import { SUCCESS_STORIES_TITLE_ANOTHER } from '@/content/landing/success-story';
 import { usePathname } from 'next/navigation';
+import { Articles_SuccessStories_Ads_Response } from '@/@types/common/article-successStories-adsResponse.type';
 
 type Props = {
   destination?: 'articles' | 'success-stories';
@@ -27,7 +27,7 @@ export default function Suggestions_Stories_Article({
     data: articles_successStories_Data,
     isLoading,
     error,
-  } = useQuery<Articles_SuccessStoriesResponse, Error>({
+  } = useQuery<Articles_SuccessStories_Ads_Response, Error>({
     queryKey: ['articles', 'success-stories', destination],
     queryFn: async () => {
       if (isInArticle) return await getArticles({ page: 1, limit: 4 });
@@ -53,7 +53,7 @@ export default function Suggestions_Stories_Article({
         ? Array.from({ length: 3 }).map((_, index) => (
             <Blog_Story_Card_Skeleton key={index} destination={'article'} />
           ))
-        : articles_successStories_Data?.articles_successStories?.map(
+        : articles_successStories_Data?.articles_successStories_ads?.map(
             (article, index) => (
               <Blog_Story_Card
                 destination={isInArticle ? 'article' : 'success-story'} //FIXME:

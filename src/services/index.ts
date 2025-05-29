@@ -5,6 +5,36 @@ import axios from "axios"
 // const baseURL = "https://aqsa.com/api"
 const baseURL = ""
 
+
+// Create an Axios instance for guest/public requests
+const AqsaGuestAPI = axios.create({
+  baseURL: baseURL,
+  timeout: 15000, // 15 second timeout
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+
+// Handle guest API response errors (no auth required)
+AqsaGuestAPI.interceptors.response.use(
+  response => {
+    // handel success response
+    return response
+  },
+  error => {
+    if (!error.response) {// if no response, return error
+      return Promise.reject({
+        status: 500,
+        error: 'حدث خطأ في الشبكة'
+      })
+    }
+
+    // For guest API, we don't logout on 401, just return the error
+    return Promise.reject(error)
+  }
+)
+
+
 // Create an Axios instance
 const AqsaAPI = axios.create({
   baseURL: baseURL,
@@ -49,4 +79,5 @@ AqsaAPI.interceptors.response.use(
   }
 )
 
-export default AqsaAPI
+// export default AqsaAPI
+export { AqsaGuestAPI, AqsaAPI }

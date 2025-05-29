@@ -1,14 +1,14 @@
 "use server";
-import { Article_SuccessStory_Ad, Articles_SuccessStories_Ads_Response } from "@/@types/common/article-successStories-adsResponse.type";
-import { FAKE_ARTICLES } from "@/content/landing/fake-data";
 import { AqsaGuestAPI } from "@/services";
+import { FAKE_ADS } from "@/content/landing/fake-data";
+import { Article_SuccessStory_Ad, Articles_SuccessStories_Ads_Response } from "@/@types/common/article-successStories-adsResponse.type";
 
 
-export type getArticlesProps = {
+export type getAdsProps = {
     page?: number;
     limit?: number;
 }
-export const getArticles = async ({ page = 1, limit = 5 }: getArticlesProps): Promise<Articles_SuccessStories_Ads_Response> => {
+export const getAds = async ({ page = 1, limit = 5 }: getAdsProps): Promise<Articles_SuccessStories_Ads_Response> => {
     // Validate page and limit
     if (page < 1 || limit < 1 || isNaN(page) || isNaN(limit)) {
         return {
@@ -20,26 +20,26 @@ export const getArticles = async ({ page = 1, limit = 5 }: getArticlesProps): Pr
     }
 
     //FIXME: Fake data implementation
-    const totalArticles = 20; // Simulate 20 articles in "database"
+    const totalArticles = 20; // Simulate 20 ads in "database"
     const start = (page - 1) * limit;
     const end = start + limit;
 
-    // Generate varied fake articles if ARTICLE_EXAMPLE is a single object
-    let allArticles: Article_SuccessStory_Ad[] = FAKE_ARTICLES || [];
+    let allAds: Article_SuccessStory_Ad[] = FAKE_ADS;
+
 
     // Apply pagination
-    const paginatedArticles = allArticles.slice(start, end);
+    const paginatedArticles = allAds.slice(start, end);
 
     const fakeData: Articles_SuccessStories_Ads_Response = {
         status: "200",
-        message: "تم جلب المقالات بنجاح",
+        message: "تم جلب الاعلانات بنجاح",
         articles_successStories_ads: paginatedArticles,
         error: undefined,
         pagination: {
-            total: allArticles.length,
+            total: allAds.length,
             page,
             limit,
-            totalPages: Math.ceil(allArticles.length / limit),
+            totalPages: Math.ceil(allAds.length / limit),
         },
     };
     //FIXME: Simulate API delay (optional, can be removed in production)
@@ -53,36 +53,36 @@ export const getArticles = async ({ page = 1, limit = 5 }: getArticlesProps): Pr
 
     // Real API implementation
     try {
-        const response = await AqsaGuestAPI.get(`/landing/articles?page=${page}&limit=${limit}`);
+        const response = await AqsaGuestAPI.get<Articles_SuccessStories_Ads_Response>(`/landing / articles ? page = ${page}& limit=${limit} `);
 
-        if (response.data && Array.isArray(response.data.articles)) {
+        if (response.data && Array.isArray(response.data.articles_successStories_ads)) {
             return {
                 status: "200",
-                message: response?.data?.message || "تم جلب المقالات بنجاح",
-                articles_successStories_ads: response.data.articles as Article_SuccessStory_Ad[],
+                message: response?.data?.message || "تم جلب الاعلانات بنجاح",
+                articles_successStories_ads: response.data.articles_successStories_ads as Article_SuccessStory_Ad[],
                 error: undefined,
                 pagination: response.data.pagination || {
-                    total: response.data.articles.length,
+                    total: response.data.articles_successStories_ads.length,
                     page,
                     limit,
-                    totalPages: Math.ceil(response.data.articles.length / limit),
+                    totalPages: Math.ceil(response.data.articles_successStories_ads.length / limit),
                 },
             };
         }
 
         return {
             status: "404",
-            message: "لا توجد مقالات متاحة",
+            message: "لا توجد الاعلانات متاحة",
             articles_successStories_ads: [],
-            error: "لم يتم العثور على مقالات",
+            error: "لم يتم العثور على الاعلانات",
             pagination: { total: 0, page, limit, totalPages: 0 },
         };
     } catch (error: any) {
         return {
             status: error.response?.status?.toString() || "500",
-            message: "فشل في جلب المقالات",
+            message: "فشل في جلب الاعلانات",
             articles_successStories_ads: [],
-            error: error.response?.data?.error || "حدث خطأ أثناء جلب المقالات",
+            error: error.response?.data?.error || "حدث خطأ أثناء جلب الاعلانات",
             pagination: { total: 0, page, limit, totalPages: 0 },
         };
     }
