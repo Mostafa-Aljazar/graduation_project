@@ -1,6 +1,6 @@
 "use server";
 
-import AqsaAPI from "@/services";
+import { AqsaAPI } from "@/services";
 import { ProfileResponse } from "@/@types/actors/manager/profile/profileResponse.type";
 
 export const getProfile = async (): Promise<ProfileResponse> => {

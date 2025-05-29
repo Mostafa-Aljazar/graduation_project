@@ -31,7 +31,7 @@ export default function HEADER_TABS() {
         w={'100%'}
         className='flex justify-center items-center'
       >
-        <Group wrap='nowrap' gap={3} w={'100%'} justify='center'>
+        <Group flex={1} wrap='nowrap' gap={3} justify='center'>
           <ThemeIcon
             variant='transparent'
             className='flex-shrink-0 !text-dark'
@@ -40,9 +40,8 @@ export default function HEADER_TABS() {
             <IconComponent size={16} />
           </ThemeIcon>
           <Text
-            flex={1}
             ta={'center'}
-            fz={{ base: 12, sm: 14, md: 16 }}
+            fz={{ base: 14, md: 16 }}
             lh={1.25}
             className={cn(
               'transition-all duration-300 ease-in-out !text-nowrap overflow-hidden   !overflow-ellipsis',

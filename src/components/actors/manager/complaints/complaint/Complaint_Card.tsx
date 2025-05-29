@@ -1,9 +1,7 @@
 'use client';
 import { Box, Card, Flex, Group, Stack, Text } from '@mantine/core';
-import React from 'react';
 import { cn } from '@/utils/cn';
 import { Complaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
-import { delegate, man } from '@/assets/common';
 import Delete_Complaint from './Delete_Complaint';
 import Complaint_Modal from './Complaint_Modal';
 import Image from 'next/image';
@@ -11,6 +9,8 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { changeStatusComplaint } from '@/actions/actors/manager/complaints/changeStatusComplaint';
+import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { DELEGATE, MAN } from '@/assets/actor';
 
 type Props = {
   complaint: Complaint;
@@ -35,7 +35,6 @@ export default function Complaint_Card({ complaint }: Props) {
           withBorder: true,
         });
         queryClient.invalidateQueries({ queryKey: ['complaints'] }); // Refresh complaints list
-        close();
       } else {
         throw new Error(data.error || 'فشل في تغيير حالة الشكوى');
       }
@@ -62,10 +61,10 @@ export default function Complaint_Card({ complaint }: Props) {
     });
 
     if (!clickedOnDelete) {
-      open();
       if (complaint.status == 'pending') {
         changeStatusMutation.mutate({ complaint_Id: complaint.id });
       }
+      open();
     }
   };
 
@@ -88,7 +87,7 @@ export default function Complaint_Card({ complaint }: Props) {
             h={60}
           >
             <Image
-              src={complaint.sender_type === 'DELEGATE' ? delegate : man}
+              src={complaint.sender_type === 'DELEGATE' ? DELEGATE : MAN}
               alt='Profile'
               width={60}
               height={60}

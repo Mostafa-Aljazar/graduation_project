@@ -109,19 +109,19 @@ export default function Displaced_Table({
     retry: 1,
   });
 
-  //DONE:   Set all Displaced in SelectedRows
+  // Set all Displaced in SelectedRows
   useEffect(() => {
     if (allDisplacedData && selectAllAcrossPages) {
       setSelectedRows(allDisplacedData);
     }
   }, [allDisplacedData, selectAllAcrossPages]);
 
-  //DONE: Check if a specific row is selected
+  // Check if a specific row is selected
   const isRowSelected = (id: number | string) => {
     return selectedRows.includes(id);
   };
 
-  //DONE: Handle if All  Pages Rows Selected
+  // Handle if All  Pages Rows Selected
   const areAllPagesRowsSelected = () => {
     return (
       selectedRows.length ==
@@ -141,7 +141,7 @@ export default function Displaced_Table({
     }
   };
 
-  //DONE: Handle "select all" checkbox in table header
+  // Handle "select all" checkbox in table header
   const handleSelectAllAcrossAllPages = (checked: boolean) => {
     if (!Displaced_Data?.displaceds) return;
 
