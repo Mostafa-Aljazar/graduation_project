@@ -1,6 +1,6 @@
 "use server";
 import { loginResponse } from "@/@types/auth/loginResponse.type";
-import AqsaAPI from "@/services";
+import { AqsaGuestAPI } from "@/services";
 import { UserType } from "@/constants/userTypes";
 
 
@@ -12,7 +12,7 @@ export type loginProps = {
 
 export const login = async ({ email, password, userType }: loginProps): Promise<loginResponse> => {
 
-    // //FIXME: remove this => just as  an example
+    //FIXME: remove this => just as  an example
     const FakeData: loginResponse = {
         status: "200",
         message: "تم تسجيل الدخول بنجاح",
@@ -42,7 +42,7 @@ export const login = async ({ email, password, userType }: loginProps): Promise<
     /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.post("/auth/login", {
+        const response = await AqsaGuestAPI.post("/auth/login", {
             email,
             password,
             userType

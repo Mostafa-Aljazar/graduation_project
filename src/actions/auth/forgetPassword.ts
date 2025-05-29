@@ -1,6 +1,6 @@
 "use server";
 import forgetPasswordResponse from "@/@types/auth/forgetPasswordResponse.type";
-import AqsaAPI from "@/services";
+import { AqsaGuestAPI } from "@/services";
 
 
 export type forgetPasswordProps = {
@@ -26,7 +26,7 @@ export const forgetPassword = async ({ email }: forgetPasswordProps): Promise<fo
     try {
 
 
-        const response = await AqsaAPI.post("/auth/forget-password", {
+        const response = await AqsaGuestAPI.post("/auth/forget-password", {
             email
         });
 

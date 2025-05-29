@@ -1,7 +1,7 @@
 "use server";
+import { AqsaGuestAPI } from "@/services";
 import { Article_SuccessStory_Ad, Articles_SuccessStories_Ads_Response } from "@/@types/common/article-successStories-adsResponse.type";
 import { FAKE_ARTICLES } from "@/content/landing/fake-data";
-import { AqsaGuestAPI } from "@/services";
 
 
 export type getArticlesProps = {
@@ -24,8 +24,8 @@ export const getArticles = async ({ page = 1, limit = 5 }: getArticlesProps): Pr
     const start = (page - 1) * limit;
     const end = start + limit;
 
-    // Generate varied fake articles if ARTICLE_EXAMPLE is a single object
-    let allArticles: Article_SuccessStory_Ad[] = FAKE_ARTICLES || [];
+    let allArticles: Article_SuccessStory_Ad[] = FAKE_ARTICLES;
+
 
     // Apply pagination
     const paginatedArticles = allArticles.slice(start, end);
@@ -53,19 +53,19 @@ export const getArticles = async ({ page = 1, limit = 5 }: getArticlesProps): Pr
 
     // Real API implementation
     try {
-        const response = await AqsaGuestAPI.get(`/landing/articles?page=${page}&limit=${limit}`);
+        const response = await AqsaGuestAPI.get<Articles_SuccessStories_Ads_Response>(`/landing/articles?page=${page}&limit=${limit}`);
 
-        if (response.data && Array.isArray(response.data.articles)) {
+        if (response.data && Array.isArray(response.data.articles_successStories_ads)) {
             return {
                 status: "200",
                 message: response?.data?.message || "تم جلب المقالات بنجاح",
-                articles_successStories_ads: response.data.articles as Article_SuccessStory_Ad[],
+                articles_successStories_ads: response.data.articles_successStories_ads as Article_SuccessStory_Ad[],
                 error: undefined,
                 pagination: response.data.pagination || {
-                    total: response.data.articles.length,
+                    total: response.data.articles_successStories_ads.length,
                     page,
                     limit,
-                    totalPages: Math.ceil(response.data.articles.length / limit),
+                    totalPages: Math.ceil(response.data.articles_successStories_ads.length / limit),
                 },
             };
         }

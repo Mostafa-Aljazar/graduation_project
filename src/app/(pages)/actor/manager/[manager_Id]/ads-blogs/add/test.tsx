@@ -12,7 +12,7 @@ import {
   TextInput,
 } from '@mantine/core';
 import { Dropzone, FileWithPath, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import { useForm, zodResolver } from '@mantine/form';
+import { useForm } from '@mantine/form';
 import { useEditor } from '@tiptap/react';
 import { RichTextEditor, Link } from '@mantine/tiptap';
 import Highlight from '@tiptap/extension-highlight';
@@ -49,34 +49,9 @@ import {
 import { useRouter } from 'next/navigation';
 import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import useAuth from '@/hooks/useAuth';
-import { z } from 'zod';
-
-// Define the Zod schema for FormData
-const formSchema = z.object({
-  type: z.enum(
-    [TYPE_CONTENT.BLOG, TYPE_CONTENT.SUCCESS_STORIES, TYPE_CONTENT.ADS],
-    {
-      required_error: 'يجب اختيار نوع المحتوى',
-    }
-  ),
-  title: z
-    .string()
-    .min(1, { message: 'العنوان مطلوب' })
-    .max(100, { message: 'العنوان يجب ألا يتجاوز 100 حرف' }),
-  brief: z
-    .string()
-    .max(500, { message: 'النبذة يجب ألا تتجاوز 500 حرف' })
-    .optional(),
-  content: z
-    .string()
-    .min(5, { message: 'النص مطلوب' })
-    .max(10000, { message: 'النص يجب ألا يتجاوز 10000 حرف' }),
-  files: z.array(z.any()).optional(), // FileWithPath type isn't strictly typed by Zod
-  imageUrls: z.array(z.string()).optional(),
-});
 
 interface FormData {
-  type: TYPE_CONTENT;
+  type: 'BLOG' | 'SUCCESS_STORIES' | 'ADS';
   title: string;
   brief?: string;
   content: string;
@@ -103,7 +78,6 @@ export default function Page() {
 
   const router = useRouter();
   const { user } = useAuth();
-
   // Fetch existing data only on initial load in edit mode
   const { data: existingData, isLoading: isFetching } = useQuery<
     Article_SuccessStory_Ad_Response | null,
@@ -138,7 +112,6 @@ export default function Page() {
       files: [],
       imageUrls: [],
     },
-    validate: zodResolver(formSchema), // Integrate Zod schema for validation
   });
 
   const editor = useEditor({
@@ -186,7 +159,7 @@ export default function Page() {
   const updateMutation = useMutation<modalActionResponse, Error, FormData>({
     mutationFn: async (values) => {
       try {
-        if (values.type === TYPE_CONTENT.BLOG) {
+        if (values.type === 'BLOG') {
           return await updateArticle({
             id,
             title: values.title,
@@ -194,7 +167,7 @@ export default function Page() {
             brief: values.brief,
             imageUrls: values.imageUrls,
           });
-        } else if (values.type === TYPE_CONTENT.ADS) {
+        } else if (values.type === 'ADS') {
           return await updateAd({
             id,
             title: values.title,
@@ -202,7 +175,7 @@ export default function Page() {
             brief: values.brief,
             imageUrls: values.imageUrls,
           });
-        } else if (values.type === TYPE_CONTENT.SUCCESS_STORIES) {
+        } else if (values.type === 'SUCCESS_STORIES') {
           return await updateSuccessStory({
             id,
             title: values.title,
@@ -233,9 +206,7 @@ export default function Page() {
         });
         form.reset();
         setSelectedFiles([]);
-        router.push(
-          `${MANAGER_ROUTES_fUNC(user?.id as number).ADS_BLOGS}?tab=${addType}`
-        );
+        router.push(`${MANAGER_ROUTES_fUNC(user?.id as number).ADS_BLOGS}?`);
       } else {
         notifications.show({
           title: 'خطأ',
@@ -258,21 +229,21 @@ export default function Page() {
   const addMutation = useMutation<modalActionResponse, Error, FormData>({
     mutationFn: async (values) => {
       try {
-        if (values.type === TYPE_CONTENT.BLOG) {
+        if (values.type === 'BLOG') {
           return await addArticle({
             title: values.title,
             content: values.content,
             brief: values.brief,
             imageUrls: values.imageUrls,
           });
-        } else if (values.type === TYPE_CONTENT.ADS) {
+        } else if (values.type === 'ADS') {
           return await addAd({
             title: values.title,
             content: values.content,
             brief: values.brief,
             imageUrls: values.imageUrls,
           });
-        } else if (values.type === TYPE_CONTENT.SUCCESS_STORIES) {
+        } else if (values.type === 'SUCCESS_STORIES') {
           return await addSuccessStory({
             title: values.title,
             content: values.content,
@@ -298,9 +269,6 @@ export default function Page() {
         });
         form.reset();
         setSelectedFiles([]);
-        router.push(
-          `${MANAGER_ROUTES_fUNC(user?.id as number).ADS_BLOGS}?tab=${addType}`
-        );
       } else {
         notifications.show({
           title: 'خطأ',
@@ -429,7 +397,6 @@ export default function Page() {
               form.setFieldValue('type', typedValue);
               setAddType(typedValue);
             }}
-            error={form.errors.type} // Display Zod validation error
           >
             <Group
               w={{ base: '100%', md: '60%' }}
@@ -619,7 +586,6 @@ export default function Page() {
             placeholder='أدخل العنوان...'
             size='md'
             {...form.getInputProps('title')}
-            error={form.errors.title} // Display Zod validation error
             styles={{
               input: {
                 textAlign: 'right',
@@ -636,7 +602,6 @@ export default function Page() {
             placeholder='أدخل نبذة...'
             size='md'
             {...form.getInputProps('brief')}
-            error={form.errors.brief} // Display Zod validation error
             styles={{
               input: {
                 textAlign: 'right',
@@ -733,11 +698,6 @@ export default function Page() {
             </RichTextEditor.Toolbar>
 
             <RichTextEditor.Content />
-            {form.errors.content && (
-              <Text c='red' size='sm' mt={4}>
-                {form.errors.content}
-              </Text>
-            )}
           </RichTextEditor>
         </Stack>
 
@@ -748,12 +708,17 @@ export default function Page() {
             px={40}
             className={cn(
               '!shadow-lg !text-white',
-              !form.isValid() ? '!bg-primary/70' : '!bg-primary'
+              !form.values.title.trim() || !form.values.content.trim()
+                ? '!bg-primary/70'
+                : '!bg-primary'
             )}
             disabled={
               (action === ACTION_ADD_EDIT.EDIT
                 ? updateMutation.isPending
-                : addMutation.isPending) || !form.isValid()
+                : addMutation.isPending) ||
+              !form.values.title.trim() ||
+              !form.values.content.trim() ||
+              !form.isValid()
             }
             loading={
               (action === ACTION_ADD_EDIT.EDIT
