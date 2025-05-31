@@ -48,8 +48,8 @@ export const DELEGATE_ROUTES_fUNC = (
 
     // AIDS_MANAGEMENT
     AIDS_MANAGEMENT: `/actor/delegate/${delegate_Id}/aids-management`,
-    ADD_AID: `/actor/delegate/${delegate_Id}/aid-management/add`,
-    AID: `/actor/delegate/${delegate_Id}/aid-management/${aid_Id}`,
+    ADD_AID: `/actor/delegate/${delegate_Id}/aids-management/add`,
+    AID: `/actor/delegate/${delegate_Id}/aids-management/${aid_Id}`,
   } as const;
 };
 
@@ -71,8 +71,8 @@ export const MANAGER_ROUTES_fUNC = (
 
     // AIDS_MANAGEMENT
     AIDS_MANAGEMENT: `/actor/manager/${manager_Id}/aids-management`,
-    ADD_AID: `/actor/manager/${manager_Id}/aid-management/add`,
-    AID: `/actor/manager/${manager_Id}/aid-management/${aid_Id}`,
+    ADD_AID: `/actor/manager/${manager_Id}/aids-management/add`,
+    AID: `/actor/manager/${manager_Id}/aids-management/${aid_Id}`,
 
   } as const;
 };

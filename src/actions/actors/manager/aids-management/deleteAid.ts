@@ -3,22 +3,19 @@
 import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
 import { AqsaAPI } from "@/services";
 
-export interface deleteComplaintProps {
-    complaint_Id: string | Number;
+export interface deleteAidProps {
+    aid_Id: string | number;
 }
 
-export const deleteComplaint = async ({
-    complaint_Id,
-}: deleteComplaintProps): Promise<modalActionResponse> => {
-
-
+export const deleteAid = async ({
+    aid_Id,
+}: deleteAidProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: "200",
-        message: `تم حذف الشكوى بنجاح`,
+        message: `تم حذف المساعدة بنجاح`,
 
     }
-    // Simulate API delay
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
@@ -26,21 +23,16 @@ export const deleteComplaint = async ({
     });
 
     // Real implementation with filters
-
     try {
-        const response = await AqsaAPI.delete("/manager/complaint", {
-            params: {
-                complaint_Id,
-            },
-        });
+        const response = await AqsaAPI.delete(`/manager/aids/${aid_Id}`);
 
         return {
             status: "200",
-            message: `تم حذف الشكوى بنجاح`,
+            message: `تم حذف المساعدة بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =
-            error.response?.data?.error || error.message || "حدث خطأ أثناء حذف الشكوى";
+            error.response?.data?.error || error.message || "حدث خطأ أثناء حذف المساعدة";
         return {
             status: error.response?.status?.toString() || "500",
             message: errorMessage,

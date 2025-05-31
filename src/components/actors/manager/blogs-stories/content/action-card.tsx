@@ -12,7 +12,7 @@ import useAuth from '@/hooks/useAuth';
 import {
   ACTION_ADD_EDIT,
   TYPE_CONTENT,
-} from '@/content/actor/manager/Ads_Blogs';
+} from '@/content/actor/manager/ads-blogs-stories';
 
 type Props = {
   id: string | number;

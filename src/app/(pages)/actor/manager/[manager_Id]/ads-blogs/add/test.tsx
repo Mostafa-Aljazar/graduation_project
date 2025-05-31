@@ -45,7 +45,7 @@ import { updateSuccessStory } from '@/actions/actors/manager/blog-stories-ads/su
 import {
   ACTION_ADD_EDIT,
   TYPE_CONTENT,
-} from '@/content/actor/manager/Ads_Blogs';
+} from '@/content/actor/manager/ads-blogs-stories';
 import { useRouter } from 'next/navigation';
 import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import useAuth from '@/hooks/useAuth';

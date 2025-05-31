@@ -1,44 +1,30 @@
 'use client';
-
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
-import { deleteAd } from '@/actions/actors/manager/blog-stories-ads/ad/deleteAd';
-import { deleteArticle } from '@/actions/actors/manager/blog-stories-ads/blog/deleteArticle';
-import { deleteSuccessStory } from '@/actions/actors/manager/blog-stories-ads/success-stories/deleteSuccessStory';
-import { TYPE_CONTENT } from '@/content/actor/manager/ads-blogs-stories';
+import {
+  deleteDisplaced,
+  deleteDisplacedsProps,
+} from '@/actions/actors/general/displaced/deleteDisplaced';
+import {
+  deleteAid,
+  deleteAidProps,
+} from '@/actions/actors/manager/aids-management/deleteAid';
 import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 type Props = {
-  id: string | number;
-  destination?: TYPE_CONTENT;
+  aid_id?: string | number;
   opened: boolean;
   close: () => void;
 };
-export default function Delete_Ad_Article_Story_Modal({
-  id,
-  destination,
-  opened,
-  close,
-}: Props) {
-  const isInSuccessStories = destination === TYPE_CONTENT.SUCCESS_STORIES;
-  const isInAds = destination === TYPE_CONTENT.ADS;
 
-  const queryClient = useQueryClient();
+export default function Aid_Delete_Modal({ aid_id, opened, close }: Props) {
   const deleteMutation = useMutation<
     modalActionResponse,
     unknown,
-    { id: string | number }
+    deleteAidProps
   >({
-    mutationFn: async ({ id }) => {
-      if (isInAds) {
-        return await deleteAd({ adId: id });
-      } else if (isInSuccessStories) {
-        return await deleteSuccessStory({ successStoryId: id });
-      } else {
-        return await deleteArticle({ articleId: id });
-      }
-    },
+    mutationFn: deleteAid,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {
         notifications.show({
@@ -49,13 +35,6 @@ export default function Delete_Ad_Article_Story_Modal({
           withBorder: true,
         });
         close();
-        // Invalidate and refetch the relevant query based on destination
-        const queryKey = isInAds
-          ? ['ads']
-          : isInSuccessStories
-          ? ['successStories']
-          : ['blogs'];
-        queryClient.invalidateQueries({ queryKey });
       } else {
         throw new Error(data.error || 'فشل في الحذف');
       }
@@ -74,7 +53,7 @@ export default function Delete_Ad_Article_Story_Modal({
 
   const handleClick = () => {
     deleteMutation.mutate({
-      id,
+      aid_Id: aid_id as string | number,
     });
   };
 
@@ -83,7 +62,7 @@ export default function Delete_Ad_Article_Story_Modal({
       opened={opened}
       onClose={() => close()}
       title={
-        <Text fz={20} fw={500} ta={'center'} className='!text-red-500'>
+        <Text fz={20} fw={600} ta={'center'} className='!text-red-500'>
           تأكيد الحذف
         </Text>
       }
@@ -94,20 +73,22 @@ export default function Delete_Ad_Article_Story_Modal({
     >
       <Stack>
         <Text fz={16} fw={500}>
-          هل أنت متأكد من حذف هذا العنصر؟ هذا الإجراء لا يمكن التراجع عنه.
+          هل أنت متأكد من حذف هذه المساعدة؟ هذا الإجراء لا يمكن التراجع عنه.
         </Text>
+
         <Group justify='flex-end'>
           <Button
             type='button'
             variant='outline'
             onClick={close}
-            fw={600}
+            fw={500}
             className='!border-primary !text-primary'
           >
             إلغاء
           </Button>
           <Button
             type='button'
+            fw={500}
             className='!bg-red-500'
             loading={deleteMutation.isPending}
             onClick={handleClick}

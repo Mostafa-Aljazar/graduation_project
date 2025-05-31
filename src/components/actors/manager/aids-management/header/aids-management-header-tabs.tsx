@@ -1,19 +1,27 @@
 'use client';
 
 import {
-  GET_ADDS_BLOG_STORIES_TABS,
-  TYPE_CONTENT,
-} from '@/content/actor/manager/ads-blogs-stories';
+  GET_AIDS_MANAGEMENT_TABS,
+  TYPE_GROUP_AIDS,
+} from '@/content/actor/manager/aids-management';
 import { cn } from '@/utils/cn';
-import { Divider, Group, Stack, Tabs, Text, ThemeIcon } from '@mantine/core';
+import {
+  Divider,
+  Flex,
+  Group,
+  Stack,
+  Tabs,
+  Text,
+  ThemeIcon,
+} from '@mantine/core';
 import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs';
 
-export default function HEADER_TABS() {
+export default function Aids_Management_Header_Tabs() {
   const [activeTab, setActiveTab] = useQueryState(
     'tab',
-    parseAsStringEnum<TYPE_CONTENT>(Object.values(TYPE_CONTENT)).withDefault(
-      TYPE_CONTENT.BLOG
-    )
+    parseAsStringEnum<TYPE_GROUP_AIDS>(
+      Object.values(TYPE_GROUP_AIDS)
+    ).withDefault(TYPE_GROUP_AIDS.ONGOING_AIDS)
   );
 
   const [activePage, setActivePage] = useQueryState(
@@ -21,8 +29,8 @@ export default function HEADER_TABS() {
     parseAsInteger.withDefault(1)
   );
 
-  const activeTabSection = (tabKey: TYPE_CONTENT) => {
-    const IconComponent = GET_ADDS_BLOG_STORIES_TABS[tabKey].icon;
+  const activeTabSection = (tabKey: TYPE_GROUP_AIDS) => {
+    const IconComponent = GET_AIDS_MANAGEMENT_TABS[tabKey].icon;
     return (
       <Tabs.Tab
         bg={'#fff'}
@@ -32,13 +40,15 @@ export default function HEADER_TABS() {
         className='flex justify-center items-center'
       >
         <Group flex={1} wrap='nowrap' gap={3} justify='center'>
-          <ThemeIcon
-            variant='transparent'
-            className='flex-shrink-0 !text-dark'
-            size={16}
-          >
-            <IconComponent size={16} />
-          </ThemeIcon>
+          {IconComponent && (
+            <ThemeIcon
+              variant='transparent'
+              className='flex-shrink-0 !text-dark'
+              size={16}
+            >
+              <IconComponent size={16} />
+            </ThemeIcon>
+          )}
           <Text
             ta={'center'}
             fz={{ base: 14, md: 16 }}
@@ -50,7 +60,7 @@ export default function HEADER_TABS() {
                 : '!font-medium !text-[#817C74]'
             )}
           >
-            {GET_ADDS_BLOG_STORIES_TABS[tabKey].label}
+            {GET_AIDS_MANAGEMENT_TABS[tabKey].label}
           </Text>
         </Group>
         {activeTab === tabKey && (
@@ -78,16 +88,16 @@ export default function HEADER_TABS() {
         value={activeTab}
         variant='unstyled'
         onChange={(value: string | null) => {
-          const typedValue = value as TYPE_CONTENT;
+          const typedValue = value as TYPE_GROUP_AIDS;
           setActiveTab(typedValue);
           setActivePage(1);
         }}
         w={'100%'}
       >
         <Tabs.List
-          w={{ base: '100%', md: '80%', lg: '70%' }}
+          w={{ base: '100%', md: '80%' }}
           mx={'auto'}
-          className='shadow-lg border-[#DFDEDC] border-1 rounded-xl !overflow-hidden'
+          className='shadow-lg border-[#DFDEDC] border-1 rounded-xl overflow-hidden'
         >
           <Group
             w={'100%'}
@@ -96,8 +106,9 @@ export default function HEADER_TABS() {
             justify='space-between'
             align='center'
             gap={0}
+            p={0}
           >
-            {activeTabSection(TYPE_CONTENT.BLOG)}
+            {activeTabSection(TYPE_GROUP_AIDS.PREVIOUS_AIDS)}
             <Divider
               orientation='vertical'
               h={'50%'}
@@ -106,7 +117,7 @@ export default function HEADER_TABS() {
               my={'auto'}
               className='flex-shrink-0 !bg-primary'
             />
-            {activeTabSection(TYPE_CONTENT.ADS)}
+            {activeTabSection(TYPE_GROUP_AIDS.ONGOING_AIDS)}
             <Divider
               orientation='vertical'
               h={'50%'}
@@ -115,7 +126,7 @@ export default function HEADER_TABS() {
               my={'auto'}
               className='flex-shrink-0 !bg-primary'
             />
-            {activeTabSection(TYPE_CONTENT.SUCCESS_STORIES)}
+            {activeTabSection(TYPE_GROUP_AIDS.COMING_AIDS)}
           </Group>
         </Tabs.List>
       </Tabs>

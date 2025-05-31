@@ -4,7 +4,7 @@ import { cn } from '@/utils/cn';
 import { Box, Button, Flex, Group, Stack, Text } from '@mantine/core';
 import Image from 'next/image';
 import Action_Card from './action-card';
-import { TYPE_CONTENT } from '@/content/actor/manager/Ads_Blogs';
+import { TYPE_CONTENT } from '@/content/actor/manager/ads-blogs-stories';
 
 type Props = Article_SuccessStory_Ad & {
   destination?: TYPE_CONTENT;
