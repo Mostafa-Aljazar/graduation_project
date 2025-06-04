@@ -1,5 +1,5 @@
-import Aids_Management_Content from '@/components/actors/manager/aids-management/content/aids-management-content';
-import Aids_Management_Header_Tabs from '@/components/actors/manager/aids-management/header/aids-management-header-tabs';
+import Aids_Management_Content from '@/components/actors/manager/aids-management/main/content/aids-management-content';
+import Aids_Management_Header_Tabs from '@/components/actors/manager/aids-management/main/header/aids-management-header-tabs';
 import { Stack } from '@mantine/core';
 import React from 'react';
 

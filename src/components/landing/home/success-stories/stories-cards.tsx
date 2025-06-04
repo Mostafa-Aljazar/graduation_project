@@ -7,7 +7,7 @@ import { Carousel } from '@mantine/carousel';
 import Story_Card from './story-card';
 import { getSuccessStories } from '@/actions/landing/success-stories/getSuccessStories';
 import Story_Card_Skeleton from './story-card-skeleton';
-import { Articles_SuccessStoriesResponse } from '@/@types/landing/article-successStoriesResponse.type';
+import { Articles_SuccessStories_Ads_Response } from '@/@types/common/article-successStories-adsResponse.type';
 
 export default function Stories_Cards() {
   const autoplay = useRef(Autoplay({ delay: 5000 }));
@@ -16,7 +16,7 @@ export default function Stories_Cards() {
     data: successStoriesData,
     isLoading,
     error,
-  } = useQuery<Articles_SuccessStoriesResponse, Error>({
+  } = useQuery<Articles_SuccessStories_Ads_Response, Error>({
     queryKey: ['success-stories'],
     queryFn: async () => {
       return await getSuccessStories({ page: 1, limit: 7 });
@@ -34,7 +34,10 @@ export default function Stories_Cards() {
     );
   }
 
-  if (!isLoading && successStoriesData?.articles_successStories.length === 0) {
+  if (
+    !isLoading &&
+    successStoriesData?.articles_successStories_ads.length === 0
+  ) {
     return (
       <Stack align='center' justify='center' h={200} px={10}>
         <Text
@@ -74,7 +77,7 @@ export default function Stories_Cards() {
                 <Story_Card_Skeleton />
               </Carousel.Slide>
             ))
-          : successStoriesData?.articles_successStories.map((item) => (
+          : successStoriesData?.articles_successStories_ads.map((item) => (
               <Carousel.Slide h='100%' w='100%' key={item.id}>
                 <Story_Card {...item} />
               </Carousel.Slide>

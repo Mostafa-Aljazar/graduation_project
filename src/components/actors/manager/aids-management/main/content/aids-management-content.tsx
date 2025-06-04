@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Stack, Text, Group } from '@mantine/core';
-import { Package } from 'lucide-react';
+import { Stack, Text, Group, Button } from '@mantine/core';
+import { Package, SquarePlus } from 'lucide-react';
 import Aids_Management_Filters from './aids-management-filters';
 import { getAids } from '@/actions/actors/manager/aids-management/getAids';
 import Aids_List from './card/aids-list';
@@ -13,6 +13,9 @@ import {
   TYPE_GROUP_AIDS,
 } from '@/content/actor/manager/aids-management';
 import { parseAsStringEnum, useQueryState } from 'nuqs';
+import { useRouter } from 'next/navigation';
+import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
+import useAuth from '@/hooks/useAuth';
 
 export interface Aids_Management_LocalFilters {
   type: TYPE_AIDS | null; // Made nullable to allow clearing
@@ -21,9 +24,15 @@ export interface Aids_Management_LocalFilters {
 }
 
 export default function Aids_Management_Content() {
+  const route = useRouter();
+
+  const { user } = useAuth();
+  const handelAdd = () => {
+    route.push(MANAGER_ROUTES_fUNC(user?.id as number).ADD_AID);
+  };
   const [localFilters, setLocalFilters] =
     useState<Aids_Management_LocalFilters>({
-      type: TYPE_AIDS.ALL_AIDS,
+      type: TYPE_AIDS.CLEANING_AID,
       date_range: null,
       recipients_range: null,
     });
@@ -54,13 +63,27 @@ export default function Aids_Management_Content() {
 
   return (
     <Stack w={'100%'}>
-      <Group gap={10}>
-        <Package size={20} className='!text-primary' />
-        <Text fw={600} fz={24} className='!text-primary'>
-          المساعدات :
-        </Text>
+      <Group justify='space-between' wrap='nowrap'>
+        <Group gap={10} wrap='nowrap'>
+          <Package size={20} className='!text-primary' />
+          <Text fw={600} fz={24} className='!text-primary !text-nowrap'>
+            المساعدات :
+          </Text>
+        </Group>
+        <Button
+          size='sm'
+          px={15}
+          fz={16}
+          fw={500}
+          c={'white'}
+          radius={'lg'}
+          className='!bg-primary !shadow-lg'
+          rightSection={<SquarePlus size={18} />}
+          onClick={handelAdd}
+        >
+          إضافة
+        </Button>
       </Group>
-
       <Aids_Management_Filters
         setLocalFilters={setLocalFilters}
         initialFilters={{
@@ -82,11 +105,11 @@ export default function Aids_Management_Content() {
           itemsPerPage={5} // Adjust as needed
           totalPages={data?.pagination.totalPages || 1}
           loading={isLoading}
-          highlightedDate={
-            localFilters.date_range?.[0]
-              ? localFilters.date_range[0].toISOString().split('T')[0]
-              : null
-          }
+          // highlightedDate={
+          //   localFilters.date_range?.[0]
+          //     ? localFilters.date_range[0].toISOString().split('T')[0]
+          //     : null
+          // }
         />
       )}
     </Stack>

@@ -11,7 +11,7 @@ interface AidsListProps {
   itemsPerPage: number;
   totalPages: number;
   loading: boolean;
-  highlightedDate: string | null; // e.g., '2024-10-20' to highlight matching rows
+  // highlightedDate: string | null; // e.g., '2024-10-20' to highlight matching rows
 }
 
 export default function Aids_List({
@@ -20,8 +20,8 @@ export default function Aids_List({
   setActivePage,
   totalPages,
   loading,
-  highlightedDate,
-}: AidsListProps) {
+}: // highlightedDate,
+AidsListProps) {
   return (
     <Stack pos={'relative'} py={20}>
       {loading ? (
@@ -43,7 +43,7 @@ export default function Aids_List({
             <Aid_Card
               aid={aid}
               key={aid.id}
-              highlightedDate={highlightedDate}
+              // highlightedDate={highlightedDate}
             />
           ))}
         </Stack>

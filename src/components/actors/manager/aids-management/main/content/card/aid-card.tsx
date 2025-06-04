@@ -11,9 +11,12 @@ import Aid_Action from './aid-action';
 
 type Props = {
   aid: general_Aid;
-  highlightedDate: string | null;
+  // highlightedDate: string | null;
 };
-export default function Aid_Card({ aid, highlightedDate }: Props) {
+export default function Aid_Card({
+  aid,
+}: // highlightedDate
+Props) {
   console.log('🚀 ~ Aid_Card ~ aid:', aid);
 
   // Map aid type to its corresponding icon, default to Package if not found
@@ -27,10 +30,8 @@ export default function Aid_Card({ aid, highlightedDate }: Props) {
       key={aid.id}
       p='md'
       className={cn(
-        'border-1 border-gray-200 rounded-lg   hover:bg-gray-50',
-        highlightedDate &&
-          aid.distribution_date === highlightedDate &&
-          '!bg-red-200'
+        'border-1 border-gray-200 rounded-lg   hover:bg-gray-50 !bg-green-100',
+        aid.complete && '!bg-red-100'
       )}
     >
       <Group>

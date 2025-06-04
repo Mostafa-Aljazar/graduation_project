@@ -1,5 +1,5 @@
 'use client';
-import { Article_SuccessStory } from '@/@types/landing/article-successStoriesResponse.type';
+import { Article_SuccessStory_Ad } from '@/@types/common/article-successStories-adsResponse.type';
 import { LANDING_ROUTES } from '@/constants/routes';
 import { cn } from '@/utils/cn';
 import { Box, Button, Flex, Stack, Text } from '@mantine/core';
@@ -7,13 +7,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-type Props = Article_SuccessStory & {
+type Props = Article_SuccessStory_Ad & {
   destination?: 'blogs' | 'article' | 'success-stories' | 'success-story';
 };
 export default function Blog_Story_Card({
   destination = 'blogs',
   id,
-  img,
+  imgs,
   createdAt,
   title,
   content,
@@ -61,10 +61,10 @@ export default function Blog_Story_Card({
             w={{ base: 350, md: isInBlogs || isInSuccessStories ? 250 : 300 }}
             h={{ base: 150, md: 200 }}
           >
-            {img && (
+            {imgs && (
               <Image
                 alt='Blog Image'
-                src={img}
+                src={imgs[0]}
                 fill
                 className={cn(
                   ' rounded-sm   !object-fill !w-[350px] md:!w-[300px]   !h-[150px] md:!h-[200px]',

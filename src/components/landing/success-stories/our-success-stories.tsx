@@ -6,7 +6,7 @@ import { OUR_SUCCESS_STORIES_TITLE } from '@/content/landing/success-story';
 import Blog_Story_Card from '../common/blog-story-card';
 import Blog_Story_Card_Skeleton from '../common/blog-story-card-skeleton';
 import { parseAsInteger, useQueryState } from 'nuqs';
-import { Articles_SuccessStoriesResponse } from '@/@types/landing/article-successStoriesResponse.type';
+import { Articles_SuccessStories_Ads_Response } from '@/@types/common/article-successStories-adsResponse.type';
 
 export default function Our_Success_Stories() {
   const [activePage, setPage] = useQueryState(
@@ -18,7 +18,7 @@ export default function Our_Success_Stories() {
     data: successStoriesData,
     isLoading,
     error,
-  } = useQuery<Articles_SuccessStoriesResponse, Error>({
+  } = useQuery<Articles_SuccessStories_Ads_Response, Error>({
     queryKey: ['success-stories', activePage],
     queryFn: async () => {
       return await getSuccessStories({ page: activePage, limit: 7 });
@@ -70,18 +70,20 @@ export default function Our_Success_Stories() {
           ? Array.from({ length: 5 }).map((_, index) => (
               <Blog_Story_Card_Skeleton key={index} />
             ))
-          : successStoriesData?.articles_successStories?.map((story, index) => (
-              <Blog_Story_Card
-                destination='success-stories'
-                key={index}
-                id={story.id}
-                createdAt={story.createdAt}
-                title={story.title}
-                content={story.content}
-                img={story.img}
-                brief={story.content}
-              />
-            ))}
+          : successStoriesData?.articles_successStories_ads?.map(
+              (story, index) => (
+                <Blog_Story_Card
+                  destination='success-stories'
+                  key={index}
+                  id={story.id}
+                  createdAt={story.createdAt}
+                  title={story.title}
+                  content={story.content}
+                  imgs={story.imgs}
+                  brief={story.content}
+                />
+              )
+            )}
       </Stack>
       <Pagination
         hidden={isLoading}
