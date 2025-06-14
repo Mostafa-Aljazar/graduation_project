@@ -13,9 +13,9 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { FileUp, ListFilter, RotateCcw, Search } from 'lucide-react';
+import { ListFilter, RotateCcw, Search } from 'lucide-react';
 import { parseAsString, useQueryState } from 'nuqs';
-import React, { useRef, useState } from 'react';
+import { useState } from 'react';
 
 interface Filters {
   wife_status: string;
@@ -27,12 +27,12 @@ interface Filters {
   delegate: string[];
 }
 
-type Props = {
+interface DisplacedFiltersProps {
   setLocalFilters: React.Dispatch<React.SetStateAction<Filters>>;
   displacedNum: number;
-};
+}
 
-const initData = {
+const initData: Filters = {
   wife_status: '',
   family_number: undefined,
   ages: [],
@@ -42,58 +42,40 @@ const initData = {
   delegate: [],
 };
 
-export default function Displaced_Filters({
+export default function DisplacedFilters({
   setLocalFilters,
   displacedNum,
-}: Props) {
-  // Query state for search
+}: DisplacedFiltersProps) {
   const [searchInput, setSearchInput] = useState('');
-  // Reset key to force re-render of select components
   const [resetKey, setResetKey] = useState(0);
   const [search, setSearch] = useQueryState(
     'search',
     parseAsString.withDefault('')
   );
 
-  // Initialize form with useForm (excluding search)
   const form = useForm({
     initialValues: initData,
   });
 
-  // Apply filters by updating setLocalFilters with form values and search
   const handleApplyFilters = () => {
     setLocalFilters({
       ...form.values,
     });
   };
 
-  // Apply search
   const handleSearch = () => {
     setSearch(searchInput);
     setSearchInput('');
-
-    // Reset form with explicit values
     form.setValues(initData);
-    // Reset local filters
     setLocalFilters(initData);
-    // Increment reset key to force re-render of select components
     setResetKey((prev) => prev + 1);
   };
 
-  // Reset filters
   const handleReset = () => {
-    // Reset search
     setSearchInput('');
-    // Reset URL params
     setSearch('');
-
-    // Reset form with explicit values
     form.setValues(initData);
-
-    // Reset local filters
     setLocalFilters(initData);
-
-    // Increment reset key to force re-render of select components
     setResetKey((prev) => prev + 1);
   };
 
@@ -102,7 +84,7 @@ export default function Displaced_Filters({
       <Flex
         direction={{ base: 'column', md: 'row' }}
         gap={{ base: 10, md: 0 }}
-        justify={'space-between'}
+        justify='space-between'
       >
         <Group flex={1} gap={10}>
           <Text fw={600} fz={16} className='!text-primary'>
@@ -133,7 +115,7 @@ export default function Displaced_Filters({
             value={searchInput}
             classNames={{
               input:
-                '!border-none !outline-none placeholder:!text-sm !text-primary  ',
+                '!border-none !outline-none placeholder:!text-sm !text-primary',
             }}
             leftSection={<Search size={18} />}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -144,8 +126,8 @@ export default function Displaced_Filters({
             px={10}
             fz={16}
             fw={500}
-            c={'dark'}
-            radius={'none'}
+            c='dark'
+            radius='none'
             className='!bg-gray-300 !rounded-none'
             onClick={handleSearch}
           >
@@ -176,7 +158,7 @@ export default function Displaced_Filters({
             key={`wife_status-${resetKey}`}
             {...form.getInputProps('wife_status')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
+              input: 'placeholder:!text-sm !text-primary !font-medium',
             }}
             clearable
           />
@@ -195,7 +177,7 @@ export default function Displaced_Filters({
             key={`family_number-${resetKey}`}
             {...form.getInputProps('family_number')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
+              input: 'placeholder:!text-sm !text-primary !font-medium',
             }}
           />
 
@@ -207,21 +189,21 @@ export default function Displaced_Filters({
             }
             placeholder='حدد أعمار الأفراد'
             data={[
-              { label: 'اقل من 6 شهور', value: 'less_than_6_month' },
+              { label: 'أقل من 6 شهور', value: 'less_than_6_month' },
               {
-                label: 'من 6 شهور الى عامين',
+                label: 'من 6 شهور إلى عامين',
                 value: 'from_6_month_to_2_years',
               },
               {
-                label: 'من 2 عام الى 6 أعوام',
+                label: 'من 2 عام إلى 6 أعوام',
                 value: 'from_2_years_to_6_years',
               },
               {
-                label: 'من 6 أعوام الى 12 عام',
+                label: 'من 6 أعوام إلى 12 عام',
                 value: 'from_6_years_to_12_years',
               },
               {
-                label: 'من 12 عام الى 18 عام',
+                label: 'من 12 عام إلى 18 عام',
                 value: 'from_12_years_to_18_years',
               },
               { label: 'أكبر من 18 عام', value: 'more_than_18' },
@@ -230,14 +212,14 @@ export default function Displaced_Filters({
             key={`ages-${resetKey}`}
             {...form.getInputProps('ages')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
+              input: 'placeholder:!text-sm !text-primary !font-medium',
             }}
           />
 
           <Select
             label={
               <Text fz={16} fw={500}>
-                صحة المزمنة :
+                صحة مزمنة :
               </Text>
             }
             placeholder='الحالة'
@@ -249,7 +231,7 @@ export default function Displaced_Filters({
             key={`chronic_disease-${resetKey}`}
             {...form.getInputProps('chronic_disease')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
+              input: 'placeholder:!text-sm !text-primary !font-medium',
             }}
             clearable
           />
@@ -257,7 +239,7 @@ export default function Displaced_Filters({
           <Select
             label={
               <Text fz={16} fw={500}>
-                نوع الايواء :
+                نوع الإيواء :
               </Text>
             }
             placeholder='المكان'
@@ -270,7 +252,7 @@ export default function Displaced_Filters({
             key={`accommodation_type-${resetKey}`}
             {...form.getInputProps('accommodation_type')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
+              input: 'placeholder:!text-sm !text-primary !font-medium',
             }}
             clearable
           />
@@ -291,7 +273,7 @@ export default function Displaced_Filters({
             key={`case_type-${resetKey}`}
             {...form.getInputProps('case_type')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
+              input: 'placeholder:!text-sm !text-primary !font-medium',
             }}
             clearable
           />
@@ -314,7 +296,7 @@ export default function Displaced_Filters({
             key={`delegate-${resetKey}`}
             {...form.getInputProps('delegate')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
+              input: 'placeholder:!text-sm !text-primary !font-medium',
             }}
           />
 
@@ -327,8 +309,8 @@ export default function Displaced_Filters({
               px={15}
               fz={16}
               fw={500}
-              c={'dark'}
-              radius={'lg'}
+              c='dark'
+              radius='lg'
               className='!justify-end !items-end !self-end !bg-gray-300 !shadow-lg'
               rightSection={<RotateCcw size={18} />}
               onClick={handleReset}
@@ -342,8 +324,8 @@ export default function Displaced_Filters({
               px={15}
               fz={16}
               fw={500}
-              c={'white'}
-              radius={'lg'}
+              c='white'
+              radius='lg'
               className='!justify-end !items-end !self-end !bg-primary !shadow-lg'
               rightSection={<ListFilter size={18} />}
             >

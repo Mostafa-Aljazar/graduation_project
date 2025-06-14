@@ -1,7 +1,7 @@
 'use client';
-
 import { CategoryRangeType } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { DEFAULT_CATEGORIES } from '@/content/actor/manager/aids-management';
+import { cn } from '@/utils/cn';
 import {
   ActionIcon,
   Button,
@@ -146,18 +146,21 @@ export default function PortionsManagementModal({
       <Paper p='md' withBorder>
         <Stack gap='md'>
           <Group justify='space-between' align='center'>
-            <Text fz={18} fw={600} c='blue'>
+            <Text fz={17} fw={600} className='!text-primary'>
               تحديد الحصص حسب عدد الأفراد
             </Text>
             <Tooltip label='إدارة الفئات'>
-              <ActionIcon variant='light' color='blue' onClick={openManagement}>
+              <ActionIcon
+                variant='light'
+                className='!text-primary'
+                onClick={openManagement}
+              >
                 <Settings size={16} />
               </ActionIcon>
             </Tooltip>
           </Group>
-
           <Stack gap='xs'>
-            <Text fz={14} fw={500}>
+            <Text fz={16} fw={500}>
               اختر الفئات المطلوبة:
             </Text>
             <MultiSelect
@@ -173,7 +176,7 @@ export default function PortionsManagementModal({
               size='sm'
               leftSection={<Users size={16} />}
               classNames={{
-                input: 'placeholder:!text-sm !text-primary !font-normal',
+                input: 'placeholder:!text-sm !text-primary !font-medium',
               }}
               clearable
               searchable
@@ -182,13 +185,12 @@ export default function PortionsManagementModal({
               multiple
             />
           </Stack>
-
           {selectedCategories.length > 0 && (
             <Stack gap='xs'>
               <Text fz={14} fw={500}>
-                الفئات المختارة وحصصها:
+                الفئات المختارة وحصياتها:
               </Text>
-              <ScrollArea h={300}>
+              <ScrollArea h={250}>
                 <Table striped highlightOnHover>
                   <Table.Thead>
                     <Table.Tr>
@@ -202,7 +204,7 @@ export default function PortionsManagementModal({
                       <Table.Tr key={category.id}>
                         <Table.Td>{category.label}</Table.Td>
                         <Table.Td>
-                          <Badge variant='light' color='blue'>
+                          <Badge variant='light' className='!text-primary'>
                             {category.max
                               ? `${category.min}-${category.max}`
                               : `${category.min}+`}
@@ -228,12 +230,11 @@ export default function PortionsManagementModal({
                   </Table.Tbody>
                 </Table>
               </ScrollArea>
-
               <Group justify='space-between' mt='md'>
                 <Text size='sm' c='dimmed'>
                   إجمالي الفئات المختارة: {selectedCategories.length}
                 </Text>
-                <Badge size='lg' color='green'>
+                <Badge size='lg' className='!text-primary'>
                   إجمالي الحصص:{' '}
                   {selectedCategories.reduce(
                     (total, cat) =>
@@ -246,13 +247,19 @@ export default function PortionsManagementModal({
           )}
         </Stack>
       </Paper>
-
       <Modal
         opened={managementOpened}
         onClose={closeManagement}
-        title='إدارة فئات عدد الأفراد'
+        title={
+          <Text fz={18} fw={600} ta='center' className='!text-primary'>
+            إدارة فئات عدد الأفراد
+          </Text>
+        }
         size='lg'
         centered
+        classNames={{
+          title: '!w-full',
+        }}
       >
         <Stack gap='md'>
           <Paper p='md' withBorder>
@@ -300,6 +307,11 @@ export default function PortionsManagementModal({
                         !form.values.isOpenEnded
                       )
                     }
+                    className={cn(
+                      form.values.isOpenEnded
+                        ? '!bg-primary'
+                        : '!border-primary !text-primary'
+                    )}
                   >
                     {form.values.isOpenEnded
                       ? 'مفتوح (أكثر من)'
@@ -310,7 +322,9 @@ export default function PortionsManagementModal({
               <Group justify='flex-end' mt='md'>
                 {editingCategory && (
                   <Button
+                    size='sm'
                     variant='outline'
+                    color={'red'}
                     onClick={() => {
                       setEditingCategory(null);
                       form.reset();
@@ -321,16 +335,17 @@ export default function PortionsManagementModal({
                 )}
                 <Button
                   type='submit'
+                  size='sm'
                   leftSection={
                     editingCategory ? <Edit size={16} /> : <Plus size={16} />
                   }
+                  className='!bg-primary'
                 >
                   {editingCategory ? 'تحديث' : 'إضافة'}
                 </Button>
               </Group>
             </form>
           </Paper>
-
           <Paper p='md' withBorder>
             <Group justify='space-between' mb='sm'>
               <Text fw={500}>الفئات الحالية:</Text>

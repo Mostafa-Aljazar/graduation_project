@@ -1,5 +1,6 @@
 'use client';
 
+import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import { getDelegates } from '@/actions/actors/general/delegates/getDelegatesInfo';
 import { changeDelegate } from '@/actions/actors/general/displaced/changeDelegate';
 import { Button, Group, Modal, Select, Stack, Text } from '@mantine/core';

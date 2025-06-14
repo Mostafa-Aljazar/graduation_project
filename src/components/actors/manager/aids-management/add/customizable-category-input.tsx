@@ -1,7 +1,7 @@
 'use client';
-
 import { CategoryRangeType } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { DEFAULT_CATEGORIES } from '@/content/actor/manager/aids-management';
+import { cn } from '@/utils/cn';
 import {
   ActionIcon,
   Button,
@@ -159,12 +159,11 @@ export default function CustomizableCategoryInput({
           {label}
         </Text>
         <Tooltip label='إدارة الفئات'>
-          <ActionIcon variant='light' color='blue' onClick={open}>
+          <ActionIcon variant='light' className='!text-primary' onClick={open}>
             <Settings size={16} />
           </ActionIcon>
         </Tooltip>
       </Group>
-
       <MultiSelect
         placeholder={placeholder}
         data={selectData}
@@ -184,7 +183,7 @@ export default function CustomizableCategoryInput({
         size='sm'
         leftSection={<Users size={16} />}
         classNames={{
-          input: 'placeholder:!text-sm !text-primary !font-normal',
+          input: 'placeholder:!text-sm !text-primary !font-medium',
         }}
         clearable
         searchable
@@ -192,7 +191,6 @@ export default function CustomizableCategoryInput({
         maxDropdownHeight={200}
         multiple
       />
-
       {selectedCategories.length > 0 && (
         <Stack gap='xs'>
           <Text size='sm' fw={500}>
@@ -207,8 +205,10 @@ export default function CustomizableCategoryInput({
                   onChange?.(value.filter((v) => v.id !== category.id));
                 }}
                 variant='filled'
-                color='blue'
                 size='sm'
+                classNames={{
+                  label: '!bg-primary/90',
+                }}
               >
                 <Text size='xs'>{category.label}</Text>
               </Chip>
@@ -216,13 +216,19 @@ export default function CustomizableCategoryInput({
           </Group>
         </Stack>
       )}
-
       <Modal
         opened={opened}
         onClose={close}
-        title='إدارة فئات عدد الأفراد'
+        title={
+          <Text fz={18} fw={600} ta='center' className='!text-primary'>
+            إدارة فئات عدد الأفراد
+          </Text>
+        }
         size='lg'
         centered
+        classNames={{
+          title: '!w-full',
+        }}
       >
         <Stack gap='md'>
           <Paper p='md' withBorder>
@@ -274,6 +280,11 @@ export default function CustomizableCategoryInput({
                         !form.values.isOpenEnded
                       )
                     }
+                    className={cn(
+                      form.values.isOpenEnded
+                        ? '!bg-primary'
+                        : '!border-primary !text-primary'
+                    )}
                   >
                     {form.values.isOpenEnded
                       ? 'مفتوح (أكثر من)'
@@ -284,7 +295,9 @@ export default function CustomizableCategoryInput({
               <Group justify='flex-end' mt='md'>
                 {editingCategory && (
                   <Button
+                    size='sm'
                     variant='outline'
+                    color={'red'}
                     onClick={() => {
                       setEditingCategory(null);
                       form.reset();
@@ -295,16 +308,17 @@ export default function CustomizableCategoryInput({
                 )}
                 <Button
                   type='submit'
+                  size='sm'
                   leftSection={
                     editingCategory ? <Edit size={16} /> : <Plus size={16} />
                   }
+                  className='!bg-primary'
                 >
                   {editingCategory ? 'تحديث' : 'إضافة'}
                 </Button>
               </Group>
             </form>
           </Paper>
-
           <Paper p='md' withBorder>
             <Group justify='space-between' mb='sm'>
               <Text fw={500}>الفئات الحالية:</Text>
@@ -339,7 +353,7 @@ export default function CustomizableCategoryInput({
                   <Group gap='xs'>
                     <ActionIcon
                       variant='light'
-                      color='blue'
+                      color='green'
                       size='sm'
                       onClick={() => editCategory(category)}
                     >

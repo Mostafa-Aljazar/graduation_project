@@ -1,4 +1,3 @@
-import { CategoryRangeType } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import {
     DollarSign,
     Utensils,
@@ -11,6 +10,7 @@ import {
     Activity,
     CalendarCheck,
 } from 'lucide-react';
+import { CategoryRangeType } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 
 // Aid Management Tabs
 export const GET_AIDS_MANAGEMENT_TABS = {
@@ -83,3 +83,29 @@ export const DEFAULT_CATEGORIES: CategoryRangeType[] = [
         portion: 4,
     },
 ];
+
+
+
+// DISTRIBUTION_MECHANISM
+export enum DISTRIBUTION_MECHANISM {
+    delegates_lists = "delegates_lists",
+    displaced_families = "displaced_families"
+}
+
+
+// delegatesPortions
+export enum DELEGATE_PORTIONS {
+    equal = 'equal',
+    manual = 'manual'
+}
+
+
+export enum QUANTITY_AVAILABILITY {
+    limited = 'limited',
+    unlimited = 'unlimited'
+}
+
+export enum DISTRIBUTION_METHOD {
+    equal = 'equal',
+    family_number = 'family_number'
+}
