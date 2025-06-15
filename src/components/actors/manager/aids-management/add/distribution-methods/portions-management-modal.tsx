@@ -1,29 +1,28 @@
+// components/actors/manager/aids-management/add/distribution-methods/portions-management-modal.tsx
 'use client';
+
 import { CategoryRangeType } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { DEFAULT_CATEGORIES } from '@/content/actor/manager/aids-management';
 import { cn } from '@/utils/cn';
 import {
   ActionIcon,
+  Badge,
   Button,
   Group,
+  Modal,
+  MultiSelect,
   NumberInput,
   Paper,
-  Stack,
-  Text,
-  TextInput,
-  Tooltip,
-  Badge,
-  Modal,
-  SimpleGrid,
-  Table,
   ScrollArea,
-  MultiSelect,
+  Stack,
+  Table,
+  Text,
+  Tooltip,
 } from '@mantine/core';
-import { useForm, zodResolver } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
-import { Plus, Edit, Trash2, Users, Settings } from 'lucide-react';
+import { Settings, Users } from 'lucide-react';
 import { useState } from 'react';
-import { z } from 'zod';
+import { Category_Management_Modal } from './category-management-modal';
 
 interface PortionsManagementModalProps {
   selectedCategories: CategoryRangeType[];
@@ -32,22 +31,6 @@ interface PortionsManagementModalProps {
   categoryPortions: Record<string, number>;
   onCategoryAdd?: (categoryId: string, portion: number) => void;
 }
-
-const categoryFormSchema = z
-  .object({
-    label: z.string().min(2, { message: 'يجب أن يكون التسمية أطول من حرفين' }),
-    min: z.number().min(1, { message: 'يجب أن يكون الحد الأدنى 1 على الأقل' }),
-    max: z.number().nullable(),
-    portion: z.number().min(1, { message: 'يجب أن تكون الحصة 1 على الأقل' }),
-    isOpenEnded: z.boolean(),
-  })
-  .refine(
-    (data) => data.isOpenEnded || (data.max !== null && data.max > data.min),
-    {
-      message: 'يجب أن يكون الحد الأقصى أكبر من الحد الأدنى',
-      path: ['max'],
-    }
-  );
 
 export default function PortionsManagementModal({
   selectedCategories,
@@ -63,18 +46,13 @@ export default function PortionsManagementModal({
   const [editingCategory, setEditingCategory] =
     useState<CategoryRangeType | null>(null);
 
-  const form = useForm({
-    initialValues: {
-      label: '',
-      min: 1,
-      max: 3,
-      isOpenEnded: false,
-      portion: 1,
-    },
-    validate: zodResolver(categoryFormSchema),
-  });
-
-  const addCategory = (values: typeof form.values) => {
+  const addCategory = (values: {
+    label: string;
+    min: number;
+    max: number | null;
+    portion: number;
+    isOpenEnded: boolean;
+  }) => {
     const newCategory: CategoryRangeType = {
       id: values.label,
       label: values.label,
@@ -93,21 +71,8 @@ export default function PortionsManagementModal({
       onCategoryAdd?.(newCategory.id, newCategory.portion || 1);
     }
 
-    form.reset();
     setEditingCategory(null);
     closeManagement();
-  };
-
-  const editCategory = (category: CategoryRangeType) => {
-    setEditingCategory(category);
-    form.setValues({
-      label: category.label,
-      min: category.min,
-      max: category.max || 10,
-      isOpenEnded: category.max === null,
-      portion: category.portion || 1,
-    });
-    openManagement();
   };
 
   const deleteCategory = (id: string) => {
@@ -247,157 +212,18 @@ export default function PortionsManagementModal({
           )}
         </Stack>
       </Paper>
-      <Modal
+      <Category_Management_Modal
         opened={managementOpened}
         onClose={closeManagement}
-        title={
-          <Text fz={18} fw={600} ta='center' className='!text-primary'>
-            إدارة فئات عدد الأفراد
-          </Text>
-        }
-        size='lg'
-        centered
-        classNames={{
-          title: '!w-full',
-        }}
-      >
-        <Stack gap='md'>
-          <Paper p='md' withBorder>
-            <Text fw={500} mb='sm'>
-              {editingCategory ? 'تعديل الفئة' : 'إضافة فئة جديدة'}:
-            </Text>
-            <form onSubmit={form.onSubmit(addCategory)}>
-              <SimpleGrid cols={{ base: 1, sm: 2 }} spacing='sm'>
-                <TextInput
-                  label='تسمية الفئة'
-                  placeholder='مثال: 1-3 أفراد'
-                  {...form.getInputProps('label')}
-                  size='sm'
-                />
-                <NumberInput
-                  label='الحد الأدنى'
-                  placeholder='1'
-                  min={1}
-                  {...form.getInputProps('min')}
-                  size='sm'
-                />
-                {!form.values.isOpenEnded && (
-                  <NumberInput
-                    label='الحد الأقصى'
-                    placeholder='3'
-                    min={form.values.min + 1}
-                    {...form.getInputProps('max')}
-                    size='sm'
-                  />
-                )}
-                <NumberInput
-                  label='الحصة المخصصة'
-                  placeholder='1'
-                  min={1}
-                  {...form.getInputProps('portion')}
-                  size='sm'
-                />
-                <Group align='end'>
-                  <Button
-                    variant={form.values.isOpenEnded ? 'filled' : 'outline'}
-                    size='sm'
-                    onClick={() =>
-                      form.setFieldValue(
-                        'isOpenEnded',
-                        !form.values.isOpenEnded
-                      )
-                    }
-                    className={cn(
-                      form.values.isOpenEnded
-                        ? '!bg-primary'
-                        : '!border-primary !text-primary'
-                    )}
-                  >
-                    {form.values.isOpenEnded
-                      ? 'مفتوح (أكثر من)'
-                      : 'مغلق (نطاق محدد)'}
-                  </Button>
-                </Group>
-              </SimpleGrid>
-              <Group justify='flex-end' mt='md'>
-                {editingCategory && (
-                  <Button
-                    size='sm'
-                    variant='outline'
-                    color={'red'}
-                    onClick={() => {
-                      setEditingCategory(null);
-                      form.reset();
-                    }}
-                  >
-                    إلغاء
-                  </Button>
-                )}
-                <Button
-                  type='submit'
-                  size='sm'
-                  leftSection={
-                    editingCategory ? <Edit size={16} /> : <Plus size={16} />
-                  }
-                  className='!bg-primary'
-                >
-                  {editingCategory ? 'تحديث' : 'إضافة'}
-                </Button>
-              </Group>
-            </form>
-          </Paper>
-          <Paper p='md' withBorder>
-            <Group justify='space-between' mb='sm'>
-              <Text fw={500}>الفئات الحالية:</Text>
-              <Button variant='subtle' size='xs' onClick={resetToDefault}>
-                إعادة الافتراضي
-              </Button>
-            </Group>
-            <Stack gap='xs'>
-              {categories.map((category) => (
-                <Group key={category.id} justify='space-between' align='center'>
-                  <Group gap='xs'>
-                    <Badge variant='light' color='blue'>
-                      {category.max
-                        ? `${category.min}-${category.max}`
-                        : `${category.min}+`}
-                    </Badge>
-                    <Text size='sm'>{category.label}</Text>
-                    {category.isDefault && (
-                      <Badge size='xs' color='gray'>
-                        افتراضي
-                      </Badge>
-                    )}
-                    <Badge size='xs' color='green'>
-                      الحصة: {category.portion || 1}
-                    </Badge>
-                  </Group>
-                  <Group gap='xs'>
-                    <ActionIcon
-                      variant='light'
-                      color='blue'
-                      size='sm'
-                      onClick={() => editCategory(category)}
-                    >
-                      <Edit size={14} />
-                    </ActionIcon>
-                    {!category.isDefault && (
-                      <ActionIcon
-                        variant='light'
-                        color='red'
-                        size='sm'
-                        onClick={() => deleteCategory(category.id)}
-                      >
-                        <Trash2 size={14} />
-                      </ActionIcon>
-                    )}
-                  </Group>
-                </Group>
-              ))}
-            </Stack>
-          </Paper>
-        </Stack>
-      </Modal>
+        editingCategory={editingCategory}
+        categories={categories}
+        singlePortion={1} // You can adjust this as needed
+        onAddCategory={addCategory}
+        onEditCategory={(category) => setEditingCategory(category)}
+        onDeleteCategory={deleteCategory}
+        onResetToDefault={resetToDefault}
+        onSetEditingCategory={setEditingCategory}
+      />
     </Stack>
   );
 }

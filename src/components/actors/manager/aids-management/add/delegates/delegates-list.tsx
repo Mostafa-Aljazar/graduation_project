@@ -4,7 +4,7 @@ import { Users } from 'lucide-react';
 import { useState } from 'react';
 import Delegate_Filters from './delegates-filter';
 import Delegates_Table from './delegates-table';
-import { SelectedDelegatePortion } from '@/app/(pages)/actor/manager/[manager_Id]/aids-management/add/page';
+import { SelectedDelegatePortion } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 
 function Delegates_List_Header() {
   return (

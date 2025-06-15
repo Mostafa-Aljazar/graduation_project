@@ -48,8 +48,6 @@ export default function Delegates_Table({
   setSelectedDelegatesPortions,
   selectedDelegatesPortions,
 }: DelegatesTableProps) {
-  // console.log('🚀 ~ selectedDelegatesPortions:', selectedDelegatesPortions);
-
   const [query, setQuery] = useQueryStates({
     delegatesPortions: parseAsStringEnum<DELEGATE_PORTIONS>(
       Object.values(DELEGATE_PORTIONS)
@@ -73,41 +71,6 @@ export default function Delegates_Table({
   const [remainingQuantity, setRemainingQuantity] = useState(
     query.existingQuantity
   );
-  console.log('🚀 ~ remainingQuantity:', remainingQuantity);
-
-  // console.log('🚀 ~ existingQuantity:', query.existingQuantity);
-
-  // useEffect(() => {
-  //   // Reset portions when delegatesPortions or quantityAvailability changes
-  //   setSelectedDelegatesPortions((prev) =>
-  //     prev.map((d) => ({
-  //       ...d,
-  //       portion:
-  //         query.delegatesPortions === DELEGATE_PORTIONS.equal
-  //           ? query.delegateSinglePortion
-  //           : 0,
-  //     }))
-  //   );
-
-  //   const totalPortion = selectedDelegatesPortions.reduce(
-  //     (sum, d) => sum + d.portion,
-  //     0
-  //   );
-  //   // Restore previous total portion to remainingQuantity and existingQuantity
-  //   setRemainingQuantity(query.existingQuantity - totalPortion);
-  //   // if (query.quantityAvailability === QUANTITY_AVAILABILITY.limited) {
-  //   //   setQuery((prev) => ({
-  //   //     ...prev,
-  //   //     existingQuantity: prev.existingQuantity + totalPortion,
-  //   //   }));
-  //   // }
-  // }, [
-  //   query.delegatesPortions,
-  //   query.quantityAvailability,
-  //   query.delegateSinglePortion,
-  // ]);
-
-  // console.log('🚀 ~ query:', query);
 
   const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
 
@@ -166,49 +129,6 @@ export default function Delegates_Table({
     enabled: selectAllAcrossPages,
     retry: 1,
   });
-
-  // useEffect(() => {
-  //   if (allDelegatesData && selectAllAcrossPages) {
-  //     const portion =
-  //       query.delegatesPortions === DELEGATE_PORTIONS.equal
-  //         ? query.delegateSinglePortion
-  //         : 0;
-  //     if (
-  //       query.quantityAvailability === QUANTITY_AVAILABILITY.limited &&
-  //       portion * allDelegatesData.length > remainingQuantity
-  //     ) {
-  //       notifications.show({
-  //         title: 'خطأ',
-  //         message: 'لا يمكن تحديد جميع المناديب، الكمية المتبقية غير كافية',
-  //         color: 'red',
-  //         position: 'top-left',
-  //       });
-  //       setSelectAllAcrossPages(false);
-  //       return;
-  //     }
-  //     const newSelectedPortions = allDelegatesData.map((id) => ({
-  //       delegate_id: id,
-  //       portion,
-  //     }));
-  //     setSelectedDelegatesPortions(newSelectedPortions);
-  //     if (
-  //       query.quantityAvailability === QUANTITY_AVAILABILITY.limited &&
-  //       portion > 0
-  //     ) {
-  //       setRemainingQuantity(
-  //         (prev) => prev - portion * allDelegatesData.length
-  //       );
-  //     }
-  //   }
-  // }, [
-  //   allDelegatesData,
-  //   selectAllAcrossPages,
-  //   query,
-  //   setSelectedDelegatesPortions,
-  //   remainingQuantity,
-  // ]);
-
-  console.log('🚀 ~ selectedDelegatesPortions:', selectedDelegatesPortions);
 
   // DONE:
   const isRowSelected = (id: number | string) =>
@@ -334,77 +254,6 @@ export default function Delegates_Table({
     }
   };
 
-  // const handlePortionChange = (
-  //   delegateId: string | number,
-  //   val: number | string
-  // ) => {
-  //   if (query.delegatesPortions !== DELEGATE_PORTIONS.manual) return;
-  //   if (typeof val !== 'number' || val < 0) return;
-  //   console.log('🚀 ~ val:', val);
-
-  //   const currentPortion =
-  //     selectedDelegatesPortions.find((d) => d.delegate_id === delegateId)
-  //       ?.portion || 0;
-
-  //   // console.log('🚀 ~ currentPortion:', currentPortion);
-
-  //   if (
-  //     query.quantityAvailability === QUANTITY_AVAILABILITY.limited &&
-  //     val > remainingQuantity
-  //   ) {
-  //     notifications.show({
-  //       title: 'خطأ',
-  //       message: 'الكمية المتبقية غير كافية لتخصيص هذه الحصة',
-  //       color: 'red',
-  //       position: 'top-left',
-  //     });
-  //     setSelectedDelegatesPortions((prev) =>
-  //       prev.filter((d) => d.delegate_id !== delegateId)
-  //     );
-
-  //     const valuesRemain = selectedDelegatesPortions.reduce(
-  //       (sum, currentValue) => sum + currentValue.portion,
-  //       0
-  //     );
-
-  //     setRemainingQuantity(valuesRemain);
-  //     return;
-  //   }
-
-  //   const diff = val - currentPortion;
-
-  //   setSelectedDelegatesPortions((prev) => {
-  //     const exists = prev.find((d) => d.delegate_id === delegateId);
-  //     if (exists) {
-  //       return prev.map((d) =>
-  //         d.delegate_id === delegateId ? { ...d, portion: val } : d
-  //       );
-  //     } else {
-  //       return [...prev, { delegate_id: delegateId, portion: val }];
-  //     }
-  //   });
-
-  //   if (val > 0 && !isRowSelected(delegateId)) {
-  //     setSelectedDelegatesPortions((prev) => {
-  //       if (!prev.some((d) => d.delegate_id === delegateId)) {
-  //         return [...prev, { delegate_id: delegateId, portion: val }];
-  //       }
-  //       return prev;
-  //     });
-  //   }
-
-  //   if (query.quantityAvailability === QUANTITY_AVAILABILITY.limited) {
-  //     setRemainingQuantity((prev) => prev - diff);
-  //     // setQuery((prev) => ({
-  //     //   ...prev,
-  //     //   existingQuantity: prev.existingQuantity - diff,
-  //     // }));
-  //   }
-  // };
-
-  // FIXME:
-
-  // DONE:
   const handlePortionChange = (
     delegateId: string | number,
     val: number | string
@@ -535,8 +384,6 @@ export default function Delegates_Table({
           aria-label='Select row'
           checked={isRowSelected(element.id)}
           onChange={(event) => {
-            console.log('🚀 ~ event:', event.currentTarget.checked);
-
             handleRowSelection(element.id, event.currentTarget.checked);
           }}
         />

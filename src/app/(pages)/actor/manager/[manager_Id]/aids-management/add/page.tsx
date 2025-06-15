@@ -1,17 +1,32 @@
 'use client';
 
 import { useState } from 'react';
-import { Button, Divider, Group, Stack, Text } from '@mantine/core';
+import { useMutation } from '@tanstack/react-query';
+import {
+  Button,
+  Divider,
+  Group,
+  LoadingOverlay,
+  Stack,
+  Text,
+} from '@mantine/core';
 import { CheckSquare, SquarePlus } from 'lucide-react';
 import { notifications } from '@mantine/notifications';
 import { parseAsStringEnum, useQueryState } from 'nuqs';
 
 import Displaced_List from '@/components/actors/manager/aids-management/add/displaced/displaced-list';
 import Delegates_List from '@/components/actors/manager/aids-management/add/delegates/delegates-list';
-
 import { DISTRIBUTION_MECHANISM } from '@/content/actor/manager/aids-management';
 import { addAidFormValues } from '@/validation/manager/add-aid-form-schema';
 import Add_Aid_Form from '@/components/actors/manager/aids-management/add/add-aid-form';
+import {
+  AddAidPayload,
+  SelectedDelegatePortion,
+} from '@/@types/actors/manager/aid-management/add-aid-management.types';
+import { addAid } from '@/actions/actors/manager/aids-management/addAid';
+import useAuth from '@/hooks/useAuth';
+import { useRouter } from 'next/navigation';
+import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 
 function Add_Aid_Header() {
   return (
@@ -26,12 +41,9 @@ function Add_Aid_Header() {
   );
 }
 
-export interface SelectedDelegatePortion {
-  delegate_id: string | number;
-  portion: number;
-}
-
 export default function Add_Aid_Page() {
+  const { user } = useAuth();
+  const router = useRouter();
   const [distributionMechanism] = useQueryState(
     'distributionMechanism',
     parseAsStringEnum<DISTRIBUTION_MECHANISM>(
@@ -42,8 +54,6 @@ export default function Add_Aid_Page() {
   const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<
     (string | number)[]
   >([]);
-
-  // get Delegates id's with its Portions
   const [selectedDelegatesPortions, setSelectedDelegatesPortions] = useState<
     SelectedDelegatePortion[]
   >([]);
@@ -51,27 +61,74 @@ export default function Add_Aid_Page() {
   const isDisplaced =
     distributionMechanism === DISTRIBUTION_MECHANISM.displaced_families;
 
+  // React Query mutation
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationFn: (payload: AddAidPayload) => addAid(payload), // Call the server action
+    onSuccess: (response) => {
+      if (response.status === '200') {
+        notifications.show({
+          title: 'تم حفظ المساعدة',
+          message: response.message || 'تم إرسال البيانات بنجاح',
+          color: 'green',
+          position: 'top-left',
+        });
+        router.replace(MANAGER_ROUTES_fUNC(user?.id as number).AIDS_MANAGEMENT);
+      } else {
+        notifications.show({
+          title: 'خطأ',
+          message: response.message || 'حدث خطأ أثناء إضافة المساعدة',
+          color: 'red',
+          position: 'top-left',
+        });
+      }
+    },
+    onError: (error: any) => {
+      notifications.show({
+        title: 'خطأ',
+        message: error.message || 'حدث خطأ أثناء إضافة المساعدة',
+        color: 'red',
+        position: 'top-left',
+      });
+    },
+  });
+
   const handleSubmit = (values: addAidFormValues) => {
-    // Example payload for API or debugging
-    const payload = {
+    if (isDisplaced && selectedDisplacedIds.length === 0) {
+      notifications.show({
+        title: 'قم بتحديد النازحين',
+        message: 'يجب تحديد النازحين المستهدفين',
+        color: 'red',
+        position: 'top-left',
+      });
+      return;
+    }
+    if (!isDisplaced && selectedDelegatesPortions.length === 0) {
+      notifications.show({
+        title: 'قم بتحديد المناديب',
+        message: 'يجب تحديد حصص المناديب المستهدفين',
+        color: 'red',
+        position: 'top-left',
+      });
+      return;
+    }
+
+    const payload: AddAidPayload = {
       ...values,
       selectedDisplacedIds,
       selectedDelegatesPortions,
     };
 
-    console.log('Add Aid Payload:', payload);
-
-    // Trigger notification (optional)
-    notifications.show({
-      title: 'تم حفظ المساعدة',
-      message: 'تم إرسال البيانات بنجاح',
-      color: 'green',
-      position: 'top-left',
-    });
+    // Trigger the mutation
+    mutate(payload);
   };
 
   return (
-    <Stack p={10} w='100%'>
+    <Stack p={10} w='100%' pos={'relative'}>
+      <LoadingOverlay
+        visible={isPending}
+        zIndex={49}
+        overlayProps={{ radius: 'sm', blur: 0.3 }}
+      />
       <Add_Aid_Header />
 
       <Add_Aid_Form onSubmit={handleSubmit} />
@@ -103,10 +160,18 @@ export default function Add_Aid_Page() {
           radius='lg'
           className='!bg-primary !shadow-lg'
           rightSection={<CheckSquare size={18} />}
+          loading={isPending}
+          disabled={isPending}
         >
           إضافة
         </Button>
       </Group>
+
+      {isError && (
+        <Text c='red' ta='center'>
+          {error?.message || 'حدث خطأ أثناء إضافة المساعدة'}
+        </Text>
+      )}
     </Stack>
   );
 }

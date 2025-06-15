@@ -53,10 +53,11 @@ export default function DisplacedTable({
     return selectedRows.length;
   };
 
-  const { data: displacedData, isLoading, error: queryError } = useQuery<
-    displacedResponse,
-    Error
-  >({
+  const {
+    data: displacedData,
+    isLoading,
+    error: queryError,
+  } = useQuery<displacedResponse, Error>({
     queryKey: ['displaced', activePage, search, localFilters],
     queryFn: () =>
       getDisplaced({
@@ -140,9 +141,9 @@ export default function DisplacedTable({
 
   const headers = (
     <Table.Tr>
-      <Table.Th px={5} ta="center" w="fit-content">
+      <Table.Th px={5} ta='center' w='fit-content'>
         <Checkbox
-          aria-label="Select all rows across all pages"
+          aria-label='Select all rows across all pages'
           checked={areAllPagesRowsSelected()}
           onChange={(event) =>
             handleSelectAllAcrossAllPages(event.currentTarget.checked)
@@ -150,48 +151,48 @@ export default function DisplacedTable({
           disabled={!displacedData?.displaceds?.length}
         />
       </Table.Th>
-      <Table.Th px={5} ta="center" w="fit-content">
+      <Table.Th px={5} ta='center' w='fit-content'>
         الرقم
       </Table.Th>
       <Table.Th
         px={5}
-        ta="center"
-        w="fit-content"
+        ta='center'
+        w='fit-content'
         style={{ whiteSpace: 'nowrap' }}
       >
         اسم النازح
       </Table.Th>
       <Table.Th
         px={5}
-        ta="center"
-        w="fit-content"
+        ta='center'
+        w='fit-content'
         style={{ whiteSpace: 'nowrap' }}
       >
         رقم الهوية
       </Table.Th>
       <Table.Th
         px={5}
-        ta="center"
-        w="fit-content"
+        ta='center'
+        w='fit-content'
         style={{ whiteSpace: 'nowrap' }}
       >
         رقم الخيمة
       </Table.Th>
       <Table.Th
         px={5}
-        ta="center"
-        w="fit-content"
+        ta='center'
+        w='fit-content'
         style={{ whiteSpace: 'nowrap' }}
       >
         عدد الأفراد
       </Table.Th>
-      <Table.Th px={5} ta="center" w="fit-content">
+      <Table.Th px={5} ta='center' w='fit-content'>
         رقم الجوال
       </Table.Th>
       <Table.Th
         px={5}
-        ta="center"
-        w="fit-content"
+        ta='center'
+        w='fit-content'
         style={{ whiteSpace: 'nowrap' }}
       >
         اسم المندوب
@@ -208,42 +209,42 @@ export default function DisplacedTable({
           : undefined
       }
     >
-      <Table.Td px={5} ta="center" w="fit-content">
+      <Table.Td px={5} ta='center' w='fit-content'>
         <Checkbox
-          aria-label="Select row"
+          aria-label='Select row'
           checked={isRowSelected(element.id)}
           onChange={(event) =>
             handleRowSelection(element.id, event.currentTarget.checked)
           }
         />
       </Table.Td>
-      <Table.Td px={5} ta="center" w="fit-content">
+      <Table.Td px={5} ta='center' w='fit-content'>
         {(activePage - 1) * (displacedData?.pagination.limit ?? 7) + index + 1}
       </Table.Td>
       <Table.Td
         px={5}
-        ta="center"
-        w="fit-content"
+        ta='center'
+        w='fit-content'
         style={{ whiteSpace: 'nowrap' }}
       >
         {element.name}
       </Table.Td>
-      <Table.Td px={5} ta="center" w="fit-content">
+      <Table.Td px={5} ta='center' w='fit-content'>
         {element.identity}
       </Table.Td>
-      <Table.Td px={5} ta="center" w="fit-content">
+      <Table.Td px={5} ta='center' w='fit-content'>
         {element.tent}
       </Table.Td>
-      <Table.Td px={5} ta="center" w="fit-content">
+      <Table.Td px={5} ta='center' w='fit-content'>
         {element.family_number}
       </Table.Td>
-      <Table.Td px={5} ta="center" w="fit-content">
+      <Table.Td px={5} ta='center' w='fit-content'>
         {element.mobile_number}
       </Table.Td>
       <Table.Td
         px={5}
-        w="fit-content"
-        ta="center"
+        w='fit-content'
+        ta='center'
         style={{ whiteSpace: 'nowrap' }}
       >
         {element.delegate.name}
@@ -255,14 +256,14 @@ export default function DisplacedTable({
     <>
       <Group
         flex={1}
-        justify="space-between"
-        align="center"
-        wrap="nowrap"
+        justify='space-between'
+        align='center'
+        wrap='nowrap'
         hidden={selectedRows.length === 0}
       >
         {(selectAllAcrossPages ||
           selectedRows.length === displacedData?.pagination.totalItems) && (
-          <Text size="md" fw={500} style={{ whiteSpace: 'nowrap' }}>
+          <Text size='md' fw={500} style={{ whiteSpace: 'nowrap' }}>
             تم تحديد جميع العناصر عبر جميع الصفحات
             {isLoadingAll && ' (جاري تحميل البيانات...)'}
             {allQueryError && ` (خطأ: ${allQueryError.message})`}
@@ -270,20 +271,20 @@ export default function DisplacedTable({
         )}
         {selectedRows.length !== displacedData?.pagination.totalItems &&
           selectedRows.length > 0 && (
-            <Text size="md" fw={500}>
+            <Text size='md' fw={500}>
               تم تحديد {selectedRows.length} عنصر
             </Text>
           )}
         {selectedRows.length === 0 && (
-          <Text size="md" fw={500} c="dimmed">
+          <Text size='md' fw={500} c='dimmed'>
             لم يتم تحديد أي عنصر
           </Text>
         )}
       </Group>
       <Table.ScrollContainer
-        minWidth="100%"
-        w="100%"
-        pos="relative"
+        minWidth='100%'
+        w='100%'
+        pos='relative'
         className={cn(isLoading && '!min-h-[300px]')}
       >
         <>
@@ -293,13 +294,13 @@ export default function DisplacedTable({
             overlayProps={{ radius: 'sm', blur: 0.3 }}
           />
           {queryError && (
-            <Text fw={500} size="sm" ta="center" c="red">
+            <Text fw={500} size='sm' ta='center' c='red'>
               {queryError.message}
             </Text>
           )}
         </>
         <Table
-          horizontalSpacing="xs"
+          horizontalSpacing='xs'
           striped
           highlightOnHover
           withTableBorder
@@ -314,9 +315,9 @@ export default function DisplacedTable({
         onChange={handlePageChange}
         total={displacedData?.pagination.totalPages || 0}
         pt={30}
-        size="sm"
-        mx="auto"
-        radius="xl"
+        size='sm'
+        mx='auto'
+        radius='xl'
         withControls={false}
         classNames={{
           dots: '!rounded-full !text-gray-300 border-1',
@@ -326,4 +327,3 @@ export default function DisplacedTable({
     </>
   );
 }
- 

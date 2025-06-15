@@ -37,9 +37,6 @@ export default function DisplacedList({
   });
 
   const [displacedNum, setDisplacedNum] = useState(0);
-  // const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<
-  //   (string | number)[]
-  // >([]);
 
   return (
     <Stack p={10} pos='relative' w='100%'>

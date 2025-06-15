@@ -26,10 +26,7 @@ export const addAidFormSchema = z.object({
     aidName: z.string().min(1, { message: 'نوع المساعدة مطلوب' }),
     aidType: z.string().min(1, { message: 'نوع المساعدة مطلوب' }),
     aidContent: z.string().min(1, { message: 'محتوي المساعدة مطلوب' }),
-    deliveryDate: z
-        .date()
-        .nullable()
-        .refine((val) => val !== null, { message: 'موعد التسليم مطلوب' }),
+    deliveryDate: z.date({ required_error: 'موعد التسليم مطلوب' }).nullable(),
     deliveryLocation: z.string().min(1, { message: 'مكان التسليم مطلوب' }),
     securityRequired: z.boolean({ required_error: 'يلزم تأمين مطلوب' }),
     quantityAvailability: z.nativeEnum(QUANTITY_AVAILABILITY, {
@@ -49,7 +46,7 @@ export const addAidFormSchema = z.object({
     delegatesPortions: z.nativeEnum(DELEGATE_PORTIONS, {
         required_error: 'طريقة توزيع الحصص على المندوبين مطلوبة',
     }),
-    delegateSinglePortion: z.number().min(1, 'عدد الأسماء لكل مندوب يجب أن يكون أكبر من 0'),
+    delegateSinglePortion: z.number().min(0, 'عدد الأسماء لكل مندوب يجب أن يكون أكبر من 0'),
 });
 
 export type addAidFormValues = z.infer<typeof addAidFormSchema>;

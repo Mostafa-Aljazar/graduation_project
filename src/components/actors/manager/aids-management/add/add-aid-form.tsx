@@ -37,11 +37,12 @@ import {
   DELEGATE_PORTIONS,
   DISTRIBUTION_MECHANISM,
   DISTRIBUTION_METHOD,
+  GET_AIDS_TYPE_ICONS,
   QUANTITY_AVAILABILITY,
   TYPE_AIDS,
 } from '@/content/actor/manager/aids-management';
-import CustomizableCategoryInput from './customizable-category-input';
-import PortionsManagementModal from './portions-management-modal';
+import CustomizableCategoryInput from './distribution-methods/customizable-category-input';
+import PortionsManagementModal from './distribution-methods/portions-management-modal';
 
 interface AddFormProps {
   onSubmit: (values: addAidFormValues) => void;
@@ -80,17 +81,17 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
       aidName: '',
       aidType: '',
       aidContent: '',
-      deliveryDate: new Date(),
+      deliveryDate: new Date('2025-06-15T00:00:00'),
       deliveryLocation: '',
       securityRequired: false,
       quantityAvailability: query.quantityAvailability,
-      existingQuantity: query.existingQuantity,
+      existingQuantity: query.existingQuantity || 1,
       singlePortion: 1,
       distributionMethod: query.distributionMethod,
       selectedCategories: [],
       distributionMechanism: query.distributionMechanism, // Use query state
       delegatesPortions: query.delegatesPortions, // Use query state
-      delegateSinglePortion: query.delegateSinglePortion,
+      delegateSinglePortion: query.delegateSinglePortion || 1,
     },
     validate: zodResolver(addAidFormSchema),
   });
@@ -177,6 +178,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
           leftSection={<Tag size={16} />}
           {...form.getInputProps('aidName')}
         />
+
         <Select
           label={
             <Text fz={16} fw={500}>
@@ -186,7 +188,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
           w='100%'
           placeholder='نوع المساعدة'
           data={Object.entries(TYPE_AIDS).map(([key, value]) => ({
-            value: key,
+            value: value,
             label: value,
           }))}
           size='sm'
@@ -196,7 +198,17 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
           clearable
           leftSection={<Package size={16} />}
           {...form.getInputProps('aidType')}
+          renderOption={({ option, checked }) => {
+            const Icon = GET_AIDS_TYPE_ICONS[option.value as TYPE_AIDS];
+            return (
+              <Group gap='xs' wrap='nowrap'>
+                {Icon && <Icon size={16} />}
+                <Text size='sm'>{option.label}</Text>
+              </Group>
+            );
+          }}
         />
+
         <TextInput
           label={
             <Text fz={16} fw={500}>
@@ -422,7 +434,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
           </Radio.Group>
         </Stack>
         {form.values.distributionMethod === DISTRIBUTION_METHOD.equal && (
-          <Group wrap='nowrap' style={{ gridColumn: '1 / -1' }}>
+          <Stack gap={0} style={{ gridColumn: '1 / -1' }}>
             <CustomizableCategoryInput
               value={form.values.selectedCategories}
               onChange={(value) => {
@@ -440,11 +452,11 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                 {form.errors.selectedCategories}
               </Text>
             )}
-          </Group>
+          </Stack>
         )}
         {form.values.distributionMethod ===
           DISTRIBUTION_METHOD.family_number && (
-          <Group wrap='nowrap' style={{ gridColumn: '1 / -1' }}>
+          <Stack gap={0} style={{ gridColumn: '1 / -1' }}>
             <PortionsManagementModal
               selectedCategories={form.values.selectedCategories}
               onCategoriesChange={(value) =>
@@ -459,7 +471,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                 {form.errors.selectedCategories}
               </Text>
             )}
-          </Group>
+          </Stack>
         )}
         <Stack gap='xs'>
           <Group gap={5}>
@@ -586,7 +598,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                 }}
                 leftSection={<Divide size={16} />}
                 {...form.getInputProps('delegateSinglePortion')}
-                value={form.values.delegateSinglePortion}
+                value={form.values.delegateSinglePortion as number}
                 onChange={(value) => {
                   form.setFieldValue('delegateSinglePortion', value as number);
                   setQuery({
