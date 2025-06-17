@@ -1,7 +1,4 @@
-import {
-  Article_SuccessStory,
-  Article_SuccessStoryResponse,
-} from '@/@types/landing/article-successStoriesResponse.type';
+import { Article_SuccessStory_Ad } from '@/@types/common/article-successStories-adsResponse.type';
 import { LANDING_ROUTES } from '@/constants/routes';
 import getLimitedWords from '@/utils/getLimitedWords';
 import { Flex, Stack, Text } from '@mantine/core';
@@ -9,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 
-type Props = Article_SuccessStory;
+type Props = Article_SuccessStory_Ad;
 
 export default function Story_Card(story: Props) {
   return (
@@ -25,7 +22,7 @@ export default function Story_Card(story: Props) {
         gap={0}
       >
         <Image
-          src={story.img}
+          src={story.imgs[0]}
           alt={'title'}
           className='w-[150px] md:w-[200px] md:h-36'
         />

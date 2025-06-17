@@ -1,4 +1,5 @@
 'use client';
+import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import {
   sendCallRequest,
   sendCallRequestProps,

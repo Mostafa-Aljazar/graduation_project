@@ -9,6 +9,7 @@ import {
   deleteComplaintProps,
 } from '@/actions/actors/manager/complaints/deleteComplaint';
 import { notifications } from '@mantine/notifications';
+import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 
 type Props = {
   complaint_Id: string | number;

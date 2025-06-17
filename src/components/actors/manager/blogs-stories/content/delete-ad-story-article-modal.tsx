@@ -4,7 +4,7 @@ import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.t
 import { deleteAd } from '@/actions/actors/manager/blog-stories-ads/ad/deleteAd';
 import { deleteArticle } from '@/actions/actors/manager/blog-stories-ads/blog/deleteArticle';
 import { deleteSuccessStory } from '@/actions/actors/manager/blog-stories-ads/success-stories/deleteSuccessStory';
-import { TYPE_CONTENT } from '@/content/actor/manager/Ads_Blogs';
+import { TYPE_CONTENT } from '@/content/actor/manager/ads-blogs-stories';
 import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';

@@ -3,7 +3,7 @@
 import {
   GET_ADDS_BLOG_STORIES_TABS,
   TYPE_CONTENT,
-} from '@/content/actor/manager/Ads_Blogs';
+} from '@/content/actor/manager/ads-blogs-stories';
 import { cn } from '@/utils/cn';
 import { Divider, Group, Stack, Tabs, Text, ThemeIcon } from '@mantine/core';
 import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs';

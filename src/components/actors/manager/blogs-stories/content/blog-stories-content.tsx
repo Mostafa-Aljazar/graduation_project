@@ -5,7 +5,7 @@ import {
   BLOG_HEADER_TITLE,
   SUCCESS_STORIES_HEADER_TITLE,
   TYPE_CONTENT,
-} from '@/content/actor/manager/Ads_Blogs';
+} from '@/content/actor/manager/ads-blogs-stories';
 import useAuth from '@/hooks/useAuth';
 import { Button, Group, Text } from '@mantine/core';
 import { MessageSquarePlus } from 'lucide-react';

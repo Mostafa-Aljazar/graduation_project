@@ -11,7 +11,6 @@ import { UserType } from '@/constants/userTypes';
 import { ComplaintsResponse } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
 import { getComplaints } from '@/actions/actors/manager/complaints/getComplaints';
 import ComplaintsList from '@/components/actors/manager/complaints/Complaints_List';
-import Complaint_Skeleton from '@/components/actors/manager/complaints/complaint/Complaint_Skeleton';
 
 export interface LocalFilters {
   status: 'read' | 'pending' | null;

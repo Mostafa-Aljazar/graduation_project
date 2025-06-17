@@ -6,7 +6,7 @@ import { getArticles } from '@/actions/landing/blog/getArticles';
 import Blog_Story_Card from '../common/blog-story-card';
 import Blog_Story_Card_Skeleton from '../common/blog-story-card-skeleton';
 import { parseAsInteger, useQueryState } from 'nuqs';
-import { Articles_SuccessStoriesResponse } from '@/@types/landing/article-successStoriesResponse.type';
+import { Articles_SuccessStories_Ads_Response } from '@/@types/common/article-successStories-adsResponse.type';
 
 export default function Our_Blog() {
   const [activePage, setPage] = useQueryState(
@@ -18,7 +18,7 @@ export default function Our_Blog() {
     data: articlesData,
     isLoading,
     error,
-  } = useQuery<Articles_SuccessStoriesResponse, Error>({
+  } = useQuery<Articles_SuccessStories_Ads_Response, Error>({
     queryKey: ['articles', activePage],
     queryFn: async () => {
       return await getArticles({ page: activePage, limit: 7 });
@@ -59,7 +59,7 @@ export default function Our_Blog() {
           ? Array.from({ length: 5 }).map((_, index) => (
               <Blog_Story_Card_Skeleton key={index} />
             ))
-          : articlesData?.articles_successStories?.map((article, index) => (
+          : articlesData?.articles_successStories_ads?.map((article, index) => (
               <Blog_Story_Card
                 destination='blogs'
                 key={index}
@@ -67,7 +67,7 @@ export default function Our_Blog() {
                 createdAt={article.createdAt}
                 title={article.title}
                 content={article.content}
-                img={article.img}
+                imgs={article.imgs}
                 brief={article.brief}
               />
             ))}

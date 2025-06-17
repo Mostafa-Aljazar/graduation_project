@@ -1,6 +1,6 @@
 'use server';
 
-import AqsaAPI from '@/services';
+import { AqsaAPI } from '@/services';
 import { UserType } from '@/constants/userTypes';
 import { ComplaintsResponse } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
 

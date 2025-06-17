@@ -8,7 +8,7 @@ import { Articles_SuccessStories_Ads_Response } from '@/@types/common/article-su
 import { getAds } from '@/actions/actors/manager/blog-stories-ads/ad/getAds';
 import { getSuccessStories } from '@/actions/landing/success-stories/getSuccessStories';
 import Article_Story_Ad_Card from './blog-story-ad-card';
-import { TYPE_CONTENT } from '@/content/actor/manager/Ads_Blogs';
+import { TYPE_CONTENT } from '@/content/actor/manager/ads-blogs-stories';
 import { useCallback } from 'react';
 
 type Props = {
