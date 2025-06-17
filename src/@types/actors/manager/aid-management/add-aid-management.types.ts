@@ -1,4 +1,4 @@
-import { addAidFormValues } from "@/validation/manager/add-aid-form-schema";
+import { DELEGATE_PORTIONS, DISTRIBUTION_MECHANISM, DISTRIBUTION_METHOD, QUANTITY_AVAILABILITY } from "@/content/actor/manager/aids-management";
 
 // Category Range Type
 export interface CategoryRangeType {
@@ -16,8 +16,43 @@ export interface SelectedDelegatePortion {
 }
 
 
-export interface AddAidPayload extends addAidFormValues {
+
+// Interface for AddAidForm
+export interface AddAidFormValues {
+    aidName: string;
+    aidType: string;
+    aidContent: string;
+    deliveryDate: Date | null;
+    deliveryLocation: string;
+    securityRequired: boolean;
+    quantityAvailability: QUANTITY_AVAILABILITY;
+    existingQuantity: number;
+    singlePortion: number;
+    distributionMethod: DISTRIBUTION_METHOD;
+    selectedCategories: CategoryRangeType[];
+    distributionMechanism: DISTRIBUTION_MECHANISM;
+    delegatesPortions: DELEGATE_PORTIONS;
+    delegateSinglePortion: number;
+    aidAccessories: string;
+
+}
+
+
+export interface AddAidPayload extends AddAidFormValues {
+    id: string | number;
     selectedDisplacedIds: (string | number)[];
     selectedDelegatesPortions: SelectedDelegatePortion[];
+    receivedDisplaced: {
+        displaced: (string | number);
+        receivedTime: Date;
+    }[]
+}
+
+
+export interface AidResponse {
+    status: string;
+    message?: string;
+    aid: AddAidPayload;
+    error?: string;
 }
 

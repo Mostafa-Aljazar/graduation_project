@@ -1,4 +1,5 @@
 'use client';
+
 import { Group, Stack, Text } from '@mantine/core';
 import { Database } from 'lucide-react';
 import { useState } from 'react';
@@ -20,12 +21,24 @@ interface DisplacedListProps {
     React.SetStateAction<(string | number)[]>
   >;
   selectedDisplacedIds: (string | number)[];
+  isDisabled?: boolean;
+
+  receivedDisplaced?: {
+    displaced: string | number;
+    receivedTime: Date;
+  }[];
+
+  aid_id?: string | number;
 }
 
 export default function DisplacedList({
   setSelectedDisplacedIds,
   selectedDisplacedIds,
+  isDisabled = false,
+  receivedDisplaced,
+  aid_id,
 }: DisplacedListProps) {
+  // console.log('🚀 ~ selectedDisplacedIds:', selectedDisplacedIds);
   const [localFilters, setLocalFilters] = useState<Filters>({
     wife_status: '',
     family_number: undefined,
@@ -49,14 +62,18 @@ export default function DisplacedList({
         </Group>
       </Group>
       <DisplacedFilters
-        setLocalFilters={setLocalFilters}
+        setLocalFilters={isDisabled ? () => {} : setLocalFilters} // Disable filter updates
         displacedNum={displacedNum}
+        isDisabled={isDisabled}
       />
       <DisplacedTable
         localFilters={localFilters}
         setDisplacedNum={setDisplacedNum}
         setSelectedRows={setSelectedDisplacedIds}
         selectedRows={selectedDisplacedIds}
+        isDisabled={isDisabled}
+        receivedDisplaced={receivedDisplaced}
+        aid_id={aid_id}
       />
     </Stack>
   );

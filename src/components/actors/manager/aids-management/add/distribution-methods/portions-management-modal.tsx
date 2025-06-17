@@ -30,6 +30,7 @@ interface PortionsManagementModalProps {
   onPortionChange: (categoryId: string, portion: number) => void;
   categoryPortions: Record<string, number>;
   onCategoryAdd?: (categoryId: string, portion: number) => void;
+  isDisabled: boolean;
 }
 
 export default function PortionsManagementModal({
@@ -38,6 +39,7 @@ export default function PortionsManagementModal({
   onPortionChange,
   categoryPortions,
   onCategoryAdd,
+  isDisabled,
 }: PortionsManagementModalProps) {
   const [categories, setCategories] =
     useState<CategoryRangeType[]>(DEFAULT_CATEGORIES);
@@ -119,6 +121,7 @@ export default function PortionsManagementModal({
                 variant='light'
                 className='!text-primary'
                 onClick={openManagement}
+                disabled={isDisabled}
               >
                 <Settings size={16} />
               </ActionIcon>
@@ -148,6 +151,7 @@ export default function PortionsManagementModal({
               hidePickedOptions
               maxDropdownHeight={200}
               multiple
+              disabled={isDisabled}
             />
           </Stack>
           {selectedCategories.length > 0 && (
@@ -188,6 +192,7 @@ export default function PortionsManagementModal({
                             min={1}
                             size='xs'
                             w={80}
+                            disabled={isDisabled}
                           />
                         </Table.Td>
                       </Table.Tr>

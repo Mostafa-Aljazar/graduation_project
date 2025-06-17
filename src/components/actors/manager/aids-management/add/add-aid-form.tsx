@@ -1,4 +1,5 @@
 'use client';
+
 import {
   Group,
   NumberInput,
@@ -32,7 +33,11 @@ import {
   addAidFormSchema,
   addAidFormValues,
 } from '@/validation/manager/add-aid-form-schema';
-import { CategoryRangeType } from '@/@types/actors/manager/aid-management/add-aid-management.types';
+import {
+  AddAidPayload,
+  AidResponse,
+  CategoryRangeType,
+} from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import {
   DELEGATE_PORTIONS,
   DISTRIBUTION_MECHANISM,
@@ -46,38 +51,52 @@ import PortionsManagementModal from './distribution-methods/portions-management-
 
 interface AddFormProps {
   onSubmit: (values: addAidFormValues) => void;
+  initialData?: AddAidPayload;
+  isDisabled?: boolean;
 }
 
-export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
-  // Replace multiple useQueryState with useQueryStates
+export default function Add_Aid_Form({
+  onSubmit,
+  initialData,
+  isDisabled = false,
+}: AddFormProps) {
   const [query, setQuery] = useQueryStates({
-    existingQuantity: parseAsInteger.withDefault(0),
-
+    existingQuantity: parseAsInteger.withDefault(
+      initialData?.existingQuantity || 0
+    ),
     distributionMechanism: parseAsStringEnum<DISTRIBUTION_MECHANISM>(
       Object.values(DISTRIBUTION_MECHANISM)
-    ).withDefault(DISTRIBUTION_MECHANISM.delegates_lists),
-
+    ).withDefault(
+      initialData?.distributionMechanism ||
+        DISTRIBUTION_MECHANISM.delegates_lists
+    ),
     delegatesPortions: parseAsStringEnum<DELEGATE_PORTIONS>(
       Object.values(DELEGATE_PORTIONS)
-    ).withDefault(DELEGATE_PORTIONS.equal),
-
+    ).withDefault(initialData?.delegatesPortions || DELEGATE_PORTIONS.equal),
     quantityAvailability: parseAsStringEnum<QUANTITY_AVAILABILITY>(
       Object.values(QUANTITY_AVAILABILITY)
-    ).withDefault(QUANTITY_AVAILABILITY.limited),
-
+    ).withDefault(
+      initialData?.quantityAvailability || QUANTITY_AVAILABILITY.limited
+    ),
     distributionMethod: parseAsStringEnum<DISTRIBUTION_METHOD>(
       Object.values(DISTRIBUTION_METHOD)
-    ).withDefault(DISTRIBUTION_METHOD.equal),
-
-    delegateSinglePortion: parseAsInteger.withDefault(0),
+    ).withDefault(initialData?.distributionMethod || DISTRIBUTION_METHOD.equal),
+    delegateSinglePortion: parseAsInteger.withDefault(
+      initialData?.delegateSinglePortion || 0
+    ),
   });
 
   const [categoryPortions, setCategoryPortions] = useState<
     Record<string, number>
-  >({});
+  >(
+    initialData?.selectedCategories.reduce(
+      (acc, cat) => ({ ...acc, [cat.id]: cat.portion || 1 }),
+      {}
+    ) || {}
+  );
 
   const form = useForm<addAidFormValues>({
-    initialValues: {
+    initialValues: initialData || {
       aidName: '',
       aidType: '',
       aidContent: '',
@@ -89,15 +108,18 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
       singlePortion: 1,
       distributionMethod: query.distributionMethod,
       selectedCategories: [],
-      distributionMechanism: query.distributionMechanism, // Use query state
-      delegatesPortions: query.delegatesPortions, // Use query state
+      distributionMechanism: query.distributionMechanism,
+      delegatesPortions: query.delegatesPortions,
       delegateSinglePortion: query.delegateSinglePortion || 1,
+      aidAccessories: '',
+      // receivedDisplaced: [],
     },
     validate: zodResolver(addAidFormSchema),
   });
 
   const handlePortionChange = useCallback(
     (categoryId: string, portion: number) => {
+      if (isDisabled) return;
       setCategoryPortions((prev) => ({
         ...prev,
         [categoryId]: portion,
@@ -107,17 +129,19 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
       );
       form.setFieldValue('selectedCategories', updatedCategories);
     },
-    [form]
+    [form, isDisabled]
   );
 
   const handleCategoryAdd = (categoryId: string, portion: number) => {
+    if (isDisabled) return;
     setCategoryPortions((prev) => ({ ...prev, [categoryId]: portion }));
   };
 
   const synchronizePortions = (cats: CategoryRangeType[]) => {
     if (
       form.values.distributionMethod === DISTRIBUTION_METHOD.equal &&
-      cats.length > 0
+      cats.length > 0 &&
+      !isDisabled
     ) {
       const updatedCategories = cats.map((cat) => ({
         ...cat,
@@ -160,6 +184,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
   };
 
   const handleSubmit = (values: addAidFormValues) => {
+    if (isDisabled) return;
     onSubmit(values);
   };
 
@@ -176,6 +201,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
           placeholder='عنوان المساعدة'
           size='sm'
           leftSection={<Tag size={16} />}
+          disabled={isDisabled}
           {...form.getInputProps('aidName')}
         />
 
@@ -197,6 +223,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
           }}
           clearable
           leftSection={<Package size={16} />}
+          disabled={isDisabled}
           {...form.getInputProps('aidType')}
           renderOption={({ option, checked }) => {
             const Icon = GET_AIDS_TYPE_ICONS[option.value as TYPE_AIDS];
@@ -219,6 +246,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
           placeholder='محتوى المساعدة'
           size='sm'
           leftSection={<TableOfContents size={16} />}
+          disabled={isDisabled}
           {...form.getInputProps('aidContent')}
         />
         <DateTimePicker
@@ -235,11 +263,12 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
           }}
           value={form.values.deliveryDate}
           onChange={(date) =>
-            form.setFieldValue('deliveryDate', new Date(date))
+            !isDisabled && form.setFieldValue('deliveryDate', new Date(date))
           }
           leftSection={<Calendar size={16} />}
           error={form.errors.deliveryDate}
           valueFormat='DD/MM/YYYY hh:mm A'
+          disabled={isDisabled}
         />
         <TextInput
           label={
@@ -254,6 +283,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
             input: 'placeholder:text-sm text-primary font-medium',
           }}
           leftSection={<MapPin size={16} />}
+          disabled={isDisabled}
           {...form.getInputProps('deliveryLocation')}
         />
         <Stack gap='xs'>
@@ -267,8 +297,10 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
             w='100%'
             value={form.values.securityRequired.toString()}
             onChange={(value) =>
+              !isDisabled &&
               form.setFieldValue('securityRequired', value === 'true')
             }
+            // disabled={isDisabled}
           >
             <Group
               w={{ base: '100%', md: '60%' }}
@@ -284,6 +316,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                   </Text>
                 }
                 size='sm'
+                disabled={isDisabled}
               />
               <Radio
                 value='true'
@@ -293,6 +326,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                   </Text>
                 }
                 size='sm'
+                disabled={isDisabled}
               />
             </Group>
             {form.errors.securityRequired && (
@@ -313,14 +347,17 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
             w='100%'
             value={form.values.quantityAvailability}
             onChange={(value) => {
-              form.setFieldValue(
-                'quantityAvailability',
-                value as QUANTITY_AVAILABILITY
-              );
-              setQuery({
-                quantityAvailability: value as QUANTITY_AVAILABILITY,
-              });
+              if (!isDisabled) {
+                form.setFieldValue(
+                  'quantityAvailability',
+                  value as QUANTITY_AVAILABILITY
+                );
+                setQuery({
+                  quantityAvailability: value as QUANTITY_AVAILABILITY,
+                });
+              }
             }}
+            // disabled={isDisabled}
           >
             <Group
               w={{ base: '100%', md: '60%' }}
@@ -336,6 +373,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                   </Text>
                 }
                 size='sm'
+                disabled={isDisabled}
               />
               <Radio
                 value={QUANTITY_AVAILABILITY.unlimited}
@@ -345,6 +383,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                   </Text>
                 }
                 size='sm'
+                disabled={isDisabled}
               />
             </Group>
             {form.errors.quantityAvailability && (
@@ -370,11 +409,12 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
           leftSection={<Boxes size={16} />}
           value={form.values.existingQuantity}
           onChange={(value) => {
-            form.setFieldValue('existingQuantity', Number(value));
-            setQuery({
-              existingQuantity: value as number,
-            });
+            if (!isDisabled) {
+              form.setFieldValue('existingQuantity', Number(value));
+              setQuery({ existingQuantity: value as number });
+            }
           }}
+          disabled={isDisabled}
         />
         <NumberInput
           label={
@@ -390,6 +430,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
             input: 'placeholder:text-sm text-primary font-medium',
           }}
           leftSection={<Divide size={16} />}
+          disabled={isDisabled}
           {...form.getInputProps('singlePortion')}
           allowDecimal={false}
         />
@@ -400,7 +441,18 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
               حصة كل عائلة:
             </Text>
           </Group>
-          <Radio.Group w='100%' {...form.getInputProps('distributionMethod')}>
+          <Radio.Group
+            w='100%'
+            value={form.values.distributionMethod}
+            onChange={(value) =>
+              !isDisabled &&
+              form.setFieldValue(
+                'distributionMethod',
+                value as DISTRIBUTION_METHOD
+              )
+            }
+            // disabled={isDisabled}
+          >
             <Group
               w={{ base: '100%', md: '60%' }}
               gap={30}
@@ -415,6 +467,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                   </Text>
                 }
                 size='sm'
+                disabled={isDisabled}
               />
               <Radio
                 value={DISTRIBUTION_METHOD.family_number}
@@ -424,6 +477,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                   </Text>
                 }
                 size='sm'
+                disabled={isDisabled}
               />
             </Group>
             {form.errors.distributionMethod && (
@@ -438,14 +492,17 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
             <CustomizableCategoryInput
               value={form.values.selectedCategories}
               onChange={(value) => {
-                form.setFieldValue('selectedCategories', value);
-                synchronizePortions(value);
+                if (!isDisabled) {
+                  form.setFieldValue('selectedCategories', value);
+                  synchronizePortions(value);
+                }
               }}
               label='فئات عدد أفراد العائلة:'
               placeholder='اختر فئة أو أكثر من فئات عدد الأفراد'
               singlePortion={form.values.singlePortion}
               onPortionChange={handlePortionChange}
               onCategoryAdd={handleCategoryAdd}
+              isDisabled={isDisabled}
             />
             {form.errors.selectedCategories && (
               <Text c='red' size='xs'>
@@ -460,11 +517,12 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
             <PortionsManagementModal
               selectedCategories={form.values.selectedCategories}
               onCategoriesChange={(value) =>
-                form.setFieldValue('selectedCategories', value)
+                !isDisabled && form.setFieldValue('selectedCategories', value)
               }
               onPortionChange={handlePortionChange}
               categoryPortions={categoryPortions}
               onCategoryAdd={handleCategoryAdd}
+              isDisabled={isDisabled}
             />
             {form.errors.selectedCategories && (
               <Text c='red' size='xs'>
@@ -484,17 +542,20 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
             w='100%'
             value={form.values.distributionMechanism}
             onChange={(value) => {
-              form.setFieldValue(
-                'distributionMechanism',
-                value as DISTRIBUTION_MECHANISM
-              );
-              setQuery({
-                distributionMechanism: value as DISTRIBUTION_MECHANISM,
-              });
+              if (!isDisabled) {
+                form.setFieldValue(
+                  'distributionMechanism',
+                  value as DISTRIBUTION_MECHANISM
+                );
+                setQuery({
+                  distributionMechanism: value as DISTRIBUTION_MECHANISM,
+                });
+              }
             }}
+            // disabled={isDisabled}
           >
             <Flex
-              direction={'row'}
+              direction='row'
               wrap={{ base: 'wrap', md: 'wrap' }}
               w={{ base: '100%' }}
               gap={{ base: 10, md: 20 }}
@@ -508,6 +569,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                   </Text>
                 }
                 size='xs'
+                disabled={isDisabled}
               />
               <Radio
                 value={DISTRIBUTION_MECHANISM.displaced_families}
@@ -517,6 +579,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                   </Text>
                 }
                 size='xs'
+                disabled={isDisabled}
               />
             </Flex>
             {form.errors.distributionMechanism && (
@@ -526,7 +589,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
             )}
           </Radio.Group>
         </Stack>
-        {form.values.distributionMechanism ==
+        {form.values.distributionMechanism ===
           DISTRIBUTION_MECHANISM.delegates_lists && (
           <>
             <Stack gap='xs'>
@@ -540,14 +603,15 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                 w='100%'
                 value={form.values.delegatesPortions}
                 onChange={(value) => {
-                  form.setFieldValue(
-                    'delegatesPortions',
-                    value as DELEGATE_PORTIONS
-                  );
-                  setQuery({
-                    delegatesPortions: value as DELEGATE_PORTIONS,
-                  });
+                  if (!isDisabled) {
+                    form.setFieldValue(
+                      'delegatesPortions',
+                      value as DELEGATE_PORTIONS
+                    );
+                    setQuery({ delegatesPortions: value as DELEGATE_PORTIONS });
+                  }
                 }}
+                // disabled={isDisabled}
               >
                 <Group
                   w={{ base: '100%', md: '60%' }}
@@ -563,6 +627,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                       </Text>
                     }
                     size='sm'
+                    disabled={isDisabled}
                   />
                   <Radio
                     value={DELEGATE_PORTIONS.manual}
@@ -572,6 +637,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                       </Text>
                     }
                     size='sm'
+                    disabled={isDisabled}
                   />
                 </Group>
                 {form.errors.delegatesPortions && (
@@ -581,7 +647,7 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                 )}
               </Radio.Group>
             </Stack>
-            {form.values.delegatesPortions == DELEGATE_PORTIONS.equal && (
+            {form.values.delegatesPortions === DELEGATE_PORTIONS.equal && (
               <NumberInput
                 label={
                   <Text fz={16} fw={500}>
@@ -597,31 +663,42 @@ export default function Add_Aid_Form({ onSubmit }: AddFormProps) {
                   input: 'placeholder:text-sm text-primary font-medium',
                 }}
                 leftSection={<Divide size={16} />}
+                disabled={isDisabled}
                 {...form.getInputProps('delegateSinglePortion')}
                 value={form.values.delegateSinglePortion as number}
                 onChange={(value) => {
-                  form.setFieldValue('delegateSinglePortion', value as number);
-                  setQuery({
-                    delegateSinglePortion: value as number,
-                  });
+                  if (!isDisabled) {
+                    form.setFieldValue(
+                      'delegateSinglePortion',
+                      value as number
+                    );
+                    setQuery({ delegateSinglePortion: value as number });
+                  }
                 }}
               />
             )}
           </>
         )}
       </SimpleGrid>
-      <Stack align='flex-start' mt={20} gap={0}>
+      <Stack
+        align='flex-start'
+        mt={20}
+        gap={0}
+        hidden={isDisabled && !(initialData?.aidAccessories as string)}
+      >
         <Text fz={16} fw={500}>
           الملحقات :
         </Text>
         <Textarea
-          w={'100%'}
+          w='100%'
           flex={1}
           size='sm'
           placeholder='أدخل التفاصيل...'
           minRows={3}
           maxRows={6}
           autosize
+          disabled={isDisabled}
+          {...form.getInputProps('aidAccessories')}
         />
       </Stack>
     </form>

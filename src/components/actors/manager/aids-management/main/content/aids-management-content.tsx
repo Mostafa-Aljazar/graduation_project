@@ -36,7 +36,7 @@ export default function Aids_Management_Content() {
       date_range: null,
       recipients_range: null,
     });
-  console.log('🚀 ~ Aids_Management_Content ~ localFilters:', localFilters);
+  // console.log('🚀 ~ Aids_Management_Content ~ localFilters:', localFilters);
 
   const [activePage, setActivePage] = useState(1);
 

@@ -17,7 +17,7 @@ export default function Aid_Card({
   aid,
 }: // highlightedDate
 Props) {
-  console.log('🚀 ~ Aid_Card ~ aid:', aid);
+  // console.log('🚀 ~ Aid_Card ~ aid:', aid);
 
   // Map aid type to its corresponding icon, default to Package if not found
   const getAidTypeIcon = (type: TYPE_AIDS) => {

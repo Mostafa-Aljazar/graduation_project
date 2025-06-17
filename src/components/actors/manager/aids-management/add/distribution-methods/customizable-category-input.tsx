@@ -27,6 +27,7 @@ interface CustomizableCategoryInputProps {
   singlePortion: number;
   onPortionChange?: (categoryId: string, portion: number) => void;
   onCategoryAdd?: (categoryId: string, portion: number) => void;
+  isDisabled: boolean;
 }
 
 export default function CustomizableCategoryInput({
@@ -37,6 +38,7 @@ export default function CustomizableCategoryInput({
   onPortionChange,
   onCategoryAdd,
   singlePortion,
+  isDisabled,
 }: CustomizableCategoryInputProps) {
   const [categories, setCategories] =
     useState<CategoryRangeType[]>(DEFAULT_CATEGORIES);
@@ -111,7 +113,12 @@ export default function CustomizableCategoryInput({
           {label}
         </Text>
         <Tooltip label='إدارة الفئات'>
-          <ActionIcon variant='light' className='!text-primary' onClick={open}>
+          <ActionIcon
+            variant='light'
+            className='!text-primary'
+            onClick={open}
+            disabled={isDisabled}
+          >
             <Settings size={16} />
           </ActionIcon>
         </Tooltip>
@@ -142,6 +149,7 @@ export default function CustomizableCategoryInput({
         hidePickedOptions
         maxDropdownHeight={200}
         multiple
+        disabled={isDisabled}
       />
       {selectedCategories.length > 0 && (
         <Stack gap='xs'>
@@ -151,6 +159,7 @@ export default function CustomizableCategoryInput({
           <Group gap='xs'>
             {selectedCategories.map((category) => (
               <Chip
+                disabled={isDisabled}
                 key={category.id}
                 checked={true}
                 onChange={() => {

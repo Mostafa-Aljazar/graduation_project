@@ -47,6 +47,10 @@ export const addAidFormSchema = z.object({
         required_error: 'طريقة توزيع الحصص على المندوبين مطلوبة',
     }),
     delegateSinglePortion: z.number().min(0, 'عدد الأسماء لكل مندوب يجب أن يكون أكبر من 0'),
+    aidAccessories: z.string(),
+    // receivedDisplaced: z.array(z.union([z.string(), z.number()])),
+
+
 });
 
 export type addAidFormValues = z.infer<typeof addAidFormSchema>;

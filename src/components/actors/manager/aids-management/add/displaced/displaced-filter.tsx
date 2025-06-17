@@ -30,6 +30,7 @@ interface Filters {
 interface DisplacedFiltersProps {
   setLocalFilters: React.Dispatch<React.SetStateAction<Filters>>;
   displacedNum: number;
+  isDisabled?: boolean;
 }
 
 const initData: Filters = {
@@ -45,6 +46,7 @@ const initData: Filters = {
 export default function DisplacedFilters({
   setLocalFilters,
   displacedNum,
+  isDisabled,
 }: DisplacedFiltersProps) {
   const [searchInput, setSearchInput] = useState('');
   const [resetKey, setResetKey] = useState(0);
