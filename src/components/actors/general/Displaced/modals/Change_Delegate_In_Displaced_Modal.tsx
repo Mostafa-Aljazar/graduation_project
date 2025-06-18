@@ -2,7 +2,10 @@
 
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import { getDelegates } from '@/actions/actors/general/delegates/getDelegates';
-import { changeDelegate } from '@/actions/actors/general/displaced/changeDelegate';
+import {
+  changeDelegate,
+  changeDelegateProps,
+} from '@/actions/actors/general/displaced/changeDelegate';
 import { Button, Group, Modal, Select, Stack, Text } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -10,33 +13,23 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { z } from 'zod';
 
-// TODO: handel fetching it
-const All_Delegates = [
-  { value: '1', label: 'فيصل محمد سليمان ابو زكري' },
-  { value: '2', label: 'معتز' },
-  { value: '3', label: 'علي' },
-  { value: '4', label: 'أحمد' },
-];
-
-type Props = {
-  displaced_Id?: string | number;
-  displaced_Ids?: (string | number)[];
-  opened: boolean;
-  close: () => void;
-};
-
 const changeDelegateSchema = z.object({
   delegateId: z.string().min(1, 'الرجاء اختيار مندوب'),
 });
 
 export type changeDelegateType = z.infer<typeof changeDelegateSchema>;
 
-export default function Change_Delegate_Modal({
-  displaced_Id,
-  displaced_Ids,
+interface ChangeDelegateModalProps {
+  displacedIDs: number[];
+  opened: boolean;
+  close: () => void;
+}
+
+export default function Change_Delegate_In_Displaced_Modal({
+  displacedIDs,
   opened,
   close,
-}: Props) {
+}: ChangeDelegateModalProps) {
   const form = useForm<changeDelegateType>({
     initialValues: {
       delegateId: '',
@@ -51,7 +44,7 @@ export default function Change_Delegate_Modal({
     error,
   } = useQuery({
     queryKey: ['delegates'],
-    queryFn: () => getDelegates({ page: 1, limit: 100 }), // Fetch up to 100 delegates
+    queryFn: () => getDelegates({ limit: -1 }), //-1 =>  get All
     select: (data) =>
       data.delegates.map((delegate) => ({
         value: delegate.id.toString(),
@@ -62,7 +55,7 @@ export default function Change_Delegate_Modal({
   const changeMutation = useMutation<
     modalActionResponse,
     unknown,
-    { displacedIds: (string | number)[]; delegateId: string }
+    changeDelegateProps
   >({
     mutationFn: changeDelegate,
     onSuccess: (data) => {
@@ -93,10 +86,9 @@ export default function Change_Delegate_Modal({
   });
 
   const handleSubmit = (values: changeDelegateType) => {
-    const ids = displaced_Ids || (displaced_Id ? [displaced_Id] : []);
     changeMutation.mutate({
-      displacedIds: ids,
-      delegateId: values.delegateId,
+      displacedIDs,
+      delegateId: Number(values.delegateId),
     });
   };
 
@@ -105,7 +97,7 @@ export default function Change_Delegate_Modal({
       opened={opened}
       onClose={close}
       title={
-        <Text fz={22} fw={600} ta='center' className='!text-primary'>
+        <Text fz={18} fw={600} ta='center' className='!text-primary'>
           تغيير المندوب
         </Text>
       }
@@ -116,7 +108,7 @@ export default function Change_Delegate_Modal({
         <Stack>
           <Select
             label={
-              <Text fz={18} fw={600}>
+              <Text fz={16} fw={500}>
                 المندوب :
               </Text>
             }
@@ -133,6 +125,7 @@ export default function Change_Delegate_Modal({
 
           <Group justify='flex-end'>
             <Button
+              size='sm'
               type='button'
               variant='outline'
               onClick={close}
@@ -142,6 +135,7 @@ export default function Change_Delegate_Modal({
               إلغاء
             </Button>
             <Button
+              size='sm'
               type='submit'
               className='!bg-primary'
               loading={changeMutation.isPending}

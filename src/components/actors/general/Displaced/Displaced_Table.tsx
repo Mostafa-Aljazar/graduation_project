@@ -1,9 +1,7 @@
 'use client';
 
-import type React from 'react';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
-  Button,
   Checkbox,
   Group,
   LoadingOverlay,
@@ -13,38 +11,30 @@ import {
 } from '@mantine/core';
 import { parseAsInteger, parseAsString, useQueryState } from 'nuqs';
 import { useQuery } from '@tanstack/react-query';
-import { Hammer } from 'lucide-react';
 import { cn } from '@/utils/cn';
-import Table_Actions from './Table_Actions';
-import { getDisplaced } from '@/actions/actors/general/displaced/getDisplacedInfo';
-import type { displacedResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
-import Selected_Displaced_Operation from './Selected_Displaced_Operation';
+import { displacedFilterValues } from '@/validation/actor/general/displaced-filter-form';
+import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
+import { getDisplaceds } from '@/actions/actors/general/displaced/getDisplaceds';
+import { getDisplacedsIDs } from '@/actions/actors/general/displaced/getDisplacedsIDs';
+import Displaced_Table_Actions from './Displaced_Table_Actions';
 
-type Props = {
-  localFilters: {
-    wife_status: string;
-    family_number: number | undefined;
-    ages: string[];
-    chronic_disease: string;
-    accommodation_type: string;
-    case_type: string;
-    delegate: string[] | number[];
-  };
-  setDisplacedNum: React.Dispatch<React.SetStateAction<number>>;
-};
+interface DisplacedTableProps {
+  localFilters: displacedFilterValues;
+  setDisplacedNum: Dispatch<SetStateAction<number>>;
+}
 
 export default function Displaced_Table({
   localFilters,
   setDisplacedNum,
-}: Props) {
+}: DisplacedTableProps) {
   const [activePage, setActivePage] = useQueryState(
-    'page',
+    'displacedPage',
     parseAsInteger.withDefault(1)
   );
   const [search] = useQueryState('search', parseAsString.withDefault(''));
 
   // Track specifically selected rows (when not in selectAll mode)
-  const [selectedRows, setSelectedRows] = useState<(number | string)[]>([]);
+  const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
   // Track if "select all across pages" is active
   const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
@@ -64,10 +54,10 @@ export default function Displaced_Table({
     data: Displaced_Data,
     isLoading,
     error: queryError,
-  } = useQuery<displacedResponse, Error>({
+  } = useQuery<DisplacedsResponse, Error>({
     queryKey: ['displaced', activePage, search, localFilters],
     queryFn: () =>
-      getDisplaced({
+      getDisplaceds({
         page: activePage,
         limit: 7,
         search,
@@ -83,27 +73,17 @@ export default function Displaced_Table({
 
   // Fetch all displaced IDs when selectAllAcrossPages is true
   const {
-    data: allDisplacedData,
+    data: DisplacedsIDs,
     isLoading: isLoadingAll,
     error: allQueryError,
-  } = useQuery<(number | string)[], Error>({
-    queryKey: ['displaced_all', search, localFilters],
+  } = useQuery<number[], Error>({
+    queryKey: ['DisplacedsIDs', search, localFilters],
     queryFn: async () => {
-      const totalPages = Displaced_Data?.pagination.totalPages || 1;
-      const allIds: (number | string)[] = [];
-
-      for (let page = 1; page <= totalPages; page++) {
-        const response = await getDisplaced({
-          page,
-          limit: 100, // Adjust limit based on API constraints
-          search,
-          filters: localFilters,
-        });
-        const pageIds = response.displaceds.map((item) => item.id);
-        allIds.push(...pageIds);
-      }
-
-      return allIds;
+      const response = await getDisplacedsIDs({
+        search,
+        filters: localFilters,
+      });
+      return response.displacedsIDs;
     },
     enabled: selectAllAcrossPages,
     retry: 1,
@@ -111,13 +91,13 @@ export default function Displaced_Table({
 
   // Set all Displaced in SelectedRows
   useEffect(() => {
-    if (allDisplacedData && selectAllAcrossPages) {
-      setSelectedRows(allDisplacedData);
+    if (DisplacedsIDs && selectAllAcrossPages) {
+      setSelectedRows(DisplacedsIDs);
     }
-  }, [allDisplacedData, selectAllAcrossPages]);
+  }, [DisplacedsIDs, selectAllAcrossPages]);
 
   // Check if a specific row is selected
-  const isRowSelected = (id: number | string) => {
+  const isRowSelected = (id: number) => {
     return selectedRows.includes(id);
   };
 
@@ -125,13 +105,12 @@ export default function Displaced_Table({
   const areAllPagesRowsSelected = () => {
     return (
       selectedRows.length ==
-      ((Displaced_Data?.pagination.totalItems as number) ||
-        (allDisplacedData?.length as number))
+      (Displaced_Data?.pagination.totalItems || DisplacedsIDs?.length)
     );
   };
 
   // Handle individual row selection
-  const handleRowSelection = (id: number | string, checked: boolean) => {
+  const handleRowSelection = (id: number, checked: boolean) => {
     if (checked) {
       setSelectedRows((prev) => [...prev.filter((rowId) => rowId !== id), id]);
       if (areAllPagesRowsSelected()) setSelectAllAcrossPages(true);
@@ -148,7 +127,7 @@ export default function Displaced_Table({
     if (checked) {
       // Select all rows across all pages
       setSelectAllAcrossPages(true);
-      setSelectedRows([...(allDisplacedData ?? [])]);
+      setSelectedRows(DisplacedsIDs || []);
     } else {
       // Deselect all rows
       setSelectAllAcrossPages(false);
@@ -270,7 +249,7 @@ export default function Displaced_Table({
         {element.delegate.name}
       </Table.Td>
       <Table.Td ta='center' px={5} w='fit-content'>
-        <Table_Actions displaced_id={element.id} />
+        <Displaced_Table_Actions displaced_ID={element.id} />
       </Table.Td>
     </Table.Tr>
   ));
@@ -304,9 +283,9 @@ export default function Displaced_Table({
           </Text>
         )}
 
-        <Selected_Displaced_Operation
+        <Displaced_Table_Actions
           disabled={getSelectedCount() === 0 || isLoadingAll}
-          displaced_Ids={selectedRows}
+          displaced_IDs={selectedRows}
         />
       </Group>
       <Table.ScrollContainer

@@ -1,31 +1,16 @@
 'use client';
+import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import {
   sendMeetingRequest,
   sendMeetingRequestProps,
 } from '@/actions/actors/general/displaced/sendMeetingRequest';
-import {
-  Button,
-  Group,
-  Modal,
-  Stack,
-  Text,
-  Textarea,
-  TextInput,
-} from '@mantine/core';
+import { Button, Group, Modal, Stack, Text, Textarea } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import React from 'react';
 import { z } from 'zod';
-
-type Props = {
-  displaced_Id?: string | Number;
-  displaced_Ids?: (string | Number)[];
-  opened: boolean;
-  close: () => void;
-};
 
 const meetingSchema = z.object({
   dateTime: z.date().refine((date) => dayjs(date).isAfter(dayjs()), {
@@ -36,12 +21,16 @@ const meetingSchema = z.object({
 
 export type meetingType = z.infer<typeof meetingSchema>;
 
-export default function Meeting_Modal({
-  displaced_Id,
-  displaced_Ids,
+interface MeetingModalProps {
+  displacedIDs: number[];
+  opened: boolean;
+  close: () => void;
+}
+export default function Meeting_Displaced_Modal({
+  displacedIDs,
   opened,
   close,
-}: Props) {
+}: MeetingModalProps) {
   const form = useForm<meetingType>({
     initialValues: {
       dateTime: dayjs().add(1, 'hour').toDate(),
@@ -85,9 +74,8 @@ export default function Meeting_Modal({
 
   const handleSubmit = (values: meetingType) => {
     console.log('🚀 ~ handleSubmit ~ values:', values);
-    const ids = displaced_Ids || (displaced_Id ? [displaced_Id] : []);
     meetingMutation.mutate({
-      displacedIds: ids,
+      displacedIDs,
       dateTime: values.dateTime,
       details: values.details,
     });
@@ -98,7 +86,7 @@ export default function Meeting_Modal({
       opened={opened}
       onClose={() => close()}
       title={
-        <Text fz={22} fw={600} ta={'center'} className='!text-primary'>
+        <Text fz={18} fw={600} ta={'center'} className='!text-primary'>
           تأكيد الاجتماع
         </Text>
       }
@@ -111,7 +99,7 @@ export default function Meeting_Modal({
         <Stack>
           <DateTimePicker
             label={
-              <Text fz={16} fw={600} className='!text-primary'>
+              <Text fz={16} fw={500} className='!text-primary'>
                 موعد الاجتماع
               </Text>
             }
@@ -133,7 +121,7 @@ export default function Meeting_Modal({
           <Textarea
             size='sm'
             label={
-              <Text fz={16} fw={600} className='!text-primary'>
+              <Text fz={16} fw={500} className='!text-primary'>
                 تفاصيل الاجتماع
               </Text>
             }
@@ -146,6 +134,7 @@ export default function Meeting_Modal({
 
           <Group justify='flex-end'>
             <Button
+              size='sm'
               type='button'
               variant='outline'
               onClick={close}
@@ -155,6 +144,7 @@ export default function Meeting_Modal({
               إلغاء
             </Button>
             <Button
+              size='sm'
               type='submit'
               className='!bg-primary'
               loading={meetingMutation.isPending}

@@ -32,7 +32,7 @@ import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import {
   addAidFormSchema,
   addAidFormValues,
-} from '@/validation/manager/add-aid-form-schema';
+} from '@/validation/actor/manager/add-aid-form-schema';
 import {
   AddAidPayload,
   AidResponse,
@@ -184,6 +184,7 @@ export default function Add_Aid_Form({
   };
 
   const handleSubmit = (values: addAidFormValues) => {
+    console.log('🚀 ~ handleSubmit ~ values:', values);
     if (isDisabled) return;
     onSubmit(values);
   };

@@ -13,7 +13,7 @@ import {
 import { parseAsInteger, parseAsString, useQueryState } from 'nuqs';
 import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/utils/cn';
-import { getDisplaced } from '@/actions/actors/general/displaced/getDisplacedInfo';
+import { getDisplaced } from '@/actions/actors/general/displaced/getDisplaceds';
 import { getDisplacedByIds } from '@/actions/actors/general/displaced/getDisplacedByIds'; // New action
 import type { displacedResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
 import Receive_Aid from './receive-aid/receive-aid';

@@ -1,36 +1,34 @@
 'use client';
+import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import {
-  deleteDisplaced,
-  deleteDisplacedsProps,
-} from '@/actions/actors/general/displaced/deleteDisplaced';
+  sendUpdateRequest,
+  sendUpdateRequestProps,
+} from '@/actions/actors/general/displaced/sendUpdateRequest';
 import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
-import React from 'react';
 
-type Props = {
-  displaced_Id?: string | Number;
-  displaced_Ids?: (string | Number)[];
+interface UpdateModalProps {
+  displacedIDs: number[];
   opened: boolean;
   close: () => void;
-};
+}
 
-export default function Delete_Modal({
-  displaced_Id,
-  displaced_Ids,
+export default function Update_Displaced_Modal({
+  displacedIDs,
   opened,
   close,
-}: Props) {
-  const deleteMutation = useMutation<
+}: UpdateModalProps) {
+  const updateMutation = useMutation<
     modalActionResponse,
     unknown,
-    deleteDisplacedsProps
+    sendUpdateRequestProps
   >({
-    mutationFn: deleteDisplaced,
+    mutationFn: sendUpdateRequest,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {
         notifications.show({
-          title: 'تمت العملية بنجاح',
+          title: 'تم الارسال',
           message: data.message,
           color: 'grape',
           position: 'top-left',
@@ -38,11 +36,11 @@ export default function Delete_Modal({
         });
         close();
       } else {
-        throw new Error(data.error || 'فشل في الحذف');
+        throw new Error(data.error || 'فشل في الارسال');
       }
     },
     onError: (error: any) => {
-      const errorMessage = error?.message || 'فشل في الحذف';
+      const errorMessage = error?.message || 'فشل في الارسال';
       notifications.show({
         title: 'خطأ',
         message: errorMessage,
@@ -54,19 +52,18 @@ export default function Delete_Modal({
   });
 
   const handleClick = () => {
-    const ids = displaced_Ids || (displaced_Id ? [displaced_Id] : []);
-    deleteMutation.mutate({
-      displacedIds: ids,
+    updateMutation.mutate({
+      displacedIDs,
     });
   };
 
   return (
     <Modal
       opened={opened}
-      onClose={() => close()}
+      onClose={close}
       title={
-        <Text fz={22} fw={600} ta={'center'} className='!text-red-500'>
-          تأكيد الحذف
+        <Text fz={18} fw={600} ta={'center'} className='!text-primary'>
+          تحديث البيانات
         </Text>
       }
       classNames={{
@@ -75,18 +72,12 @@ export default function Delete_Modal({
       centered
     >
       <Stack>
-        {displaced_Id && (
-          <Text fz={18} fw={600}>
-            هل أنت متأكد من حذف هذا النازح؟ هذا الإجراء لا يمكن التراجع عنه.
-          </Text>
-        )}
-        {displaced_Ids && (
-          <Text fz={18} fw={600}>
-            هل أنت متأكد من حذف هؤلاء النازحين؟ هذا الإجراء لا يمكن التراجع عنه.
-          </Text>
-        )}
+        <Text fz={16} fw={500}>
+          الرجاء التوجه لتحديث البيانات
+        </Text>
         <Group justify='flex-end'>
           <Button
+            size='sm'
             type='button'
             variant='outline'
             onClick={close}
@@ -96,12 +87,13 @@ export default function Delete_Modal({
             إلغاء
           </Button>
           <Button
+            size='sm'
             type='button'
-            className='!bg-red-500'
-            loading={deleteMutation.isPending}
+            className='!bg-primary'
+            loading={updateMutation.isPending}
             onClick={handleClick}
           >
-            حذف
+            تأكيد
           </Button>
         </Group>
       </Stack>

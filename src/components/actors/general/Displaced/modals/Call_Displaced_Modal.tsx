@@ -13,13 +13,6 @@ import dayjs from 'dayjs';
 import React from 'react';
 import { z } from 'zod';
 
-type Props = {
-  displaced_Id?: string | number;
-  displaced_Ids?: (string | number)[];
-  opened: boolean;
-  close: () => void;
-};
-
 const callSchema = z.object({
   dateTime: z.date().refine((date) => dayjs(date).isAfter(dayjs()), {
     message: 'الرجاء اختيار تاريخ ووقت في المستقبل',
@@ -29,12 +22,16 @@ const callSchema = z.object({
 
 export type callType = z.infer<typeof callSchema>;
 
-export default function Call_Modal({
-  displaced_Id,
-  displaced_Ids,
+interface CallModalProps {
+  displacedIDs: number[];
+  opened: boolean;
+  close: () => void;
+}
+export default function Call_Displaced_Modal({
+  displacedIDs,
   opened,
   close,
-}: Props) {
+}: CallModalProps) {
   const form = useForm<callType>({
     initialValues: {
       dateTime: dayjs().add(1, 'hour').toDate(),
@@ -78,9 +75,8 @@ export default function Call_Modal({
 
   const handleSubmit = (values: callType) => {
     console.log('🚀 ~ handleSubmit ~ values:', values);
-    const ids = displaced_Ids || (displaced_Id ? [displaced_Id] : []);
     callMutation.mutate({
-      displacedIds: ids,
+      displacedIDs,
       dateTime: values.dateTime,
       details: values.details,
     });
@@ -91,7 +87,7 @@ export default function Call_Modal({
       opened={opened}
       onClose={close}
       title={
-        <Text fz={22} fw={600} ta={'center'} className='!text-primary'>
+        <Text fz={18} fw={600} ta={'center'} className='!text-primary'>
           إضافة تفاصيل الاستدعاء
         </Text>
       }
@@ -104,7 +100,7 @@ export default function Call_Modal({
         <Stack>
           <DateTimePicker
             label={
-              <Text fz={16} fw={600} className='!text-primary'>
+              <Text fz={16} fw={500} className='!text-primary'>
                 تاريخ و وقت الاستدعاء
               </Text>
             }
@@ -124,7 +120,7 @@ export default function Call_Modal({
           <Textarea
             size='sm'
             label={
-              <Text fz={16} fw={600} className='!text-primary'>
+              <Text fz={16} fw={500} className='!text-primary'>
                 تفاصيل الاستدعاء
               </Text>
             }
@@ -136,6 +132,7 @@ export default function Call_Modal({
           />
           <Group justify='flex-end'>
             <Button
+              size='sm'
               type='button'
               variant='outline'
               onClick={close}
@@ -145,6 +142,7 @@ export default function Call_Modal({
               إلغاء
             </Button>
             <Button
+              size='sm'
               type='submit'
               className='!bg-primary'
               loading={callMutation.isPending}

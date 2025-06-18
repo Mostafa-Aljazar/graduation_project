@@ -17,7 +17,7 @@ import { parseAsString, parseAsStringEnum, useQueryStates } from 'nuqs';
 import Displaced_List from '@/components/actors/manager/aids-management/add/displaced/displaced-list';
 import Delegates_List from '@/components/actors/manager/aids-management/add/delegates/delegates-list';
 import { DISTRIBUTION_MECHANISM } from '@/content/actor/manager/aids-management';
-import { addAidFormValues } from '@/validation/manager/add-aid-form-schema';
+import { addAidFormValues } from '@/validation/actor/manager/add-aid-form-schema';
 import Add_Aid_Form from '@/components/actors/manager/aids-management/add/add-aid-form';
 import {
   AddAidPayload,
@@ -29,7 +29,7 @@ import { updateAid } from '@/actions/actors/manager/aids-management/updateAid';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
-import { ACTION_ADD_EDIT } from '@/content/actor/manager/ads-blogs-stories';
+import { ACTION_ADD_EDIT } from '@/constants';
 
 function Add_Aid_Header({ mode }: { mode: 'تعديل' | 'إضافة' | 'عرض' }) {
   return (

@@ -1,7 +1,7 @@
 import { Delegate, DelegatesIDsResponse, DelegatesResponse, } from '@/@types/actors/general/delegates/delegatesResponse.type';
 
 
-const fakeDelegates: Delegate[] = [
+export const fakeDelegates: Delegate[] = [
     { id: -1, name: "بدون مندوب", identity: 'ID123401', displaced_number: 50, family_number: 20, mobile_number: '0590000000', tents_number: 10 },
     { id: 101, name: 'محمد أحمد', identity: 'ID123401', displaced_number: 50, family_number: 20, mobile_number: '0599123401', tents_number: 10 },
     { id: 102, name: 'علي خالد', identity: 'ID123402', displaced_number: 60, family_number: 25, mobile_number: '0599123402', tents_number: 12 },

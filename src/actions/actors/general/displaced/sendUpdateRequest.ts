@@ -4,16 +4,16 @@ import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.t
 import { AqsaAPI } from "@/services";
 
 export interface sendUpdateRequestProps {
-    delegateIDs: Number[];
+    displacedIDs: number[];
 }
 
 export const sendUpdateRequest = async ({
-    delegateIDs
+    displacedIDs
 }: sendUpdateRequestProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: "200",
-        message: `تم ارسال طلب تحديث لـ ${delegateIDs.length} مندوب بنجاح`,
+        message: `تم ارسال طلب تحديث لـ ${displacedIDs.length} نازح بنجاح`,
 
     }
 
@@ -27,12 +27,12 @@ export const sendUpdateRequest = async ({
     // Real implementation with filters
     try {
         const response = await AqsaAPI.post("/displaceds/update", {
-            delegateIDs
+            displacedIDs
         });
 
         return {
             status: "200",
-            message: `تم ارسال طلب تحديث لـ ${delegateIDs.length} نازح بنجاح`,
+            message: `تم ارسال طلب تحديث لـ ${displacedIDs.length} نازح بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =

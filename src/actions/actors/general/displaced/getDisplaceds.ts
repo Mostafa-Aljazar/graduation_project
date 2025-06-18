@@ -1,36 +1,20 @@
 "use server";
 
-import { displacedResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
+import { DisplacedsResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
 import { fakeDisplacedResponse } from "@/content/actor/general/fake-displaced";
 import { AqsaAPI } from "@/services";
+import { displacedFilterValues } from "@/validation/actor/general/displaced-filter-form";
 
 type Props = {
     page?: number;
     limit?: number;
     search?: string;
-    filters: {
-        wife_status?: string;
-        family_number?: number | undefined;
-        ages?: string[];
-        chronic_disease?: string;
-        accommodation_type?: string;
-        case_type?: string;
-        delegate?: string[] | number[];
-    };
+    filters: displacedFilterValues
 };
 
-export const getDisplaced = async ({ page = 1, limit = 15, search, filters }: Props): Promise<displacedResponse> => {
+export const getDisplaceds = async ({ page = 1, limit = 15, search, filters }: Props): Promise<DisplacedsResponse> => {
     // FIXME: Remove this fake data logic in production
-    const fakeData: displacedResponse = {
-        ...fakeDisplacedResponse,
-        displaceds: fakeDisplacedResponse.displaceds.slice((page - 1) * limit, page * limit),
-        pagination: {
-            page,
-            limit,
-            totalItems: fakeDisplacedResponse.displaceds.length,
-            totalPages: Math.ceil(fakeDisplacedResponse.displaceds.length / limit),
-        },
-    };
+    const fakeData: DisplacedsResponse = fakeDisplacedResponse({ page, limit });
 
     // Simulate API delay for fake data
     return await new Promise((resolve) => {
