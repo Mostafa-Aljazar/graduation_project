@@ -11,11 +11,6 @@ export const BLOG_HEADER_TITLE = 'مدونتنا :';
 export const SUCCESS_STORIES_HEADER_TITLE = 'قصص النجاح:';
 
 
-export enum ACTION_ADD_EDIT {
-    ADD = 'ADD',
-    EDIT = 'EDIT',
-}
-
 
 export enum TYPE_CONTENT {
     BLOG = 'BLOG',

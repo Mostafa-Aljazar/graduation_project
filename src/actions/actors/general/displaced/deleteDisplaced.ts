@@ -4,7 +4,7 @@ import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.t
 import { AqsaAPI } from "@/services";
 
 export interface deleteDisplacedsProps {
-    displacedIds: (string | Number)[];
+    displacedIds: Number[];
 }
 
 export const deleteDisplaced = async ({
@@ -14,8 +14,8 @@ export const deleteDisplaced = async ({
     const fakeData: modalActionResponse = {
         status: "200",
         message: `تم حذف ${displacedIds.length} نازح بنجاح`,
-
     }
+
     // Simulate API delay for fake data
     return await new Promise((resolve) => {
         setTimeout(() => {
@@ -24,11 +24,9 @@ export const deleteDisplaced = async ({
     });
 
     // Real implementation with filters
-
     try {
         const response = await AqsaAPI.post("/displaceds/delete", {
             displacedIds,
-
         });
 
         return {

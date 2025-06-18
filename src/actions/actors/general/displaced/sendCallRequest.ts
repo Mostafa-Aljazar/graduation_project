@@ -1,9 +1,10 @@
 "use server";
 
-import AqsaAPI from "@/services";
+import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
+import { AqsaAPI } from "@/services";
 
 export interface sendCallRequestProps {
-    displacedIds: (string | Number)[];
+    displacedIds: Number[];
     dateTime: Date;
     details: string;
 }

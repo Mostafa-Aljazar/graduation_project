@@ -19,7 +19,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/utils/cn';
 import type { delegatesResponse } from '@/@types/actors/general/delegates/delegatesResponse.type';
-import { getDelegates } from '@/actions/actors/general/delegates/getDelegatesInfo';
+import { getDelegates } from '@/actions/actors/general/delegates/getDelegates';
 import {
   DELEGATE_PORTIONS,
   QUANTITY_AVAILABILITY,

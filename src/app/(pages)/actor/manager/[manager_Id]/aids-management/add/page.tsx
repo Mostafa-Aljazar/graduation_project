@@ -12,7 +12,7 @@ import {
 } from '@mantine/core';
 import { CheckSquare, SquarePlus } from 'lucide-react';
 import { notifications } from '@mantine/notifications';
-import { parseAsStringEnum, useQueryState } from 'nuqs';
+import { parseAsString, parseAsStringEnum, useQueryStates } from 'nuqs';
 
 import Displaced_List from '@/components/actors/manager/aids-management/add/displaced/displaced-list';
 import Delegates_List from '@/components/actors/manager/aids-management/add/delegates/delegates-list';
@@ -25,62 +25,83 @@ import {
   SelectedDelegatePortion,
 } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { addAid } from '@/actions/actors/manager/aids-management/addAid';
+import { updateAid } from '@/actions/actors/manager/aids-management/updateAid';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
+import { ACTION_ADD_EDIT } from '@/content/actor/manager/ads-blogs-stories';
 
-interface AddAidPageProps {
-  initialData?: AidResponse;
-  isDisabled?: boolean;
-  aid_id?: string | number;
-}
-
-function Add_Aid_Header({ isViewMode }: { isViewMode: boolean }) {
+function Add_Aid_Header({ mode }: { mode: 'تعديل' | 'إضافة' | 'عرض' }) {
   return (
     <Group justify='space-between'>
       <Group gap={10}>
         <SquarePlus size={20} className='text-primary' />
         <Text fw={600} fz={{ base: 18, md: 22 }} className='text-primary'>
-          {isViewMode ? 'عرض المساعدة :' : 'إضافة مساعدة :'}
+          {mode} المساعدة
         </Text>
       </Group>
     </Group>
   );
 }
 
-export default function Add_Aid_Page({
-  initialData,
-  isDisabled = false,
-  aid_id,
-}: AddAidPageProps) {
+interface AddAidPageProps {
+  initialData?: AidResponse;
+  aid_id?: number;
+}
+
+export default function Add_Aid_Page({ initialData, aid_id }: AddAidPageProps) {
   const { user } = useAuth();
   const router = useRouter();
-  const [distributionMechanism] = useQueryState(
-    'distributionMechanism',
-    parseAsStringEnum<DISTRIBUTION_MECHANISM>(
-      Object.values(DISTRIBUTION_MECHANISM)
-    ).withDefault(
-      initialData?.aid.distributionMechanism ||
-        DISTRIBUTION_MECHANISM.delegates_lists
-    )
+
+  const [query] = useQueryStates(
+    {
+      distributionMechanism: parseAsStringEnum<DISTRIBUTION_MECHANISM>(
+        Object.values(DISTRIBUTION_MECHANISM)
+      ).withDefault(
+        initialData?.aid.distributionMechanism ||
+          DISTRIBUTION_MECHANISM.delegates_lists
+      ),
+      action: parseAsStringEnum<ACTION_ADD_EDIT>(
+        Object.values(ACTION_ADD_EDIT)
+      ).withDefault(ACTION_ADD_EDIT.ADD),
+    },
+    { shallow: true }
   );
+
+  // Determine if the form is disabled
+  const isDisabled = !!initialData && query.action !== ACTION_ADD_EDIT.EDIT;
+
+  // Determine header mode
+  const headerMode =
+    query.action === ACTION_ADD_EDIT.EDIT && initialData
+      ? 'تعديل'
+      : initialData
+      ? 'عرض'
+      : 'إضافة';
 
   const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<
     (string | number)[]
   >(initialData?.aid.selectedDisplacedIds || []);
+
   const [selectedDelegatesPortions, setSelectedDelegatesPortions] = useState<
     SelectedDelegatePortion[]
   >(initialData?.aid.selectedDelegatesPortions || []);
 
   const isDisplaced =
-    distributionMechanism === DISTRIBUTION_MECHANISM.displaced_families;
+    query.distributionMechanism === DISTRIBUTION_MECHANISM.displaced_families;
 
   const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: (payload: AddAidPayload) => addAid(payload),
+    mutationFn: (payload: AddAidPayload) =>
+      query.action === ACTION_ADD_EDIT.EDIT && aid_id
+        ? updateAid({ ...payload, id: aid_id })
+        : addAid(payload),
     onSuccess: (response) => {
       if (response.status === '200') {
         notifications.show({
-          title: 'تم حفظ المساعدة',
+          title:
+            query.action === ACTION_ADD_EDIT.EDIT
+              ? 'تم تعديل المساعدة'
+              : 'تم حفظ المساعدة',
           message: response.message || 'تم إرسال البيانات بنجاح',
           color: 'green',
           position: 'top-left',
@@ -89,7 +110,7 @@ export default function Add_Aid_Page({
       } else {
         notifications.show({
           title: 'خطأ',
-          message: response.message || 'حدث خطأ أثناء إضافة المساعدة',
+          message: response.message || 'حدث خطأ أثناء معالجة المساعدة',
           color: 'red',
           position: 'top-left',
         });
@@ -98,15 +119,17 @@ export default function Add_Aid_Page({
     onError: (error: any) => {
       notifications.show({
         title: 'خطأ',
-        message: error.message || 'حدث خطأ أثناء إضافة المساعدة',
+        message: error.message || 'حدث خطأ أثناء معالجة المساعدة',
         color: 'red',
         position: 'top-left',
       });
     },
   });
 
+  const receivedDisplaced = initialData?.aid.receivedDisplaced || [];
+
   const handleSubmit = (values: addAidFormValues) => {
-    if (isDisabled) return; // Prevent submission in view mode
+    if (isDisabled) return; // Prevent submission if form is disabled
 
     if (isDisplaced && selectedDisplacedIds.length === 0) {
       notifications.show({
@@ -127,12 +150,19 @@ export default function Add_Aid_Page({
       return;
     }
 
+    const isCompleted =
+      query.action == ACTION_ADD_EDIT.ADD
+        ? values.distributionMechanism ==
+            DISTRIBUTION_MECHANISM.delegates_lists || values.securityRequired
+        : false; // FIXME: handel it from back-end
+
     const payload: AddAidPayload = {
-      id: -1,
+      id: aid_id ? Number(aid_id) : -1,
       ...values,
       selectedDisplacedIds,
       selectedDelegatesPortions,
-      receivedDisplaced: [],
+      receivedDisplaced: receivedDisplaced,
+      isCompleted: isCompleted,
     };
 
     mutate(payload);
@@ -145,7 +175,7 @@ export default function Add_Aid_Page({
         zIndex={49}
         overlayProps={{ radius: 'sm', blur: 0.3 }}
       />
-      <Add_Aid_Header isViewMode={isDisabled} />
+      <Add_Aid_Header mode={headerMode} />
 
       <Add_Aid_Form
         onSubmit={handleSubmit}
@@ -160,15 +190,29 @@ export default function Add_Aid_Page({
           selectedDisplacedIds={selectedDisplacedIds}
           setSelectedDisplacedIds={setSelectedDisplacedIds}
           isDisabled={isDisabled}
-          receivedDisplaced={initialData?.aid.receivedDisplaced}
+          receivedDisplaced={initialData?.aid?.receivedDisplaced}
           aid_id={aid_id}
         />
       ) : (
-        <Delegates_List
-          selectedDelegatesPortions={selectedDelegatesPortions}
-          setSelectedDelegatesPortions={setSelectedDelegatesPortions}
-          // isDisabled={isDisabled}
-        />
+        <Stack gap={20}>
+          <Delegates_List
+            selectedDelegatesPortions={selectedDelegatesPortions}
+            setSelectedDelegatesPortions={setSelectedDelegatesPortions}
+            // isDisabled={isDisabled}
+          />
+          <Divider h={1} bg={'#DFDEDC'} w={'100%'} flex={1} />
+
+          {/* {initialData && ( */}
+          <Displaced_List
+            title={'كشوفات المناديب عن النازحين:'}
+            selectedDisplacedIds={selectedDisplacedIds}
+            setSelectedDisplacedIds={setSelectedDisplacedIds}
+            isDisabled={isDisabled}
+            // receivedDisplaced={initialData?.aid?.selectedDisplacedIds}
+            aid_id={aid_id}
+          />
+          {/* // )} */}
+        </Stack>
       )}
 
       {!isDisabled && (
@@ -188,14 +232,14 @@ export default function Add_Aid_Page({
             loading={isPending}
             disabled={isPending}
           >
-            إضافة
+            {query.action === ACTION_ADD_EDIT.EDIT ? 'تعديل' : 'إضافة'}
           </Button>
         </Group>
       )}
 
       {isError && (
         <Text c='red' ta='center'>
-          {error?.message || 'حدث خطأ أثناء إضافة المساعدة'}
+          {error?.message || 'حدث خطأ أثناء معالجة المساعدة'}
         </Text>
       )}
     </Stack>

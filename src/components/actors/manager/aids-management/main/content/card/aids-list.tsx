@@ -40,11 +40,7 @@ AidsListProps) {
       ) : (
         <Stack gap='xs'>
           {data.map((aid) => (
-            <Aid_Card
-              aid={aid}
-              key={aid.id}
-              // highlightedDate={highlightedDate}
-            />
+            <Aid_Card aid={aid} key={aid.id} />
           ))}
         </Stack>
       )}

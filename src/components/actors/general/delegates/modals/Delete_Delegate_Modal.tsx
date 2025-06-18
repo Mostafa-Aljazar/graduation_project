@@ -1,4 +1,5 @@
 'use client';
+import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import {
   deleteDelegates,
   deleteDelegatesProps,
@@ -6,21 +7,18 @@ import {
 import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
-import React from 'react';
 
-type Props = {
-  delegate_Id?: string | Number;
-  delegate_Ids?: (string | Number)[];
+interface DeleteModalProps {
+  delegateIDs: Number[];
   opened: boolean;
   close: () => void;
-};
+}
 
-export default function Delete_Modal({
-  delegate_Id,
-  delegate_Ids,
+export default function Delete_Delegate_Modal({
+  delegateIDs,
   opened,
   close,
-}: Props) {
+}: DeleteModalProps) {
   const deleteMutation = useMutation<
     modalActionResponse,
     unknown,
@@ -54,9 +52,8 @@ export default function Delete_Modal({
   });
 
   const handleClick = () => {
-    const ids = delegate_Ids || (delegate_Id ? [delegate_Id] : []);
     deleteMutation.mutate({
-      delegatesIds: ids,
+      delegateIDs,
     });
   };
 
@@ -65,7 +62,7 @@ export default function Delete_Modal({
       opened={opened}
       onClose={() => close()}
       title={
-        <Text fz={22} fw={600} ta={'center'} className='!text-red-500'>
+        <Text fz={20} fw={600} ta='center' className='!text-red-500'>
           تأكيد الحذف
         </Text>
       }
@@ -75,17 +72,17 @@ export default function Delete_Modal({
       centered
     >
       <Stack>
-        {delegate_Id && (
-          <Text fz={18} fw={600}>
+        {delegateIDs?.length == 1 && (
+          <Text fz={16} fw={500}>
             هل أنت متأكد من حذف هذا المندوب هذا الإجراء لا يمكن التراجع عنه.
           </Text>
         )}
-        {delegate_Ids && (
-          <Text fz={18} fw={600}>
+        {delegateIDs?.length > 1 && (
+          <Text fz={16} fw={500}>
             هل أنت متأكد من حذف هؤلاء المناديب؟ هذا الإجراء لا يمكن التراجع عنه.
           </Text>
         )}
-        <Text fz={15} fw={600} className='!text-red-500'>
+        <Text fz={16} fw={500} className='!text-red-500'>
           ملاحظة / سيتم نقل النازحين الخاضة به/بهم إلى المندوب الإفتراضي (بدون
           مندوب).
         </Text>
@@ -95,13 +92,13 @@ export default function Delete_Modal({
             variant='outline'
             onClick={close}
             fw={600}
-            className='!border-primary !text-primary'
+            className='!shadow-md !border-primary !text-primary'
           >
             إلغاء
           </Button>
           <Button
             type='button'
-            className='!bg-red-500'
+            className='!bg-red-500 !shadow-md'
             loading={deleteMutation.isPending}
             onClick={handleClick}
           >

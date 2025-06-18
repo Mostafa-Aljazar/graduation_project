@@ -46,6 +46,8 @@ export interface AddAidPayload extends AddAidFormValues {
         displaced: (string | number);
         receivedTime: Date;
     }[]
+    security_men?: (string | number)[];
+    isCompleted: boolean;
 }
 
 
@@ -54,5 +56,19 @@ export interface AidResponse {
     message?: string;
     aid: AddAidPayload;
     error?: string;
+}
+
+// Define AidsResponse interface
+export interface AidsResponse {
+    status: string;
+    message?: string;
+    aids: AddAidPayload[];
+    error?: string;
+    pagination: {
+        page: number;
+        limit: number;
+        totalItems: number;
+        totalPages: number;
+    };
 }
 

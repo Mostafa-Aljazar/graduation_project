@@ -1,7 +1,7 @@
 'use client';
 
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
-import { getDelegates } from '@/actions/actors/general/delegates/getDelegatesInfo';
+import { getDelegates } from '@/actions/actors/general/delegates/getDelegates';
 import { changeDelegate } from '@/actions/actors/general/displaced/changeDelegate';
 import { Button, Group, Modal, Select, Stack, Text } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';

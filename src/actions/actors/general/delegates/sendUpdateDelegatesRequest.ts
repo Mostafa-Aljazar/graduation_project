@@ -1,20 +1,19 @@
 "use server";
 
-import AqsaAPI from "@/services";
+import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
+import { AqsaAPI } from "@/services";
 
 export interface sendUpdateDelegatesRequestProps {
-    delegatesIds: (string | Number)[];
-
+    delegateIDs: Number[];
 }
 
 export const sendUpdateDelegatesRequest = async ({
-    delegatesIds,
-
+    delegateIDs
 }: sendUpdateDelegatesRequestProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: "200",
-        message: `تم ارسال طلب تحديث لـ ${delegatesIds.length} مندوب بنجاح`,
+        message: `تم ارسال طلب تحديث لـ ${delegateIDs.length} مندوب بنجاح`,
 
     }
     // Simulate API delay for fake data
@@ -28,13 +27,12 @@ export const sendUpdateDelegatesRequest = async ({
 
     try {
         const response = await AqsaAPI.post("/delegates/update", {
-            delegatesIds,
-
+            delegateIDs,
         });
 
         return {
             status: "200",
-            message: `تم ارسال طلب تحديث لـ ${delegatesIds.length} مندوب بنجاح`,
+            message: `تم ارسال طلب تحديث لـ ${delegateIDs.length} مندوب بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =

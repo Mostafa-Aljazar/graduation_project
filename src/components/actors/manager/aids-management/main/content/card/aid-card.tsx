@@ -11,14 +11,8 @@ import Aid_Action from './aid-action';
 
 type Props = {
   aid: general_Aid;
-  // highlightedDate: string | null;
 };
-export default function Aid_Card({
-  aid,
-}: // highlightedDate
-Props) {
-  // console.log('🚀 ~ Aid_Card ~ aid:', aid);
-
+export default function Aid_Card({ aid }: Props) {
   // Map aid type to its corresponding icon, default to Package if not found
   const getAidTypeIcon = (type: TYPE_AIDS) => {
     const IconComponent = GET_AIDS_TYPE_ICONS[type] || Package;

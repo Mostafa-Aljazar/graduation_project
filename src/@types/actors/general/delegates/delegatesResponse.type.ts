@@ -1,4 +1,11 @@
-export interface delegatesResponse {
+export interface DelegatesIDsResponse {
+    status: string;
+    message?: string;
+    delegatesIDs: number[];
+    error?: string;
+}
+
+export interface DelegatesResponse {
     status: string;
     message?: string;
     delegates: Delegate[];
@@ -12,7 +19,7 @@ export interface delegatesResponse {
 }
 
 export interface Delegate {
-    id: string | number;
+    id: number;
     name: string;
     identity: string;
     displaced_number: number;

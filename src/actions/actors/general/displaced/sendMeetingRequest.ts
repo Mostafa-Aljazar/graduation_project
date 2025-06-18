@@ -1,9 +1,10 @@
 "use server";
 
-import AqsaAPI from "@/services";
+import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
+import { AqsaAPI } from "@/services";
 
 export interface sendMeetingRequestProps {
-    displacedIds: (string | Number)[];
+    displacedIds: Number[];
     dateTime: Date;
     details: string;
 }
@@ -27,7 +28,6 @@ export const sendMeetingRequest = async ({
     });
 
     // Real implementation with filters
-
     try {
         const response = await AqsaAPI.post("/displaceds/meeting", {
             displacedIds,

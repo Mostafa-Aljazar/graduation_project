@@ -105,11 +105,6 @@ export default function Aids_Management_Content() {
           itemsPerPage={5} // Adjust as needed
           totalPages={data?.pagination.totalPages || 1}
           loading={isLoading}
-          // highlightedDate={
-          //   localFilters.date_range?.[0]
-          //     ? localFilters.date_range[0].toISOString().split('T')[0]
-          //     : null
-          // }
         />
       )}
     </Stack>

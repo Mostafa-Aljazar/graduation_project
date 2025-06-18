@@ -4,22 +4,19 @@ import {
   sendCallDelegatesRequest,
   sendCallDelegatesRequestProps,
 } from '@/actions/actors/general/delegates/sendCallDelegatesRequest';
-
 import { Button, Group, Modal, Stack, Text, Textarea } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import React from 'react';
 import { z } from 'zod';
 
-type Props = {
-  delegate_Id?: string | number;
-  delegate_Ids?: (string | number)[];
+interface CallModalProps {
+  delegateIDs: number[];
   opened: boolean;
   close: () => void;
-};
+}
 
 const callSchema = z.object({
   dateTime: z.date().refine((date) => dayjs(date).isAfter(dayjs()), {
@@ -30,12 +27,11 @@ const callSchema = z.object({
 
 export type callType = z.infer<typeof callSchema>;
 
-export default function Call_Modal({
-  delegate_Id,
-  delegate_Ids,
+export default function Call_Delegate_Modal({
+  delegateIDs,
   opened,
   close,
-}: Props) {
+}: CallModalProps) {
   const form = useForm<callType>({
     initialValues: {
       dateTime: dayjs().add(1, 'hour').toDate(),
@@ -62,11 +58,11 @@ export default function Call_Modal({
         close();
         form.reset();
       } else {
-        throw new Error(data.error || 'فشل في استدعاء النازحين');
+        throw new Error(data.error || 'فشل في استدعاء المناديب');
       }
     },
     onError: (error: any) => {
-      const errorMessage = error?.message || 'فشل في استدعاء النازحين';
+      const errorMessage = error?.message || 'فشل في استدعاء المناديب';
       notifications.show({
         title: 'خطأ',
         message: errorMessage,
@@ -78,10 +74,8 @@ export default function Call_Modal({
   });
 
   const handleSubmit = (values: callType) => {
-    console.log('🚀 ~ handleSubmit ~ values:', values);
-    const ids = delegate_Ids || (delegate_Id ? [delegate_Id] : []);
     callMutation.mutate({
-      delegateIds: ids,
+      delegateIDs,
       dateTime: values.dateTime,
       details: values.details,
     });
@@ -92,7 +86,7 @@ export default function Call_Modal({
       opened={opened}
       onClose={close}
       title={
-        <Text fz={22} fw={600} ta={'center'} className='!text-primary'>
+        <Text fz={20} fw={600} ta={'center'} className='!text-primary'>
           إضافة تفاصيل الاستدعاء
         </Text>
       }
@@ -105,7 +99,7 @@ export default function Call_Modal({
         <Stack>
           <DateTimePicker
             label={
-              <Text fz={16} fw={600} className='!text-primary'>
+              <Text fz={16} fw={500} className='!text-primary'>
                 تاريخ و وقت الاستدعاء
               </Text>
             }
@@ -125,7 +119,7 @@ export default function Call_Modal({
           <Textarea
             size='sm'
             label={
-              <Text fz={16} fw={600} className='!text-primary'>
+              <Text fz={16} fw={500} className='!text-primary'>
                 تفاصيل الاستدعاء
               </Text>
             }
@@ -141,13 +135,13 @@ export default function Call_Modal({
               variant='outline'
               onClick={close}
               fw={600}
-              className='!border-primary !text-primary'
+              className='!shadow-md !border-primary !text-primary'
             >
               إلغاء
             </Button>
             <Button
               type='submit'
-              className='!bg-primary'
+              className='!bg-primary !shadow-md'
               loading={callMutation.isPending}
             >
               تأكيد

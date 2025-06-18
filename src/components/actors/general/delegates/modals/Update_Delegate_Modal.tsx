@@ -1,35 +1,30 @@
 'use client';
+import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import {
-  sendUpdateRequest,
-  sendUpdateRequestProps,
-} from '@/actions/actors/general/displaced/sendUpdateRequest';
+  sendUpdateDelegatesRequest,
+  sendUpdateDelegatesRequestProps,
+} from '@/actions/actors/general/delegates/sendUpdateDelegatesRequest';
 import { Button, Group, Modal, Stack, Text } from '@mantine/core';
-import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
-import dayjs from 'dayjs';
-import React from 'react';
-import { z } from 'zod';
 
-type Props = {
-  delegate_Id?: string | number;
-  delegate_Ids?: (string | number)[];
+interface UpdateModalProps {
+  delegateIDs: number[];
   opened: boolean;
   close: () => void;
-};
+}
 
-export default function Update_Modal({
-  delegate_Id,
-  delegate_Ids,
+export default function Update_Delegate_Modal({
+  delegateIDs,
   opened,
   close,
-}: Props) {
+}: UpdateModalProps) {
   const updateMutation = useMutation<
     modalActionResponse,
     unknown,
-    sendUpdateRequestProps
+    sendUpdateDelegatesRequestProps
   >({
-    mutationFn: sendUpdateRequest,
+    mutationFn: sendUpdateDelegatesRequest,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {
         notifications.show({
@@ -57,9 +52,8 @@ export default function Update_Modal({
   });
 
   const handleClick = () => {
-    const ids = delegate_Ids || (delegate_Id ? [delegate_Id] : []);
     updateMutation.mutate({
-      displacedIds: ids,
+      delegateIDs,
     });
   };
 
@@ -68,7 +62,7 @@ export default function Update_Modal({
       opened={opened}
       onClose={close}
       title={
-        <Text fz={22} fw={600} ta={'center'} className='!text-primary'>
+        <Text fz={20} fw={600} ta={'center'} className='!text-primary'>
           تحديث البيانات
         </Text>
       }
@@ -78,7 +72,7 @@ export default function Update_Modal({
       centered
     >
       <Stack>
-        <Text fz={18} fw={600}>
+        <Text fz={16} fw={500}>
           الرجاء التوجه لتحديث البيانات
         </Text>
         <Group justify='flex-end'>

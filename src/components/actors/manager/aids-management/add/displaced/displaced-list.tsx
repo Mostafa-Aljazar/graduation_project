@@ -17,6 +17,7 @@ interface Filters {
 }
 
 interface DisplacedListProps {
+  title?: string;
   setSelectedDisplacedIds: React.Dispatch<
     React.SetStateAction<(string | number)[]>
   >;
@@ -24,6 +25,7 @@ interface DisplacedListProps {
   isDisabled?: boolean;
 
   receivedDisplaced?: {
+    //FIXME: add who is give him
     displaced: string | number;
     receivedTime: Date;
   }[];
@@ -31,7 +33,21 @@ interface DisplacedListProps {
   aid_id?: string | number;
 }
 
+function Displaced_List_Header({ title }: { title?: string }) {
+  return (
+    <Group justify='space-between' align='center'>
+      <Group gap={10}>
+        <Database size={20} className='!text-primary' />
+        <Text fw={600} fz={18} className='!text-primary'>
+          {title ?? 'بيانات النازحين:'}
+        </Text>
+      </Group>
+    </Group>
+  );
+}
+
 export default function DisplacedList({
+  title,
   setSelectedDisplacedIds,
   selectedDisplacedIds,
   isDisabled = false,
@@ -53,14 +69,7 @@ export default function DisplacedList({
 
   return (
     <Stack p={10} pos='relative' w='100%'>
-      <Group justify='space-between' align='center'>
-        <Group gap={10}>
-          <Database size={20} className='!text-primary' />
-          <Text fw={500} fz={20} className='!text-primary'>
-            بيانات النازحين:
-          </Text>
-        </Group>
-      </Group>
+      <Displaced_List_Header title={title} />
       <DisplacedFilters
         setLocalFilters={isDisabled ? () => {} : setLocalFilters} // Disable filter updates
         displacedNum={displacedNum}

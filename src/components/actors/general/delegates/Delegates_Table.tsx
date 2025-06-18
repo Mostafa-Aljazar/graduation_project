@@ -1,7 +1,6 @@
 'use client';
 
-import type React from 'react';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import {
   Checkbox,
   Group,
@@ -13,33 +12,29 @@ import {
 import { parseAsInteger, parseAsString, useQueryState } from 'nuqs';
 import { useQuery } from '@tanstack/react-query';
 import { cn } from '@/utils/cn';
-import Table_Actions from './Table_Actions';
-import Selected_Displaced_Operation from './Selected_Delegate_Operation';
-import { getDelegates } from '@/actions/actors/general/delegates/getDelegatesInfo';
-import { delegatesResponse } from '@/@types/actors/general/delegates/delegatesResponse.type';
-import { getDisplaced } from '@/actions/actors/general/displaced/getDisplacedInfo';
-import Selected_Delegates_Operation from './Selected_Delegate_Operation';
+import { getDelegates } from '@/actions/actors/general/delegates/getDelegates';
+import { DelegatesResponse } from '@/@types/actors/general/delegates/delegatesResponse.type';
+import { DelegatesFilter } from '@/app/(pages)/actor/(general)/delegates/page';
+import { getDelegatesIDs } from '@/actions/actors/general/delegates/getDelegatesIDs';
+import Delegates_Table_Actions from './Delegates_Table_Actions';
 
-type Props = {
-  localFilters: {
-    displaceds_number: number[];
-    tents_number: number[];
-  };
-  setDelegatesNum: React.Dispatch<React.SetStateAction<number>>;
-};
+interface Props {
+  localFilters: DelegatesFilter;
+  setDelegatesNum: Dispatch<SetStateAction<number>>;
+}
 
 export default function Delegates_Table({
   localFilters,
   setDelegatesNum,
 }: Props) {
   const [activePage, setActivePage] = useQueryState(
-    'page',
+    'delegatePage',
     parseAsInteger.withDefault(1)
   );
   const [search] = useQueryState('search', parseAsString.withDefault(''));
 
   // Track specifically selected rows (when not in selectAll mode)
-  const [selectedRows, setSelectedRows] = useState<(number | string)[]>([]);
+  const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
   // Track if "select all across pages" is active
   const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
@@ -59,7 +54,7 @@ export default function Delegates_Table({
     data: Delegates_Data,
     isLoading,
     error: queryError,
-  } = useQuery<delegatesResponse, Error>({
+  } = useQuery<DelegatesResponse, Error>({
     queryKey: ['delegates', activePage, search, localFilters],
     queryFn: () =>
       getDelegates({
@@ -78,55 +73,44 @@ export default function Delegates_Table({
 
   // Fetch all Delegates IDs when selectAllAcrossPages is true
   const {
-    data: all_Delegates_Data,
+    data: DelegatesIDs,
     isLoading: isLoadingAll,
     error: allQueryError,
-  } = useQuery<(number | string)[], Error>({
-    queryKey: ['delegates_all', search, localFilters],
+  } = useQuery<number[], Error>({
+    queryKey: ['delegatesIDs', search, localFilters],
     queryFn: async () => {
-      const totalPages = Delegates_Data?.pagination.totalPages || 1;
-      const allIds: (number | string)[] = [];
-
-      for (let page = 1; page <= totalPages; page++) {
-        const response = await getDelegates({
-          page,
-          limit: 100, // Adjust limit based on API constraints
-          search,
-          filters: localFilters,
-        });
-        const pageIds = response.delegates.map((item) => item.id);
-        allIds.push(...pageIds);
-      }
-
-      return allIds;
+      const response = await getDelegatesIDs({
+        search,
+        filters: localFilters,
+      });
+      return response.delegatesIDs;
     },
     enabled: selectAllAcrossPages,
     retry: 1,
   });
 
-  //DONE:   Set all Displaced in SelectedRows
+  // Set all Displaced in SelectedRows
   useEffect(() => {
-    if (all_Delegates_Data && selectAllAcrossPages) {
-      setSelectedRows(all_Delegates_Data);
+    if (DelegatesIDs && selectAllAcrossPages) {
+      setSelectedRows(DelegatesIDs);
     }
-  }, [all_Delegates_Data, selectAllAcrossPages]);
+  }, [DelegatesIDs, selectAllAcrossPages]);
 
-  //DONE: Check if a specific row is selected
-  const isRowSelected = (id: number | string) => {
+  // Check if a specific row is selected
+  const isRowSelected = (id: number) => {
     return selectedRows.includes(id);
   };
 
-  //DONE: Handle if All  Pages Rows Selected
+  // Handle if All  Pages Rows Selected
   const areAllPagesRowsSelected = () => {
     return (
       selectedRows.length ==
-      ((Delegates_Data?.pagination.totalItems as number) ||
-        (all_Delegates_Data?.length as number))
+      (Delegates_Data?.pagination.totalItems || DelegatesIDs?.length)
     );
   };
 
   // Handle individual row selection
-  const handleRowSelection = (id: number | string, checked: boolean) => {
+  const handleRowSelection = (id: number, checked: boolean) => {
     if (checked) {
       setSelectedRows((prev) => [...prev.filter((rowId) => rowId !== id), id]);
       if (areAllPagesRowsSelected()) setSelectAllAcrossPages(true);
@@ -136,14 +120,14 @@ export default function Delegates_Table({
     }
   };
 
-  //DONE: Handle "select all" checkbox in table header
+  // Handle "select all" checkbox in table header
   const handleSelectAllAcrossAllPages = (checked: boolean) => {
     if (!Delegates_Data?.delegates) return;
 
     if (checked) {
       // Select all rows across all pages
       setSelectAllAcrossPages(true);
-      setSelectedRows([...(all_Delegates_Data ?? [])]);
+      setSelectedRows(DelegatesIDs || []);
     } else {
       // Deselect all rows
       setSelectAllAcrossPages(false);
@@ -153,7 +137,7 @@ export default function Delegates_Table({
 
   const headers = (
     <Table.Tr>
-      <Table.Th px={5} ta='center' w='fit-content'>
+      <Table.Th w={0}>
         <Checkbox
           aria-label='Select all rows across all pages'
           checked={areAllPagesRowsSelected()}
@@ -231,13 +215,14 @@ export default function Delegates_Table({
           : undefined
       }
     >
-      <Table.Td px={5} ta='center' w='fit-content'>
+      <Table.Td>
         <Checkbox
           aria-label='Select row'
           checked={isRowSelected(element.id)}
           onChange={(event) => {
             handleRowSelection(element.id, event.currentTarget.checked);
           }}
+          // mx={'auto'}
         />
       </Table.Td>
       <Table.Td px={5} ta='center' w='fit-content'>
@@ -268,7 +253,7 @@ export default function Delegates_Table({
       </Table.Td>
 
       <Table.Td ta='center' px={5} w='fit-content'>
-        <Table_Actions delegate_Id={element.id} />
+        <Delegates_Table_Actions delegate_Id={element.id} />
       </Table.Td>
     </Table.Tr>
   ));
@@ -301,8 +286,7 @@ export default function Delegates_Table({
             لم يتم تحديد أي عنصر
           </Text>
         )}
-
-        <Selected_Delegates_Operation
+        <Delegates_Table_Actions
           disabled={getSelectedCount() === 0 || isLoadingAll}
           delegate_Ids={selectedRows}
         />

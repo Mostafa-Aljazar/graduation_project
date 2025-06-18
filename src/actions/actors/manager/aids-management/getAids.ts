@@ -2,7 +2,8 @@
 
 import { AqsaAPI } from '@/services';
 import { TYPE_AIDS, TYPE_GROUP_AIDS } from '@/content/actor/manager/aids-management';
-import { AidsResponse } from '@/@types/actors/general/aids/aidsResponse.type';
+import { fakeAidsResponse } from '@/content/actor/manager/fake-aids';
+import { AidsResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 
 type Props = {
     page?: number;
@@ -23,108 +24,7 @@ export const getAids = async ({
 }: Props): Promise<AidsResponse> => {
 
 
-    const fakeData: AidsResponse = {
-        status: '200',
-        message: 'تم جلب المساعدات بنجاح',
-        aids: [
-            {
-                id: 1,
-                type: TYPE_AIDS.FOOD_AID,
-                distribution_date: '2024-10-20',
-                recipients_number: 50,
-                title: 'توزيع مواد غذائية',
-                description: 'توزيع حصص غذائية للنازحين في منطقة الشمال',
-                complete: true,
-            },
-            {
-                id: 2,
-                type: TYPE_AIDS.MEDICAL_AID,
-                distribution_date: '2024-10-21',
-                recipients_number: 30,
-                title: 'توزيع أدوية',
-                description: 'توفير أدوية للمرضى في المخيم الشرقي',
-                complete: true,
-            },
-            {
-                id: 3,
-                type: TYPE_AIDS.FOOD_AID,
-                distribution_date: '2025-05-31', // Current date
-                recipients_number: 75,
-                title: 'توزيع إمدادات غذائية طارئة',
-                description: 'توزيع طارئ بمناسبة الأزمة الأخيرة',
-                complete: false, // Ongoing aid
-            },
-            {
-                id: 4,
-                type: TYPE_AIDS.CLOTHING_AIDS,
-                distribution_date: '2025-05-30',
-                recipients_number: 40,
-                title: 'توزيع ملابس شتوية',
-                description: 'توزيع ملابس دافئة للنازحين',
-                complete: true,
-            },
-            {
-                id: 5,
-                type: TYPE_AIDS.MEDICAL_AID,
-                distribution_date: '2025-05-29',
-                recipients_number: 20,
-                title: 'توزيع معدات طبية',
-                description: 'توزيع معدات لدعم العيادات المتنقلة',
-                complete: false, // Ongoing aid
-            },
-            {
-                id: 6,
-                type: TYPE_AIDS.FOOD_AID,
-                distribution_date: '2025-05-28',
-                recipients_number: 60,
-                title: 'توزيع سلات غذائية',
-                description: 'توزيع سلات غذائية أسبوعية',
-                complete: true,
-            },
-            {
-                id: 7,
-                type: TYPE_AIDS.EDUCATIONAL_AID,
-                distribution_date: '2025-05-27',
-                recipients_number: 25,
-                title: 'توزيع أدوات مدرسية',
-                description: 'دعم الأطفال النازحين باللوازم المدرسية',
-                complete: false, // Ongoing aid
-            },
-            {
-                id: 8,
-                type: TYPE_AIDS.FINANCIAL_AID,
-                distribution_date: '2025-05-26',
-                recipients_number: 15,
-                title: 'دفعة مالية طارئة',
-                description: 'دعم مالي للأسر المحتاجة',
-                complete: true,
-            },
-            {
-                id: 9,
-                type: TYPE_AIDS.CLEANING_AID,
-                distribution_date: '2025-05-25',
-                recipients_number: 35,
-                title: 'توزيع مستلزمات تنظيف',
-                description: 'توزيع مواد تنظيف للمخيمات',
-                complete: false, // Ongoing aid
-            },
-            {
-                id: 10,
-                type: TYPE_AIDS.OTHER_AID,
-                distribution_date: '2025-05-24',
-                recipients_number: 10,
-                title: 'توزيع أغطية',
-                description: 'توزيع أغطية للأمطار المتوقعة',
-                complete: true,
-            },
-        ],
-        pagination: {
-            page: 1,
-            limit: 5,
-            totalItems: 10,
-            totalPages: 2,
-        },
-    };
+    const fakeData: AidsResponse = fakeAidsResponse;
 
     // Apply filters
     let filteredAids = fakeData.aids;
@@ -155,7 +55,7 @@ export const getAids = async ({
     /////////////////////////////////////////////////////////////
     try {
         const params: Record<string, any> = { page, limit };
-        if (type && type !== TYPE_AIDS.ALL_AIDS) params.type = type;
+        // if (type && type !== TYPE_AIDS.ALL_AIDS) params.type = type;
         if (date_range && (date_range as Date[]).length > 0) {
             params.date_range = (date_range as Date[])
                 .map(d => d.toISOString().split('T')[0])

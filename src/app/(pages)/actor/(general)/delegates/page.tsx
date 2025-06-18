@@ -5,11 +5,15 @@ import { Button, Group, Stack, Text } from '@mantine/core';
 import { UserPlus, Users } from 'lucide-react';
 import { useState } from 'react';
 
+export interface DelegatesFilter {
+  displaceds_number: number[];
+  tents_number: number[];
+}
 export default function Delegates() {
   // Local state to hold filter input values until "Filter" is clicked
-  const [localFilters, setLocalFilters] = useState({
-    displaceds_number: [] as number[],
-    tents_number: [] as number[],
+  const [localFilters, setLocalFilters] = useState<DelegatesFilter>({
+    displaceds_number: [],
+    tents_number: [],
   });
 
   const [delegatesNum, setDelegatesNum] = useState(0);

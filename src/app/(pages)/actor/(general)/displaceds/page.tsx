@@ -5,9 +5,19 @@ import { Button, Group, Stack, Text } from '@mantine/core';
 import { Database, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 
-export default function Displaced() {
+export interface DisplacedsFilter {
+  wife_status: string;
+  family_number: number | undefined;
+  ages: string[];
+  chronic_disease: string;
+  accommodation_type: string;
+  case_type: string;
+  delegate: string[];
+}
+
+export default function Displaceds() {
   // Local state to hold filter input values until "Filter" is clicked
-  const [localFilters, setLocalFilters] = useState({
+  const [localFilters, setLocalFilters] = useState<DisplacedsFilter>({
     wife_status: '',
     family_number: undefined as number | undefined,
     ages: [] as string[],

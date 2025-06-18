@@ -1,10 +1,10 @@
 "use server";
 
-import { delegatesResponse } from "@/@types/actors/general/delegates/delegatesResponse.type";
-import { ALL_DELEGATES } from "@/content/actor/general/delegates";
+import { DelegatesResponse } from "@/@types/actors/general/delegates/delegatesResponse.type";
+import { fakeDelegatesResponse } from "@/content/actor/general/fake-delegates";
 import { AqsaAPI } from "@/services";
 
-type Props = {
+export interface getDelegatesProps {
     page?: number;
     limit?: number;
     search?: string;
@@ -14,18 +14,9 @@ type Props = {
     };
 };
 
-export const getDelegates = async ({ page = 1, limit = 15, search, filters }: Props): Promise<delegatesResponse> => {
+export const getDelegates = async ({ page = 1, limit = 15, search, filters }: getDelegatesProps): Promise<DelegatesResponse> => {
     // FIXME: Remove this fake data logic in production
-    const fakeData: delegatesResponse = {
-        ...ALL_DELEGATES,
-        delegates: ALL_DELEGATES.delegates.slice((page - 1) * limit, page * limit),
-        pagination: {
-            page,
-            limit,
-            totalItems: ALL_DELEGATES.delegates.length,
-            totalPages: Math.ceil(ALL_DELEGATES.delegates.length / limit),
-        },
-    };
+    const fakeData: DelegatesResponse = fakeDelegatesResponse({ page, limit });
 
     // Simulate API delay for fake data
     return await new Promise((resolve) => {
@@ -63,9 +54,9 @@ export const getDelegates = async ({ page = 1, limit = 15, search, filters }: Pr
             };
         }
 
-        throw new Error("بيانات النازحين غير متوفرة");
+        throw new Error("بيانات المناديب غير متوفرة");
     } catch (error: any) {
-        const errorMessage = error.response?.data?.error || error.message || "حدث خطأ أثناء جلب بيانات النازحين";
+        const errorMessage = error.response?.data?.error || error.message || "حدث خطأ أثناء جلب بيانات المناديب";
         return {
             status: error.response?.status?.toString() || "500",
             message: errorMessage,

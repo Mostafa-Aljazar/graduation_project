@@ -1,3 +1,5 @@
 
-
-export const AQSA_CAMP_EMAIL = "alaqsacamp@gmail.com";
+export enum ACTION_ADD_EDIT {
+    ADD = 'ADD',
+    EDIT = 'EDIT',
+}

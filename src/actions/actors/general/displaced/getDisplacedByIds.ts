@@ -5,7 +5,8 @@ import type {
     displacedResponse,
     Displaced,
 } from '@/@types/actors/general/displaceds/displacesResponse.type';
-import { ALL_DISPLACED } from '@/content/actor/general/displaced';
+import { fakeDisplacedResponse } from '@/content/actor/general/fake-displaced';
+// import { ALL_DISPLACED } from '@/content/actor/general/displaced';
 
 type Options = {
     ids: (string | number)[];
@@ -20,7 +21,7 @@ export const getDisplacedByIds = async ({
 }: Options): Promise<displacedResponse> => {
     // FIXME: Remove fake data logic in production
 
-    const filtered = ALL_DISPLACED.displaceds.filter((d) =>
+    const filtered = fakeDisplacedResponse.displaceds.filter((d) =>
         ids.includes(d.id)
     );
 

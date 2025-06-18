@@ -1,9 +1,9 @@
 'use client';
+import { DelegatesFilter } from '@/app/(pages)/actor/(general)/delegates/page';
 import {
   Button,
   Flex,
   Group,
-  MultiSelect,
   RangeSlider,
   SimpleGrid,
   Stack,
@@ -11,19 +11,14 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { FileDown, FileUp, ListFilter, RotateCcw, Search } from 'lucide-react';
+import { FileDown, ListFilter, RotateCcw, Search } from 'lucide-react';
 import { parseAsString, useQueryState } from 'nuqs';
-import React, { useRef, useState } from 'react';
+import { Dispatch, useState } from 'react';
 
-interface Filters {
-  displaceds_number: number[];
-  tents_number: number[];
-}
-
-type Props = {
-  setLocalFilters: React.Dispatch<React.SetStateAction<Filters>>;
+interface Props {
+  setLocalFilters: Dispatch<React.SetStateAction<DelegatesFilter>>;
   delegatesNum: number;
-};
+}
 
 const initData = {
   displaceds_number: [0, 1000],

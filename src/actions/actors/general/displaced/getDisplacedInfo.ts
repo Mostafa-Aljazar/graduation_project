@@ -1,7 +1,7 @@
 "use server";
 
 import { displacedResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
-import { ALL_DISPLACED } from "@/content/actor/general/displaced";
+import { fakeDisplacedResponse } from "@/content/actor/general/fake-displaced";
 import { AqsaAPI } from "@/services";
 
 type Props = {
@@ -22,13 +22,13 @@ type Props = {
 export const getDisplaced = async ({ page = 1, limit = 15, search, filters }: Props): Promise<displacedResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: displacedResponse = {
-        ...ALL_DISPLACED,
-        displaceds: ALL_DISPLACED.displaceds.slice((page - 1) * limit, page * limit),
+        ...fakeDisplacedResponse,
+        displaceds: fakeDisplacedResponse.displaceds.slice((page - 1) * limit, page * limit),
         pagination: {
             page,
             limit,
-            totalItems: ALL_DISPLACED.displaceds.length,
-            totalPages: Math.ceil(ALL_DISPLACED.displaceds.length / limit),
+            totalItems: fakeDisplacedResponse.displaceds.length,
+            totalPages: Math.ceil(fakeDisplacedResponse.displaceds.length / limit),
         },
     };
 
