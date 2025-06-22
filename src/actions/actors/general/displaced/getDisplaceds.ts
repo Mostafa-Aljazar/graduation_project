@@ -9,43 +9,34 @@ type Props = {
     page?: number;
     limit?: number;
     search?: string;
-    filters: displacedFilterValues
+    filters?: displacedFilterValues;
 };
 
-export const getDisplaceds = async ({ page = 1, limit = 15, search, filters }: Props): Promise<DisplacedsResponse> => {
-    // FIXME: Remove this fake data logic in production
-    const fakeData: DisplacedsResponse = fakeDisplacedResponse({ page, limit });
-
-    // Simulate API delay for fake data
+export const getDisplaceds = async ({ page = 1, limit = 7, search = '', filters }: Props): Promise<DisplacedsResponse> => {
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
-        }, 2000);
+            resolve(fakeDisplacedResponse({ page, limit, search, filters }));
+        }, 1000);
     });
 
-    // Real implementation with filters
     try {
-        // Construct query parameters including filters
-        const params: Record<string, any> = { page, limit };
+        const params: Record<string, any> = { page, limit, search };
 
-        // Add filters to query params if they exist
         if (filters) {
-            if (filters.wife_status) params.wife_status = filters.wife_status;
-            if (filters.family_number !== undefined) params.family_number = filters.family_number;
-            if (filters?.ages?.length as number > 0) params.ages = filters.ages?.join(",");
-            if (filters.chronic_disease) params.chronic_disease = filters.chronic_disease;
-            if (filters.accommodation_type) params.accommodation_type = filters.accommodation_type;
-            if (filters.case_type) params.case_type = filters.case_type;
-            if (filters.delegate && filters.delegate?.length as number > 0) params.delegate = filters.delegate?.join(",");
+            if (filters?.wife_status) params.wife_status = filters?.wife_status;
+            if (filters?.family_number !== undefined) params.family_number = filters?.family_number;
+            if (filters?.ages?.length) params.ages = filters?.ages?.join(",");
+            if (filters?.chronic_disease) params.chronic_disease = filters?.chronic_disease;
+            if (filters?.accommodation_type) params.accommodation_type = filters?.accommodation_type;
+            if (filters?.case_type) params.case_type = filters?.case_type;
+            if (filters?.delegate?.length) params.delegate = filters?.delegate?.join(",");
         }
 
-        const response = await AqsaAPI.get("/displaced", {
-            params, // Pass pagination and filter parameters as query params
-        });
+        const response = await AqsaAPI.get("/displaced", { params });
 
         if (response.data?.displaceds) {
             return {
-                status: "success",
+                status: "200",
                 message: "تم جلب بيانات النازحين بنجاح",
                 displaceds: response.data.displaceds,
                 pagination: response.data.pagination || {

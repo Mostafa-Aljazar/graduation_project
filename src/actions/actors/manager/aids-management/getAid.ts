@@ -1,23 +1,26 @@
 
 'use server';
 
-import { AddAidPayload, AidResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
+import { Aid, AidResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
+import { fakeAids } from '@/content/actor/general/fake-aids';
 import { fakeAidsResponse } from '@/content/actor/manager/fake-aids';
 import { AqsaAPI } from '@/services';
 
 type Props = {
-    id: number | string;
+    id: number;
 };
 
 export const getAid = async ({ id }: Props): Promise<AidResponse> => {
 
+    const aid = fakeAids.filter(aid => aid.id == id)
+    console.log("🚀 ~ getAid ~ aid:", aid)
+
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve({
-
                 status: '200',
                 message: 'تم جلب بيانات المساعدة بنجاح',
-                aid: fakeAidsResponse.aids[0],
+                aid: aid[0],
             });
         }, 1000);
     });
@@ -36,7 +39,7 @@ export const getAid = async ({ id }: Props): Promise<AidResponse> => {
         return {
             status: error.response?.status?.toString() || '500',
             message: errorMessage,
-            aid: {} as AddAidPayload,
+            aid: {} as Aid,
             error: errorMessage,
         };
     }

@@ -15,123 +15,54 @@ import { DatePickerInput } from '@mantine/dates';
 import { useForm, zodResolver } from '@mantine/form';
 import { Calendar, ListFilter, Package, RotateCcw, Users } from 'lucide-react';
 import { TYPE_AIDS } from '@/content/actor/manager/aids-management';
-import { z } from 'zod';
-import { Aids_Management_LocalFilters } from './aids-management-content';
-
-type Props = {
+import {
+  aidsManagementFilterFormSchema,
+  aidsManagementFilterFormType,
+} from '@/validation/actor/manager/aids-management/aids-management-filters-schema';
+import { parseAsInteger, useQueryState } from 'nuqs';
+import { useState } from 'react';
+interface AidsManagementFiltersProps {
   setLocalFilters: React.Dispatch<
-    React.SetStateAction<Aids_Management_LocalFilters>
+    React.SetStateAction<aidsManagementFilterFormType>
   >;
-  initialFilters: Aids_Management_LocalFilters;
   aidsNum?: number;
-  setActivePage: React.Dispatch<React.SetStateAction<number>>;
-};
-
-// Define validation schema using TYPE_AIDS keys
-const filterSchema = z.object({
-  type: z.enum(Object.keys(TYPE_AIDS) as [string, ...string[]]).nullable(),
-  date_range: z
-    .tuple([z.string().nullable(), z.string().nullable()])
-    .default([null, null])
-    .refine(
-      ([start, end]) => {
-        if (start && end) {
-          return new Date(end) >= new Date(start);
-        }
-        return true; // If either is null, no validation needed
-      },
-      {
-        message: 'يجب أن يكون تاريخ الانتهاء أكبر من أو يساوي تاريخ البداية',
-        path: ['date_range'], // Apply error to the date_range field
-      }
-    ),
-  recipients_range: z
-    .tuple([z.number().nullable(), z.number().nullable()])
-    .default([null, null])
-    .refine(
-      ([from, to]) => {
-        if (from !== null && to !== null) {
-          return to >= from;
-        }
-        return true; // If either is null, no validation needed
-      },
-      {
-        message: 'يجب أن يكون الحد الأقصى أكبر من أو يساوي الحد الأدنى',
-        path: ['recipients_range.1'], // Apply error to the "to" field
-      }
-    ),
-});
-
-type FilterFormType = z.infer<typeof filterSchema>;
+}
 
 export default function Aids_Management_Filters({
   setLocalFilters,
-  initialFilters,
   aidsNum,
-  setActivePage,
-}: Props) {
-  const initData: FilterFormType = {
-    type: initialFilters.type ?? TYPE_AIDS.ALL_AIDS,
-    date_range: initialFilters.date_range
-      ? [
-          initialFilters.date_range[0]?.toString() ?? null,
-          initialFilters.date_range[1]?.toString() ?? null,
-        ]
-      : [null, null],
-    recipients_range: initialFilters.recipients_range
-      ? [
-          initialFilters.recipients_range[0] ?? null,
-          initialFilters.recipients_range[1] ?? null,
-        ]
-      : [null, null],
+}: AidsManagementFiltersProps) {
+  const initData: aidsManagementFilterFormType = {
+    type: null,
+    date_range: [null, null],
+    recipients_range: [null, null],
   };
 
-  const form = useForm<FilterFormType>({
+  const form = useForm<aidsManagementFilterFormType>({
     initialValues: initData,
-    validate: zodResolver(filterSchema),
+    validate: zodResolver(aidsManagementFilterFormSchema),
   });
+
+  const [activePage, setActivePage] = useQueryState(
+    'aids-page',
+    parseAsInteger.withDefault(1)
+  );
+
+  const [resetKey, setResetKey] = useState(0);
 
   const handleReset = () => {
     form.reset();
-    form.setValues({
-      type: TYPE_AIDS.ALL_AIDS,
-      date_range: [null, null],
-      recipients_range: [null, null],
-    });
-    setLocalFilters({
-      type: TYPE_AIDS.ALL_AIDS,
-      date_range: null,
-      recipients_range: null,
-    });
+    setLocalFilters(initData);
+    setResetKey((prev) => prev + 1);
     setActivePage(1);
   };
 
   // Apply filters
-  const handleApplyFilters = (values: FilterFormType) => {
-    let dateRange: Date[] | null = null;
-    if (values.date_range[0]) {
-      try {
-        const startDate = new Date(values.date_range[0]!);
-        const endDate = values.date_range[1]
-          ? new Date(values.date_range[1]!)
-          : null;
-        dateRange = [startDate, endDate].filter((d): d is Date => d !== null);
-      } catch (error) {
-        console.error('Error parsing dates:', error);
-        form.setFieldError('date_range', 'تاريخ غير صالح');
-        return;
-      }
-    }
-
+  const handleApplyFilters = (values: aidsManagementFilterFormType) => {
     setLocalFilters({
       type: values.type as TYPE_AIDS | null,
-      date_range: dateRange,
-      recipients_range: values.recipients_range[0]
-        ? [
-            values.recipients_range[0]!,
-            values.recipients_range[1] ?? null,
-          ].filter((n): n is number => n !== null)
-        : null,
+      date_range: values.date_range,
+      recipients_range: values.recipients_range,
     });
     setActivePage(1);
   };
@@ -144,17 +75,18 @@ export default function Aids_Management_Filters({
         justify={'space-between'}
       >
         <Group flex={1} gap={10}>
-          <Text fw={600} fz={20} className='!text-primary'>
-            الفلاتر:
+          <Text fw={600} fz={16} className='!text-primary'>
+            الفلاتر :
           </Text>
           <Text
-            fz={14}
+            fz={16}
             px={5}
-            className='border-1 border-second rounded-md text-dark'
+            pt={5}
+            className='border-1 border-second rounded-md !h-fit text-dark'
           >
             {aidsNum ?? 0}
           </Text>
-          <Text fw={500} fz={18} className='!text-dark'>
+          <Text fw={600} fz={16} className='!text-primary'>
             مساعدة
           </Text>
         </Group>
@@ -174,12 +106,22 @@ export default function Aids_Management_Filters({
               </Text>
             }
             placeholder='نوع المساعدة'
-            data={Object.entries(TYPE_AIDS).map(([key, value]) => ({
-              value: key,
-              label: value,
-            }))}
+            // data={Object.entries(TYPE_AIDS).map(([key, value]) => ({
+            //   value: key,
+            //   label: value,
+            // }))}
+            data={[
+              { label: 'مساعدة ماليّة', value: TYPE_AIDS.FINANCIAL_AID },
+              { label: 'مساعدة غذائية', value: TYPE_AIDS.FOOD_AID },
+              { label: 'مساعدة صحية', value: TYPE_AIDS.MEDICAL_AID },
+              { label: 'مساعدة تنظيفة', value: TYPE_AIDS.CLEANING_AID },
+              { label: 'مساعدة ملابس', value: TYPE_AIDS.CLOTHING_AIDS },
+              { label: 'مساعدة تعليمية', value: TYPE_AIDS.EDUCATIONAL_AID },
+              { label: 'مساعدات أخرى', value: TYPE_AIDS.OTHER_AID },
+            ]}
             size='sm'
             leftSection={<Package size={15} />}
+            key={`type-${resetKey}`}
             {...form.getInputProps('type')}
             classNames={{
               input: 'placeholder:!text-sm !text-primary !font-normal',
@@ -196,8 +138,13 @@ export default function Aids_Management_Filters({
             }
             placeholder='نطاق اختيار التواريخ'
             leftSection={<Calendar size={15} />}
+            key={`date_range-${resetKey}`}
             {...form.getInputProps('date_range')}
             error={form.errors.date_range} // Display validation error
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
+            clearable
           />
 
           <Stack gap={0}>
@@ -213,6 +160,7 @@ export default function Aids_Management_Filters({
                 placeholder='من'
                 size='sm'
                 leftSection={<Users size={15} />}
+                key={`recipients_range.0-${resetKey}`}
                 {...form.getInputProps('recipients_range.0')}
                 classNames={{
                   input:
@@ -220,6 +168,7 @@ export default function Aids_Management_Filters({
                 }}
                 className='!border-none !outline-none'
                 min={0}
+                flex={1}
               />
               <Divider
                 orientation='vertical'
@@ -230,9 +179,11 @@ export default function Aids_Management_Filters({
                 className='flex-shrink-0 !bg-gray-300'
               />
               <NumberInput
+                flex={1}
                 placeholder='إلى'
                 size='sm'
                 leftSection={<Users size={15} />}
+                key={`recipients_range.1-${resetKey}`}
                 {...form.getInputProps('recipients_range.1')}
                 classNames={{
                   input:

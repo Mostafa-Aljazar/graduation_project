@@ -1,4 +1,4 @@
-import { DELEGATE_PORTIONS, DISTRIBUTION_MECHANISM, DISTRIBUTION_METHOD, QUANTITY_AVAILABILITY } from "@/content/actor/manager/aids-management";
+import { DELEGATE_PORTIONS, DISTRIBUTION_MECHANISM, DISTRIBUTION_METHOD, QUANTITY_AVAILABILITY, TYPE_AIDS } from "@/content/actor/manager/aids-management";
 
 // Category Range Type
 export interface CategoryRangeType {
@@ -11,7 +11,7 @@ export interface CategoryRangeType {
 }
 
 export interface SelectedDelegatePortion {
-    delegate_id: string | number;
+    delegate_id: number;
     portion: number;
 }
 
@@ -20,7 +20,7 @@ export interface SelectedDelegatePortion {
 // Interface for AddAidForm
 export interface AddAidFormValues {
     aidName: string;
-    aidType: string;
+    aidType: TYPE_AIDS;
     aidContent: string;
     deliveryDate: Date | null;
     deliveryLocation: string;
@@ -34,19 +34,18 @@ export interface AddAidFormValues {
     delegatesPortions: DELEGATE_PORTIONS;
     delegateSinglePortion: number;
     aidAccessories: string;
-
 }
 
 
-export interface AddAidPayload extends AddAidFormValues {
-    id: string | number;
-    selectedDisplacedIds: (string | number)[];
+export interface Aid extends AddAidFormValues {
+    id: number;
+    selectedDisplacedIds: number[];
     selectedDelegatesPortions: SelectedDelegatePortion[];
     receivedDisplaced: {
-        displaced: (string | number);
+        displaced_ID: number;
         receivedTime: Date;
     }[]
-    security_men?: (string | number)[];
+    security_men?: number[];
     isCompleted: boolean;
 }
 
@@ -54,7 +53,7 @@ export interface AddAidPayload extends AddAidFormValues {
 export interface AidResponse {
     status: string;
     message?: string;
-    aid: AddAidPayload;
+    aid: Aid;
     error?: string;
 }
 
@@ -62,7 +61,7 @@ export interface AidResponse {
 export interface AidsResponse {
     status: string;
     message?: string;
-    aids: AddAidPayload[];
+    aids: Aid[];
     error?: string;
     pagination: {
         page: number;

@@ -1,6 +1,6 @@
 'use client';
+
 import {
-  Box,
   Button,
   Flex,
   Group,
@@ -12,41 +12,41 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { ListFilter, RotateCcw, Search } from 'lucide-react';
+import { useForm, zodResolver } from '@mantine/form';
+import { FileUp, ListFilter, RotateCcw, Search } from 'lucide-react';
 import { parseAsString, useQueryState } from 'nuqs';
 import { useState } from 'react';
-
-interface Filters {
-  wife_status: string;
-  family_number: number | undefined;
-  ages: string[];
-  chronic_disease: string;
-  accommodation_type: string;
-  case_type: string;
-  delegate: string[];
-}
+import {
+  ACCOMMODATION_TYPE,
+  AGES,
+  CASE_TYPE,
+  CHRONIC_DISEASE,
+  WIFE_STATUS,
+} from '@/content/actor/displaced/filter';
+import { fakeDelegates } from '@/content/actor/general/fake-delegates';
+import {
+  displacedFilterSchema,
+  displacedFilterValues,
+} from '@/validation/actor/general/displaced-filter-form';
 
 interface DisplacedFiltersProps {
-  setLocalFilters: React.Dispatch<React.SetStateAction<Filters>>;
+  setLocalFilters: React.Dispatch<React.SetStateAction<displacedFilterValues>>;
   displacedNum: number;
-  isDisabled?: boolean;
 }
 
-const initData: Filters = {
-  wife_status: '',
-  family_number: undefined,
+const initData: displacedFilterValues = {
+  wife_status: null,
+  family_number: null,
   ages: [],
-  chronic_disease: '',
-  accommodation_type: '',
-  case_type: '',
+  chronic_disease: null,
+  accommodation_type: null,
+  case_type: null,
   delegate: [],
 };
 
 export default function DisplacedFilters({
   setLocalFilters,
   displacedNum,
-  isDisabled,
 }: DisplacedFiltersProps) {
   const [searchInput, setSearchInput] = useState('');
   const [resetKey, setResetKey] = useState(0);
@@ -55,14 +55,13 @@ export default function DisplacedFilters({
     parseAsString.withDefault('')
   );
 
-  const form = useForm({
+  const form = useForm<displacedFilterValues>({
     initialValues: initData,
+    validate: zodResolver(displacedFilterSchema),
   });
 
   const handleApplyFilters = () => {
-    setLocalFilters({
-      ...form.values,
-    });
+    setLocalFilters(form.values);
   };
 
   const handleSearch = () => {
@@ -70,13 +69,14 @@ export default function DisplacedFilters({
     setSearchInput('');
     form.setValues(initData);
     setLocalFilters(initData);
+    form.reset();
     setResetKey((prev) => prev + 1);
   };
 
   const handleReset = () => {
     setSearchInput('');
     setSearch('');
-    form.setValues(initData);
+    form.reset();
     setLocalFilters(initData);
     setResetKey((prev) => prev + 1);
   };
@@ -89,7 +89,7 @@ export default function DisplacedFilters({
         justify='space-between'
       >
         <Group flex={1} gap={10}>
-          <Text fw={600} fz={16} className='!text-primary'>
+          <Text fw={600} fz={18} className='!text-primary'>
             الفلاتر :
           </Text>
           <Text
@@ -99,13 +99,12 @@ export default function DisplacedFilters({
           >
             {displacedNum ?? 0}
           </Text>
-          <Text fw={500} fz={16} className='!text-dark'>
+          <Text fw={500} fz={18} className='!text-dark'>
             نازح
           </Text>
         </Group>
-
         <Group
-          flex={1}
+          flex={2}
           gap={0}
           wrap='nowrap'
           className='border-1 border-gray-300 rounded-lg overflow-hidden'
@@ -117,7 +116,7 @@ export default function DisplacedFilters({
             value={searchInput}
             classNames={{
               input:
-                '!border-none !outline-none placeholder:!text-sm !text-primary',
+                '!border-none !outline-none placeholder:!text-sm !text-primary !font-normal',
             }}
             leftSection={<Search size={18} />}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -136,14 +135,27 @@ export default function DisplacedFilters({
             بحث
           </Button>
         </Group>
+        <Group flex={1} justify='end'>
+          <Button
+            size='sm'
+            px={15}
+            fz={16}
+            fw={500}
+            c='white'
+            radius='lg'
+            className='!justify-end !items-end !self-end !bg-primary !shadow-lg'
+            rightSection={<FileUp size={16} />}
+          >
+            تصدير
+          </Button>
+        </Group>
       </Flex>
-
       <form onSubmit={form.onSubmit(handleApplyFilters)}>
         <SimpleGrid
           cols={{ base: 1, sm: 2, lg: 3 }}
           spacing='sm'
           p={15}
-          className='shadow-md border-1 border-gray-400 rounded-xl'
+          className='shadow-sm border-1 border-gray-200 rounded-xl'
         >
           <Select
             label={
@@ -153,18 +165,17 @@ export default function DisplacedFilters({
             }
             placeholder='حالة الزوجة'
             data={[
-              { label: 'حامل', value: 'pregnant' },
-              { label: 'مرضعة', value: 'wet_nurse' },
+              { label: 'حامل', value: WIFE_STATUS.pregnant },
+              { label: 'مرضعة', value: WIFE_STATUS.wet_nurse },
             ]}
             size='sm'
             key={`wife_status-${resetKey}`}
             {...form.getInputProps('wife_status')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-medium',
+              input: 'placeholder:!text-sm !text-primary !font-normal',
             }}
             clearable
           />
-
           <NumberInput
             label={
               <Text fz={16} fw={500}>
@@ -179,10 +190,9 @@ export default function DisplacedFilters({
             key={`family_number-${resetKey}`}
             {...form.getInputProps('family_number')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-medium',
+              input: 'placeholder:!text-sm !text-primary !font-normal',
             }}
           />
-
           <MultiSelect
             label={
               <Text fz={16} fw={500}>
@@ -191,53 +201,51 @@ export default function DisplacedFilters({
             }
             placeholder='حدد أعمار الأفراد'
             data={[
-              { label: 'أقل من 6 شهور', value: 'less_than_6_month' },
+              { label: 'أقل من 6 شهور', value: AGES.less_than_6_month },
               {
                 label: 'من 6 شهور إلى عامين',
-                value: 'from_6_month_to_2_years',
+                value: AGES.from_6_month_to_2_years,
               },
               {
                 label: 'من 2 عام إلى 6 أعوام',
-                value: 'from_2_years_to_6_years',
+                value: AGES.from_2_years_to_6_years,
               },
               {
                 label: 'من 6 أعوام إلى 12 عام',
-                value: 'from_6_years_to_12_years',
+                value: AGES.from_6_years_to_12_years,
               },
               {
                 label: 'من 12 عام إلى 18 عام',
-                value: 'from_12_years_to_18_years',
+                value: AGES.from_12_years_to_18_years,
               },
-              { label: 'أكبر من 18 عام', value: 'more_than_18' },
+              { label: 'أكبر من 18 عام', value: AGES.more_than_18 },
             ]}
             size='sm'
             key={`ages-${resetKey}`}
             {...form.getInputProps('ages')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-medium',
+              input: 'placeholder:!text-sm !text-primary !font-normal',
             }}
           />
-
           <Select
             label={
               <Text fz={16} fw={500}>
-                صحة مزمنة :
+                حالة صحية مزمنة :
               </Text>
             }
             placeholder='الحالة'
             data={[
-              { label: 'لا يوجد', value: 'false' },
-              { label: 'يوجد', value: 'true' },
+              { label: 'لا يوجد', value: CHRONIC_DISEASE.false },
+              { label: 'يوجد', value: CHRONIC_DISEASE.true },
             ]}
             size='sm'
             key={`chronic_disease-${resetKey}`}
             {...form.getInputProps('chronic_disease')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-medium',
+              input: 'placeholder:!text-sm !text-primary !font-normal',
             }}
             clearable
           />
-
           <Select
             label={
               <Text fz={16} fw={500}>
@@ -246,19 +254,21 @@ export default function DisplacedFilters({
             }
             placeholder='المكان'
             data={[
-              { label: 'داخلي - خيمة', value: 'indoor_tent' },
-              { label: 'داخلي - مبنى', value: 'indoor_building' },
-              { label: 'خارجي', value: 'outdoor' },
+              { label: 'داخلي - خيمة', value: ACCOMMODATION_TYPE.indoor_tent },
+              {
+                label: 'داخلي - مبنى',
+                value: ACCOMMODATION_TYPE.indoor_building,
+              },
+              { label: 'خارجي', value: ACCOMMODATION_TYPE.outdoor },
             ]}
             size='sm'
             key={`accommodation_type-${resetKey}`}
             {...form.getInputProps('accommodation_type')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-medium',
+              input: 'placeholder:!text-sm !text-primary !font-normal',
             }}
             clearable
           />
-
           <Select
             label={
               <Text fz={16} fw={500}>
@@ -267,19 +277,18 @@ export default function DisplacedFilters({
             }
             placeholder='الحالة'
             data={[
-              { label: 'عادية', value: 'normal' },
-              { label: 'صعبة', value: 'difficult' },
-              { label: 'حرجة', value: 'critical' },
+              { label: 'عادية', value: CASE_TYPE.normal },
+              { label: 'صعبة', value: CASE_TYPE.difficult },
+              { label: 'حرجة', value: CASE_TYPE.critical },
             ]}
             size='sm'
             key={`case_type-${resetKey}`}
             {...form.getInputProps('case_type')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-medium',
+              input: 'placeholder:!text-sm !text-primary !font-normal',
             }}
             clearable
           />
-
           <MultiSelect
             label={
               <Text fz={16} fw={500}>
@@ -287,26 +296,21 @@ export default function DisplacedFilters({
               </Text>
             }
             placeholder='اختر المندوب'
-            data={[
-              { label: 'بدون مندوب', value: '-1' },
-              { label: 'محمد', value: '1' },
-              { label: 'فيصل', value: '2' },
-              { label: 'خالد', value: '3' },
-              { label: 'منذر', value: '4' },
-            ]}
+            data={fakeDelegates.map((item) => ({
+              value: item.id.toString(),
+              label: item.name,
+            }))}
             size='sm'
             key={`delegate-${resetKey}`}
             {...form.getInputProps('delegate')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-medium',
+              input: 'placeholder:!text-sm !text-primary !font-normal',
             }}
           />
-
           <Group visibleFrom='lg' />
           <Group flex={1} justify='end'>
             <Button
               type='button'
-              w={100}
               size='sm'
               px={15}
               fz={16}
@@ -314,14 +318,13 @@ export default function DisplacedFilters({
               c='dark'
               radius='lg'
               className='!justify-end !items-end !self-end !bg-gray-300 !shadow-lg'
-              rightSection={<RotateCcw size={18} />}
+              rightSection={<RotateCcw size={15} />}
               onClick={handleReset}
             >
               إفراغ
             </Button>
             <Button
               type='submit'
-              w={100}
               size='sm'
               px={15}
               fz={16}
@@ -329,7 +332,7 @@ export default function DisplacedFilters({
               c='white'
               radius='lg'
               className='!justify-end !items-end !self-end !bg-primary !shadow-lg'
-              rightSection={<ListFilter size={18} />}
+              rightSection={<ListFilter size={15} />}
             >
               فلتر
             </Button>

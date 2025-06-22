@@ -4,11 +4,12 @@ import {
     DISTRIBUTION_METHOD,
     QUANTITY_AVAILABILITY,
     DELEGATE_PORTIONS,
+    TYPE_AIDS,
 } from '@/content/actor/manager/aids-management';
 
 // Category Schema
 export const categoryRangeSchema = z.object({
-    id: z.string().min(1, { message: 'معرف الفئة مطلوب' }),
+    id: z.string({ message: 'معرف الفئة مطلوب' }),
     label: z.string().min(2, { message: 'يجب أن يكون التسمية أطول من حرفين' }),
     min: z.number().min(1, { message: 'يجب أن يكون الحد الأدنى 1 على الأقل' }),
     max: z
@@ -23,8 +24,9 @@ export const categoryRangeSchema = z.object({
 
 // Main Form Schema
 export const addAidFormSchema = z.object({
-    aidName: z.string().min(1, { message: 'نوع المساعدة مطلوب' }),
-    aidType: z.string().min(1, { message: 'نوع المساعدة مطلوب' }),
+    aidName: z.string().min(1, { message: 'عنوان المساعدة مطلوب' }),
+    // aidType: z.string().min(1, { message: 'نوع المساعدة مطلوب' }),
+    aidType: z.nativeEnum(TYPE_AIDS, { required_error: 'نوع المساعدة مطلوب' }),
     aidContent: z.string().min(1, { message: 'محتوي المساعدة مطلوب' }),
     deliveryDate: z.date({ required_error: 'موعد التسليم مطلوب' }).nullable(),
     deliveryLocation: z.string().min(1, { message: 'مكان التسليم مطلوب' }),
@@ -48,9 +50,6 @@ export const addAidFormSchema = z.object({
     }),
     delegateSinglePortion: z.number().min(0, 'عدد الأسماء لكل مندوب يجب أن يكون أكبر من 0'),
     aidAccessories: z.string(),
-    // receivedDisplaced: z.array(z.union([z.string(), z.number()])),
-
-
 });
 
 export type addAidFormValues = z.infer<typeof addAidFormSchema>;

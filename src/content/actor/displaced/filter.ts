@@ -31,3 +31,11 @@ export enum CHRONIC_DISEASE {
     false = 'false',
     true = 'true',
 }
+
+
+export enum DESTINATION_DISPLACED {
+    DISPLACEDS = 'DISPLACEDS',
+    DISPLAY_AIDS = 'DISPLAY_AIDS',
+    EDIT_AIDS = 'EDIT_AIDS',
+    ADD_AIDS = 'ADD_AIDS',
+}

@@ -1,207 +1,8 @@
-import {
-    DollarSign,
-    Utensils,
-    HeartPulse,
-    SprayCan,
-    Shirt,
-    BookOpen,
-    Package,
-    History,
-    Activity,
-    CalendarCheck,
-} from 'lucide-react';
-import { Delegate, DelegatesIDsResponse, DelegatesResponse } from '@/@types/actors/general/delegates/delegatesResponse.type';
-import { Displaced, DisplacedsIDsResponse, DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
+import { Delegate, DelegatesIDsResponse, DelegatesResponse, } from '@/@types/actors/general/delegates/delegatesResponse.type';
 import { Aid, AidsResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import { DELEGATE_PORTIONS, DISTRIBUTION_MECHANISM, DISTRIBUTION_METHOD, QUANTITY_AVAILABILITY, TYPE_AIDS } from '@/content/actor/manager/aids-management';
-import { displacedFilterValues } from '@/validation/actor/general/displaced-filter-form';
+import { DELEGATE_PORTIONS, DISTRIBUTION_MECHANISM, DISTRIBUTION_METHOD, QUANTITY_AVAILABILITY, TYPE_AIDS } from '../manager/aids-management';
 import { getAidsProps } from '@/actions/actors/manager/aids-management/getAids';
 
-// Fake Delegates Data
-export const fakeDelegates: Delegate[] = [
-    { id: -1, name: 'بدون مندوب', identity: '999999999', displaced_number: 0, family_number: 0, mobile_number: '0595000000', tents_number: 0 },
-    { id: 101, name: 'محمد صالح بن عبد', identity: '960128155', displaced_number: 50, family_number: 20, mobile_number: '0595867456', tents_number: 10 },
-    { id: 102, name: 'علي خالد بن عمر', identity: '960128156', displaced_number: 60, family_number: 25, mobile_number: '0595867457', tents_number: 12 },
-    { id: 103, name: 'فاطمة زيد بنت حسن', identity: '960128157', displaced_number: 45, family_number: 18, mobile_number: '0595867458', tents_number: 8 },
-    { id: 104, name: 'خالد يوسف بن سالم', identity: '960128158', displaced_number: 55, family_number: 22, mobile_number: '0595867459', tents_number: 11 },
-    { id: 105, name: 'سارة ناصر بنت أحمد', identity: '960128159', displaced_number: 48, family_number: 19, mobile_number: '0595867460', tents_number: 9 },
-    { id: 106, name: 'عمر زياد بن محمود', identity: '960128160', displaced_number: 62, family_number: 26, mobile_number: '0595867461', tents_number: 13 },
-    { id: 107, name: 'ليلى صبري بنت رامي', identity: '960128161', displaced_number: 53, family_number: 21, mobile_number: '0595867462', tents_number: 10 },
-    { id: 108, name: 'ياسر حمد بن عبدالله', identity: '960128162', displaced_number: 57, family_number: 23, mobile_number: '0595867463', tents_number: 11 },
-];
-
-interface FakeDelegatesProps {
-    page?: number;
-    limit?: number;
-}
-
-export const fakeDelegatesResponse = ({ page = 1, limit = 10 }: FakeDelegatesProps): DelegatesResponse => {
-    return {
-        status: '200',
-        message: 'تم جلب بيانات المناديب بنجاح',
-        delegates: fakeDelegates.slice((page - 1) * limit, page * limit),
-        error: undefined,
-        pagination: {
-            page,
-            limit,
-            totalItems: fakeDelegates.length,
-            totalPages: Math.ceil(fakeDelegates.length / limit),
-        },
-    };
-};
-
-export const fakeDelegatesIDsResponse = (): DelegatesIDsResponse => {
-    return {
-        status: '200',
-        message: 'تم جلب بيانات المناديب بنجاح',
-        delegatesIDs: fakeDelegates.map(delegate => delegate.id),
-        error: undefined,
-    };
-};
-
-// Fake Displaced Data
-export const fakeDisplaced: Displaced[] = [
-    { id: 1, name: 'أحمد سمير بن محمد', identity: '960128163', tent: 'A001', family_number: 5, mobile_number: '0595867464', delegate: { id: 101, name: 'محمد صالح بن عبد' } },
-    { id: 2, name: 'نورا جمال بنت عمر', identity: '960128164', tent: 'A002', family_number: 3, mobile_number: '0595867465', delegate: { id: 101, name: 'محمد صالح بن عبد' } },
-    { id: 3, name: 'ياسر عبدالله بن خالد', identity: '960128165', tent: 'B107', family_number: 7, mobile_number: '0595867466', delegate: { id: 102, name: 'علي خالد بن عمر' } },
-    { id: 4, name: 'ليلى سعيد بنت حسن', identity: '960128166', tent: 'B108', family_number: 4, mobile_number: '0595867467', delegate: { id: 102, name: 'علي خالد بن عمر' } },
-    { id: 5, name: 'خديجة عمر بنت أحمد', identity: '960128167', tent: 'C385', family_number: 6, mobile_number: '0595867468', delegate: { id: 103, name: 'فاطمة زيد بنت حسن' } },
-    { id: 6, name: 'زيد مالك بن يوسف', identity: '960128168', tent: 'C386', family_number: 5, mobile_number: '0595867469', delegate: { id: 103, name: 'فاطمة زيد بنت حسن' } },
-    { id: 7, name: 'ماجد حسين بن سالم', identity: '960128169', tent: 'D001', family_number: 4, mobile_number: '0595867470', delegate: { id: 104, name: 'خالد يوسف بن سالم' } },
-    { id: 8, name: 'هناء فؤاد بنت ناصر', identity: '960128170', tent: 'D002', family_number: 3, mobile_number: '0595867471', delegate: { id: 104, name: 'خالد يوسف بن سالم' } },
-    { id: 9, name: 'سميرة عادل بنت زياد', identity: '960128171', tent: 'E101', family_number: 6, mobile_number: '0595867472', delegate: { id: 105, name: 'سارة ناصر بنت أحمد' } },
-    { id: 10, name: 'طارق رامي بن صالح', identity: '960128172', tent: 'E102', family_number: 5, mobile_number: '0595867473', delegate: { id: 105, name: 'سارة ناصر بنت أحمد' } },
-    { id: 11, name: 'منى خالد بنت عبدالله', identity: '960128173', tent: 'F201', family_number: 4, mobile_number: '0595867474', delegate: { id: 106, name: 'عمر زياد بن محمود' } },
-    { id: 12, name: 'رامي صبري بن حمد', identity: '960128174', tent: 'F202', family_number: 6, mobile_number: '0595867475', delegate: { id: 106, name: 'عمر زياد بن محمود' } },
-    { id: 13, name: 'سلمى حمد بنت ياسر', identity: '960128175', tent: 'G301', family_number: 5, mobile_number: '0595867476', delegate: { id: 107, name: 'ليلى صبري بنت رامي' } },
-    { id: 14, name: 'عبدالله رائد بن عمر', identity: '960128176', tent: 'G302', family_number: 3, mobile_number: '0595867477', delegate: { id: 107, name: 'ليلى صبري بنت رامي' } },
-    { id: 15, name: 'نور حسام بنت أحمد', identity: '960128177', tent: 'H401', family_number: 4, mobile_number: '0595867478', delegate: { id: 108, name: 'ياسر حمد بن عبدالله' } },
-    { id: 16, name: 'مصطفى أمين بن خالد', identity: '960128178', tent: 'H402', family_number: 5, mobile_number: '0595867479', delegate: { id: 108, name: 'ياسر حمد بن عبدالله' } },
-    { id: 17, name: 'هدى سالم بنت زيد', identity: '960128179', tent: 'I501', family_number: 6, mobile_number: '0595867480', delegate: { id: 101, name: 'محمد صالح بن عبد' } },
-    { id: 18, name: 'إبراهيم فادي بن يوسف', identity: '960128180', tent: 'I502', family_number: 4, mobile_number: '0595867481', delegate: { id: 102, name: 'علي خالد بن عمر' } },
-    { id: 19, name: 'آية طارق بنت ناصر', identity: '960128181', tent: 'J601', family_number: 5, mobile_number: '0595867482', delegate: { id: 103, name: 'فاطمة زيد بنت حسن' } },
-    { id: 20, name: 'عبدالرحمن زين بن صالح', identity: '960128182', tent: 'J602', family_number: 3, mobile_number: '0595867483', delegate: { id: 104, name: 'خالد يوسف بن سالم' } },
-    { id: 21, name: 'مروة علي بنت حمد', identity: '960128183', tent: 'K701', family_number: 4, mobile_number: '0595867484', delegate: { id: 105, name: 'سارة ناصر بنت أحمد' } },
-    { id: 22, name: 'خالد مراد بن عبدالله', identity: '960128184', tent: 'K702', family_number: 6, mobile_number: '0595867485', delegate: { id: 106, name: 'عمر زياد بن محمود' } },
-];
-
-interface FakeDisplacedProps {
-    page?: number;
-    limit?: number;
-    search?: string;
-    filters?: displacedFilterValues;
-}
-
-export const fakeDisplacedResponse = ({
-    page = 1,
-    limit = 10,
-    search = '',
-    filters,
-}: FakeDisplacedProps): DisplacedsResponse => {
-    let filteredDisplaceds = fakeDisplaced;
-
-    if (search) {
-        filteredDisplaceds = filteredDisplaceds.filter(
-            (displaced) =>
-                displaced.name.toLowerCase().includes(search.toLowerCase()) ||
-                displaced.identity.toLowerCase().includes(search.toLowerCase()) ||
-                displaced.tent.toLowerCase().includes(search.toLowerCase()) ||
-                displaced.mobile_number.includes(search) ||
-                displaced.delegate.name.toLowerCase().includes(search.toLowerCase())
-        );
-    }
-
-    if (filters) {
-        if (filters.family_number !== undefined) {
-            filteredDisplaceds = filteredDisplaceds.filter(
-                (displaced) => displaced.family_number === filters.family_number
-            );
-        }
-        if (filters.delegate?.length) {
-            filteredDisplaceds = filteredDisplaceds.filter(
-                (displaced) => filters.delegate?.includes(displaced.delegate.id.toString())
-            );
-        }
-    }
-
-    return {
-        status: '200',
-        message: 'تم جلب بيانات النازحين بنجاح',
-        displaceds: filteredDisplaceds.slice((page - 1) * limit, page * limit),
-        error: undefined,
-        pagination: {
-            page,
-            limit,
-            totalItems: filteredDisplaceds.length,
-            totalPages: Math.ceil(filteredDisplaceds.length / limit),
-        },
-    };
-};
-
-export const fakeDisplacedIDsResponse = ({
-    search = '',
-    filters,
-}: FakeDisplacedProps): DisplacedsIDsResponse => {
-    let filteredDisplaceds = fakeDisplaced;
-
-    if (search) {
-        filteredDisplaceds = filteredDisplaceds.filter(
-            (displaced) =>
-                displaced.name.toLowerCase().includes(search.toLowerCase()) ||
-                displaced.identity.toLowerCase().includes(search.toLowerCase()) ||
-                displaced.tent.toLowerCase().includes(search.toLowerCase()) ||
-                displaced.mobile_number.includes(search.toLowerCase()) ||
-                displaced.delegate.name.toLowerCase().includes(search.toLowerCase())
-        );
-    }
-
-    if (filters) {
-        if (filters.family_number !== undefined) {
-            filteredDisplaceds = filteredDisplaceds.filter(
-                (displaced) => displaced.family_number === filters.family_number
-            );
-        }
-        if (filters.delegate?.length) {
-            filteredDisplaceds = filteredDisplaceds.filter(
-                (displaced) => filters.delegate?.includes(displaced.delegate.id.toString())
-            );
-        }
-    }
-
-    return {
-        status: '200',
-        message: 'تم جلب بيانات النازحين بنجاح',
-        displacedsIDs: filteredDisplaceds.map((displaced) => displaced.id),
-        error: undefined,
-    };
-};
-
-export const fakeDisplacedByIdsResponse = ({
-    ids = [],
-    page = 1,
-    limit = 7,
-}: {
-    ids: number[];
-    page?: number;
-    limit?: number;
-}): DisplacedsResponse => {
-    const filteredDisplaceds = fakeDisplaced.filter((displaced) =>
-        ids.includes(displaced.id)
-    );
-
-    return {
-        status: '200',
-        message: 'تم جلب بيانات النازحين بنجاح',
-        displaceds: filteredDisplaceds.slice((page - 1) * limit, page * limit),
-        error: undefined,
-        pagination: {
-            page,
-            limit,
-            totalItems: filteredDisplaceds.length,
-            totalPages: Math.ceil(filteredDisplaceds.length / limit),
-        },
-    };
-};
 
 // Fake Aids Data
 export const fakeAids: Aid[] = [
@@ -1106,8 +907,11 @@ export const fakeAids: Aid[] = [
     },
 ];
 
+
+// Fake Aids Data  
 export const fakeAidsResponse = ({ page = 1, limit = 10, type }: getAidsProps): AidsResponse => {
-    const filteredAids = fakeAids.filter(aid => type ? aid.aidType === type : true);
+    // const filteredAids = fakeAids
+    const filteredAids = fakeAids.filter(aid => type ? aid.aidType as TYPE_AIDS == type : aid)
     return {
         status: '200',
         message: 'تم جلب بيانات المساعدات بنجاح',
@@ -1118,6 +922,403 @@ export const fakeAidsResponse = ({ page = 1, limit = 10, type }: getAidsProps): 
             limit,
             totalItems: filteredAids.length,
             totalPages: Math.ceil(filteredAids.length / limit),
-        },
-    };
-  };
+        }
+    }
+};
+
+// export const fakeDisplacedFamiliesAids: Aid[] = [
+//     {
+//         id: 2001,
+//         aidName: 'توزيع سلال غذائية',
+//         aidType: TYPE_AIDS.FOOD_AID,
+//         aidContent: 'مواد غذائية أساسية للعائلات',
+//         deliveryDate: new Date('2025-12-01T10:00:00'),
+//         deliveryLocation: 'مركز توزيع الشمال',
+//         securityRequired: false,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 250,
+//         singlePortion: 3,
+//         distributionMethod: DISTRIBUTION_METHOD.family_number,
+//         selectedCategories: [
+//             { id: 'cat-1', label: 'عائلات صغيرة', min: 1, max: 4, isDefault: true, portion: 3 },
+//             { id: 'cat-2', label: 'عائلات كبيرة', min: 5, max: null, isDefault: true, portion: 5 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'سلال تغليف',
+//         receivedDisplaced: [],
+//         security_men: [1, 2],
+//         isCompleted: false,
+//     },
+//     {
+//         id: 2002,
+//         aidName: 'توزيع أدوية للأطفال',
+//         aidType: TYPE_AIDS.MEDICAL_AID,
+//         aidContent: 'أدوية للأمراض الشائعة',
+//         deliveryDate: new Date('2025-11-15T09:00:00'),
+//         deliveryLocation: 'مركز صحي الجنوب',
+//         securityRequired: true,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 100,
+//         singlePortion: 1,
+//         distributionMethod: DISTRIBUTION_METHOD.equal,
+//         selectedCategories: [
+//             { id: 'cat-3', label: 'أطفال', min: 0, max: 12, isDefault: true, portion: 1 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'صناديق تعبئة',
+//         receivedDisplaced: [],
+//         security_men: [3, 4],
+//         isCompleted: false,
+//     },
+//     {
+//         id: 2003,
+//         aidName: 'توزيع ملابس شتوية للعائلات',
+//         aidType: TYPE_AIDS.CLOTHING_AIDS,
+//         aidContent: 'ملابس شتوية للكبار والأطفال',
+//         deliveryDate: new Date('2025-10-20T08:00:00'),
+//         deliveryLocation: 'مخيم الوسط',
+//         securityRequired: false,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 300,
+//         singlePortion: 4,
+//         distributionMethod: DISTRIBUTION_METHOD.family_number,
+//         selectedCategories: [
+//             { id: 'cat-4', label: 'عائلات', min: 1, max: null, isDefault: true, portion: 4 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [1, 5, 6, 7, 8, 9, 10, 15, 16, 17],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'أكياس تغليف',
+//         receivedDisplaced: [],
+//         security_men: [],
+//         isCompleted: true,
+//     },
+//     {
+//         id: 2004,
+//         aidName: 'توزيع مستلزمات تنظيف',
+//         aidType: TYPE_AIDS.CLEANING_AID,
+//         aidContent: 'منظفات ومعقمات',
+//         deliveryDate: new Date('2025-09-10T11:00:00'),
+//         deliveryLocation: 'مخيم الشرق',
+//         securityRequired: false,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 150,
+//         singlePortion: 2,
+//         distributionMethod: DISTRIBUTION_METHOD.equal,
+//         selectedCategories: [
+//             { id: 'cat-5', label: 'عائلات', min: 1, max: null, isDefault: true, portion: 2 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [18, 19, 20, 21, 22, 1, 2, 3, 4, 5],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'حقائب تخزين',
+//         receivedDisplaced: [],
+//         security_men: [],
+//         isCompleted: false,
+//     },
+//     {
+//         id: 2005,
+//         aidName: 'توزيع لوازم مدرسية',
+//         aidType: TYPE_AIDS.EDUCATIONAL_AID,
+//         aidContent: 'كتب وأدوات دراسية',
+//         deliveryDate: new Date('2025-08-25T09:00:00'),
+//         deliveryLocation: 'مدرسة المخيم',
+//         securityRequired: false,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 200,
+//         singlePortion: 5,
+//         distributionMethod: DISTRIBUTION_METHOD.equal,
+//         selectedCategories: [
+//             { id: 'cat-6', label: 'طلاب', min: 6, max: 18, isDefault: true, portion: 5 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'حقائب مدرسية',
+//         receivedDisplaced: [],
+//         security_men: [5, 6],
+//         isCompleted: false,
+//     },
+//     {
+//         id: 2006,
+//         aidName: 'توزيع مساعدات مالية',
+//         aidType: TYPE_AIDS.FINANCIAL_AID,
+//         aidContent: 'دعم مالي للعائلات',
+//         deliveryDate: new Date('2025-07-30T12:00:00'),
+//         deliveryLocation: 'مركز الدفع المالي',
+//         securityRequired: true,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 500,
+//         singlePortion: 100,
+//         distributionMethod: DISTRIBUTION_METHOD.family_number,
+//         selectedCategories: [
+//             { id: 'cat-7', label: 'عائلات فقيرة', min: 1, max: null, isDefault: true, portion: 100 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [16, 17, 18, 19, 20, 21, 22, 1, 2, 3],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'بطاقات دفع',
+//         receivedDisplaced: [],
+//         security_men: [7, 8],
+//         isCompleted: false,
+//     },
+//     {
+//         id: 2007,
+//         aidName: 'توزيع بطانيات',
+//         aidType: TYPE_AIDS.CLOTHING_AIDS,
+//         aidContent: 'بطانيات شتوية',
+//         deliveryDate: new Date('2025-06-15T10:00:00'),
+//         deliveryLocation: 'مخيم الغرب',
+//         securityRequired: false,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 180,
+//         singlePortion: 2,
+//         distributionMethod: DISTRIBUTION_METHOD.equal,
+//         selectedCategories: [
+//             { id: 'cat-8', label: 'عائلات', min: 1, max: null, isDefault: true, portion: 2 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'حقائب حمل',
+//         receivedDisplaced: [],
+//         security_men: [],
+//         isCompleted: true,
+//     },
+//     {
+//         id: 2008,
+//         aidName: 'توزيع معدات طبية',
+//         aidType: TYPE_AIDS.MEDICAL_AID,
+//         aidContent: 'أجهزة طبية للعائلات',
+//         deliveryDate: new Date('2025-05-01T08:00:00'),
+//         deliveryLocation: 'مركز طبي الشمال',
+//         securityRequired: true,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 50,
+//         singlePortion: 1,
+//         distributionMethod: DISTRIBUTION_METHOD.equal,
+//         selectedCategories: [
+//             { id: 'cat-9', label: 'مرضى', min: 0, max: null, isDefault: true, portion: 1 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [14, 15, 16, 17, 18, 19, 20, 21, 22, 1],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'صناديق تعبئة',
+//         receivedDisplaced: [],
+//         security_men: [9, 10],
+//         isCompleted: false,
+//     },
+//     {
+//         id: 2009,
+//         aidName: 'توزيع كتب دراسية',
+//         aidType: TYPE_AIDS.EDUCATIONAL_AID,
+//         aidContent: 'كتب مدرسية للأطفال',
+//         deliveryDate: new Date('2025-04-10T09:00:00'),
+//         deliveryLocation: 'مدرسة الجنوب',
+//         securityRequired: false,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 250,
+//         singlePortion: 4,
+//         distributionMethod: DISTRIBUTION_METHOD.equal,
+//         selectedCategories: [
+//             { id: 'cat-10', label: 'طلاب', min: 6, max: 18, isDefault: true, portion: 4 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'حقائب مدرسية',
+//         receivedDisplaced: [],
+//         security_men: [11, 12],
+//         isCompleted: false,
+//     },
+//     {
+//         id: 2010,
+//         aidName: 'توزيع خيام إيواء',
+//         aidType: TYPE_AIDS.OTHER_AID,
+//         aidContent: 'خيام عائلية',
+//         deliveryDate: new Date('2025-03-15T10:00:00'),
+//         deliveryLocation: 'مخيم الشرق',
+//         securityRequired: true,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 40,
+//         singlePortion: 1,
+//         distributionMethod: DISTRIBUTION_METHOD.family_number,
+//         selectedCategories: [
+//             { id: 'cat-11', label: 'عائلات كبيرة', min: 5, max: null, isDefault: true, portion: 1 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'أدوات تثبيت',
+//         receivedDisplaced: [],
+//         security_men: [13, 14],
+//         isCompleted: false,
+//     },
+//     {
+//         id: 2011,
+//         aidName: 'توزيع مواد غذائية طارئة',
+//         aidType: TYPE_AIDS.FOOD_AID,
+//         aidContent: 'حزم غذائية عاجلة',
+//         deliveryDate: new Date('2025-02-20T09:00:00'),
+//         deliveryLocation: 'مركز توزيع الغرب',
+//         securityRequired: true,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 200,
+//         singlePortion: 4,
+//         distributionMethod: DISTRIBUTION_METHOD.family_number,
+//         selectedCategories: [
+//             { id: 'cat-12', label: 'عائلات متوسطة', min: 3, max: 6, isDefault: true, portion: 4 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [22, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'سلال غذائية',
+//         receivedDisplaced: [],
+//         security_men: [15, 16],
+//         isCompleted: false,
+//     },
+//     {
+//         id: 2012,
+//         aidName: 'توزيع أدوات تنظيف',
+//         aidType: TYPE_AIDS.CLEANING_AID,
+//         aidContent: 'معقمات ومنظفات',
+//         deliveryDate: new Date('2025-01-10T11:00:00'),
+//         deliveryLocation: 'مخيم الشمال',
+//         securityRequired: false,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 120,
+//         singlePortion: 2,
+//         distributionMethod: DISTRIBUTION_METHOD.equal,
+//         selectedCategories: [
+//             { id: 'cat-13', label: 'عائلات', min: 1, max: null, isDefault: true, portion: 2 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'حقائب تخزين',
+//         receivedDisplaced: [],
+//         security_men: [],
+//         isCompleted: false,
+//     },
+//     {
+//         id: 2013,
+//         aidName: 'توزيع ملابس صيفية',
+//         aidType: TYPE_AIDS.CLOTHING_AIDS,
+//         aidContent: 'ملابس صيفية للأطفال',
+//         deliveryDate: new Date('2024-12-15T10:00:00'),
+//         deliveryLocation: 'مركز توزيع الجنوب',
+//         securityRequired: false,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 280,
+//         singlePortion: 3,
+//         distributionMethod: DISTRIBUTION_METHOD.equal,
+//         selectedCategories: [
+//             { id: 'cat-14', label: 'أطفال', min: 0, max: 12, isDefault: true, portion: 3 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [20, 21, 22, 1, 2, 3, 4, 5, 6, 7],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'أكياس تغليف',
+//         receivedDisplaced: [],
+//         security_men: [17, 18],
+//         isCompleted: true,
+//     },
+//     {
+//         id: 2014,
+//         aidName: 'توزيع أدوية مزمنة',
+//         aidType: TYPE_AIDS.MEDICAL_AID,
+//         aidContent: 'أدوية للأمراض المزمنة',
+//         deliveryDate: new Date('2024-11-01T08:00:00'),
+//         deliveryLocation: 'مركز صحي الشرق',
+//         securityRequired: true,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 80,
+//         singlePortion: 1,
+//         distributionMethod: DISTRIBUTION_METHOD.equal,
+//         selectedCategories: [
+//             { id: 'cat-15', label: 'مرضى', min: 0, max: null, isDefault: true, portion: 1 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'صناديق تعبئة',
+//         receivedDisplaced: [],
+//         security_men: [19, 20],
+//         isCompleted: false,
+//     },
+//     {
+//         id: 2015,
+//         aidName: 'توزيع مستلزمات يومية',
+//         aidType: TYPE_AIDS.OTHER_AID,
+//         aidContent: 'مستلزمات يومية متنوعة',
+//         deliveryDate: new Date('2024-10-05T09:00:00'),
+//         deliveryLocation: 'مخيم الغرب',
+//         securityRequired: false,
+//         quantityAvailability: QUANTITY_AVAILABILITY.limited,
+//         existingQuantity: 350,
+//         singlePortion: 5,
+//         distributionMethod: DISTRIBUTION_METHOD.family_number,
+//         selectedCategories: [
+//             { id: 'cat-16', label: 'عائلات', min: 1, max: null, isDefault: true, portion: 5 },
+//         ],
+//         distributionMechanism: DISTRIBUTION_MECHANISM.displaced_families,
+//         delegatesPortions: DELEGATE_PORTIONS.equal,
+//         delegateSinglePortion: 0,
+//         selectedDisplacedIds: [18, 19, 20, 21, 22, 1, 2, 3, 4, 5],
+//         selectedDelegatesPortions: [],
+//         aidAccessories: 'حقائب تخزين',
+//         receivedDisplaced: [],
+//         security_men: [],
+//         isCompleted: false,
+//     },
+// ];
+
+// export const fakeDisplacedFamiliesAidsResponse = ({ page = 1, limit = 10, type }: getAidsProps): AidsResponse => {
+//     const filteredAids = fakeDisplacedFamiliesAids.filter(
+//         (aid) => !type || aid.aidType === type
+//     );
+//     return {
+//         status: '200',
+//         message: 'تم جلب بيانات المساعدات للعائلات النازحة بنجاح',
+//         aids: filteredAids.slice((page - 1) * limit, page * limit),
+//         error: undefined,
+//         pagination: {
+//             page,
+//             limit,
+//             totalItems: filteredAids.length,
+//             totalPages: Math.ceil(filteredAids.length / limit),
+//         },
+//     };
+// };

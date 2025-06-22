@@ -1,30 +1,29 @@
 import { Stack, Group, Text, Flex, Pagination, Center } from '@mantine/core';
 import { Package } from 'lucide-react';
-import { general_Aid } from '@/@types/actors/general/aids/aidsResponse.type';
 import Aid_Card from './aid-card';
 import Aid_Card_Skeleton from './aid-card-skeleton';
+import { parseAsInteger, useQueryState } from 'nuqs';
+import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 
 interface AidsListProps {
-  data: general_Aid[];
-  activePage: number;
-  setActivePage: (page: number) => void;
-  itemsPerPage: number;
+  data: Aid[];
   totalPages: number;
-  loading: boolean;
-  // highlightedDate: string | null; // e.g., '2024-10-20' to highlight matching rows
+  isLoading: boolean;
 }
 
 export default function Aids_List({
   data,
-  activePage,
-  setActivePage,
   totalPages,
-  loading,
-}: // highlightedDate,
-AidsListProps) {
+  isLoading,
+}: AidsListProps) {
+  const [activePage, setActivePage] = useQueryState(
+    'aids-page',
+    parseAsInteger.withDefault(1)
+  );
+
   return (
     <Stack pos={'relative'} py={20}>
-      {loading ? (
+      {isLoading ? (
         <Stack gap='xs'>
           {Array.from({ length: 5 }).map((_, index) => (
             <Aid_Card_Skeleton key={index} />
@@ -44,7 +43,7 @@ AidsListProps) {
           ))}
         </Stack>
       )}
-      {!loading && totalPages > 1 && (
+      {!isLoading && totalPages > 1 && (
         <Flex justify='center' mt='xl'>
           <Pagination
             value={activePage}

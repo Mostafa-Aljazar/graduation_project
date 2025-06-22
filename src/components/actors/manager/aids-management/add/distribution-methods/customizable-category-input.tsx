@@ -142,7 +142,7 @@ export default function CustomizableCategoryInput({
         size='sm'
         leftSection={<Users size={16} />}
         classNames={{
-          input: 'placeholder:!text-sm !text-primary !font-medium',
+          input: 'placeholder:!text-sm !text-primary !font-normal',
         }}
         clearable
         searchable

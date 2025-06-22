@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  AddAidPayload,
-  AidResponse,
-} from '@/@types/actors/manager/aid-management/add-aid-management.types';
+import { AidResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { getAid } from '@/actions/actors/manager/aids-management/getAid';
 import Add_Aid_Page from '@/app/(pages)/actor/manager/[manager_Id]/aids-management/add/page';
 import { LoadingOverlay, Stack } from '@mantine/core';
@@ -35,7 +32,7 @@ export default function Aid_Page({ aid_id }: AidProps) {
 
   return (
     <Stack pos={'relative'}>
-      <Add_Aid_Page initialData={data as AidResponse} aid_id={aid_id} />;
+      <Add_Aid_Page initialData={data} aid_id={aid_id} />;
     </Stack>
   );
 }

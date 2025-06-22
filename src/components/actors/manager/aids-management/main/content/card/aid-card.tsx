@@ -1,17 +1,20 @@
-import { general_Aid } from '@/@types/actors/general/aids/aidsResponse.type';
+'use client';
 import {
   GET_AIDS_TYPE_ICONS,
   TYPE_AIDS,
 } from '@/content/actor/manager/aids-management';
 import { cn } from '@/utils/cn';
-import { Center, Group, Stack, Text } from '@mantine/core';
+import { Card, Center, Flex, Group, Stack, Text } from '@mantine/core';
 import { Package, UsersRound } from 'lucide-react';
-import React from 'react';
 import Aid_Action from './aid-action';
+import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
+import { useRouter } from 'next/navigation';
+import useAuth from '@/hooks/useAuth';
+import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 
-type Props = {
-  aid: general_Aid;
-};
+interface Props {
+  aid: Aid;
+}
 export default function Aid_Card({ aid }: Props) {
   // Map aid type to its corresponding icon, default to Package if not found
   const getAidTypeIcon = (type: TYPE_AIDS) => {
@@ -19,14 +22,32 @@ export default function Aid_Card({ aid }: Props) {
     return <IconComponent size={20} className='text-white' />;
   };
 
+  const router = useRouter();
+  const { user } = useAuth();
+  const handleClick = (e: React.MouseEvent) => {
+    //hint: TO PREVENT DO Another Action
+    const path = e.nativeEvent.composedPath() as HTMLElement[];
+    const clickedOnCard = path.some((el) => {
+      const attr = (el as HTMLElement)?.getAttribute?.('data-click');
+      const classes = (el as HTMLElement)?.classList?.toString() || '';
+      return attr === 'aid-card' || classes.includes('aid-card');
+    });
+
+    if (clickedOnCard) {
+      router.push(`${MANAGER_ROUTES_fUNC(user?.id as number, aid.id).AID}?`);
+    }
+  };
+
   return (
-    <Stack
+    <Card
+      data-click='aid-card'
       key={aid.id}
-      p='md'
+      p='xs'
       className={cn(
-        'border-1 border-gray-200 rounded-lg   hover:bg-gray-50 !bg-green-100',
-        aid.complete && '!bg-red-100'
+        'border-1 border-gray-200 rounded-lg !bg-green-100  hover:bg-gray-50 hover:scale-98 transition-all duration-300 ease-in-out   hover:cursor-pointer !shadow-md ',
+        aid.isCompleted && '!bg-red-100'
       )}
+      onClick={handleClick}
     >
       <Group>
         <Center
@@ -34,33 +55,48 @@ export default function Aid_Card({ aid }: Props) {
           h={48}
           className='bg-primary border-1 border-gray-300 rounded-full'
         >
-          {getAidTypeIcon(aid.type as TYPE_AIDS)}
+          {getAidTypeIcon(aid.aidType as TYPE_AIDS)}
         </Center>
         <Stack flex={1} gap={5}>
           <Group justify='space-between'>
-            <Text fz='md' fw={600} className='!text-primary'>
-              {aid.title || `مساعدة: ${aid.type}`}
-            </Text>
-            <Group align='center'>
-              <Text fz='xs' c='dimmed'>
-                {aid.distribution_date}
+            <Flex
+              direction={{ base: 'column-reverse', sm: 'row' }}
+              flex={1}
+              justify='space-between'
+              wrap='wrap-reverse'
+              gap={0}
+            >
+              <Text fz='md' fw={600} className='!text-primary'>
+                {aid.aidName || `مساعدة: ${aid.aidType}`}
               </Text>
-              <Aid_Action aid_id={aid.id} />
+              <Text fz={14} c='dimmed'>
+                {(aid.deliveryDate as Date).toDateString()}
+              </Text>
+            </Flex>
+
+            <Aid_Action aid_ID={aid.id} />
+          </Group>
+          <Group gap={20}>
+            <Group gap={5}>
+              <UsersRound size={15} className='!text-primary' />
+              <Text fz={14} className='!text-dark'>
+                عدد المستفيدين: {aid.selectedDisplacedIds.length}
+              </Text>
+            </Group>
+            <Group gap={5}>
+              <UsersRound size={15} className='!text-primary' />
+              <Text fz={14} className='!text-dark'>
+                عدد المستلمين: {aid.receivedDisplaced.length}
+              </Text>
             </Group>
           </Group>
-          <Group gap={5}>
-            <UsersRound size={15} className='!text-primary' />
-            <Text fz='sm' className='!text-dark'>
-              عدد المستفيدين: {aid.recipients_number}
-            </Text>
-          </Group>
-          {aid.description && (
-            <Text fz='sm' c='dimmed'>
-              {aid.description}
+          {aid.aidAccessories && (
+            <Text fz={14} c='dimmed'>
+              {aid.aidAccessories}
             </Text>
           )}
         </Stack>
       </Group>
-    </Stack>
+    </Card>
   );
 }
