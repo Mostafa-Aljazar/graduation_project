@@ -3,15 +3,13 @@
 import { DelegatesResponse } from "@/@types/actors/general/delegates/delegatesResponse.type";
 import { fakeDelegatesResponse } from "@/content/actor/general/fake-delegates";
 import { AqsaAPI } from "@/services";
+import { delegatesFilterValues } from "@/validation/actor/general/delegates-filter-form";
 
 export interface getDelegatesProps {
     page?: number;
     limit?: number;
     search?: string;
-    filters?: {
-        displaceds_number: number[];
-        tents_number: number[];
-    };
+    filters?: delegatesFilterValues
 };
 
 export const getDelegates = async ({ page = 1, limit = 15, search, filters }: getDelegatesProps): Promise<DelegatesResponse> => {

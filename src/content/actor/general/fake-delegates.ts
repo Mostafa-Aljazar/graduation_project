@@ -43,3 +43,29 @@ export const fakeDelegatesIDsResponse = (): DelegatesIDsResponse => {
     }
 };
 
+export const fakeDelegatesByIdsResponse = ({
+    ids = [],
+    page = 1,
+    limit = 7,
+}: {
+    ids: number[];
+    page?: number;
+    limit?: number;
+}): DelegatesResponse => {
+    const filteredDelegates = fakeDelegates.filter((delegate) =>
+        ids.includes(delegate.id)
+    );
+
+    return {
+        status: '200',
+        message: 'تم جلب بيانات المناديب بنجاح',
+        delegates: filteredDelegates.slice((page - 1) * limit, page * limit),
+        error: undefined,
+        pagination: {
+            page,
+            limit,
+            totalItems: filteredDelegates.length,
+            totalPages: Math.ceil(filteredDelegates.length / limit),
+        },
+    };
+};

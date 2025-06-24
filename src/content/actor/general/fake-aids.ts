@@ -64,7 +64,7 @@ export const fakeAids: Aid[] = [
         delegateSinglePortion: 0,
         selectedDisplacedIds: [1, 2, 3, 10, 11, 12, 13, 21, 22],
         selectedDelegatesPortions: [
-            { delegate_id: 101, portion: 30 },
+            { delegate_id: 101, portion: 5 },
             { delegate_id: 102, portion: 30 },
             { delegate_id: 103, portion: 20 },
             { delegate_id: 104, portion: 20 },
@@ -134,9 +134,9 @@ export const fakeAids: Aid[] = [
         delegateSinglePortion: 15,
         selectedDisplacedIds: [1, 5, 6, 7, 8, 9, 10, 11, 15, 16, 17, 18, 22],
         selectedDelegatesPortions: [
-            { delegate_id: 101, portion: 15 },
-            { delegate_id: 102, portion: 15 },
-            { delegate_id: 103, portion: 15 },
+            // { delegate_id: 101, portion: 15 },
+            // { delegate_id: 102, portion: 15 },
+            // { delegate_id: 103, portion: 15 },
             { delegate_id: 104, portion: 15 },
             { delegate_id: 105, portion: 15 },
             { delegate_id: 106, portion: 15 },

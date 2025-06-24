@@ -3,13 +3,11 @@
 import { DelegatesIDsResponse } from "@/@types/actors/general/delegates/delegatesResponse.type";
 import { fakeDelegatesIDsResponse } from "@/content/actor/general/fake-delegates";
 import { AqsaAPI } from "@/services";
+import { delegatesFilterValues } from "@/validation/actor/general/delegates-filter-form";
 
 export interface getDelegatesIDsProps {
     search?: string;
-    filters?: {
-        displaceds_number: number[];
-        tents_number: number[];
-    };
+    filters?: delegatesFilterValues
 };
 
 export const getDelegatesIDs = async ({ search, filters }: getDelegatesIDsProps): Promise<DelegatesIDsResponse> => {

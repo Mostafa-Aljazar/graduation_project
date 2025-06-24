@@ -104,7 +104,7 @@ export default function Displaceds_Table({
   const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
 
   const handlePageChange = (page: number) => {
-    setQuery({ displaced_page: page });
+    setQuery((prev) => ({ ...prev, displaced_page: page }));
   };
 
   const {
@@ -222,7 +222,7 @@ export default function Displaceds_Table({
             onChange={(e) =>
               handleSelectAllAcrossAllPages(e.currentTarget.checked)
             }
-            // disabled={!data?.displaceds?.length}
+            disabled={!DISPLACED_DATA?.displaceds?.length}
           />
         </Table.Th>
       )}
@@ -294,17 +294,15 @@ export default function Displaceds_Table({
           : undefined
       }
     >
-      {!inDisplayedAid && (
-        <Table.Td px={5} ta='center' w='fit-content'>
-          <Checkbox
-            aria-label='Select row'
-            checked={isRowSelected(element.id)}
-            onChange={(e) =>
-              handleRowSelection(element.id, e.currentTarget.checked)
-            }
-          />
-        </Table.Td>
-      )}
+      <Table.Td px={5} ta='center' w='fit-content' hidden={inDisplayedAid}>
+        <Checkbox
+          aria-label='Select row'
+          checked={isRowSelected(element.id)}
+          onChange={(e) =>
+            handleRowSelection(element.id, e.currentTarget.checked)
+          }
+        />
+      </Table.Td>
       <Table.Td px={5} ta='center' w='fit-content'>
         {((query.displaced_page ??
           (DISPLACED_DATA?.pagination?.page as number)) -

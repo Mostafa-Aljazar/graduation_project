@@ -86,6 +86,10 @@ export default function Add_Aid_Form({
     ),
   });
 
+  useEffect(() => {
+    form.setFieldValue('existingQuantity', query.existingQuantity);
+  }, [query.existingQuantity]);
+
   const [categoryPortions, setCategoryPortions] = useState<
     Record<string, number>
   >(
@@ -691,6 +695,7 @@ export default function Add_Aid_Form({
         gap={0}
         hidden={isDisabled && !(initialData?.aidAccessories as string)}
       >
+        fvc
         <Text fz={16} fw={500}>
           الملحقات :
         </Text>

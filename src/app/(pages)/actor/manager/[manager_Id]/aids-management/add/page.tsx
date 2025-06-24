@@ -10,12 +10,22 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import { CheckSquare, SquarePlus } from 'lucide-react';
+import { CheckSquare, Pin, SquarePlus } from 'lucide-react';
 import { notifications } from '@mantine/notifications';
-import { parseAsStringEnum, useQueryStates } from 'nuqs';
+import {
+  parseAsInteger,
+  parseAsString,
+  parseAsStringEnum,
+  useQueryState,
+  useQueryStates,
+} from 'nuqs';
 
-import Delegates_List from '@/components/actors/manager/aids-management/add/delegates/delegates-list';
-import { DISTRIBUTION_MECHANISM } from '@/content/actor/manager/aids-management';
+import Delegates_List from '@/components/actors/general/delegates/content/delegates-list';
+import {
+  DELEGATE_PORTIONS,
+  DISTRIBUTION_MECHANISM,
+  QUANTITY_AVAILABILITY,
+} from '@/content/actor/manager/aids-management';
 import { addAidFormValues } from '@/validation/actor/manager/aids-management/add-aid-form-schema';
 import Add_Aid_Form from '@/components/actors/manager/aids-management/add/add-aid-form';
 import {
@@ -27,18 +37,46 @@ import { addAid } from '@/actions/actors/manager/aids-management/addAid';
 import { updateAid } from '@/actions/actors/manager/aids-management/updateAid';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import { ACTION_ADD_EDIT } from '@/constants';
 import Displaceds_List from '@/components/actors/general/Displaced/content/displaceds-list';
 import { DESTINATION_DISPLACED } from '@/content/actor/displaced/filter';
+import { DESTINATION_DELEGATES } from '@/content/actor/delegate/filter';
 
-function Add_Aid_Header({ mode }: { mode: 'تعديل' | 'إضافة' | 'عرض' }) {
+function Add_Aid_Header({
+  mode,
+  showEditButton = false,
+}: {
+  mode: 'تعديل' | 'إضافة' | 'عرض';
+  showEditButton: boolean;
+}) {
+  const [action, setAction] = useQueryState(
+    'action',
+    parseAsString.withDefault('')
+  );
   return (
-    <Group gap={10}>
-      <SquarePlus size={20} className='text-primary' />
-      <Text fw={600} fz={{ base: 18, md: 22 }} className='text-primary'>
-        {mode} المساعدة
-      </Text>
+    <Group gap={10} justify='space-between' w={'100%'}>
+      <Group gap={10}>
+        <SquarePlus size={20} className='text-primary' />
+        <Text fw={600} fz={{ base: 18, md: 22 }} className='text-primary'>
+          {mode} المساعدة
+        </Text>
+      </Group>
+
+      {showEditButton && (
+        <Button
+          size='sm'
+          fz={16}
+          fw={500}
+          c='white'
+          radius='lg'
+          className='!bg-primary'
+          rightSection={<Pin size={16} />}
+          hidden={action == ACTION_ADD_EDIT.EDIT}
+          onClick={() => setAction(ACTION_ADD_EDIT.EDIT)}
+        >
+          تعديل المساعدة
+        </Button>
+      )}
     </Group>
   );
 }
@@ -54,15 +92,38 @@ export default function Add_Aid_Page({ initialData, aid_id }: AddAidPageProps) {
 
   const [query] = useQueryStates(
     {
+      action: parseAsStringEnum<ACTION_ADD_EDIT>(
+        Object.values(ACTION_ADD_EDIT)
+      ).withDefault(ACTION_ADD_EDIT.ADD),
+      //////////////////
+      //////////////////
+      //////////////////
       distributionMechanism: parseAsStringEnum<DISTRIBUTION_MECHANISM>(
         Object.values(DISTRIBUTION_MECHANISM)
       ).withDefault(
         initialData?.aid?.distributionMechanism ??
           DISTRIBUTION_MECHANISM.delegates_lists
       ),
-      action: parseAsStringEnum<ACTION_ADD_EDIT>(
-        Object.values(ACTION_ADD_EDIT)
-      ).withDefault(ACTION_ADD_EDIT.ADD),
+
+      delegatesPortions: parseAsStringEnum<DELEGATE_PORTIONS>(
+        Object.values(DELEGATE_PORTIONS)
+      ).withDefault(
+        initialData?.aid?.delegatesPortions ?? DELEGATE_PORTIONS.equal
+      ),
+
+      quantityAvailability: parseAsStringEnum<QUANTITY_AVAILABILITY>(
+        Object.values(QUANTITY_AVAILABILITY)
+      ).withDefault(
+        initialData?.aid?.quantityAvailability ?? QUANTITY_AVAILABILITY.limited
+      ),
+
+      existingQuantity: parseAsInteger.withDefault(
+        initialData?.aid?.existingQuantity ?? 0
+      ),
+
+      delegateSinglePortion: parseAsInteger.withDefault(
+        initialData?.aid?.delegateSinglePortion ?? 0
+      ),
     },
     { shallow: true }
   );
@@ -113,7 +174,8 @@ export default function Add_Aid_Page({ initialData, aid_id }: AddAidPageProps) {
           color: 'green',
           position: 'top-left',
         });
-        router.replace(MANAGER_ROUTES_fUNC(user?.id as number).AIDS_MANAGEMENT);
+        // TODO:
+        // router.replace(MANAGER_ROUTES_fUNC(user?.id as number).AIDS_MANAGEMENT);
       } else {
         notifications.show({
           title: 'خطأ',
@@ -160,7 +222,6 @@ export default function Add_Aid_Page({ initialData, aid_id }: AddAidPageProps) {
         ? values.distributionMechanism ==
             DISTRIBUTION_MECHANISM.delegates_lists || values.securityRequired
         : false; // FIXME: handel it from back-end
-
     const payload: Aid = {
       id: aid_id ?? -1,
       ...values,
@@ -182,7 +243,10 @@ export default function Add_Aid_Page({ initialData, aid_id }: AddAidPageProps) {
         zIndex={49}
         overlayProps={{ radius: 'sm', blur: 0.3 }}
       />
-      <Add_Aid_Header mode={headerMode} />
+      <Add_Aid_Header
+        mode={headerMode}
+        showEditButton={!!initialData && query.action !== ACTION_ADD_EDIT.EDIT}
+      />
 
       <Add_Aid_Form
         onSubmit={handleSubmit}
@@ -210,9 +274,18 @@ export default function Add_Aid_Page({ initialData, aid_id }: AddAidPageProps) {
       ) : (
         <Stack gap={20}>
           <Delegates_List
+            destination={
+              !!initialData && query.action == ACTION_ADD_EDIT.EDIT
+                ? DESTINATION_DELEGATES.EDIT_AIDS
+                : !!initialData
+                ? DESTINATION_DELEGATES.DISPLAY_AIDS
+                : DESTINATION_DELEGATES.ADD_AIDS
+            }
+            title='توزيع المساعدات على المناديب'
+            aid_id={aid_id}
             selectedDelegatesPortions={selectedDelegatesPortions}
             setSelectedDelegatesPortions={setSelectedDelegatesPortions}
-            // isDisabled={isDisabled}
+            aid_data={initialData?.aid}
           />
           <Divider h={1} bg={'#DFDEDC'} w={'100%'} flex={1} />
 

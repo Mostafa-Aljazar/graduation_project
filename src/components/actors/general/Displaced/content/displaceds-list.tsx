@@ -9,17 +9,6 @@ import Displaceds_Filters from './displaceds-filters';
 import Displaceds_Table from './displaceds-table';
 import { DESTINATION_DISPLACED } from '@/content/actor/displaced/filter';
 
-interface DisplacedListProps {
-  destination: DESTINATION_DISPLACED;
-  title?: string;
-  setSelectedDisplacedIds: React.Dispatch<React.SetStateAction<number[]>>;
-  selectedDisplacedIds: number[];
-  isDisabled?: boolean;
-  receivedDisplaced?: { displaced_ID: number; receivedTime: Date }[];
-  aid_id?: number;
-  showAddButton?: boolean;
-}
-
 function DisplacedListHeader({
   title,
   showAddButton,
@@ -50,6 +39,16 @@ function DisplacedListHeader({
       )}
     </Group>
   );
+}
+
+interface DisplacedListProps {
+  destination: DESTINATION_DISPLACED;
+  title?: string;
+  setSelectedDisplacedIds: React.Dispatch<React.SetStateAction<number[]>>;
+  selectedDisplacedIds: number[];
+  receivedDisplaced?: { displaced_ID: number; receivedTime: Date }[];
+  aid_id?: number;
+  showAddButton?: boolean;
 }
 
 export default function Displaceds_List({
