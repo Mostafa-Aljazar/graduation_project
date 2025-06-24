@@ -1,4 +1,11 @@
-export interface displacedResponse {
+export interface DisplacedsIDsResponse {
+    status: string;
+    message?: string;
+    displacedsIDs: number[];
+    error?: string;
+}
+
+export interface DisplacedsResponse {
     status: string;
     message?: string;
     displaceds: Displaced[];
@@ -12,16 +19,16 @@ export interface displacedResponse {
 }
 
 export interface Displaced {
-    id: string | number;
+    id: number;
     name: string;
     identity: string;
     tent: string;
     family_number: number;
     mobile_number: string;
-    delegate: Delegate;
+    delegate: HisDelegate;
 }
 
-export interface Delegate {
-    id: string | number;
+export interface HisDelegate {
+    id: number;
     name: string;
 }

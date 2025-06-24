@@ -1,20 +1,21 @@
 "use server";
 
-import AqsaAPI from "@/services";
+import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
+import { AqsaAPI } from "@/services";
 
 export interface changeDelegateProps {
-    displacedIds: (string | Number)[];
-    delegateId: string | Number;
+    displacedIDs: number[];
+    delegateId: number;
 }
 
 export const changeDelegate = async ({
-    displacedIds,
+    displacedIDs,
     delegateId,
 }: changeDelegateProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: "200",
-        message: `تم تغيبر المندوب لـ ${displacedIds.length} نازح بنجاح`,
+        message: `تم تغيبر المندوب لـ ${displacedIDs.length} نازح بنجاح`,
 
     }
     // Simulate API delay for fake data
@@ -28,13 +29,13 @@ export const changeDelegate = async ({
 
     try {
         const response = await AqsaAPI.post("/displaceds/changeDelegate", {
-            displacedIds,
+            displacedIDs,
             delegateId,
         });
 
         return {
             status: "200",
-            message: `تم تغيبر المندوب لـ ${displacedIds.length} نازح بنجاح`,
+            message: `تم تغيبر المندوب لـ ${displacedIDs.length} نازح بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =

@@ -4,18 +4,18 @@ import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.t
 import { AqsaAPI } from "@/services";
 
 export interface deleteDisplacedsProps {
-    displacedIds: (string | Number)[];
+    displacedIDs: Number[];
 }
 
 export const deleteDisplaced = async ({
-    displacedIds,
+    displacedIDs,
 }: deleteDisplacedsProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: "200",
-        message: `تم حذف ${displacedIds.length} نازح بنجاح`,
-
+        message: `تم حذف ${displacedIDs.length} نازح بنجاح`,
     }
+
     // Simulate API delay for fake data
     return await new Promise((resolve) => {
         setTimeout(() => {
@@ -24,16 +24,14 @@ export const deleteDisplaced = async ({
     });
 
     // Real implementation with filters
-
     try {
         const response = await AqsaAPI.post("/displaceds/delete", {
-            displacedIds,
-
+            displacedIDs,
         });
 
         return {
             status: "200",
-            message: `تم حذف ${displacedIds.length} نازح بنجاح`,
+            message: `تم حذف ${displacedIDs.length} نازح بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =

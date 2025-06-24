@@ -1,22 +1,23 @@
 "use server";
 
-import AqsaAPI from "@/services";
+import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
+import { AqsaAPI } from "@/services";
 
 export interface sendMeetingRequestProps {
-    displacedIds: (string | Number)[];
+    displacedIDs: number[];
     dateTime: Date;
     details: string;
 }
 
 export const sendMeetingRequest = async ({
-    displacedIds,
+    displacedIDs,
     dateTime,
     details,
 }: sendMeetingRequestProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: "200",
-        message: `تم ارسال طلب الاجتماع لـ ${displacedIds.length} نازح بنجاح`,
+        message: `تم ارسال طلب الاجتماع لـ ${displacedIDs.length} نازح بنجاح`,
 
     }
     // Simulate API delay for fake data
@@ -27,17 +28,16 @@ export const sendMeetingRequest = async ({
     });
 
     // Real implementation with filters
-
     try {
         const response = await AqsaAPI.post("/displaceds/meeting", {
-            displacedIds,
+            displacedIDs,
             dateTime,
             details,
         });
 
         return {
             status: "200",
-            message: `تم ارسال طلب الاجتماع لـ ${displacedIds.length} نازح بنجاح`,
+            message: `تم ارسال طلب الاجتماع لـ ${displacedIDs.length} نازح بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =

@@ -20,15 +20,26 @@ export const GET_AIDS_MANAGEMENT_TABS = {
 } as const;
 
 // Aid Types
+
 export enum TYPE_AIDS {
-    FINANCIAL_AID = 'مساعدة ماليّة',
-    FOOD_AID = 'مساعدة غذائية',
-    MEDICAL_AID = 'مساعدة صحية',
-    CLEANING_AID = 'مساعدة تنظيفة',
-    CLOTHING_AIDS = 'مساعدة ملابس',
-    EDUCATIONAL_AID = 'مساعدة تعليمية',
-    OTHER_AID = 'مساعدات أخرى',
+    FINANCIAL_AID = "FINANCIAL_AID",
+    FOOD_AID = "FOOD_AID",
+    MEDICAL_AID = "MEDICAL_AID",
+    CLEANING_AID = "CLEANING_AID",
+    CLOTHING_AIDS = "CLOTHING_AIDS",
+    EDUCATIONAL_AID = "EDUCATIONAL_AID",
+    OTHER_AID = "OTHER_AID",
 }
+
+export const TYPE_AIDS_LABELS: Record<TYPE_AIDS, string> = {
+    [TYPE_AIDS.FINANCIAL_AID]: 'مساعدة ماليّة',
+    [TYPE_AIDS.FOOD_AID]: 'مساعدة غذائية',
+    [TYPE_AIDS.MEDICAL_AID]: 'مساعدة صحية',
+    [TYPE_AIDS.CLEANING_AID]: 'مساعدة تنظيفة',
+    [TYPE_AIDS.CLOTHING_AIDS]: 'مساعدة ملابس',
+    [TYPE_AIDS.EDUCATIONAL_AID]: 'مساعدة تعليمية',
+    [TYPE_AIDS.OTHER_AID]: 'مساعدات أخرى',
+};
 
 // Aid Type Icons
 export const GET_AIDS_TYPE_ICONS = {

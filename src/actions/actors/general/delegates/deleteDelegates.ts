@@ -1,18 +1,19 @@
 "use server";
 
+import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 export interface deleteDelegatesProps {
-    delegatesIds: (string | Number)[];
+    delegateIDs: Number[];
 }
 
 export const deleteDelegates = async ({
-    delegatesIds,
+    delegateIDs,
 }: deleteDelegatesProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: "200",
-        message: `تم حذف ${delegatesIds.length} مندوب بنجاح`,
+        message: `تم حذف ${delegateIDs.length} مندوب بنجاح`,
 
     }
     // Simulate API delay for fake data
@@ -26,12 +27,12 @@ export const deleteDelegates = async ({
 
     try {
         const response = await AqsaAPI.post("/delegates/delete", {
-            delegatesIds,
+            delegateIDs,
         });
 
         return {
             status: "200",
-            message: `تم حذف ${delegatesIds.length} مندوب بنجاح`,
+            message: `تم حذف ${delegateIDs.length} مندوب بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =

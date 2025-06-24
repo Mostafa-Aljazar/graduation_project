@@ -17,7 +17,7 @@ import { useForm, zodResolver } from '@mantine/form';
 import {
   managerProfileType,
   managerProfileSchema,
-} from '@/validation/manager/profileSchema';
+} from '@/validation/actor/manager/profileSchema';
 import '@mantine/core/styles.css';
 import { Calendar, Camera } from 'lucide-react';
 import { DatePickerInput } from '@mantine/dates';

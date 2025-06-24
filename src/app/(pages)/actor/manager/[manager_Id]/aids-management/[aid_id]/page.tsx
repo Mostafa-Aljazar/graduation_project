@@ -1,11 +1,11 @@
-// app/(your-path)/edit/[aid_id]/page.tsx (or similar route file)
-
 import Aid_Page from '@/components/actors/manager/aids-management/aid/Aid';
 
-export default function Page({
+export default async function Page({
   params,
 }: {
-  params: { aid_id: string | number };
+  params: Promise<{ aid_id: number }>;
 }) {
-  return <Aid_Page aid_id={params.aid_id} />;
+  const { aid_id } = await params;
+
+  return <Aid_Page aid_id={aid_id} />;
 }

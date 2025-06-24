@@ -7,9 +7,14 @@ import Receive_Modal from './receive_modal';
 type Props = {
   displaced_Id: number;
   aid_id: number;
+  disabled?: boolean;
 };
 
-export default function Receive_Aid({ displaced_Id, aid_id }: Props) {
+export default function Receive_Aid({
+  displaced_Id,
+  aid_id,
+  disabled = false,
+}: Props) {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -17,10 +22,12 @@ export default function Receive_Aid({ displaced_Id, aid_id }: Props) {
       <Button
         type='button'
         variant='light'
-        size='sm'
-        className='!bg-primary shadow-xl !text-white'
+        size='xs'
+        className='!bg-primary disabled:!bg-primary/75 shadow-xl !text-white'
         onClick={open}
-        fw={600}
+        fw={500}
+        fz={16}
+        disabled={disabled}
       >
         تسليم
       </Button>

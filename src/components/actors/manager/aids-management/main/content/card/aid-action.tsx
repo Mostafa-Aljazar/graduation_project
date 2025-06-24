@@ -2,13 +2,21 @@
 
 import { DELEGATE_ROUTES_fUNC, MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import { cn } from '@/utils/cn';
-import { ActionIcon, Button, Popover, Stack, ThemeIcon } from '@mantine/core';
-import { EllipsisVertical, Eye, Trash, UserPen } from 'lucide-react';
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Popover,
+  Stack,
+  ThemeIcon,
+} from '@mantine/core';
+import { EllipsisVertical, Eye, Trash, Trash2, UserPen } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import useAuth from '@/hooks/useAuth';
 import { useDisclosure } from '@mantine/hooks';
 import Aid_Delete_Modal from './aid-delete-modal';
+import { ACTION_ADD_EDIT } from '@/constants';
 
 // Define the type for action items
 interface ActionItem {
@@ -17,11 +25,11 @@ interface ActionItem {
   action: () => void;
 }
 
-type Props = {
-  aid_id: string | number;
-};
+interface AidActionProps {
+  aid_ID: number;
+}
 
-export default function Aid_Action({ aid_id }: Props) {
+export default function Aid_Action({ aid_ID }: AidActionProps) {
   const { user, isDelegate, isManager } = useAuth();
   const [openedPopover, setOpenedPopover] = useState(false);
 
@@ -34,14 +42,15 @@ export default function Aid_Action({ aid_id }: Props) {
     {
       label: 'عرض',
       icon: Eye,
-      action: () => router.push(MANAGER_ROUTES_fUNC(user?.id ?? 0, aid_id).AID),
+      action: () => router.push(MANAGER_ROUTES_fUNC(user?.id ?? 0, aid_ID).AID),
     },
     {
       label: 'تعديل',
       icon: UserPen,
       action: () =>
         router.push(
-          MANAGER_ROUTES_fUNC(user?.id ?? 0, aid_id).AID + '?action=EDIT'
+          MANAGER_ROUTES_fUNC(user?.id ?? 0, aid_ID).AID +
+            `?action=${ACTION_ADD_EDIT.EDIT}`
         ),
     },
     {
@@ -56,14 +65,14 @@ export default function Aid_Action({ aid_id }: Props) {
       label: 'عرض',
       icon: Eye,
       action: () =>
-        router.push(DELEGATE_ROUTES_fUNC(user?.id ?? 0, aid_id).AID),
+        router.push(DELEGATE_ROUTES_fUNC(user?.id ?? 0, aid_ID).AID),
     },
     {
       label: 'تعديل',
       icon: UserPen,
       action: () =>
         router.push(
-          DELEGATE_ROUTES_fUNC(user?.id ?? 0, aid_id).AID + '?action=EDIT'
+          DELEGATE_ROUTES_fUNC(user?.id ?? 0, aid_ID).AID + '?action=EDIT'
         ),
     },
   ];
@@ -91,7 +100,8 @@ export default function Aid_Action({ aid_id }: Props) {
         '!text-dark !rounded-none',
         index + 1 !== ACTIONS.length && '!border-gray-100 !border-0 !border-b-1'
       )}
-      onClick={() => {
+      onClick={(event: React.MouseEvent) => {
+        event.stopPropagation();
         item.action();
         setOpenedPopover((o) => !o);
       }}
@@ -116,9 +126,13 @@ export default function Aid_Action({ aid_id }: Props) {
       >
         <Popover.Target>
           <ActionIcon
+            data-click='popover'
             bg='transparent'
             mt={5}
-            onClick={() => setOpenedPopover((o) => !o)}
+            onClick={(event: React.MouseEvent) => {
+              event.stopPropagation();
+              setOpenedPopover((o) => !o);
+            }}
           >
             <EllipsisVertical size={20} className='mx-auto text-primary' />
           </ActionIcon>
@@ -132,7 +146,7 @@ export default function Aid_Action({ aid_id }: Props) {
       </Popover>
 
       <Aid_Delete_Modal
-        aid_id={aid_id}
+        aid_ID={aid_ID}
         opened={openedDelete}
         close={closeDelete}
       />

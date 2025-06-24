@@ -32,10 +32,9 @@ import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import {
   addAidFormSchema,
   addAidFormValues,
-} from '@/validation/manager/add-aid-form-schema';
+} from '@/validation/actor/manager/aids-management/add-aid-form-schema';
 import {
-  AddAidPayload,
-  AidResponse,
+  Aid,
   CategoryRangeType,
 } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import {
@@ -45,13 +44,14 @@ import {
   GET_AIDS_TYPE_ICONS,
   QUANTITY_AVAILABILITY,
   TYPE_AIDS,
+  TYPE_AIDS_LABELS,
 } from '@/content/actor/manager/aids-management';
 import CustomizableCategoryInput from './distribution-methods/customizable-category-input';
 import PortionsManagementModal from './distribution-methods/portions-management-modal';
 
 interface AddFormProps {
   onSubmit: (values: addAidFormValues) => void;
-  initialData?: AddAidPayload;
+  initialData?: Aid;
   isDisabled?: boolean;
 }
 
@@ -86,19 +86,25 @@ export default function Add_Aid_Form({
     ),
   });
 
+  useEffect(() => {
+    form.setFieldValue('existingQuantity', query.existingQuantity);
+  }, [query.existingQuantity]);
+
   const [categoryPortions, setCategoryPortions] = useState<
     Record<string, number>
   >(
-    initialData?.selectedCategories.reduce(
-      (acc, cat) => ({ ...acc, [cat.id]: cat.portion || 1 }),
+    (initialData?.selectedCategories &&
+      initialData.selectedCategories.reduce(
+        (acc, cat) => ({ ...acc, [cat.id]: cat.portion || 1 }),
+        {}
+      )) ||
       {}
-    ) || {}
   );
 
   const form = useForm<addAidFormValues>({
     initialValues: initialData || {
       aidName: '',
-      aidType: '',
+      aidType: '' as TYPE_AIDS,
       aidContent: '',
       deliveryDate: new Date('2025-06-15T00:00:00'),
       deliveryLocation: '',
@@ -112,7 +118,6 @@ export default function Add_Aid_Form({
       delegatesPortions: query.delegatesPortions,
       delegateSinglePortion: query.delegateSinglePortion || 1,
       aidAccessories: '',
-      // receivedDisplaced: [],
     },
     validate: zodResolver(addAidFormSchema),
   });
@@ -199,6 +204,9 @@ export default function Add_Aid_Form({
           }
           w='100%'
           placeholder='عنوان المساعدة'
+          classNames={{
+            input: 'placeholder:!text-sm !text-primary !font-normal',
+          }}
           size='sm'
           leftSection={<Tag size={16} />}
           disabled={isDisabled}
@@ -213,14 +221,14 @@ export default function Add_Aid_Form({
           }
           w='100%'
           placeholder='نوع المساعدة'
+          classNames={{
+            input: 'placeholder:!text-sm !text-primary !font-normal',
+          }}
           data={Object.entries(TYPE_AIDS).map(([key, value]) => ({
             value: value,
-            label: value,
+            label: TYPE_AIDS_LABELS[value],
           }))}
           size='sm'
-          classNames={{
-            input: 'placeholder:text-sm text-primary font-medium',
-          }}
           clearable
           leftSection={<Package size={16} />}
           disabled={isDisabled}
@@ -230,7 +238,7 @@ export default function Add_Aid_Form({
             return (
               <Group gap='xs' wrap='nowrap'>
                 {Icon && <Icon size={16} />}
-                <Text size='sm'>{option.label}</Text>
+                <Text size='md'>{option.label}</Text>
               </Group>
             );
           }}
@@ -244,6 +252,9 @@ export default function Add_Aid_Form({
           }
           w='100%'
           placeholder='محتوى المساعدة'
+          classNames={{
+            input: 'placeholder:!text-sm !text-primary !font-normal',
+          }}
           size='sm'
           leftSection={<TableOfContents size={16} />}
           disabled={isDisabled}
@@ -259,7 +270,7 @@ export default function Add_Aid_Form({
           placeholder='اختر التاريخ والوقت'
           size='sm'
           classNames={{
-            input: 'placeholder:text-sm text-primary font-medium',
+            input: 'placeholder:!text-sm !text-primary !font-normal',
           }}
           value={form.values.deliveryDate}
           onChange={(date) =>
@@ -280,7 +291,7 @@ export default function Add_Aid_Form({
           placeholder='مكان التسليم'
           size='sm'
           classNames={{
-            input: 'placeholder:text-sm text-primary font-medium',
+            input: 'placeholder:!text-sm !text-primary !font-normal',
           }}
           leftSection={<MapPin size={16} />}
           disabled={isDisabled}
@@ -295,12 +306,11 @@ export default function Add_Aid_Form({
           </Group>
           <Radio.Group
             w='100%'
-            value={form.values.securityRequired.toString()}
+            value={form.values.securityRequired?.toString()}
             onChange={(value) =>
               !isDisabled &&
               form.setFieldValue('securityRequired', value === 'true')
             }
-            // disabled={isDisabled}
           >
             <Group
               w={{ base: '100%', md: '60%' }}
@@ -357,7 +367,6 @@ export default function Add_Aid_Form({
                 });
               }
             }}
-            // disabled={isDisabled}
           >
             <Group
               w={{ base: '100%', md: '60%' }}
@@ -404,7 +413,7 @@ export default function Add_Aid_Form({
           size='sm'
           min={1}
           classNames={{
-            input: 'placeholder:text-sm text-primary font-medium',
+            input: 'placeholder:!text-sm !text-primary !font-normal',
           }}
           leftSection={<Boxes size={16} />}
           value={form.values.existingQuantity}
@@ -427,7 +436,7 @@ export default function Add_Aid_Form({
           size='sm'
           min={1}
           classNames={{
-            input: 'placeholder:text-sm text-primary font-medium',
+            input: 'placeholder:!text-sm !text-primary !font-normal',
           }}
           leftSection={<Divide size={16} />}
           disabled={isDisabled}
@@ -564,7 +573,7 @@ export default function Add_Aid_Form({
               <Radio
                 value={DISTRIBUTION_MECHANISM.delegates_lists}
                 label={
-                  <Text fz={15} fw={500} className='text-nowrap'>
+                  <Text fz={16} fw={500} className='text-nowrap'>
                     بناءً على كشوفات المناديب
                   </Text>
                 }
@@ -574,7 +583,7 @@ export default function Add_Aid_Form({
               <Radio
                 value={DISTRIBUTION_MECHANISM.displaced_families}
                 label={
-                  <Text fz={15} fw={500} className='text-nowrap'>
+                  <Text fz={16} fw={500} className='text-nowrap'>
                     بناءً على العائلات النازحة
                   </Text>
                 }
@@ -660,7 +669,7 @@ export default function Add_Aid_Form({
                 min={1}
                 allowDecimal={false}
                 classNames={{
-                  input: 'placeholder:text-sm text-primary font-medium',
+                  input: 'placeholder:!text-sm !text-primary !font-normal',
                 }}
                 leftSection={<Divide size={16} />}
                 disabled={isDisabled}
@@ -686,6 +695,7 @@ export default function Add_Aid_Form({
         gap={0}
         hidden={isDisabled && !(initialData?.aidAccessories as string)}
       >
+        fvc
         <Text fz={16} fw={500}>
           الملحقات :
         </Text>
@@ -694,6 +704,9 @@ export default function Add_Aid_Form({
           flex={1}
           size='sm'
           placeholder='أدخل التفاصيل...'
+          classNames={{
+            input: 'placeholder:!text-sm !text-primary !font-normal',
+          }}
           minRows={3}
           maxRows={6}
           autosize

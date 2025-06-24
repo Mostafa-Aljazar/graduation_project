@@ -7,109 +7,95 @@ import { Package, SquarePlus } from 'lucide-react';
 import Aids_Management_Filters from './aids-management-filters';
 import { getAids } from '@/actions/actors/manager/aids-management/getAids';
 import Aids_List from './card/aids-list';
-import { AidsResponse } from '@/@types/actors/general/aids/aidsResponse.type';
-import {
-  TYPE_AIDS,
-  TYPE_GROUP_AIDS,
-} from '@/content/actor/manager/aids-management';
-import { parseAsStringEnum, useQueryState } from 'nuqs';
+import { TYPE_GROUP_AIDS } from '@/content/actor/manager/aids-management';
+import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import { useRouter } from 'next/navigation';
 import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import useAuth from '@/hooks/useAuth';
+import { AidsResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
+import { aidsManagementFilterFormType } from '@/validation/actor/manager/aids-management/aids-management-filters-schema';
 
-export interface Aids_Management_LocalFilters {
-  type: TYPE_AIDS | null; // Made nullable to allow clearing
-  date_range: Date[] | null;
-  recipients_range: number[] | null;
-}
-
-export default function Aids_Management_Content() {
+function Aids_Management_Header() {
   const route = useRouter();
 
   const { user } = useAuth();
   const handelAdd = () => {
     route.push(MANAGER_ROUTES_fUNC(user?.id as number).ADD_AID);
   };
-  const [localFilters, setLocalFilters] =
-    useState<Aids_Management_LocalFilters>({
-      type: TYPE_AIDS.CLEANING_AID,
-      date_range: null,
-      recipients_range: null,
-    });
-  // console.log('🚀 ~ Aids_Management_Content ~ localFilters:', localFilters);
-
-  const [activePage, setActivePage] = useState(1);
-
-  const [activeTab, setActiveTab] = useQueryState(
-    'tab',
-    parseAsStringEnum<TYPE_GROUP_AIDS>(
-      Object.values(TYPE_GROUP_AIDS)
-    ).withDefault(TYPE_GROUP_AIDS.ONGOING_AIDS)
+  return (
+    <Group justify='space-between' wrap='nowrap'>
+      <Group gap={10} wrap='nowrap' justify='center' align='baseline'>
+        <Package size={20} className='!text-primary' />
+        <Text fw={600} fz={22} className='!text-primary !text-nowrap'>
+          المساعدات :
+        </Text>
+      </Group>
+      <Button
+        rightSection={<SquarePlus size={16} />}
+        w={100}
+        size='sm'
+        fz={18}
+        fw={500}
+        c={'white'}
+        radius={'lg'}
+        className='!bg-primary shadow-lg'
+        onClick={handelAdd}
+      >
+        إضافة
+      </Button>
+    </Group>
   );
+}
 
-  // Fetch aids data using React Query
-  const { data, isLoading, error } = useQuery<AidsResponse>({
-    queryKey: ['aids', activePage, localFilters, activeTab],
+export default function Aids_Management_Content() {
+  const [localFilters, setLocalFilters] =
+    useState<aidsManagementFilterFormType>({
+      type: null,
+      date_range: [null, null],
+      recipients_range: [null, null],
+    });
+
+  const [query, setQuery] = useQueryStates({
+    'aids-tab': parseAsStringEnum<TYPE_GROUP_AIDS>(
+      Object.values(TYPE_GROUP_AIDS)
+    ).withDefault(TYPE_GROUP_AIDS.ONGOING_AIDS),
+
+    'aids-page': parseAsInteger.withDefault(1),
+  });
+
+  const {
+    data: AidsData,
+    isLoading,
+    error,
+  } = useQuery<AidsResponse>({
+    queryKey: ['aids', query, localFilters],
     queryFn: () =>
       getAids({
-        page: activePage,
-        limit: 5, // Assuming 5 items per page, adjust as needed
+        page: query['aids-page'],
+        limit: 10,
         type: localFilters.type,
         date_range: localFilters.date_range,
         recipients_range: localFilters.recipients_range,
-        type_group_aids: activeTab,
+        type_group_aids: query['aids-tab'],
       }),
   });
 
   return (
     <Stack w={'100%'}>
-      <Group justify='space-between' wrap='nowrap'>
-        <Group gap={10} wrap='nowrap'>
-          <Package size={20} className='!text-primary' />
-          <Text fw={600} fz={24} className='!text-primary !text-nowrap'>
-            المساعدات :
-          </Text>
-        </Group>
-        <Button
-          size='sm'
-          px={15}
-          fz={16}
-          fw={500}
-          c={'white'}
-          radius={'lg'}
-          className='!bg-primary !shadow-lg'
-          rightSection={<SquarePlus size={18} />}
-          onClick={handelAdd}
-        >
-          إضافة
-        </Button>
-      </Group>
+      <Aids_Management_Header />
+
       <Aids_Management_Filters
         setLocalFilters={setLocalFilters}
-        initialFilters={{
-          type: localFilters.type,
-          date_range: localFilters.date_range,
-          recipients_range: localFilters.recipients_range,
-        }}
-        setActivePage={setActivePage}
-        aidsNum={data?.pagination.totalItems ?? 10}
+        aidsNum={AidsData?.pagination.totalItems ?? 0}
       />
 
-      {error || data?.error ? (
-        <Text c='red'>{data?.error || 'حدث خطأ أثناء جلب المساعدات'}</Text>
+      {error || AidsData?.error ? (
+        <Text c='red'>{AidsData?.error || 'حدث خطأ أثناء جلب المساعدات'}</Text>
       ) : (
         <Aids_List
-          data={data?.aids || []}
-          activePage={activePage}
-          setActivePage={setActivePage}
-          itemsPerPage={5} // Adjust as needed
-          totalPages={data?.pagination.totalPages || 1}
-          loading={isLoading}
-          // highlightedDate={
-          //   localFilters.date_range?.[0]
-          //     ? localFilters.date_range[0].toISOString().split('T')[0]
-          //     : null
-          // }
+          data={AidsData?.aids || []}
+          totalPages={AidsData?.pagination.totalPages || 1}
+          isLoading={isLoading}
         />
       )}
     </Stack>

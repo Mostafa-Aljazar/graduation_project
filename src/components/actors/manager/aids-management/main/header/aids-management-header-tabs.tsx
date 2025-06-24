@@ -7,39 +7,44 @@ import {
 import { cn } from '@/utils/cn';
 import {
   Divider,
-  Flex,
+  FloatingIndicator,
   Group,
   Stack,
   Tabs,
   Text,
   ThemeIcon,
 } from '@mantine/core';
-import { parseAsInteger, parseAsStringEnum, useQueryState } from 'nuqs';
+import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
+import { useState, useRef } from 'react';
 
 export default function Aids_Management_Header_Tabs() {
-  const [activeTab, setActiveTab] = useQueryState(
-    'tab',
-    parseAsStringEnum<TYPE_GROUP_AIDS>(
+  const [query, setQuery] = useQueryStates({
+    'aids-tab': parseAsStringEnum<TYPE_GROUP_AIDS>(
       Object.values(TYPE_GROUP_AIDS)
-    ).withDefault(TYPE_GROUP_AIDS.ONGOING_AIDS)
-  );
+    ).withDefault(TYPE_GROUP_AIDS.ONGOING_AIDS),
+    'aids-page': parseAsInteger.withDefault(1),
+  });
 
-  const [activePage, setActivePage] = useQueryState(
-    'page',
-    parseAsInteger.withDefault(1)
-  );
+  const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
+  const controlsRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  const setControlRef =
+    (tabKey: string) => (node: HTMLButtonElement | null) => {
+      controlsRefs.current[tabKey] = node;
+    };
 
   const activeTabSection = (tabKey: TYPE_GROUP_AIDS) => {
     const IconComponent = GET_AIDS_MANAGEMENT_TABS[tabKey].icon;
     return (
       <Tabs.Tab
-        bg={'#fff'}
         value={tabKey}
         flex={1}
         w={'100%'}
+        pos={'relative'}
         className='flex justify-center items-center'
+        ref={setControlRef(tabKey)}
       >
-        <Group flex={1} wrap='nowrap' gap={3} justify='center'>
+        <Group flex={1} wrap='nowrap' gap={3} justify='center' align='baseline'>
           {IconComponent && (
             <ThemeIcon
               variant='transparent'
@@ -54,8 +59,8 @@ export default function Aids_Management_Header_Tabs() {
             fz={{ base: 14, md: 16 }}
             lh={1.25}
             className={cn(
-              'transition-all duration-300 ease-in-out !text-nowrap overflow-hidden   !overflow-ellipsis',
-              activeTab === tabKey
+              ' !text-nowrap overflow-hidden !overflow-ellipsis',
+              query['aids-tab'] === tabKey
                 ? '!text-primary !font-bold'
                 : '!font-medium !text-[#817C74]'
             )}
@@ -63,21 +68,6 @@ export default function Aids_Management_Header_Tabs() {
             {GET_AIDS_MANAGEMENT_TABS[tabKey].label}
           </Text>
         </Group>
-        {activeTab === tabKey && (
-          <Divider
-            orientation='horizontal'
-            pos='absolute'
-            bottom={0}
-            left='50%'
-            style={{
-              transition: 'all 300ms ease-in-out',
-              transform: 'translateX(-50%)',
-            }}
-            w={{ base: '40%' }}
-            h={5}
-            className='bg-primary rounded-full'
-          />
-        )}
       </Tabs.Tab>
     );
   };
@@ -85,19 +75,20 @@ export default function Aids_Management_Header_Tabs() {
   return (
     <Stack justify={'center'} align={'center'} pt={20} w={'100%'}>
       <Tabs
-        value={activeTab}
+        value={query['aids-tab']}
         variant='unstyled'
         onChange={(value: string | null) => {
           const typedValue = value as TYPE_GROUP_AIDS;
-          setActiveTab(typedValue);
-          setActivePage(1);
+          setQuery({ 'aids-page': 1, 'aids-tab': typedValue });
         }}
         w={'100%'}
       >
         <Tabs.List
           w={{ base: '100%', md: '80%' }}
           mx={'auto'}
+          pos={'relative'}
           className='shadow-lg border-[#DFDEDC] border-1 rounded-xl overflow-hidden'
+          ref={setRootRef}
         >
           <Group
             w={'100%'}
@@ -128,6 +119,11 @@ export default function Aids_Management_Header_Tabs() {
             />
             {activeTabSection(TYPE_GROUP_AIDS.COMING_AIDS)}
           </Group>
+          <FloatingIndicator
+            target={controlsRefs.current[query['aids-tab']]}
+            parent={rootRef}
+            className='!border-b-2 border-b-primary'
+          />
         </Tabs.List>
       </Tabs>
     </Stack>
