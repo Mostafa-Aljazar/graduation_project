@@ -4,7 +4,7 @@ import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.t
 import { AqsaAPI } from "@/services";
 
 export interface deleteArticleProps {
-    articleId: string | number;
+    articleId: number;
 }
 
 export const deleteArticle = async ({

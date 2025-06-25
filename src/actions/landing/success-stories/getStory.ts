@@ -4,8 +4,8 @@ import { FAKE_STORIES } from "@/content/landing/fake-data";
 import { Article_SuccessStory_Ad, Article_SuccessStory_Ad_Response } from "@/@types/common/article-successStories-adsResponse.type";
 
 
-export const getStory = async (storyId: string): Promise<Article_SuccessStory_Ad_Response> => {
-  if (!storyId || isNaN(parseInt(storyId))) {
+export const getStory = async (storyId: number): Promise<Article_SuccessStory_Ad_Response> => {
+  if (!storyId || isNaN(storyId)) {
     return {
       status: "400",
       message: "رقم القصة غير صالح",

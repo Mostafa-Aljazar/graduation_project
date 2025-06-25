@@ -104,7 +104,7 @@ export const FAKE_STORIES: Article_SuccessStory_Ad[] = [
 // Updated Fake Articles with More Entries
 export const FAKE_ARTICLES: Article_SuccessStory_Ad[] = [
   {
-    id: '1',
+    id: 1,
     title: 'الصعوبات التي يواجهها النازحون في الخيام؟',
     brief: 'استكشاف التحديات اليومية التي يواجهها النازحون في ظروف الخيام.',
     content: `
@@ -157,7 +157,7 @@ export const FAKE_ARTICLES: Article_SuccessStory_Ad[] = [
     updatedAt: new Date('2025-05-26T15:06:00Z'),
   },
   {
-    id: '2',
+    id: 2,
     title: 'دور التكنولوجيا في تحسين حياة النازحين',
     brief: 'كيف يمكن للتكنولوجيا أن تساعد في تلبية احتياجات النازحين؟',
     content: `
@@ -203,7 +203,7 @@ export const FAKE_ARTICLES: Article_SuccessStory_Ad[] = [
     updatedAt: new Date('2025-05-26T15:06:00Z'),
   },
   {
-    id: '3',
+    id: 3,
     title: 'تأثير المناخ على المخيمات: تحديات جديدة',
     brief: 'كيف تؤثر التغيرات المناخية على حياة النازحين؟',
     content: `
@@ -249,7 +249,7 @@ export const FAKE_ARTICLES: Article_SuccessStory_Ad[] = [
     updatedAt: new Date('2025-05-26T15:06:00Z'),
   },
   {
-    id: '4',
+    id: 4,
     title: 'دور الشباب في بناء مستقبل المخيمات',
     brief: 'كيف يساهم الشباب في تحسين ظروف المخيمات؟',
     content: `

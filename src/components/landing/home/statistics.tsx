@@ -1,21 +1,11 @@
-import { HOME_HERO_SLIDER_1, HOME_HERO_SLIDER_2 } from '@/assets/landing/home';
+'use client';
+import CountUp from 'react-countup';
 import {
-  Box,
-  Group,
-  Stack,
-  Text,
-  SimpleGrid,
-  ThemeIcon,
-  Flex,
-} from '@mantine/core';
-import Image from 'next/image';
-import React from 'react';
-import {
-  ABOUT_US_OUR_MISSION,
   Statistics_Data,
-  Statistics_MESSAGE,
   Statistics_TITLE,
+  Statistics_MESSAGE,
 } from '@/content/landing/home';
+import { Group, Stack, Text, SimpleGrid, ThemeIcon, Flex } from '@mantine/core';
 
 export default function Statistics() {
   return (
@@ -64,7 +54,17 @@ export default function Statistics() {
                 </ThemeIcon>
                 <Stack gap={0}>
                   <Text fw={600} fz='lg' className='!text-primary'>
-                    {stat.value}
+                    <CountUp
+                      start={0}
+                      end={typeof stat.value === 'number' ? stat.value : 0}
+                      duration={1.5}
+                      enableScrollSpy
+                      formattingFn={(val) =>
+                        val >= 1000
+                          ? `+${(val / 1000).toFixed(1)} K`
+                          : `+${val}`
+                      }
+                    />
                   </Text>
                   <Text fz='lg' className='!text-primary'>
                     {stat.label}
@@ -74,42 +74,6 @@ export default function Statistics() {
             ))}
           </SimpleGrid>
         </Stack>
-        <Box
-          pos={'relative'}
-          w={{ base: '100%', sm: 300, md: 400 }}
-          h={250}
-          mx={{ base: 'auto', md: 0 }}
-          visibleFrom='md'
-        >
-          <Image
-            src={HOME_HERO_SLIDER_1}
-            alt='statistic-2'
-            width={220}
-            height={150}
-            style={{
-              borderRadius: '1rem',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-              position: 'absolute',
-              bottom: 20,
-              right: 0,
-              zIndex: 2,
-            }}
-          />
-          <Image
-            src={HOME_HERO_SLIDER_2}
-            alt='statistic-1'
-            width={220}
-            height={150}
-            style={{
-              borderRadius: '1rem',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-              position: 'absolute',
-              top: 20,
-              left: 0,
-              zIndex: 1,
-            }}
-          />
-        </Box>
       </Flex>
     </Stack>
   );

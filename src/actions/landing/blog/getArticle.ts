@@ -5,12 +5,12 @@ import { AqsaGuestAPI } from "@/services";
 
 
 export type getArticleProps = {
-    id: string
+    id: number
 }
 
 export const getArticle = async ({ id }: getArticleProps): Promise<Article_SuccessStory_Ad_Response> => {
     // Validate articleId
-    if (!id || isNaN(parseInt(id))) {
+    if (!id || isNaN(id)) {
         return {
             status: "400",
             message: "رقم المقال غير صالح",

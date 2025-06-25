@@ -21,7 +21,7 @@ export interface Article_SuccessStory_Ad_Response {
 }
 
 export interface Article_SuccessStory_Ad {
-    id: number | string;
+    id: number;
     title: string;
     content: string;
     brief?: string;

@@ -27,11 +27,18 @@ export const Statistics_TITLE = 'رغم التحديات إلا أننا مست�
 export const Statistics_MESSAGE =
   ' اليوم، نعمل على تقديم مساعدات منقذة للحياة لألاف الأشخاص الذين يعيشون على حافة البقاء على قيد الحياة';
 
+// export const Statistics_Data = [
+//   { icon: Tent, value: '+5.2 K', label: 'خيم' },
+//   { icon: Smile, value: '+5.2 K', label: 'طفل' },
+//   { icon: Users, value: '+42.3 K', label: 'عائلة' },
+//   { icon: Hospital, value: '+1.2 K', label: 'مصابين' },
+// ];
+
 export const Statistics_Data = [
-  { icon: Tent, value: '+5.2 K', label: 'خيم' },
-  { icon: Smile, value: '+5.2 K', label: 'طفل' },
-  { icon: Users, value: '+42.3 K', label: 'عائلة' },
-  { icon: Hospital, value: '+1.2 K', label: 'مصابين' },
+  { icon: Tent, value: 5200, label: 'خيم' },
+  { icon: Smile, value: 5200, label: 'طفل' },
+  { icon: Users, value: 42300, label: 'عائلة' },
+  { icon: Hospital, value: 1200, label: 'مصابين' },
 ];
 
 export const SERVICES_TITLE = 'الإغاثة والخدمات الأساسية';

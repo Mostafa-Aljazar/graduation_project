@@ -1,7 +1,7 @@
 'use client';
 import { Button, Group, Stack, Text } from '@mantine/core';
 import { UserPlus, Users } from 'lucide-react';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import {
   Aid,
   SelectedDelegatePortion,
@@ -42,10 +42,6 @@ function DelegatesListHeader({
     </Group>
   );
 }
-
-// interface DelegatesListProps {
-
-// }
 
 interface DelegatesListProps {
   destination: DESTINATION_DELEGATES;
@@ -92,24 +88,28 @@ export default function Delegates_List({
     <Stack p={10} pos='relative' w='100%'>
       <DelegatesListHeader title={title} showAddButton={showAddButton} />
 
-      <Delegate_Filters
-        setLocalFilters={setLocalFilters}
-        delegatesNum={delegatesNum}
-      />
+      <Suspense fallback={<div>جارٍ التحميل...</div>}>
+        <Delegate_Filters
+          setLocalFilters={setLocalFilters}
+          delegatesNum={delegatesNum}
+        />
+      </Suspense>
 
-      <Delegates_Table
-        selectedDelegatesPortions={selectedDelegatesPortions}
-        setSelectedDelegatesPortions={setSelectedDelegatesPortions}
-        // receivedDisplaced={receivedDisplaced}
+      <Suspense fallback={<div>جارٍ التحميل...</div>}>
+        <Delegates_Table
+          selectedDelegatesPortions={selectedDelegatesPortions}
+          setSelectedDelegatesPortions={setSelectedDelegatesPortions}
+          // receivedDisplaced={receivedDisplaced}
 
-        destination={destination}
-        localFilters={localFilters}
-        setDelegatesNum={setDelegatesNum}
-        setSelectedRows={setSelectedDelegateIDs}
-        selectedRows={selectedDelegateIDs}
-        // aid_id={aid_id}
-        aid_data={aid_data}
-      />
+          destination={destination}
+          localFilters={localFilters}
+          setDelegatesNum={setDelegatesNum}
+          setSelectedRows={setSelectedDelegateIDs}
+          selectedRows={selectedDelegateIDs}
+          // aid_id={aid_id}
+          aid_data={aid_data}
+        />
+      </Suspense>
     </Stack>
   );
 }

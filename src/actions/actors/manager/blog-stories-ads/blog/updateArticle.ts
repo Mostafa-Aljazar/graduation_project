@@ -4,7 +4,7 @@ import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.t
 import { AqsaAPI } from '@/services';
 
 interface updateArticleProps {
-    id: string;
+    id: number;
     title: string;
     content: string;
     brief?: string;

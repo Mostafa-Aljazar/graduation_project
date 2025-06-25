@@ -13,7 +13,7 @@ import {
 } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 
-type Props = { story_Id: string };
+type Props = { story_Id: number };
 
 const Success_Story = ({ story_Id }: Props) => {
   const {
@@ -49,9 +49,9 @@ const Success_Story = ({ story_Id }: Props) => {
         >
           <Group justify='space-between' align='center'>
             <Text size='sm' c='dimmed'>
-              {story.createdAt instanceof Date
-                ? formatDateInArabic(story.createdAt)
-                : story.createdAt}
+              {story.article_successStory_ad?.createdAt instanceof Date
+                ? formatDateInArabic(story.article_successStory_ad?.createdAt)
+                : story.article_successStory_ad?.createdAt}
             </Text>
           </Group>
         </Box>
@@ -65,14 +65,14 @@ const Success_Story = ({ story_Id }: Props) => {
               c='#000'
               className='pb-6 border-[#345E40] border-b-4 text-gray-800 text-4xl text-start'
             >
-              {story.title}
+              {story.article_successStory_ad?.title}
             </Text>
 
             {/* Hero Image Section */}
             <Box className='!w-[300px] aspect-[3/2]'>
               <Image
-                src={story.img}
-                alt={story.title}
+                src={story.article_successStory_ad?.imgs[0]}
+                alt={story.article_successStory_ad?.title}
                 w={300}
                 h='auto'
                 fit='cover'
@@ -91,7 +91,9 @@ const Success_Story = ({ story_Id }: Props) => {
         <Box p='xl'>
           <Box
             className='max-w-none prose prose-lg'
-            dangerouslySetInnerHTML={{ __html: story.content }}
+            dangerouslySetInnerHTML={{
+              __html: story.article_successStory_ad?.content as string,
+            }}
           />
         </Box>
       </Paper>

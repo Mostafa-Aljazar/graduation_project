@@ -211,7 +211,7 @@ export default function Delegates_Table({
         search: query.search,
         filters: localFilters,
       }),
-    enabled: inDelegates || inEditAid,
+    enabled: inDelegates || inEditAid || inAddAid,
     retry: 1,
   });
 

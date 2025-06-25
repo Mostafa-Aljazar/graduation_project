@@ -5,7 +5,6 @@ import {
   Button,
   Group,
   LoadingOverlay,
-  NativeSelect,
   PasswordInput,
   Select,
   Stack,

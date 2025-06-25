@@ -5,7 +5,7 @@ import { FAKE_STORIES } from '@/content/landing/fake-data';
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 
 interface updateSuccessStoryProps {
-    id: string;
+    id: number;
     title: string;
     content: string;
     brief?: string;
@@ -20,7 +20,7 @@ export const updateSuccessStory = async ({
     imageUrls,
 }: updateSuccessStoryProps): Promise<modalActionResponse> => {
     // Validate the ID
-    if (!id || isNaN(parseInt(id))) {
+    if (!id || isNaN(id)) {
         return {
             status: "400",
             message: "رقم القصة غير صالح",

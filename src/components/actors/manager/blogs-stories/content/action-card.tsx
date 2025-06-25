@@ -9,10 +9,8 @@ import Delete_Ad_Article_Story_Modal from './delete-ad-story-article-modal';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth';
-import {
-  ACTION_ADD_EDIT,
-  TYPE_CONTENT,
-} from '@/content/actor/manager/ads-blogs-stories';
+import { TYPE_CONTENT } from '@/content/actor/manager/ads-blogs-stories';
+import { ACTION_ADD_EDIT } from '@/constants';
 
 type Props = {
   id: string | number;

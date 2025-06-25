@@ -37,7 +37,7 @@ export const getSuccessStories = async ({ page = 1, limit = 5 }: getSuccessStori
                 id: index + 1,
                 title: `${FAKE_STORIES[0].title} ${index + 1}`,
                 createdAt: new Date(Date.now() - index * 86400000).toISOString(), // Vary dates
-                img: FAKE_STORIES[0].img,
+                img: FAKE_STORIES[0].imgs,
                 content: FAKE_STORIES[0].title,
             }));
     }

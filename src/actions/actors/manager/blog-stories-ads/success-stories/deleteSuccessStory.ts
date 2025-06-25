@@ -4,7 +4,7 @@ import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.t
 import { AqsaAPI } from "@/services";
 
 export interface deleteSuccessStoryProps {
-    successStoryId: string | number;
+    successStoryId: number;
 }
 
 export const deleteSuccessStory = async ({

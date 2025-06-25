@@ -10,7 +10,10 @@ export default async function Article_Page({
 
   return (
     <Stack pt={60} className='w-full' mih={'100vh'}>
-      <Article_Story article_story_Id={article_Id} destination={'article'} />
+      <Article_Story
+        article_story_Id={Number(article_Id)}
+        destination={'article'}
+      />
     </Stack>
   );
 }

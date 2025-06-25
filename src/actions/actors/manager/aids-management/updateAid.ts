@@ -1,11 +1,11 @@
 "use server";
 
-import { AddAidPayload } from "@/@types/actors/manager/aid-management/add-aid-management.types";
+import { Aid } from "@/@types/actors/manager/aid-management/add-aid-management.types";
 import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 
-export const updateAid = async (payload: AddAidPayload): Promise<modalActionResponse> => {
+export const updateAid = async (payload: Aid): Promise<modalActionResponse> => {
 
     const fakeData: modalActionResponse = {
         status: "200",

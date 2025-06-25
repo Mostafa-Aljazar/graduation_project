@@ -2,7 +2,7 @@
 
 import { Button, Group, Stack, Text } from '@mantine/core';
 import { Database, UserPlus } from 'lucide-react';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
 import { displacedFilterValues } from '@/validation/actor/general/displaced-filter-form';
 import Displaceds_Filters from './displaceds-filters';
@@ -75,19 +75,25 @@ export default function Displaceds_List({
   return (
     <Stack p={10} pos='relative' w='100%'>
       <DisplacedListHeader title={title} showAddButton={showAddButton} />
-      <Displaceds_Filters
-        setLocalFilters={setLocalFilters}
-        displacedNum={displacedNum}
-      />
-      <Displaceds_Table
-        destination={destination}
-        localFilters={localFilters}
-        setDisplacedNum={setDisplacedNum}
-        setSelectedRows={setSelectedDisplacedIds}
-        selectedRows={selectedDisplacedIds}
-        receivedDisplaced={receivedDisplaced}
-        aid_id={aid_id}
-      />
+
+      <Suspense fallback={<div>جارٍ التحميل...</div>}>
+        <Displaceds_Filters
+          setLocalFilters={setLocalFilters}
+          displacedNum={displacedNum}
+        />
+      </Suspense>
+
+      <Suspense fallback={<div>جارٍ التحميل...</div>}>
+        <Displaceds_Table
+          destination={destination}
+          localFilters={localFilters}
+          setDisplacedNum={setDisplacedNum}
+          setSelectedRows={setSelectedDisplacedIds}
+          selectedRows={selectedDisplacedIds}
+          receivedDisplaced={receivedDisplaced}
+          aid_id={aid_id}
+        />
+      </Suspense>
     </Stack>
   );
 }

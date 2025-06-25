@@ -1,10 +1,6 @@
 import { Box } from '@mantine/core';
-import React from 'react';
+import { ReactNode } from 'react';
 
-export default function Landing_Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function Landing_Layout({ children }: { children: ReactNode }) {
   return <Box pt={60}>{children}</Box>;
 }

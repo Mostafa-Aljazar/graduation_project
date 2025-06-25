@@ -13,7 +13,7 @@ type Props = {
 export const getAid = async ({ id }: Props): Promise<AidResponse> => {
 
     const aid = fakeAids.filter(aid => aid.id == id)
-    console.log("🚀 ~ getAid ~ aid:", aid)
+    // console.log("🚀 ~ getAid ~ aid:", aid)
 
     return await new Promise((resolve) => {
         setTimeout(() => {

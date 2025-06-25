@@ -9,7 +9,10 @@ export default async function Page({
   const { story_Id } = await params;
   return (
     <Stack pt={60}>
-      <Article_Story article_story_Id={story_Id} destination={'story'} />
+      <Article_Story
+        article_story_Id={Number(story_Id)}
+        destination={'story'}
+      />
     </Stack>
   );
 }

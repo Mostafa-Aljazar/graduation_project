@@ -42,14 +42,12 @@ import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.t
 import { updateArticle } from '@/actions/actors/manager/blog-stories-ads/blog/updateArticle';
 import { updateAd } from '@/actions/actors/manager/blog-stories-ads/ad/updateAd';
 import { updateSuccessStory } from '@/actions/actors/manager/blog-stories-ads/success-stories/updateSuccessStory';
-import {
-  ACTION_ADD_EDIT,
-  TYPE_CONTENT,
-} from '@/content/actor/manager/ads-blogs-stories';
+import { TYPE_CONTENT } from '@/content/actor/manager/ads-blogs-stories';
 import { useRouter } from 'next/navigation';
 import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import useAuth from '@/hooks/useAuth';
 import { z } from 'zod';
+import { ACTION_ADD_EDIT } from '@/constants';
 
 // Define the Zod schema for FormData
 const formSchema = z.object({
@@ -114,11 +112,11 @@ export default function Page() {
       if (action !== ACTION_ADD_EDIT.EDIT || !id) return null;
       const initialType = addType;
       if (initialType === TYPE_CONTENT.SUCCESS_STORIES) {
-        return await getSuccessStory({ id: id });
+        return await getSuccessStory({ id: Number(id) });
       } else if (initialType === TYPE_CONTENT.ADS) {
-        return await getAd({ id: id });
+        return await getAd({ id: Number(id) });
       } else {
-        return await getArticle({ id });
+        return await getArticle({ id: Number(id) });
       }
     },
     enabled: action === ACTION_ADD_EDIT.EDIT && !!id,
@@ -188,7 +186,7 @@ export default function Page() {
       try {
         if (values.type === TYPE_CONTENT.BLOG) {
           return await updateArticle({
-            id,
+            id: Number(id),
             title: values.title,
             content: values.content,
             brief: values.brief,
@@ -204,7 +202,7 @@ export default function Page() {
           });
         } else if (values.type === TYPE_CONTENT.SUCCESS_STORIES) {
           return await updateSuccessStory({
-            id,
+            id: Number(id),
             title: values.title,
             content: values.content,
             brief: values.brief,

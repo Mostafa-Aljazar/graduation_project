@@ -1,4 +1,4 @@
-import { AQSA_CAMP_EMAIL } from "@/constants";
+import { AQSA_CAMP_EMAIL } from "@/constants/services";
 import { sendEmail } from "@/utils/send-mail";
 
 // export const sendEmailFun = async () => {

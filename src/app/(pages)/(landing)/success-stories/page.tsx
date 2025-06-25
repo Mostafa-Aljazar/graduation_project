@@ -9,6 +9,7 @@ import Child_Section from '@/components/landing/common/child-section';
 import Hero_Section from '@/components/landing/common/hero-section';
 import Our_Success_Stories from '@/components/landing/success-stories/our-success-stories';
 import { HERO_DESCRIPTION, HERO_TITLE } from '@/content/landing/success-story';
+import { Suspense } from 'react';
 
 export default function Success_Story() {
   return (
@@ -23,7 +24,10 @@ export default function Success_Story() {
           SUCCESS_STORY_HERO_SLIDER_4,
         ]}
       />
-      <Our_Success_Stories />
+
+      <Suspense fallback={<div>جارٍ التحميل...</div>}>
+        <Our_Success_Stories />
+      </Suspense>
 
       <Child_Section
         child_image={BLOG_CHILD}

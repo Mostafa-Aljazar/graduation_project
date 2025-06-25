@@ -34,9 +34,9 @@ export default function Delete_Ad_Article_Story_Modal({
       if (isInAds) {
         return await deleteAd({ adId: id });
       } else if (isInSuccessStories) {
-        return await deleteSuccessStory({ successStoryId: id });
+        return await deleteSuccessStory({ successStoryId: Number(id) });
       } else {
-        return await deleteArticle({ articleId: id });
+        return await deleteArticle({ articleId: Number(id) });
       }
     },
     onSuccess: (data) => {

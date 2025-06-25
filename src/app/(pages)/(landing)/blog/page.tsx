@@ -1,3 +1,4 @@
+'use client';
 import {
   BLOG_CHILD,
   BLOG_HERO_SLIDER_1,
@@ -8,6 +9,7 @@ import Our_Blog from '@/components/landing/blog/our-blog';
 import Child_Section from '@/components/landing/common/child-section';
 import Hero_Section from '@/components/landing/common/hero-section';
 import { HERO_DESCRIPTION, HERO_TITLE } from '@/content/landing/blog';
+import { Suspense } from 'react';
 
 export default function Blog() {
   return (
@@ -22,7 +24,9 @@ export default function Blog() {
         ]}
       />
 
-      <Our_Blog />
+      <Suspense fallback={<div>جارٍ التحميل...</div>}>
+        <Our_Blog />
+      </Suspense>
 
       <Child_Section
         child_image={BLOG_CHILD}

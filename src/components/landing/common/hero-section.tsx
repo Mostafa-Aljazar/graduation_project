@@ -5,11 +5,11 @@ import Image, { StaticImageData } from 'next/image';
 import { useRef } from 'react';
 import Autoplay from 'embla-carousel-autoplay';
 
-type Props = {
+interface Props {
   slider_images: StaticImageData[] | string[];
   title: string;
   desc: string;
-};
+}
 
 export default function Hero_Section({ slider_images, title, desc }: Props) {
   const autoplay = useRef(Autoplay({ delay: 5000 }));

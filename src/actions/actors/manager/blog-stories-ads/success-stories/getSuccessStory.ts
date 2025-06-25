@@ -5,11 +5,11 @@ import { Article_SuccessStory_Ad, Article_SuccessStory_Ad_Response } from "@/@ty
 
 
 export type getSuccessStoryProps = {
-  id: string
+  id: number
 }
 
 export const getSuccessStory = async ({ id }: getSuccessStoryProps): Promise<Article_SuccessStory_Ad_Response> => {
-  if (!id || isNaN(parseInt(id))) {
+  if (!id || isNaN(id)) {
     return {
       status: "400",
       message: "رقم القصة غير صالح",

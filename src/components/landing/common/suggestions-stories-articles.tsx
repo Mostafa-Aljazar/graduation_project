@@ -62,7 +62,7 @@ export default function Suggestions_Stories_Article({
                 createdAt={article.createdAt}
                 title={article.title}
                 content={article.content}
-                img={article.img}
+                imgs={article.imgs}
                 brief={article.brief}
               />
             )

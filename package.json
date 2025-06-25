@@ -41,6 +41,7 @@
     "nodemailer": "^7.0.3",
     "nuqs": "^2.4.3",
     "react": "^19.0.0",
+    "react-countup": "^6.5.3",
     "react-dom": "^19.0.0",
     "react-phone-number-input": "^3.4.12",
     "recharts": "^2.15.3",

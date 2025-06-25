@@ -1,53 +1,25 @@
 'use client';
 
 import {
-  Button,
   Checkbox,
-  Flex,
   Group,
   LoadingOverlay,
-  MultiSelect,
-  NumberInput,
   Pagination,
-  Select,
-  SimpleGrid,
-  Stack,
   Table,
   Text,
-  TextInput,
 } from '@mantine/core';
-import { useForm, zodResolver } from '@mantine/form';
-import {
-  Database,
-  FileUp,
-  ListFilter,
-  RotateCcw,
-  Search,
-  UserPlus,
-} from 'lucide-react';
+
 import {
   parseAsInteger,
   parseAsString,
   parseAsStringEnum,
-  useQueryState,
   useQueryStates,
 } from 'nuqs';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { cn } from '@/utils/cn';
-import {
-  ACCOMMODATION_TYPE,
-  AGES,
-  CASE_TYPE,
-  CHRONIC_DISEASE,
-  DESTINATION_DISPLACED,
-  WIFE_STATUS,
-} from '@/content/actor/displaced/filter';
-import { fakeDelegates } from '@/content/actor/general/fake-delegates';
-import {
-  displacedFilterSchema,
-  displacedFilterValues,
-} from '@/validation/actor/general/displaced-filter-form';
+import { DESTINATION_DISPLACED } from '@/content/actor/displaced/filter';
+import { displacedFilterValues } from '@/validation/actor/general/displaced-filter-form';
 import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
 import { getDisplaceds } from '@/actions/actors/general/displaced/getDisplaceds';
 import { getDisplacedsIDs } from '@/actions/actors/general/displaced/getDisplacedsIDs';

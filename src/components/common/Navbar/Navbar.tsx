@@ -10,7 +10,6 @@ import {
 } from '@mantine/core';
 import React from 'react';
 import Image from 'next/image';
-import { logo, man } from '@/assets/common';
 import {
   Database,
   FileChartLine,
@@ -27,6 +26,7 @@ import { logout } from '@/utils/auth/logout';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/utils/cn';
+import { MAN } from '@/assets/actor';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -68,7 +68,7 @@ export default function Navbar() {
             h={85}
           >
             <Image
-              src={man}
+              src={MAN}
               alt='man'
               width={85}
               height={85}

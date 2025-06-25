@@ -2,10 +2,11 @@
 
 import { AidResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { getAid } from '@/actions/actors/manager/aids-management/getAid';
-import Add_Aid_Page from '@/app/(pages)/actor/manager/[manager_Id]/aids-management/add/page';
 import { LoadingOverlay, Stack } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
+import Add_Aid_Page from '../add/page/add-aid-page';
+// import Add_Aid_Page from '@/components/actors/manager/aids-management/add/page/add-aid-page';
 
 export interface AidProps {
   aid_id: number;
@@ -32,7 +33,8 @@ export default function Aid_Page({ aid_id }: AidProps) {
 
   return (
     <Stack pos={'relative'}>
-      <Add_Aid_Page initialData={data} aid_id={aid_id} />;
+      {/* <Add_Aid_Page aid_id={aid_id} />; */}
+      <Add_Aid_Page initialData={data as AidResponse} aid_id={aid_id} />;
     </Stack>
   );
 }
