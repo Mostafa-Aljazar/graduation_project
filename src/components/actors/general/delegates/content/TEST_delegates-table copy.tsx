@@ -26,7 +26,7 @@ import {
 } from '@/content/actor/manager/aids-management';
 import { delegatesFilterValues } from '@/validation/actor/general/delegates-filter-form';
 import { DESTINATION_DELEGATES } from '@/content/actor/delegate/filter';
-import { ACTION_ADD_EDIT } from '@/constants';
+import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
 import {
   Delegate,
   DelegatesResponse,
@@ -94,9 +94,9 @@ export default function TEST_Delegates_Table({
 
     delegate_page: parseAsInteger.withDefault(1),
 
-    action: parseAsStringEnum<ACTION_ADD_EDIT>(
-      Object.values(ACTION_ADD_EDIT)
-    ).withDefault(ACTION_ADD_EDIT.ADD),
+    action: parseAsStringEnum<ACTION_ADD_EDIT_DISPLAY>(
+      Object.values(ACTION_ADD_EDIT_DISPLAY)
+    ).withDefault(ACTION_ADD_EDIT_DISPLAY.ADD),
   });
 
   const initRemainingQuantity =

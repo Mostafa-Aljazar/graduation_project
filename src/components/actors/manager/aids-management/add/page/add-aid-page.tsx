@@ -39,7 +39,7 @@ import { useRouter } from 'next/navigation';
 import Displaceds_List from '@/components/actors/general/Displaced/content/displaceds-list';
 import { DESTINATION_DISPLACED } from '@/content/actor/displaced/filter';
 import { DESTINATION_DELEGATES } from '@/content/actor/delegate/filter';
-import { ACTION_ADD_EDIT } from '@/constants';
+import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
 import { getAid } from '@/actions/actors/manager/aids-management/getAid';
 
 function Add_Aid_Header({
@@ -51,8 +51,8 @@ function Add_Aid_Header({
 }) {
   const [action, setAction] = useQueryState(
     'action',
-    parseAsStringEnum(Object.values(ACTION_ADD_EDIT)).withDefault(
-      ACTION_ADD_EDIT.ADD
+    parseAsStringEnum(Object.values(ACTION_ADD_EDIT_DISPLAY)).withDefault(
+      ACTION_ADD_EDIT_DISPLAY.ADD
     )
   );
 
@@ -74,8 +74,8 @@ function Add_Aid_Header({
           radius='lg'
           className='!bg-primary'
           rightSection={<Pin size={16} />}
-          hidden={action === ACTION_ADD_EDIT.EDIT}
-          onClick={() => setAction(ACTION_ADD_EDIT.EDIT)}
+          hidden={action === ACTION_ADD_EDIT_DISPLAY.EDIT}
+          onClick={() => setAction(ACTION_ADD_EDIT_DISPLAY.EDIT)}
         >
           تعديل المساعدة
         </Button>
@@ -111,9 +111,9 @@ export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
 
   const [query] = useQueryStates(
     {
-      action: parseAsStringEnum(Object.values(ACTION_ADD_EDIT)).withDefault(
-        ACTION_ADD_EDIT.ADD
-      ),
+      action: parseAsStringEnum(
+        Object.values(ACTION_ADD_EDIT_DISPLAY)
+      ).withDefault(ACTION_ADD_EDIT_DISPLAY.ADD),
 
       distributionMechanism: parseAsStringEnum(
         Object.values(DISTRIBUTION_MECHANISM)
@@ -137,13 +137,14 @@ export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
   );
 
   // تفعيل تعطيل الفورم في حالة العرض فقط
-  const isDisabled = !!initialData && query.action !== ACTION_ADD_EDIT.EDIT;
+  const isDisabled =
+    !!initialData && query.action !== ACTION_ADD_EDIT_DISPLAY.EDIT;
 
   // تحديد وضعية الهيدر
   const headerMode =
-    !!initialData && query.action !== ACTION_ADD_EDIT.EDIT
+    !!initialData && query.action !== ACTION_ADD_EDIT_DISPLAY.EDIT
       ? 'عرض'
-      : !!initialData && query.action === ACTION_ADD_EDIT.EDIT
+      : !!initialData && query.action === ACTION_ADD_EDIT_DISPLAY.EDIT
       ? 'تعديل'
       : 'إضافة';
 
@@ -164,14 +165,14 @@ export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
 
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: (payload: Aid) =>
-      query.action === ACTION_ADD_EDIT.EDIT && initialData?.aid.id
+      query.action === ACTION_ADD_EDIT_DISPLAY.EDIT && initialData?.aid.id
         ? updateAid({ ...payload, id: initialData?.aid.id || -1 })
         : addAid(payload),
     onSuccess: (response) => {
       if (response.status === '200') {
         notifications.show({
           title:
-            query.action === ACTION_ADD_EDIT.EDIT
+            query.action === ACTION_ADD_EDIT_DISPLAY.EDIT
               ? 'تم تعديل المساعدة'
               : 'تم حفظ المساعدة',
           message: response.message || 'تم إرسال البيانات بنجاح',
@@ -223,7 +224,7 @@ export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
     }
 
     const isCompleted =
-      query.action === ACTION_ADD_EDIT.ADD
+      query.action === ACTION_ADD_EDIT_DISPLAY.ADD
         ? values.distributionMechanism ===
             DISTRIBUTION_MECHANISM.delegates_lists || values.securityRequired
         : false; // ضبط حسب الحاجة من الباك اند
@@ -249,7 +250,9 @@ export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
       />
       <Add_Aid_Header
         mode={headerMode}
-        showEditButton={!!initialData && query.action !== ACTION_ADD_EDIT.EDIT}
+        showEditButton={
+          !!initialData && query.action !== ACTION_ADD_EDIT_DISPLAY.EDIT
+        }
       />
 
       <Add_Aid_Form
@@ -263,7 +266,7 @@ export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
       {isDisplaced ? (
         <Displaceds_List
           destination={
-            !!initialData && query.action === ACTION_ADD_EDIT.EDIT
+            !!initialData && query.action === ACTION_ADD_EDIT_DISPLAY.EDIT
               ? DESTINATION_DISPLACED.EDIT_AIDS
               : !!initialData
               ? DESTINATION_DISPLACED.DISPLAY_AIDS
@@ -279,7 +282,7 @@ export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
         <Stack gap={20}>
           <Delegates_List
             destination={
-              !!initialData && query.action === ACTION_ADD_EDIT.EDIT
+              !!initialData && query.action === ACTION_ADD_EDIT_DISPLAY.EDIT
                 ? DESTINATION_DELEGATES.EDIT_AIDS
                 : !!initialData
                 ? DESTINATION_DELEGATES.DISPLAY_AIDS
@@ -312,7 +315,7 @@ export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
             loading={isPending}
             disabled={isPending}
           >
-            {query.action === ACTION_ADD_EDIT.EDIT ? 'تعديل' : 'إضافة'}
+            {query.action === ACTION_ADD_EDIT_DISPLAY.EDIT ? 'تعديل' : 'إضافة'}
           </Button>
         </Group>
       )}

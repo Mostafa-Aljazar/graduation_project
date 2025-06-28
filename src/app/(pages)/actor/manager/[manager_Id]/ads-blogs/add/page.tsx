@@ -47,7 +47,7 @@ import { useRouter } from 'next/navigation';
 import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import useAuth from '@/hooks/useAuth';
 import { z } from 'zod';
-import { ACTION_ADD_EDIT } from '@/constants';
+import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
 
 // Define the Zod schema for FormData
 const formSchema = z.object({
@@ -85,9 +85,9 @@ interface FormData {
 export default function Page() {
   const [action, setAction] = useQueryState(
     'action',
-    parseAsStringEnum<ACTION_ADD_EDIT>(
-      Object.values(ACTION_ADD_EDIT)
-    ).withDefault(ACTION_ADD_EDIT.ADD)
+    parseAsStringEnum<ACTION_ADD_EDIT_DISPLAY>(
+      Object.values(ACTION_ADD_EDIT_DISPLAY)
+    ).withDefault(ACTION_ADD_EDIT_DISPLAY.ADD)
   );
 
   const [id] = useQueryState('id', parseAsString.withDefault(''));
@@ -109,7 +109,7 @@ export default function Page() {
   >({
     queryKey: ['editData', id, action],
     queryFn: async () => {
-      if (action !== ACTION_ADD_EDIT.EDIT || !id) return null;
+      if (action !== ACTION_ADD_EDIT_DISPLAY.EDIT || !id) return null;
       const initialType = addType;
       if (initialType === TYPE_CONTENT.SUCCESS_STORIES) {
         return await getSuccessStory({ id: Number(id) });
@@ -119,7 +119,7 @@ export default function Page() {
         return await getArticle({ id: Number(id) });
       }
     },
-    enabled: action === ACTION_ADD_EDIT.EDIT && !!id,
+    enabled: action === ACTION_ADD_EDIT_DISPLAY.EDIT && !!id,
     staleTime: Infinity,
   });
 
@@ -223,7 +223,7 @@ export default function Page() {
           title: 'نجاح',
           message:
             data.message ||
-            (action == ACTION_ADD_EDIT.EDIT
+            (action == ACTION_ADD_EDIT_DISPLAY.EDIT
               ? 'تم تحديث المحتوى بنجاح'
               : 'تم إرسال المحتوى بنجاح'),
           color: 'green',
@@ -344,7 +344,7 @@ export default function Page() {
 
   const handleSubmit = form.onSubmit(async (values) => {
     // In add mode, require at least one image
-    if (action === ACTION_ADD_EDIT.ADD && selectedFiles.length === 0) {
+    if (action === ACTION_ADD_EDIT_DISPLAY.ADD && selectedFiles.length === 0) {
       notifications.show({
         title: 'خطأ',
         message: 'يجب عليك رفع صورة واحدة على الأقل في وضع الإضافة.',
@@ -356,7 +356,7 @@ export default function Page() {
 
     // In update mode, ensure there is at least one image (either existing or new)
     if (
-      action === ACTION_ADD_EDIT.EDIT &&
+      action === ACTION_ADD_EDIT_DISPLAY.EDIT &&
       selectedFiles.length === 0 &&
       form.values.imageUrls.length === 0
     ) {
@@ -384,7 +384,7 @@ export default function Page() {
       }
     }
 
-    if (action === ACTION_ADD_EDIT.EDIT && id) {
+    if (action === ACTION_ADD_EDIT_DISPLAY.EDIT && id) {
       updateMutation.mutate(values);
     } else {
       addMutation.mutate(values);
@@ -408,7 +408,7 @@ export default function Page() {
           <Group gap={8}>
             <NotebookPen size={24} className='text-primary' />
             <Text fz={24} fw={600} className='!text-primary'>
-              {action === ACTION_ADD_EDIT.EDIT ? 'تعديل' : 'إضافة'}
+              {action === ACTION_ADD_EDIT_DISPLAY.EDIT ? 'تعديل' : 'إضافة'}
             </Text>
           </Group>
         </Group>
@@ -444,7 +444,7 @@ export default function Page() {
                   </Text>
                 }
                 size='sm'
-                disabled={action === ACTION_ADD_EDIT.EDIT}
+                disabled={action === ACTION_ADD_EDIT_DISPLAY.EDIT}
               />
               <Radio
                 value={TYPE_CONTENT.ADS}
@@ -454,7 +454,7 @@ export default function Page() {
                   </Text>
                 }
                 size='sm'
-                disabled={action === ACTION_ADD_EDIT.EDIT}
+                disabled={action === ACTION_ADD_EDIT_DISPLAY.EDIT}
               />
               <Radio
                 value={TYPE_CONTENT.SUCCESS_STORIES}
@@ -464,7 +464,7 @@ export default function Page() {
                   </Text>
                 }
                 size='sm'
-                disabled={action === ACTION_ADD_EDIT.EDIT}
+                disabled={action === ACTION_ADD_EDIT_DISPLAY.EDIT}
               />
             </Group>
           </Radio.Group>
@@ -512,7 +512,7 @@ export default function Page() {
                   اسحب الصور هنا أو انقر لاختيار الملفات
                 </Text>
                 <Text size='sm' c='dimmed' inline mt={7}>
-                  {action === ACTION_ADD_EDIT.EDIT
+                  {action === ACTION_ADD_EDIT_DISPLAY.EDIT
                     ? 'يمكنك رفع ما بين 0 إلى 4 صور، يجب ألا يتجاوز حجم كل ملف 4 ميجابيت'
                     : 'يجب عليك رفع ما بين 1 إلى 4 صور، يجب ألا يتجاوز حجم كل ملف 4 ميجابيت'}
                 </Text>
@@ -749,17 +749,17 @@ export default function Page() {
               !form.isValid() ? '!bg-primary/70' : '!bg-primary'
             )}
             disabled={
-              (action === ACTION_ADD_EDIT.EDIT
+              (action === ACTION_ADD_EDIT_DISPLAY.EDIT
                 ? updateMutation.isPending
                 : addMutation.isPending) || !form.isValid()
             }
             loading={
-              (action === ACTION_ADD_EDIT.EDIT
+              (action === ACTION_ADD_EDIT_DISPLAY.EDIT
                 ? updateMutation.isPending
                 : addMutation.isPending) || loadingImages
             }
           >
-            {action === ACTION_ADD_EDIT.EDIT ? 'تحديث' : 'إضافة'}
+            {action === ACTION_ADD_EDIT_DISPLAY.EDIT ? 'تحديث' : 'إضافة'}
           </Button>
         </Group>
       </Stack>

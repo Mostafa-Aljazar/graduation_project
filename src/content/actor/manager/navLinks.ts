@@ -1,10 +1,10 @@
-import { ShieldUser, Database, Newspaper, Speech, Handshake, User, Users, FileChartLine, MessageCircleWarning } from 'lucide-react';
+import { GENERAL_ACTOR_ROUTES, MANAGER_ROUTES_fUNC } from '@/constants/routes';
+import { ShieldUser, Database, Newspaper, Handshake, User, Users, FileChartLine, MessageCircleWarning } from 'lucide-react';
 
-import { GENERAL_ACTOR_ROUTES, MANAGER_ROUTES_fUNC } from "../../../constants/routes";
 
 
 //what appear to manager 
-export const managerNavLinks = (manager_Id: number | string) => {
+export const managerNavLinks = (manager_Id: number) => {
 
     const managerRoutes = MANAGER_ROUTES_fUNC(manager_Id);
 
@@ -34,7 +34,7 @@ export const managerNavLinks = (manager_Id: number | string) => {
 
 
 //what appear when any user open manager pages
-export const guestManagerNavLinks = (manager_Id: number | string) => {
+export const guestManagerNavLinks = (manager_Id: number) => {
     const managerRoutes = MANAGER_ROUTES_fUNC(manager_Id);
 
     return [

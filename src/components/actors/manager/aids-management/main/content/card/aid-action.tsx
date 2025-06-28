@@ -16,7 +16,7 @@ import { useState } from 'react';
 import useAuth from '@/hooks/useAuth';
 import { useDisclosure } from '@mantine/hooks';
 import Aid_Delete_Modal from './aid-delete-modal';
-import { ACTION_ADD_EDIT } from '@/constants';
+import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
 
 // Define the type for action items
 interface ActionItem {
@@ -50,7 +50,7 @@ export default function Aid_Action({ aid_ID }: AidActionProps) {
       action: () =>
         router.push(
           MANAGER_ROUTES_fUNC(user?.id ?? 0, aid_ID).AID +
-            `?action=${ACTION_ADD_EDIT.EDIT}`
+            `?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
         ),
     },
     {

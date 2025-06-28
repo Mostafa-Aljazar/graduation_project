@@ -20,7 +20,7 @@ import Call_Delegate_Modal from './modals/Call_Delegate_Modal';
 import Delete_Delegate_Modal from './modals/Delete_Delegate_Modal';
 import Update_Delegate_Modal from './modals/Update_Delegate_Modal';
 import Meeting_Delegate_Modal from './modals/Meeting_Delegate_Modal';
-import { ACTION_ADD_EDIT } from '@/constants';
+import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
 
 // Define the type for action items
 interface ActionItem {
@@ -94,7 +94,7 @@ export default function Delegates_Table_Actions({
       action: () =>
         router.push(
           DELEGATE_ROUTES_fUNC(delegate_Id || -1).PROFILE +
-            `?action=${ACTION_ADD_EDIT.EDIT}`
+            `?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
         ),
     },
     ...Manager_General_ACTIONS,

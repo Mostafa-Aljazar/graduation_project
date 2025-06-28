@@ -10,6 +10,9 @@ import { delegatesFilterValues } from '@/validation/actor/general/delegates-filt
 import { DESTINATION_DELEGATES } from '@/content/actor/delegate/filter';
 import Delegate_Filters from './delegates-filter';
 import Delegates_Table from './delegates-table';
+import { useRouter } from 'next/navigation';
+import { GENERAL_ACTOR_ROUTES } from '@/constants/routes';
+import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
 
 function DelegatesListHeader({
   title,
@@ -18,6 +21,7 @@ function DelegatesListHeader({
   title?: string;
   showAddButton?: boolean;
 }) {
+  const router = useRouter();
   return (
     <Group justify='space-between' align='center'>
       <Group gap={10}>
@@ -35,6 +39,11 @@ function DelegatesListHeader({
           radius='lg'
           className='!bg-primary'
           rightSection={<UserPlus size={16} />}
+          onClick={() =>
+            router.push(
+              `${GENERAL_ACTOR_ROUTES.ADD_DELEGATES}?action=${ACTION_ADD_EDIT_DISPLAY.ADD}`
+            )
+          }
         >
           إضافة مندوب
         </Button>

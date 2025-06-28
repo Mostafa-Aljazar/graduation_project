@@ -1,31 +1,31 @@
 'use client';
+
 import { Box, Stack, Text } from '@mantine/core';
 import React, { useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/utils/cn';
-import {
-  guestManagerNavLinks,
-  managerNavLinks,
-} from '@/content/actor/manager/navLinks';
 import useAuth from '@/hooks/useAuth';
 import {
+  managerNavLinks,
+  guestManagerNavLinks,
+} from '@/content/actor/manager/navLinks';
+import {
   delegate_NavLinks,
-  displaced_As_Guest_Delegate_NavLinks,
   guest_Delegate_NavLinks,
+  displaced_As_Guest_Delegate_NavLinks,
   security_OR_delegate_As_Guest_Delegate_NavLinks,
 } from '@/content/actor/delegate/navLinks';
 import {
+  security_NavLinks,
   guest_Security_NavLinks,
   manager_OR_Security_Guest_Security_NavLinks,
-  security_NavLinks,
 } from '@/content/actor/security/navLinks';
 import {
   displaced_NavLinks,
   guest_Displaced_NavLinks,
 } from '@/content/actor/displaced/navLinks';
 
-// Define types for navigation links to ensure type safety
 interface NavLink {
   label: string;
   href: string;
@@ -41,99 +41,75 @@ export default function Navigation_Links() {
     isSecurityOfficer,
     isManager,
   } = useAuth();
-
+  const userId = Number(user?.id) || 0;
   const pathname = usePathname();
 
-  // Extract ID from pathname (e.g., /actor/displaced/1/profile)
-  const getIdFromPathname = (path: string): number => {
-    if (!pathname.includes(path)) return 0;
-    const segments = pathname.split('/');
-    const idIndex = segments.indexOf(path) + 1;
-    return idIndex < segments.length ? Number(segments[idIndex]) || 0 : 0;
+  const extractId = (key: string) => {
+    const parts = pathname.split('/');
+    const idx = parts.indexOf(key) + 1;
+    return idx > 0 && idx < parts.length ? Number(parts[idx]) || 0 : 0;
   };
 
-  // Determine navigation links based on user role and pathname
-  const getNavLinks = useMemo(() => {
-    // get user id from registered user as number
-    const userId = Number(user?.id) || 0;
-
-    const selectNavLinks = (role: string, isOwnPage: boolean, id: number) => {
-      switch (role) {
-        case 'displaced':
-          // Return (authenticated or guest) displaced links
-          return isOwnPage
-            ? displaced_NavLinks(userId)
-            : guest_Displaced_NavLinks(id);
-
-        case 'delegate':
-          // Handle delegate links, with special case for displaced users (get just profile)
-          return isOwnPage
-            ? delegate_NavLinks(userId)
-            : isDisplaced == true
-            ? displaced_As_Guest_Delegate_NavLinks(id)
-            : isDelegate || isSecurity == true
-            ? security_OR_delegate_As_Guest_Delegate_NavLinks(id)
-            : guest_Delegate_NavLinks(id); //manager or security officer guest delegate links
-
-        case 'security':
-          return isOwnPage
-            ? security_NavLinks(userId)
-            : isDisplaced
-            ? guest_Security_NavLinks(id)
-            : manager_OR_Security_Guest_Security_NavLinks(id);
-
-        case 'manager':
-          return isOwnPage ? managerNavLinks(userId) : guestManagerNavLinks(id);
-        default:
-          return null;
+  const navLinks = useMemo(() => {
+    if (pathname.includes('/displaceds/')) {
+      if (pathname.includes('/displaceds/add') && isManager) {
+        return managerNavLinks(userId);
+      } else if (pathname.includes('/displaceds/add') && isDelegate) {
+        return delegate_NavLinks(userId);
+      } else {
+        const id = extractId('displaceds');
+        if (isDisplaced && userId === id) return displaced_NavLinks(userId);
+        return guest_Displaced_NavLinks(id);
       }
-    };
-
-    // Check specific role-based paths
-    if (pathname.includes('/displaced/')) {
-      const displacedId = getIdFromPathname('displaced'); // get displaced id from url
-      return selectNavLinks(
-        'displaced',
-        isDisplaced && userId === displacedId, // check if the user is guest or in his main pages
-        displacedId // displaced id from url,  it might be my ID or the guest ID.
-      );
-    } else if (pathname.includes('/delegate/')) {
-      const delegateId = getIdFromPathname('delegate');
-
-      return selectNavLinks(
-        'delegate',
-        isDelegate && userId === delegateId,
-        delegateId
-      );
-    } else if (pathname.includes('/security/')) {
-      const securityId = getIdFromPathname('security');
-      return selectNavLinks(
-        'security',
-        (isSecurity || isSecurityOfficer) && userId === securityId,
-        securityId
-      );
-    } else if (pathname.includes('/manager/')) {
-      const managerId = getIdFromPathname('manager');
-      return selectNavLinks(
-        'manager',
-        isManager && userId === managerId,
-        managerId
-      );
     }
 
-    // Now, handle general pages (common pages) for registered users
+    if (pathname.includes('/delegates/')) {
+      if (pathname.includes('/delegates/add') && isManager) {
+        return managerNavLinks(userId);
+      } else {
+        const id = extractId('delegates');
+        if (isDelegate && userId === id) return delegate_NavLinks(userId);
+        if (isDisplaced) return displaced_As_Guest_Delegate_NavLinks(id);
+        if (isDelegate || isSecurity)
+          return security_OR_delegate_As_Guest_Delegate_NavLinks(id);
+        return guest_Delegate_NavLinks(id);
+      }
+    }
+
+    if (pathname.includes('/security/')) {
+      const id = extractId('security');
+      if ((isSecurity || isSecurityOfficer) && userId === id)
+        return security_NavLinks(userId);
+      if (isDisplaced) return guest_Security_NavLinks(id);
+      return manager_OR_Security_Guest_Security_NavLinks(id);
+    }
+
+    if (pathname.includes('/manager/')) {
+      const id = extractId('manager');
+      if (isManager && userId === id) return managerNavLinks(userId);
+      return guestManagerNavLinks(id);
+    }
+
     if (isDisplaced) return displaced_NavLinks(userId);
     if (isDelegate) return delegate_NavLinks(userId);
     if (isSecurity || isSecurityOfficer) return security_NavLinks(userId);
     if (isManager) return managerNavLinks(userId);
 
-    return null;
-  }, [pathname, user]);
+    return [];
+  }, [
+    pathname,
+    userId,
+    isDisplaced,
+    isDelegate,
+    isSecurity,
+    isSecurityOfficer,
+    isManager,
+  ]);
 
   return (
     <Box w='100%' className='shadow-xl rounded-[20px] !overflow-hidden'>
       <Stack gap={0}>
-        {getNavLinks?.map((link: NavLink, index: number) => {
+        {navLinks.map((link, index) => {
           const isActive = pathname.includes(link.href);
           return (
             <Link
@@ -141,7 +117,7 @@ export default function Navigation_Links() {
               href={link.href}
               className={cn(
                 'flex items-center gap-2 px-2 py-4 text-dark hover:bg-gray-200 transition-colors border-0 border-gray-100',
-                index !== getNavLinks.length - 1 && 'border-b-1', // remove border bottom from last item
+                index !== navLinks.length - 1 && 'border-b-1',
                 isActive &&
                   'bg-gradient-to-l from-primary to-white font-semibold'
               )}

@@ -1,10 +1,10 @@
+import { GENERAL_ACTOR_ROUTES, SECURITY_ROUTES_fUNC } from "@/constants/routes";
 import { ListTodo, User, Users, ShieldUser, Database, BellRing, Speech, Newspaper, MessageCircleWarning } from "lucide-react";
-import { GENERAL_ACTOR_ROUTES, SECURITY_ROUTES_fUNC } from "../../../constants/routes";
 
 //what appear to security 
-export const security_NavLinks = (security_Id: number | string) => {
+export const security_NavLinks = (security_Id: number) => {
 
-    const securityRoutes = SECURITY_ROUTES_fUNC(security_Id as number);
+    const securityRoutes = SECURITY_ROUTES_fUNC(security_Id);
 
     return [
         { label: 'الملف الشخصي', href: securityRoutes.PROFILE, icon: User },
@@ -31,8 +31,8 @@ export const security_NavLinks = (security_Id: number | string) => {
 };
 
 //what appear when manger or security officer open security page
-export const manager_OR_Security_Guest_Security_NavLinks = (security_Id: number | string) => {
-    const securityRoutes = SECURITY_ROUTES_fUNC(security_Id as number);
+export const manager_OR_Security_Guest_Security_NavLinks = (security_Id: number) => {
+    const securityRoutes = SECURITY_ROUTES_fUNC(security_Id);
 
     return [
         { label: 'الملف الشخصي', href: securityRoutes.PROFILE, icon: User },
@@ -41,8 +41,8 @@ export const manager_OR_Security_Guest_Security_NavLinks = (security_Id: number 
 };
 
 //what appear when anu user open security page
-export const guest_Security_NavLinks = (security_Id: number | string) => {
-    const securityRoutes = SECURITY_ROUTES_fUNC(security_Id as number);
+export const guest_Security_NavLinks = (security_Id: number) => {
+    const securityRoutes = SECURITY_ROUTES_fUNC(security_Id);
 
     return [
         { label: 'الملف الشخصي', href: securityRoutes.PROFILE, icon: User },
