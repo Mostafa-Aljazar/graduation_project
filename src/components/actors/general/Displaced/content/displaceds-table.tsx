@@ -26,7 +26,7 @@ import { getDisplacedsIDs } from '@/actions/actors/general/displaced/getDisplace
 import { getDisplacedByIds } from '@/actions/actors/general/displaced/getDisplacedByIds';
 import Displaced_Table_Actions from '@/components/actors/general/Displaced/displaced-table-actions';
 import Receive_Aid from '@/components/actors/manager/aids-management/add/displaced/receive-aid/receive-aid';
-import { ACTION_ADD_EDIT } from '@/constants';
+import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
 
 interface DisplacedsTableProps {
   destination: DESTINATION_DISPLACED;
@@ -66,9 +66,9 @@ export default function Displaceds_Table({
     {
       displaced_page: parseAsInteger.withDefault(1),
       search: parseAsString.withDefault(''),
-      action: parseAsStringEnum<ACTION_ADD_EDIT>(
-        Object.values(ACTION_ADD_EDIT)
-      ).withDefault(ACTION_ADD_EDIT.ADD),
+      action: parseAsStringEnum<ACTION_ADD_EDIT_DISPLAY>(
+        Object.values(ACTION_ADD_EDIT_DISPLAY)
+      ).withDefault(ACTION_ADD_EDIT_DISPLAY.ADD),
     },
     { shallow: true }
   );

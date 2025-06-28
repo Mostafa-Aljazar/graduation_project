@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth';
 import { TYPE_CONTENT } from '@/content/actor/manager/ads-blogs-stories';
-import { ACTION_ADD_EDIT } from '@/constants';
+import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
 
 type Props = {
   id: string | number;
@@ -34,7 +34,7 @@ export default function Action_Card({
       action: () => {
         router.push(
           `${MANAGER_ROUTES_fUNC(user?.id as number).ADD_ADS_BLOGS}?action=${
-            ACTION_ADD_EDIT.EDIT
+            ACTION_ADD_EDIT_DISPLAY.EDIT
           }&id=${id}&type=${TYPE_CONTENT[destination]}`
         );
       },

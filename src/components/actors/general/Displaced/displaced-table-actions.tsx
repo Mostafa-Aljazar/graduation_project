@@ -17,7 +17,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import useAuth from '@/hooks/useAuth';
-import { ACTION_ADD_EDIT } from '@/constants';
+import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
 import Delete_Displaced_Modal from './modals/Delete_Displaced_Modal';
 import Call_Displaced_Modal from './modals/Call_Displaced_Modal';
 import Update_Displaced_Modal from './modals/Update_Displaced_Modal';
@@ -105,7 +105,7 @@ export default function Displaced_Table_Actions({
       action: () =>
         router.push(
           DISPLACED_ROUTES_fUNC(displaced_ID || -1).PROFILE +
-            `?action=${ACTION_ADD_EDIT.EDIT}`
+            `?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
         ),
     },
     ...Manager_General_ACTIONS,
@@ -124,7 +124,7 @@ export default function Displaced_Table_Actions({
       action: () =>
         router.push(
           DISPLACED_ROUTES_fUNC(displaced_ID || -1).PROFILE +
-            `?action=${ACTION_ADD_EDIT.EDIT}`
+            `?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
         ),
     },
     ...Admin_General_ACTIONS,

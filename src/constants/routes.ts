@@ -20,43 +20,44 @@ export const GENERAL_ACTOR_ROUTES = {
   // GENERAL
   ADS: '/actor/ads',
   DELEGATES: '/actor/delegates',
+  ADD_DELEGATES: '/actor/delegates/add',
   DISPLACEDS: '/actor/displaceds',
+  ADD_DISPLACEDS: '/actor/displaceds/add',
   SECURITIES: '/actor/security-data',
   NOTIFICATIONS: '/actor/notifications',
 
 } as const;
 
 export const DISPLACED_ROUTES_fUNC = (
-  displaced_Id: string | number
+  displaced_Id: number
 ) => {
   return {
-    PROFILE: `/actor/displaced/${displaced_Id}/profile`,
-    COMPLAINTS: `/actor/displaced/${displaced_Id}/complaints`,
-    RECEIVED_AIDS: `/actor/displaced/${displaced_Id}/received-aids`,
-    // RECEIVED_AIDS: `/actor/displaced/${displaced_Id}/received`,
+    PROFILE: `/actor/displaceds/${displaced_Id}/profile`,
+    COMPLAINTS: `/actor/displaceds/${displaced_Id}/complaints`,
+    RECEIVED_AIDS: `/actor/displaceds/${displaced_Id}/received-aids`,
   } as const;
 };
 
 export const DELEGATE_ROUTES_fUNC = (
-  delegate_Id: string | number,
-  aid_Id?: string | number
+  delegate_Id: number,
+  aid_Id?: number
 ) => {
   return {
-    PROFILE: `/actor/delegate/${delegate_Id}/profile`,
-    COMPLAINTS: `/actor/delegate/${delegate_Id}/complaints`,
-    REPORTS: `/actor/delegate/${delegate_Id}/reports`,
+    PROFILE: `/actor/delegates/${delegate_Id}/profile`,
+    COMPLAINTS: `/actor/delegates/${delegate_Id}/complaints`,
+    REPORTS: `/actor/delegates/${delegate_Id}/reports`,
 
     // AIDS_MANAGEMENT
-    AIDS_MANAGEMENT: `/actor/delegate/${delegate_Id}/aids-management`,
-    ADD_AID: `/actor/delegate/${delegate_Id}/aids-management/add`,
-    AID: `/actor/delegate/${delegate_Id}/aids-management/${aid_Id}`,
+    AIDS_MANAGEMENT: `/actor/delegates/${delegate_Id}/aids-management`,
+    ADD_AID: `/actor/delegates/${delegate_Id}/aids-management/add`,
+    AID: `/actor/delegates/${delegate_Id}/aids-management/${aid_Id}`,
   } as const;
 };
 
 
 export const MANAGER_ROUTES_fUNC = (
-  manager_Id: string | number,
-  aid_Id?: string | number
+  manager_Id: number,
+  aid_Id?: number
 ) => {
   return {
 
@@ -78,7 +79,7 @@ export const MANAGER_ROUTES_fUNC = (
 };
 
 export const SECURITY_ROUTES_fUNC = (
-  security_Id: string | number,
+  security_Id: number,
 ) => {
   return {
     PROFILE: `/actor/security/${security_Id}/profile`,
