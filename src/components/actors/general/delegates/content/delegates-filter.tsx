@@ -146,7 +146,7 @@ export default function Delegate_Filters({
           className='shadow-md border-1 border-gray-400 rounded-xl'
         >
           <Stack w='90%' gap={30}>
-            <Text fz={18} fw={600}>
+            <Text fz={16} fw={500}>
               عدد النازحين:
             </Text>
             <RangeSlider
@@ -163,7 +163,7 @@ export default function Delegate_Filters({
             />
           </Stack>
           <Stack w='90%' gap={30}>
-            <Text fz={18} fw={600}>
+            <Text fz={16} fw={500}>
               عدد الخيام:
             </Text>
             <RangeSlider

@@ -1,6 +1,9 @@
 'use client';
-import { LocalFilters } from '@/app/(pages)/actor/manager/[manager_Id]/complaints/page';
 import { UserType } from '@/constants/userTypes';
+import {
+  managerComplaintFilterFormSchema,
+  managerComplaintFilterFormValues,
+} from '@/validation/actor/manager/complaints/managerComplaintsSchema';
 import {
   Button,
   Flex,
@@ -22,67 +25,43 @@ import {
   Send,
   User,
 } from 'lucide-react';
-import { parseAsString, useQueryState } from 'nuqs';
+import {
+  parseAsInteger,
+  parseAsString,
+  useQueryState,
+  useQueryStates,
+} from 'nuqs';
 import { useState } from 'react';
-import { z } from 'zod';
 
-type Props = {
-  setLocalFilters: React.Dispatch<React.SetStateAction<LocalFilters>>;
-  initialFilters: {
-    status: 'read' | 'pending' | null;
-    sender_type: UserType | null;
-    delegate_id: string | null;
-    date_range: Date[] | null;
-  };
-  setActivePage: React.Dispatch<React.SetStateAction<number>>;
+interface ManagerComplaintsFiltersProps {
+  setLocalFilters: React.Dispatch<
+    React.SetStateAction<managerComplaintFilterFormValues>
+  >;
   complaintsNum?: number;
-};
+}
 
-// Define validation schema
-const filterSchema = z.object({
-  status: z.enum(['read', 'pending']).nullable(),
-  sender_type: z
-    .enum(['DISPLACED', 'DELEGATE', 'SECURITY', 'SECURITY_OFFICER', 'MANAGER'])
-    .nullable(),
-  delegate_id: z.string().nullable(),
-  date_range: z
-    .tuple([z.string().nullable(), z.string().nullable()])
-    .default([null, null]),
-});
-
-type FilterFormType = z.infer<typeof filterSchema>;
-
-export default function Complaints_Filters({
+export default function Manager_Complaints_Filters({
   setLocalFilters,
-  initialFilters,
   complaintsNum,
-  setActivePage,
-}: Props) {
-  const initData: FilterFormType = {
-    status: initialFilters.status ?? null,
-    sender_type: initialFilters.sender_type ?? null,
-    delegate_id: initialFilters.delegate_id ?? null,
-    date_range: initialFilters.date_range
-      ? [
-          initialFilters.date_range[0].toString() ?? null,
-          // initialFilters.date_range[0]?.toISOString().split('T')[0] ?? null,
-          initialFilters.date_range[1]?.toString() ?? null,
-          // initialFilters.date_range[1]?.toISOString().split('T')[0] ?? null,
-        ]
-      : [null, null],
-  };
+}: ManagerComplaintsFiltersProps) {
+  const [query, setQuery] = useQueryStates({
+    search: parseAsString.withDefault(''),
+    'complaints-page': parseAsInteger.withDefault(1),
+  });
 
-  const form = useForm<FilterFormType>({
-    initialValues: initData,
-    validate: zodResolver(filterSchema),
+  const form = useForm<managerComplaintFilterFormValues>({
+    initialValues: {
+      status: null,
+      date_range: [null, null],
+      delegate_ID: null,
+      sender_type: null,
+    },
+
+    validate: zodResolver(managerComplaintFilterFormSchema),
   });
 
   // Query state for search
   const [searchInput, setSearchInput] = useState('');
-  const [search, setSearch] = useQueryState(
-    'search',
-    parseAsString.withDefault('')
-  );
 
   const handleReset = () => {
     form.reset();
@@ -90,10 +69,10 @@ export default function Complaints_Filters({
     setLocalFilters({
       status: null,
       sender_type: null,
-      delegate_id: null,
-      date_range: null,
+      delegate_ID: null,
+      date_range: [null, null],
     });
-    setActivePage(1);
+    setQuery({ 'complaints-page': 1 });
   };
 
   // Apply search
@@ -101,29 +80,24 @@ export default function Complaints_Filters({
     setLocalFilters({
       status: null,
       sender_type: null,
-      delegate_id: null,
-      date_range: null,
+      delegate_ID: null,
+      date_range: [null, null],
     });
-    setSearch(searchInput);
+
+    setQuery({ search: searchInput, 'complaints-page': 1 });
     setSearchInput('');
     form.reset();
-    setActivePage(1);
   };
 
   // Apply filters
-  const handleApplyFilters = (values: FilterFormType) => {
+  const handleApplyFilters = (values: managerComplaintFilterFormValues) => {
     setLocalFilters({
       status: values.status,
       sender_type: values.sender_type,
-      delegate_id: values.delegate_id,
-      date_range: values.date_range[0]
-        ? [
-            new Date(values.date_range[0]!),
-            values.date_range[1] ? new Date(values.date_range[1]!) : null,
-          ].filter((d): d is Date => d !== null)
-        : null,
+      delegate_ID: values.delegate_ID,
+      date_range: values.date_range, // Keep as [string | null, string | null]
     });
-    setActivePage(1);
+    setQuery({ 'complaints-page': 1 });
   };
 
   return (
@@ -238,6 +212,7 @@ export default function Complaints_Filters({
                 </Text>
               }
               placeholder='اختر المندوب'
+              // FIXME:
               data={[
                 { label: 'بدون مندوب', value: '-1' },
                 { label: 'محمد', value: '1' },
@@ -253,7 +228,6 @@ export default function Complaints_Filters({
               }}
             />
           )}
-
           <DatePickerInput
             type='range'
             label={
@@ -264,6 +238,10 @@ export default function Complaints_Filters({
             placeholder='نطاق اختيار التواريخ'
             leftSection={<Calendar size={15} />}
             {...form.getInputProps('date_range')}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
+            clearable
           />
 
           <Group hidden={form.getValues().sender_type !== 'DELEGATE'} />

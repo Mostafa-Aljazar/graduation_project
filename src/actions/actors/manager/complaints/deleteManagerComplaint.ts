@@ -3,13 +3,13 @@
 import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
 import { AqsaAPI } from "@/services";
 
-export interface deleteComplaintProps {
-    complaint_Id: string | Number;
+export interface DeleteManagerComplaintProps {
+    complaint_Id: Number;
 }
 
-export const deleteComplaint = async ({
+export const managerDeleteComplaint = async ({
     complaint_Id,
-}: deleteComplaintProps): Promise<modalActionResponse> => {
+}: DeleteManagerComplaintProps): Promise<modalActionResponse> => {
 
 
     // FIXME: Remove this fake data logic in production

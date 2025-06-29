@@ -3,15 +3,17 @@
 import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
 import { AqsaAPI } from "@/services";
 
-export interface replyComplaintProps {
+export interface replyDelegateComplaintProps {
     reply: string;
-    complaint_Id: string | number;
+    complaint_ID: number;
+    delegate_ID: number;
 }
 
-export const replyComplaint = async ({
+export const replyDelegateComplaint = async ({
     reply,
-    complaint_Id
-}: replyComplaintProps): Promise<modalActionResponse> => {
+    complaint_ID,
+    delegate_ID
+}: replyDelegateComplaintProps): Promise<modalActionResponse> => {
 
 
 
@@ -37,9 +39,10 @@ export const replyComplaint = async ({
 
 
     try {
-        const response = await AqsaAPI.post("/manager/complaint/reply", {
-            complaint_Id,
-            reply
+        const response = await AqsaAPI.post("/delegate/complaint/reply", {
+            reply,
+            complaint_ID,
+            delegate_ID
         });
 
         return {

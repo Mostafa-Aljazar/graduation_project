@@ -1,10 +1,10 @@
 'use client';
-import { Complaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
+import { ManagerComplaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import {
-  replyComplaint,
-  replyComplaintProps,
-} from '@/actions/actors/manager/complaints/replyComplaint';
+  replyManagerComplaint,
+  replyManagerComplaintProps,
+} from '@/actions/actors/manager/complaints/replyManagerComplaint';
 import { cn } from '@/utils/cn';
 import { Button, Group, Modal, Stack, Text, Textarea } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
@@ -12,19 +12,22 @@ import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { z } from 'zod';
 
-type Props = {
-  complaint: Complaint;
-  opened: boolean;
-  close: () => void;
-};
-
 const complaintSchema = z.object({
   reply: z.string().min(3, 'الرجاء إدخال الرد'),
 });
 
 export type complaintType = z.infer<typeof complaintSchema>;
 
-export default function Complaint_Modal({ complaint, opened, close }: Props) {
+interface ManagerComplaintModalProps {
+  complaint: ManagerComplaint;
+  opened: boolean;
+  close: () => void;
+}
+export default function Manager_Complaint_Modal({
+  complaint,
+  opened,
+  close,
+}: ManagerComplaintModalProps) {
   const form = useForm<complaintType>({
     initialValues: {
       reply: '',
@@ -36,9 +39,9 @@ export default function Complaint_Modal({ complaint, opened, close }: Props) {
   const replyMutation = useMutation<
     modalActionResponse,
     unknown,
-    replyComplaintProps
+    replyManagerComplaintProps
   >({
-    mutationFn: replyComplaint,
+    mutationFn: replyManagerComplaint,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {
         notifications.show({
@@ -109,7 +112,7 @@ export default function Complaint_Modal({ complaint, opened, close }: Props) {
               : 'النازح : '}
           </Text>
           <Text fz={18} className='!text-dark'>
-            {complaint.from}
+            {complaint.from.name}
           </Text>
         </Group>
 
@@ -140,6 +143,7 @@ export default function Complaint_Modal({ complaint, opened, close }: Props) {
 
           <Group justify='flex-end'>
             <Button
+              size='sm'
               type='button'
               variant='outline'
               onClick={close}
@@ -149,6 +153,7 @@ export default function Complaint_Modal({ complaint, opened, close }: Props) {
               إلغاء
             </Button>
             <Button
+              size='sm'
               type='submit'
               disabled={!form.getValues().reply}
               className={cn(
