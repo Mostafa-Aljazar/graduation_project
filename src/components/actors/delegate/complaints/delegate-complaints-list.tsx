@@ -3,25 +3,28 @@
 import { Stack, Group, Text, Flex, Pagination } from '@mantine/core';
 import { MessageCircleWarning } from 'lucide-react';
 import { Complaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
-import Complaint_Skeleton from './complaint/Complaint_Skeleton';
-import Complaint_Card from './complaint/Complaint_Card';
+import Complaint_Skeleton from '../../manager/complaints/complaint/complaint-skeleton';
+import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
+import Delegate_Complaint_Card from './complaint/delegate-complaint-card';
 
-interface ComplaintsListProps {
+interface DelegateComplaintsListProps {
   complaints: Complaint[];
-  activePage: number;
-  setActivePage: (page: number) => void;
-  itemsPerPage: number;
   totalPages: number;
   loading: boolean;
+  delegate_ID: number;
 }
 
-export default function ComplaintsList({
+export default function Delegate_Complaints_List({
   complaints,
-  activePage,
-  setActivePage,
   totalPages,
   loading,
-}: ComplaintsListProps) {
+  delegate_ID,
+}: DelegateComplaintsListProps) {
+  const [query, setQuery] = useQueryStates({
+    search: parseAsString.withDefault(''),
+    'complaints-page': parseAsInteger.withDefault(1),
+  });
+
   return (
     <Stack pos={'relative'}>
       {loading ? (
@@ -40,15 +43,19 @@ export default function ComplaintsList({
       ) : (
         <Stack gap='xs'>
           {complaints.map((complaint) => (
-            <Complaint_Card key={complaint.id} complaint={complaint} />
+            <Delegate_Complaint_Card
+              key={complaint.id}
+              complaint={complaint}
+              delegate_ID={delegate_ID}
+            />
           ))}
         </Stack>
       )}
       {!loading && totalPages > 1 && (
         <Flex justify='center' mt='xl'>
           <Pagination
-            value={activePage}
-            onChange={setActivePage}
+            value={query['complaints-page']}
+            onChange={(value: number) => setQuery({ 'complaints-page': value })}
             total={totalPages}
             size='sm'
             radius='xl'

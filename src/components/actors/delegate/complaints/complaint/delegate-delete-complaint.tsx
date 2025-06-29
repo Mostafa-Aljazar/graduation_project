@@ -4,27 +4,29 @@ import { ActionIcon, Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { Trash2 } from 'lucide-react';
 import { useDisclosure } from '@mantine/hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  deleteComplaint,
-  deleteComplaintProps,
-} from '@/actions/actors/manager/complaints/deleteComplaint';
+import { managerDeleteComplaint } from '@/actions/actors/manager/complaints/deleteManagerComplaint';
 import { notifications } from '@mantine/notifications';
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { delegateDeleteComplaint } from '@/actions/actors/delegate/complaints/deleteDelegateComplaint';
 
-type Props = {
-  complaint_Id: string | number;
-};
+interface DelegateDeleteComplaintProps {
+  complaint_ID: number;
+  delegate_ID: number;
+}
 
-export default function Delete_Complaint({ complaint_Id }: Props) {
+export default function Delegate_Delete_Complaint({
+  complaint_ID,
+  delegate_ID,
+}: DelegateDeleteComplaintProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation<
     modalActionResponse,
     unknown,
-    deleteComplaintProps
+    DelegateDeleteComplaintProps
   >({
-    mutationFn: deleteComplaint,
+    mutationFn: delegateDeleteComplaint,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {
         notifications.show({
@@ -56,7 +58,8 @@ export default function Delete_Complaint({ complaint_Id }: Props) {
     event.stopPropagation(); // Prevent click from bubbling to Card
 
     deleteMutation.mutate({
-      complaint_Id: complaint_Id,
+      complaint_ID,
+      delegate_ID,
     });
   };
 
@@ -81,7 +84,7 @@ export default function Delete_Complaint({ complaint_Id }: Props) {
         opened={opened}
         onClose={close}
         title={
-          <Text fz={22} fw={600} ta='center' className='!text-red-500'>
+          <Text fz={18} fw={600} ta='center' className='!text-red-500'>
             تأكيد الحذف
           </Text>
         }
@@ -91,32 +94,13 @@ export default function Delete_Complaint({ complaint_Id }: Props) {
         centered
       >
         <Stack>
-          <Text fz={18} fw={600}>
+          <Text fz={16} fw={500}>
             هل أنت متأكد من حذف هذه الشكوى، هذا الإجراء لا يمكن التراجع عنه.
           </Text>
 
           <Group justify='flex-end'>
-            {/* <Button
-              type='button'
-              variant='outline'
-              onClick={(event: React.MouseEvent) => {
-                event.stopPropagation(); // Prevent click from bubbling to Card
-                close();
-              }}
-              fw={600}
-              className='!border-primary !text-primary'
-            >
-              إلغاء
-            </Button> */}
-            {/* <Button
-              type='button'
-              className='!bg-red-500'
-              loading={deleteMutation.isPending}
-              onClick={handleClick}
-            >
-              حذف
-            </Button> */}
             <Button
+              size='sm'
               data-click='delete'
               type='button'
               variant='outline'
@@ -124,13 +108,14 @@ export default function Delete_Complaint({ complaint_Id }: Props) {
                 event.stopPropagation();
                 close();
               }}
-              fw={600}
+              fw={500}
               className='!border-primary !text-primary'
             >
               إلغاء
             </Button>
 
             <Button
+              size='sm'
               data-click='delete'
               type='button'
               className='!bg-red-500'

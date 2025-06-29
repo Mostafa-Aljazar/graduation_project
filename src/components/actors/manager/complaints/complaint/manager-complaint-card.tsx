@@ -1,30 +1,36 @@
 'use client';
 import { Box, Card, Flex, Group, Stack, Text } from '@mantine/core';
 import { cn } from '@/utils/cn';
-import { Complaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
-import Delete_Complaint from './Delete_Complaint';
-import Complaint_Modal from './Complaint_Modal';
+import { ManagerComplaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
 import Image from 'next/image';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { changeStatusComplaint } from '@/actions/actors/manager/complaints/changeStatusComplaint';
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import { DELEGATE, MAN } from '@/assets/actor';
+import { COMPLAINTS_STATUS } from '@/content/actor/delegate/complaints';
+import Manager_Delete_Complaint from './manager-delete-complaint';
+import Manager_Complaint_Modal from './manager-complaint-modal';
+import {
+  changeStatusManagerComplaint,
+  changeStatusManagerComplaintProps,
+} from '@/actions/actors/manager/complaints/changeStatusManagerComplaint';
 
-type Props = {
-  complaint: Complaint;
-};
-export default function Complaint_Card({ complaint }: Props) {
+interface ManagerComplaintCardProps {
+  complaint: ManagerComplaint;
+}
+export default function Manager_Complaint_Card({
+  complaint,
+}: ManagerComplaintCardProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const queryClient = useQueryClient();
 
   const changeStatusMutation = useMutation<
     modalActionResponse,
     unknown,
-    changeStatusComplaint
+    changeStatusManagerComplaintProps
   >({
-    mutationFn: changeStatusComplaint,
+    mutationFn: changeStatusManagerComplaint,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {
         notifications.show({
@@ -61,7 +67,7 @@ export default function Complaint_Card({ complaint }: Props) {
     });
 
     if (!clickedOnDelete) {
-      if (complaint.status == 'pending') {
+      if (complaint.status == COMPLAINTS_STATUS.PENDING) {
         changeStatusMutation.mutate({ complaint_Id: complaint.id });
       }
       open();
@@ -76,7 +82,9 @@ export default function Complaint_Card({ complaint }: Props) {
         radius='md'
         className={cn(
           '!border-1 !border-gray-200 cursor-pointer',
-          complaint.status === 'read' ? '!bg-second-light' : '!bg-red-200'
+          complaint.status === COMPLAINTS_STATUS.READ
+            ? '!bg-second-light'
+            : '!bg-red-200'
         )}
         onClick={handleClick}
       >
@@ -88,6 +96,7 @@ export default function Complaint_Card({ complaint }: Props) {
           >
             <Image
               src={complaint.sender_type === 'DELEGATE' ? DELEGATE : MAN}
+              // src={complaint.from.image} //FIXME:
               alt='Profile'
               width={60}
               height={60}
@@ -116,7 +125,7 @@ export default function Complaint_Card({ complaint }: Props) {
                 : complaint.sender_type === 'SECURITY_OFFICER'
                 ? 'مسؤول الامن : '
                 : 'النازح : '}
-              {complaint.from}
+              {complaint.from.name}
             </Text>
 
             <Text fz='md' fw={600} className='!text-dark'>
@@ -124,10 +133,14 @@ export default function Complaint_Card({ complaint }: Props) {
             </Text>
           </Stack>
 
-          <Delete_Complaint complaint_Id={complaint.id} />
+          <Manager_Delete_Complaint complaint_Id={complaint.id} />
         </Group>
       </Card>
-      <Complaint_Modal complaint={complaint} opened={opened} close={close} />
+      <Manager_Complaint_Modal
+        complaint={complaint}
+        opened={opened}
+        close={close}
+      />
     </>
   );
 }
