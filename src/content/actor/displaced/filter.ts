@@ -13,12 +13,26 @@ export enum AGES {
     more_than_18 = 'more_than_18'
 }
 
+export const AGES_LABELS: Record<AGES, string> = {
+    [AGES.less_than_6_month]: 'أقل من 6 أشهر',
+    [AGES.from_6_month_to_2_years]: 'من 6 أشهر إلى سنتين',
+    [AGES.from_2_years_to_6_years]: 'من سنتين إلى 6 سنوات',
+    [AGES.from_6_years_to_12_years]: 'من 6 سنوات إلى 12 سنة',
+    [AGES.from_12_years_to_18_years]: 'من 12 سنة إلى 18 سنة',
+    [AGES.more_than_18]: 'أكثر من 18 سنة',
+};
+
 export enum ACCOMMODATION_TYPE {
     indoor_tent = 'indoor_tent',
     indoor_building = 'indoor_building',
     outdoor = 'outdoor',
 }
 
+export const ACCOMMODATION_TYPE_LABELS: Record<ACCOMMODATION_TYPE, string> = {
+    [ACCOMMODATION_TYPE.indoor_tent]: 'خيمة داخلية',
+    [ACCOMMODATION_TYPE.indoor_building]: 'مبنى داخلي',
+    [ACCOMMODATION_TYPE.outdoor]: 'خارجي',
+};
 
 export enum CASE_TYPE {
     normal = 'normal',
@@ -26,6 +40,13 @@ export enum CASE_TYPE {
     critical = 'critical',
 }
 
+
+
+export const CASE_TYPE_LABELS: Record<CASE_TYPE, string> = {
+    [CASE_TYPE.normal]: 'عادي',
+    [CASE_TYPE.difficult]: 'صعب',
+    [CASE_TYPE.critical]: 'حرج',
+};
 
 export enum CHRONIC_DISEASE {
     false = 'false',
