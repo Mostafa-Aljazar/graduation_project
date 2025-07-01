@@ -6,7 +6,8 @@ export interface Complaint {
     id: number;
     date: string;
     time: string;
-    from: { id: Number, name: string, image: string };
+    sender: { id: Number, name: string, image: string, role: UserType };
+    receiver: { id: Number, name: string, image: string, role: UserType };
     title: string;
     body: string;
     status: COMPLAINTS_STATUS;
@@ -32,6 +33,19 @@ export interface ManagerComplaintResponse {
 }
 
 export interface DelegateComplaintResponse {
+    status: string;
+    message?: string;
+    complaints: Complaint[];
+    pagination: {
+        page: number;
+        limit: number;
+        totalItems: number;
+        totalPages: number;
+    };
+    error?: string;
+}
+
+export interface DisplacedComplaintResponse {
     status: string;
     message?: string;
     complaints: Complaint[];

@@ -1,0 +1,233 @@
+import { DisplacedComplaintResponse } from "@/@types/actors/general/Complaints/ComplaintsResponse.type";
+import { COMPLAINTS_STATUS } from "../delegate/complaints";
+import { UserType } from "@/constants/userTypes";
+
+
+export interface Complaint {
+    id: number;
+    date: string;
+    time: string;
+    sender: { id: number; name: string; image: string; role: UserType };
+    receiver: { id: number; name: string; image: string; role: UserType };
+    title: string;
+    body: string;
+    status: COMPLAINTS_STATUS;
+}
+
+export const fakeComplaints: Complaint[] = [
+    {
+        id: 1,
+        date: '2025-06-30',
+        time: '20:40',
+        sender: { id: 101, name: 'أحمد محمد', image: 'https://example.com/images/ahmad.jpg', role: 'DISPLACED' },
+        receiver: { id: 201, name: 'خالد عبد الله', image: 'https://example.com/images/khalid.jpg', role: 'DELEGATE' },
+        title: 'شكوى حول نقص الطعام',
+        body: 'لم يتم توزيع الطعام اليومي للعائلة منذ يومين. يرجى التدخل.',
+        status: COMPLAINTS_STATUS.PENDING,
+    },
+    {
+        id: 2,
+        date: '2025-06-30',
+        time: '18:15',
+        sender: { id: 102, name: 'فاطمة علي', image: 'https://example.com/images/fatima.jpg', role: 'DISPLACED' },
+        receiver: { id: 202, name: 'محمود ناصر', image: 'https://example.com/images/mahmoud.jpg', role: 'MANAGER' },
+        title: 'مشكلة في المياه',
+        body: 'المياه القادمة إلى الخيمة غير نظيفة وغير صالحة للشرب.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 3,
+        date: '2025-06-29',
+        time: '15:30',
+        sender: { id: 103, name: 'خالد حسن', image: 'https://example.com/images/khalid.jpg', role: 'DISPLACED' },
+        receiver: { id: 203, name: 'عمر سعيد', image: 'https://example.com/images/omar.jpg', role: 'SECURITY' },
+        title: 'طلب إصلاح الخيمة',
+        body: 'الخيمة بها ثقوب كبيرة وتحتاج إلى إصلاح عاجل.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 4,
+        date: '2025-06-29',
+        time: '12:00',
+        sender: { id: 104, name: 'ليلى عبد الله', image: 'https://example.com/images/layla.jpg', role: 'DISPLACED' },
+        receiver: { id: 204, name: 'أميرة خليل', image: 'https://example.com/images/amira.jpg', role: 'DELEGATE' },
+        title: 'نقص الأدوية',
+        body: 'العائلة بحاجة إلى أدوية مزمنة غير متوفرة في المخيم.',
+        status: COMPLAINTS_STATUS.PENDING,
+    },
+    {
+        id: 5,
+        date: '2025-06-28',
+        time: '17:20',
+        sender: { id: 105, name: 'يوسف إبراهيم', image: 'https://example.com/images/youssef.jpg', role: 'DISPLACED' },
+        receiver: { id: 205, name: 'حسن محمود', image: 'https://example.com/images/hassan.jpg', role: 'MANAGER' },
+        title: 'مشكلة التدفئة',
+        body: 'لا يوجد تدفئة كافية في الخيمة خلال الليل.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 6,
+        date: '2025-06-28',
+        time: '09:45',
+        sender: { id: 106, name: 'سارة محمود', image: 'https://example.com/images/sara.jpg', role: 'DISPLACED' },
+        receiver: { id: 206, name: 'سامي علي', image: 'https://example.com/images/sami.jpg', role: 'SECURITY_OFFICER' },
+        title: 'طلب بطانيات إضافية',
+        body: 'الأطفال يعانون من البرد ونحتاج بطانيات إضافية.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 7,
+        date: '2025-06-27',
+        time: '14:10',
+        sender: { id: 107, name: 'محمد خليل', image: 'https://example.com/images/mohammad.jpg', role: 'DISPLACED' },
+        receiver: { id: 207, name: 'نورا حسين', image: 'https://example.com/images/noura.jpg', role: 'DELEGATE' },
+        title: 'تأخير المساعدات',
+        body: 'لم تصل المساعدات الغذائية الموعودة منذ أسبوع.',
+        status: COMPLAINTS_STATUS.PENDING,
+    },
+    {
+        id: 8,
+        date: '2025-06-27',
+        time: '11:30',
+        sender: { id: 108, name: 'نورا حسين', image: 'https://example.com/images/noura.jpg', role: 'DISPLACED' },
+        receiver: { id: 208, name: 'طارق عبد الله', image: 'https://example.com/images/tarek.jpg', role: 'MANAGER' },
+        title: 'مشكلة الصرف الصحي',
+        body: 'الحمامات في المخيم بحاجة إلى تنظيف فوري.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 9,
+        date: '2025-06-26',
+        time: '16:50',
+        sender: { id: 109, name: 'عبد الرحمن', image: 'https://example.com/images/abdulrahman.jpg', role: 'DISPLACED' },
+        receiver: { id: 209, name: 'لينا خالد', image: 'https://example.com/images/lina.jpg', role: 'SECURITY' },
+        title: 'نقص الوقود',
+        body: 'لا يوجد وقود لتسخين الطعام أو الإضاءة.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 10,
+        date: '2025-06-26',
+        time: '08:15',
+        sender: { id: 110, name: 'هدى سالم', image: 'https://example.com/images/huda.jpg', role: 'DISPLACED' },
+        receiver: { id: 210, name: 'ريم سعيد', image: 'https://example.com/images/reem.jpg', role: 'SECURITY_OFFICER' },
+        title: 'طلب تعليم الأطفال',
+        body: 'نحتاج إلى برامج تعليمية للأطفال في المخيم.',
+        status: COMPLAINTS_STATUS.PENDING,
+    },
+    {
+        id: 11,
+        date: '2025-06-25',
+        time: '19:00',
+        sender: { id: 111, name: 'علي ياسين', image: 'https://example.com/images/ali.jpg', role: 'DISPLACED' },
+        receiver: { id: 211, name: 'زينب محمود', image: 'https://example.com/images/zainab.jpg', role: 'DELEGATE' },
+        title: 'شكوى حول الضوضاء',
+        body: 'الضوضاء الليلية تزعج العائلات في الخيام.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 12,
+        date: '2025-06-25',
+        time: '13:40',
+        sender: { id: 112, name: 'ريم سعيد', image: 'https://example.com/images/reem.jpg', role: 'DISPLACED' },
+        receiver: { id: 212, name: 'عمر ياسين', image: 'https://example.com/images/omar.jpg', role: 'MANAGER' },
+        title: 'نقص الملابس',
+        body: 'الأطفال بحاجة إلى ملابس جديدة لفصل الشتاء.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 13,
+        date: '2025-06-24',
+        time: '15:25',
+        sender: { id: 113, name: 'طارق عبد الله', image: 'https://example.com/images/tarek.jpg', role: 'DISPLACED' },
+        receiver: { id: 213, name: 'سامي عادل', image: 'https://example.com/images/sami.jpg', role: 'SECURITY' },
+        title: 'مشكلة الكهرباء',
+        body: 'لا يوجد كهرباء في الخيمة ليلاً.',
+        status: COMPLAINTS_STATUS.PENDING,
+    },
+    {
+        id: 14,
+        date: '2025-06-24',
+        time: '10:00',
+        sender: { id: 114, name: 'لينا خالد', image: 'https://example.com/images/lina.jpg', role: 'DISPLACED' },
+        receiver: { id: 214, name: 'ناهد جمال', image: 'https://example.com/images/nahed.jpg', role: 'SECURITY_OFFICER' },
+        title: 'طلب أدوات مدرسية',
+        body: 'الأطفال بحاجة إلى أقلام ودفاتر للدراسة.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 15,
+        date: '2025-06-23',
+        time: '17:30',
+        sender: { id: 115, name: 'سامي عادل', image: 'https://example.com/images/sami.jpg', role: 'DISPLACED' },
+        receiver: { id: 215, name: 'حسن عثمان', image: 'https://example.com/images/hassan.jpg', role: 'DELEGATE' },
+        title: 'شكوى حول النظافة',
+        body: 'المخيم بحاجة إلى حملة تنظيف شاملة.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 16,
+        date: '2025-06-23',
+        time: '09:20',
+        sender: { id: 116, name: 'ناهد جمال', image: 'https://example.com/images/nahed.jpg', role: 'DISPLACED' },
+        receiver: { id: 216, name: 'مرام أحمد', image: 'https://example.com/images/maram.jpg', role: 'MANAGER' },
+        title: 'نقص الدواء للأطفال',
+        body: 'الأطفال بحاجة إلى أدوية خاصة غير متوفرة.',
+        status: COMPLAINTS_STATUS.PENDING,
+    },
+    {
+        id: 17,
+        date: '2025-06-22',
+        time: '18:10',
+        sender: { id: 117, name: 'حسن عثمان', image: 'https://example.com/images/hassan.jpg', role: 'DISPLACED' },
+        receiver: { id: 217, name: 'زينب محمود', image: 'https://example.com/images/zainab.jpg', role: 'SECURITY' },
+        title: 'مشكلة النقل',
+        body: 'لا يوجد وسيلة نقل للمرضى إلى المستشفى.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 18,
+        date: '2025-06-22',
+        time: '11:50',
+        sender: { id: 118, name: 'مرام أحمد', image: 'https://example.com/images/maram.jpg', role: 'DISPLACED' },
+        receiver: { id: 218, name: 'عمر ياسين', image: 'https://example.com/images/omar.jpg', role: 'SECURITY_OFFICER' },
+        title: 'طلب مساعدة مالية',
+        body: 'العائلة بحاجة إلى مساعدة مالية لشراء الطعام.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 19,
+        date: '2025-06-21',
+        time: '16:15',
+        sender: { id: 119, name: 'زينب محمود', image: 'https://example.com/images/zainab.jpg', role: 'DISPLACED' },
+        receiver: { id: 219, name: 'سامي عادل', image: 'https://example.com/images/sami.jpg', role: 'DELEGATE' },
+        title: 'شكوى حول السلامة',
+        body: 'الخيمة قريبة من منطقة خطرة وتحتاج إلى نقل.',
+        status: COMPLAINTS_STATUS.PENDING,
+    },
+    {
+        id: 20,
+        date: '2025-06-21',
+        time: '08:30',
+        sender: { id: 120, name: 'عمر ياسين', image: 'https://example.com/images/omar.jpg', role: 'DISPLACED' },
+        receiver: { id: 220, name: 'ناهد جمال', image: 'https://example.com/images/nahed.jpg', role: 'MANAGER' },
+        title: 'نقص الماء النظيف',
+        body: 'المياه المتاحة غير كافية للشرب والاستخدام.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+];
+
+export const fakeDisplacedComplaints: DisplacedComplaintResponse = {
+    status: '200',
+    message: 'تم جلب الشكاوى بنجاح',
+    complaints: fakeComplaints,
+    pagination: {
+        page: 1,
+        limit: 5,
+        totalItems: 20,
+        totalPages: 4,
+    },
+};
+
+
+
