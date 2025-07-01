@@ -10,7 +10,7 @@ import { getDisplacedComplaints } from '@/actions/actors/displaced/complaints/ge
 import { DisplacedComplaintResponse } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
 import { COMPLAINTS_STATUS } from '@/content/actor/delegate/complaints';
 import Displaced_Complaints_List from './displaced-complaints-list';
-import Send_Displaced_Complaint from './displaced-send-complaint';
+import Send_Displaced_Complaint from './complaint/displaced-send-complaint';
 
 interface DisplacedComplaintsProps {
   displaced_ID: number;

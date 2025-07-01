@@ -5,8 +5,7 @@ import { Stack, Group, Text, Flex, Pagination } from '@mantine/core';
 import { MessageCircleWarning } from 'lucide-react';
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
 import Complaint_Skeleton from '../../manager/complaints/complaint/complaint-skeleton';
-import Manager_Complaint_Card from '../../manager/complaints/complaint/manager-complaint-card';
-import Displaced_Complaint_Card from './displaced-complaint-card';
+import Displaced_Complaint_Card from './complaint/displaced-complaint-card';
 
 interface DisplacedComplaintsListProps {
   complaints: Complaint[];

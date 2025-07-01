@@ -10,7 +10,7 @@ export const displaced_NavLinks = (displaced_Id: number) => {
         { label: 'الملف الشخصي', href: displacedRoutes.PROFILE, icon: User },
         { label: 'الإشعارات', href: GENERAL_ACTOR_ROUTES.NOTIFICATIONS, icon: BellRing },
         { label: 'الإعلانات', href: GENERAL_ACTOR_ROUTES.ADS, icon: Newspaper },
-        { label: 'المساعدات المستلمة', href: displacedRoutes.RECEIVED_AIDS, icon: Handshake },
+        { label: 'المساعدات المستقبلة', href: displacedRoutes.RECEIVED_AIDS, icon: Handshake },
         { label: 'الشكاوي', href: displacedRoutes.COMPLAINTS, icon: MessageCircleWarning },
     ] as const;
 };
@@ -22,7 +22,7 @@ export const guest_Displaced_NavLinks = (displaced_Id: number) => {
 
     return [
         { label: 'الملف الشخصي', href: displacedRoutes.PROFILE, icon: User },
-        { label: 'الإعانات المستلمة', href: displacedRoutes.RECEIVED_AIDS, icon: Handshake },
+        { label: 'الإعانات المستقبلة', href: displacedRoutes.RECEIVED_AIDS, icon: Handshake },
         { label: 'الشكاوي', href: displacedRoutes.COMPLAINTS, icon: MessageCircleWarning },
     ] as const;
 };
