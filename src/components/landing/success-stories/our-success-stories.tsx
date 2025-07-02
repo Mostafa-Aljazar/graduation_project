@@ -29,19 +29,8 @@ export default function Our_Success_Stories() {
     return (
       <Stack align='center' justify='center' h={200} px={10}>
         <Text fw={500} fz={{ base: 18, lg: 22 }} c='red' ta='center'>
-          خطأ في تحميتل المقالات:
+          خطأ في تحميل قصص النجاح:
           {error.message || 'حدث خطأ غير متوقع'}
-        </Text>
-      </Stack>
-    );
-  }
-
-  if (error) {
-    return (
-      <Stack align='center' justify='center' h={200} px={10}>
-        <Text fw={500} fz={{ base: 18, lg: 22 }} c='red' ta='center'>
-          خطأ في تحميتل قصص النجاح:
-          {error || 'حدث خطأ غير متوقع'}
         </Text>
       </Stack>
     );

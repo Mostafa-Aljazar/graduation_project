@@ -1,6 +1,6 @@
 import { Group, Stack, Text } from '@mantine/core';
 import { BellRing } from 'lucide-react';
-import Notifications_List from '@/components/actors/general/ads/notifications-list';
+import Notifications_List from '@/components/actors/general/notification/notifications-list';
 
 export default async function Notifications_Page() {
   return (
