@@ -1,4 +1,4 @@
-import { DisplacedPerson } from '@/components/actors/displaced/displaced-profile';
+import { DisplacedPerson } from '@/components/actors/displaced/profile/displaced-profile';
 
 export default async function Displaced_Profile({
   params,

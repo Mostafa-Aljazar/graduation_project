@@ -11,7 +11,8 @@ const AqsaGuestAPI = axios.create({
   baseURL: baseURL,
   timeout: 15000, // 15 second timeout
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
   }
 })
 
@@ -40,7 +41,8 @@ const AqsaAPI = axios.create({
   baseURL: baseURL,
   timeout: 15000, // 15 second timeout
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
   }
 })
 
