@@ -12,6 +12,7 @@ import {
   Paper,
   SimpleGrid,
   Flex,
+  LoadingOverlay,
 } from '@mantine/core';
 import {
   ACCOMMODATION_TYPE,
@@ -37,19 +38,18 @@ interface DisplacedPersonProps {
 }
 
 export function DisplacedPerson({ displaced_Id }: DisplacedPersonProps) {
-  // Fetch initial profile data ONLY if not in 'add' mode
-  const {
-    data: profileData,
-    isLoading,
-    refetch,
-  } = useQuery<DisplacedProfileResponse>({
+  const { data: profileData, isLoading } = useQuery<DisplacedProfileResponse>({
     queryKey: ['displacedProfile', displaced_Id],
     queryFn: () => getDisplacedProfile({ displaced_ID: Number(displaced_Id) }),
   });
-  console.log('🚀 ~ profileData:', profileData);
 
   return (
-    <Stack p={{ base: 10, md: 20 }}>
+    <Stack p={{ base: 10, md: 20 }} pos={'relative'}>
+      <LoadingOverlay
+        visible={isLoading}
+        zIndex={50}
+        overlayProps={{ radius: 'sm', blur: 0.3 }}
+      />
       <Box
         pos={'relative'}
         w={'100%'}
@@ -64,9 +64,8 @@ export function DisplacedPerson({ displaced_Id }: DisplacedPersonProps) {
         >
           <Image
             src={MAN.src || profileData?.user.profileImage}
-            alt='Profile'
+            alt='displacedProfile'
             fill
-            // className='object-contain !'
           />
         </Box>
       </Box>
@@ -392,9 +391,8 @@ export function DisplacedPerson({ displaced_Id }: DisplacedPersonProps) {
                       مرضعة
                     </Text>
                   }
-                  defaultChecked={false}
-                  checked={profileData?.user.wives.some(
-                    (wife) => wife.isWetNurse
+                  checked={Boolean(
+                    profileData?.user.wives.some((w) => w.isWetNurse)
                   )}
                   readOnly
                 />
@@ -405,9 +403,8 @@ export function DisplacedPerson({ displaced_Id }: DisplacedPersonProps) {
                       حامل
                     </Text>
                   }
-                  defaultChecked={false}
-                  checked={profileData?.user.wives.some(
-                    (wife) => wife.isPregnant
+                  checked={Boolean(
+                    profileData?.user.wives.some((w) => w.isPregnant)
                   )}
                   readOnly
                 />

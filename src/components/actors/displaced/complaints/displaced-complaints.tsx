@@ -23,19 +23,15 @@ export default function Displaced_Complaints({
     'complaints-page': parseAsInteger.withDefault(1),
   });
 
-  // Local state to hold filter input values until "Filter" is clicked
   const [localFilters, setLocalFilters] =
     useState<displacedComplaintFilterFormValues>({
       status: null,
       receiver_type: null,
       date_range: [null, null],
     });
-  console.log('🚀 ~ Complaints ~ localFilters:', localFilters);
 
-  // Items per page
   const itemsPerPage = 5;
 
-  // Fetch complaints using React Query
   const {
     data: displacedComplaints,
     isLoading,
@@ -52,11 +48,7 @@ export default function Displaced_Complaints({
         displaced_ID: displaced_ID,
       }),
   });
-  console.log('🚀 ~ displacedComplaints:', displacedComplaints);
 
-  if (isLoading) {
-    <div>isLoading</div>;
-  }
   return (
     <Box p='md' dir='rtl'>
       <Group gap={10} w={'100%'} justify='space-between'>
