@@ -72,6 +72,10 @@ export default function Delegate_Complaints_Content({
       }),
   });
 
+  const handlePageChange = (page: number) => {
+    setQuery({ 'complaints-page': page });
+  };
+
   return (
     <Box dir='rtl' w='100%' p='md'>
       <Delegate_Complaints_Filters

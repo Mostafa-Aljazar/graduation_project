@@ -1,5 +1,6 @@
 import Delegate_Complaints_Content from '@/components/actors/delegate/complaints/delegate-complaints-content';
-import Delegate_Complaints_Header_Tabs from '@/components/actors/delegate/complaints/delegate-complaints-tabs';
+import Common_Complaints_Header_Tabs from '@/components/actors/general/complaints/common-complaints-tabs';
+// import Delegate_Complaints_Header_Tabs from '@/components/actors/general/complaints/common-complaints-tabs';
 import { Stack } from '@mantine/core';
 
 export default async function Complaints({
@@ -11,7 +12,7 @@ export default async function Complaints({
 
   return (
     <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
-      <Delegate_Complaints_Header_Tabs />
+      <Common_Complaints_Header_Tabs />
       <Delegate_Complaints_Content delegate_ID={Number(delegate_Id)} />
     </Stack>
   );

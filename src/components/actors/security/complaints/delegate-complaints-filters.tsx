@@ -1,0 +1,232 @@
+'use client';
+import {
+  COMPLAINTS_STATUS,
+  COMPLAINTS_STATUS_LABELS,
+} from '@/content/actor/delegate/complaints';
+
+import {
+  Button,
+  Flex,
+  Group,
+  Select,
+  SimpleGrid,
+  Stack,
+  Text,
+  TextInput,
+} from '@mantine/core';
+import { DatePickerInput } from '@mantine/dates';
+import { useForm, zodResolver } from '@mantine/form';
+import {
+  Activity,
+  Calendar,
+  ListFilter,
+  RotateCcw,
+  Search,
+  Send,
+  User,
+} from 'lucide-react';
+import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
+import { useState } from 'react';
+import Send_Complaint from './send-complaint';
+import {
+  delegateComplaintFilterFormSchema,
+  delegateComplaintFilterFormValues,
+} from '@/validation/actor/delegate/complaints/delegateComplaintsSchema';
+
+interface DelegateComplaintsFiltersProps {
+  setLocalFilters: React.Dispatch<
+    React.SetStateAction<delegateComplaintFilterFormValues>
+  >;
+  complaintsNum?: number;
+}
+
+export default function Delegate_Complaints_Filters({
+  setLocalFilters,
+  complaintsNum,
+}: DelegateComplaintsFiltersProps) {
+  const [query, setQuery] = useQueryStates({
+    search: parseAsString.withDefault(''),
+    'complaints-page': parseAsInteger.withDefault(1),
+  });
+
+  const form = useForm<delegateComplaintFilterFormValues>({
+    initialValues: {
+      status: null,
+      date_range: [null, null],
+    },
+
+    validate: zodResolver(delegateComplaintFilterFormSchema),
+  });
+
+  const [searchInput, setSearchInput] = useState('');
+
+  const handleReset = () => {
+    form.reset();
+    setSearchInput('');
+    setLocalFilters({
+      status: null,
+      date_range: [null, null],
+    });
+    setQuery({ 'complaints-page': 1 });
+  };
+
+  // Apply search
+  const handleSearch = () => {
+    setLocalFilters({
+      status: null,
+      date_range: [null, null],
+    });
+
+    setQuery({ search: searchInput, 'complaints-page': 1 });
+    setSearchInput('');
+    form.reset();
+  };
+
+  // Apply filters
+  const handleApplyFilters = (values: delegateComplaintFilterFormValues) => {
+    setLocalFilters({
+      status: values.status,
+      date_range: values.date_range, // Keep as [string | null, string | null]
+    });
+    setQuery({ 'complaints-page': 1 });
+  };
+
+  return (
+    <Stack w='100%' mb={20} gap={20}>
+      <Group
+        // direction={{ base: 'column', md: 'row' }}
+        // gap={{ base: 10, md: 0 }}
+        justify={'space-between'}
+        // hidden
+      >
+        <Group flex={1} gap={10}>
+          <Text fw={600} fz={20} className='!text-primary'>
+            الفلاتر:
+          </Text>
+          <Text
+            fz={14}
+            px={5}
+            className='border-1 border-second rounded-md text-dark'
+          >
+            {complaintsNum ?? 0}
+          </Text>
+          <Text fw={500} fz={18} className='!text-dark'>
+            شكوى
+          </Text>
+        </Group>
+
+        <Send_Complaint />
+      </Group>
+
+      <Group
+        flex={1}
+        gap={0}
+        wrap='nowrap'
+        className='border-1 border-gray-300 rounded-lg overflow-hidden'
+        // hidden
+      >
+        <TextInput
+          w={{ base: '100%' }}
+          placeholder='رقم الهوية/الاسم ...'
+          size='sm'
+          value={searchInput}
+          classNames={{
+            input:
+              '!border-none !outline-none placeholder:!text-sm !text-primary !font-medium',
+          }}
+          leftSection={<Search size={18} />}
+          onChange={(e) => setSearchInput(e.target.value)}
+        />
+        <Button
+          w={80}
+          size='sm'
+          px={10}
+          fz={16}
+          fw={500}
+          c={'dark'}
+          radius={'none'}
+          className='!bg-gray-300 !rounded-none'
+          onClick={handleSearch}
+        >
+          بحث
+        </Button>
+      </Group>
+      <form onSubmit={form.onSubmit(handleApplyFilters)}>
+        <SimpleGrid
+          cols={{ base: 1, sm: 2, lg: 3 }}
+          spacing='sm'
+          p={15}
+          className='shadow-md border-1 border-gray-400 rounded-xl'
+        >
+          <Select
+            label={
+              <Text fz={16} fw={500}>
+                حالة الشكوى :
+              </Text>
+            }
+            placeholder='حالة الشكوى'
+            data={Object.entries(COMPLAINTS_STATUS).map(([key, value]) => ({
+              value: value,
+              label: COMPLAINTS_STATUS_LABELS[value],
+            }))}
+            size='sm'
+            leftSection={<Activity size={15} />}
+            {...form.getInputProps('status')}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
+            clearable
+          />
+
+          <DatePickerInput
+            type='range'
+            label={
+              <Text fz={16} fw={500}>
+                تاريخ الإرسال :
+              </Text>
+            }
+            placeholder='نطاق اختيار التواريخ'
+            leftSection={<Calendar size={15} />}
+            {...form.getInputProps('date_range')}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
+            clearable
+          />
+
+          <Group flex={1} justify='end'>
+            <Button
+              type='button'
+              w={100}
+              size='sm'
+              px={15}
+              fz={16}
+              fw={500}
+              c={'dark'}
+              radius={'lg'}
+              className='!justify-end !items-end !self-end !bg-gray-300 !shadow-lg'
+              rightSection={<RotateCcw size={18} />}
+              onClick={handleReset}
+            >
+              إفراغ
+            </Button>
+            <Button
+              type='submit'
+              w={100}
+              size='sm'
+              px={15}
+              fz={16}
+              fw={500}
+              c={'white'}
+              radius={'lg'}
+              className='!justify-end !items-end !self-end !bg-primary !shadow-lg'
+              rightSection={<ListFilter size={18} />}
+            >
+              فلتر
+            </Button>
+          </Group>
+        </SimpleGrid>
+      </form>
+    </Stack>
+  );
+}
