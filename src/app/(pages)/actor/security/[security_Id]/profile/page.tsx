@@ -1,5 +1,11 @@
-import React from 'react';
+import { Security_Person } from '@/components/actors/security/profile/security-profile';
 
-export default function Security_Profile() {
-  return <div>Security Profile's</div>;
+export default async function Security_Profile({
+  params,
+}: {
+  params: Promise<{ security_Id: string }>;
+}) {
+  const { security_Id } = await params;
+
+  return <Security_Person security_Id={Number(security_Id)} />;
 }

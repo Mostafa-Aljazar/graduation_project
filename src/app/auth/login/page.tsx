@@ -61,7 +61,10 @@ export default function Login() {
           router.push(MANAGER_ROUTES_fUNC(data.user.id).PROFILE);
         } else if (data.user.role === 'DELEGATE') {
           router.push(DELEGATE_ROUTES_fUNC(data.user.id).PROFILE);
-        } else if (data.user.role === 'SECURITY') {
+        } else if (
+          data.user.role === 'SECURITY' ||
+          data.user.role === 'SECURITY_OFFICER'
+        ) {
           router.push(SECURITY_ROUTES_fUNC(data.user.id).PROFILE);
         }
         return;
