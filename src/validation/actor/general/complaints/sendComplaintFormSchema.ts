@@ -2,7 +2,7 @@ import { USER_TYPE } from "@/constants/userTypes";
 import { z } from "zod";
 
 // Zod schema for form validation
-export const delegateSendComplaintFormSchema = z.object({
+export const commonSendComplaintFormSchema = z.object({
     reception: z
         .enum([USER_TYPE.MANAGER, USER_TYPE.SECURITY_OFFICER], {
             required_error: 'يجب اختيار جهة الاستقبال',
@@ -23,6 +23,6 @@ export const delegateSendComplaintFormSchema = z.object({
 });
 
 // Type inferred from the schema
-export type delegateSendComplaintFormValues = z.infer<
-    typeof delegateSendComplaintFormSchema
+export type commonSendComplaintFormValues = z.infer<
+    typeof commonSendComplaintFormSchema
 >;

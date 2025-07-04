@@ -18,11 +18,15 @@ import {
   deleteCommonComplaint,
   deleteCommonComplaintProps,
 } from '@/actions/actors/general/complaints/deleteCommonComplaint';
+import { USER_TYPE, UserType } from '@/constants/userTypes';
 
 interface CommonDeleteComplaintProps {
   complaint_Id: number;
   actor_Id: number;
-  role: 'DELEGATE' | 'SECURITY';
+  role: Exclude<
+    (typeof USER_TYPE)[UserType],
+    typeof USER_TYPE.SECURITY_OFFICER
+  >;
 }
 
 export default function Common_Delete_Complaint({

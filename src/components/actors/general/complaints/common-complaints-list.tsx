@@ -3,21 +3,27 @@
 import { Stack, Group, Text, Flex, Pagination } from '@mantine/core';
 import { MessageCircleWarning } from 'lucide-react';
 import { Complaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
-import Complaint_Skeleton from '../../manager/complaints/complaint/complaint-skeleton';
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
 import Common_Complaint_Card from './complaint/common-complaint-card';
+import { USER_TYPE, UserType } from '@/constants/userTypes';
+import Common_Complaint_Skeleton from './complaint/common-complaint-skeleton';
 
 interface CommonComplaintsListProps {
   complaints: Complaint[];
   totalPages: number;
+  itemsPerPage: number;
   loading: boolean;
   actor_Id: number;
-  role: 'DELEGATE' | 'SECURITY';
+  role: Exclude<
+    (typeof USER_TYPE)[UserType],
+    typeof USER_TYPE.SECURITY_OFFICER
+  >;
 }
 
 export default function Common_Complaints_List({
   complaints,
   totalPages,
+  itemsPerPage,
   loading,
   actor_Id,
   role,
@@ -31,8 +37,8 @@ export default function Common_Complaints_List({
     <Stack pos={'relative'}>
       {loading ? (
         <Stack gap='xs'>
-          {Array.from({ length: 5 }).map((_, index) => (
-            <Complaint_Skeleton key={index} />
+          {Array.from({ length: itemsPerPage }).map((_, index) => (
+            <Common_Complaint_Skeleton key={index} />
           ))}
         </Stack>
       ) : complaints.length === 0 ? (

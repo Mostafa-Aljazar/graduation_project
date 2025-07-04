@@ -1,12 +1,16 @@
 "use server";
 
 import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
+import { USER_TYPE, UserType } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
 export interface deleteCommonComplaintProps {
     complaint_Id: number;
     actor_Id: number;
-    role: 'DELEGATE' | 'SECURITY';
+    role: Exclude<
+        (typeof USER_TYPE)[UserType],
+        typeof USER_TYPE.SECURITY_OFFICER
+    >;
 }
 
 export const deleteCommonComplaint = async ({

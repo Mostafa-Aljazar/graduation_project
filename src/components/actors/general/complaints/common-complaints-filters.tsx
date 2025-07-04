@@ -23,23 +23,33 @@ import {
   Search,
 } from 'lucide-react';
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import {
   CommonComplaintFilterFormSchema,
   CommonComplaintFilterFormValues,
 } from '@/validation/actor/general/complaints/commonComplaintsSchema';
+import Common_Send_Complaint from './common-send-complaint';
+import useAuth from '@/hooks/useAuth';
+import { USER_TYPE, UserType } from '@/constants/userTypes';
 
 interface CommonComplaintsFiltersProps {
-  setLocalFilters: React.Dispatch<
-    React.SetStateAction<CommonComplaintFilterFormValues>
-  >;
+  setLocalFilters: Dispatch<SetStateAction<CommonComplaintFilterFormValues>>;
   complaintsNum?: number;
+
+  actor_Id: number;
+  role: Exclude<
+    (typeof USER_TYPE)[UserType],
+    typeof USER_TYPE.SECURITY_OFFICER
+  >;
 }
 
 export default function Common_Complaints_Filters({
   setLocalFilters,
   complaintsNum,
+  actor_Id,
+  role,
 }: CommonComplaintsFiltersProps) {
+  const { user } = useAuth();
   const [query, setQuery] = useQueryStates({
     search: parseAsString.withDefault(''),
     'complaints-page': parseAsInteger.withDefault(1),
@@ -66,7 +76,6 @@ export default function Common_Complaints_Filters({
     setQuery({ 'complaints-page': 1 });
   };
 
-  // Apply search
   const handleSearch = () => {
     setLocalFilters({
       status: null,
@@ -78,7 +87,6 @@ export default function Common_Complaints_Filters({
     form.reset();
   };
 
-  // Apply filters
   const handleApplyFilters = (values: CommonComplaintFilterFormValues) => {
     setLocalFilters({
       status: values.status,
@@ -89,12 +97,7 @@ export default function Common_Complaints_Filters({
 
   return (
     <Stack w='100%' mb={20} gap={20}>
-      <Group
-        // direction={{ base: 'column', md: 'row' }}
-        // gap={{ base: 10, md: 0 }}
-        justify={'space-between'}
-        // hidden
-      >
+      <Group justify={'space-between'}>
         <Group flex={1} gap={10}>
           <Text fw={600} fz={20} className='!text-primary'>
             الفلاتر:
@@ -111,7 +114,9 @@ export default function Common_Complaints_Filters({
           </Text>
         </Group>
 
-        {/* <Send_Complaint /> */}
+        {user?.id == actor_Id &&
+          user?.role == role &&
+          (role === USER_TYPE.MANAGER ? null : <Common_Send_Complaint />)}
       </Group>
 
       <Group
@@ -119,7 +124,6 @@ export default function Common_Complaints_Filters({
         gap={0}
         wrap='nowrap'
         className='border-1 border-gray-300 rounded-lg overflow-hidden'
-        // hidden
       >
         <TextInput
           w={{ base: '100%' }}

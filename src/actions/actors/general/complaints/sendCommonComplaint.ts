@@ -3,17 +3,22 @@
 import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
 import { AqsaAPI } from "@/services";
 
-export interface replyDelegateComplaintProps {
-    reply: string;
-    complaint_ID: number;
-    delegate_ID: number;
+
+export interface sendCommonComplaintProps {
+    actor_Id: number;
+    role: "DELEGATE" | "SECURITY" | "SECURITY_OFFICER" | "DISPLACED"
+    reception: "MANAGER" | "DELEGATE" | "SECURITY_OFFICER";
+    title: string;
+    content: string;
 }
 
-export const replyDelegateComplaint = async ({
-    reply,
-    complaint_ID,
-    delegate_ID
-}: replyDelegateComplaintProps): Promise<modalActionResponse> => {
+export const sendCommonComplaint = async ({
+    actor_Id,
+    role,
+    reception,
+    title,
+    content
+}: sendCommonComplaintProps): Promise<modalActionResponse> => {
 
 
 
@@ -34,24 +39,22 @@ export const replyDelegateComplaint = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
 
-
-
-
-
     try {
-        const response = await AqsaAPI.post("/delegate/complaint/reply", {
-            reply,
-            complaint_ID,
-            delegate_ID
+        const response = await AqsaAPI.post("/complaint/send-complaints", {
+            actor_Id,
+            role,
+            reception,
+            title,
+            content
         });
 
         return {
             status: "200",
-            message: `تم ارسال الرد بنجاح`,
+            message: `تم ارسال الشكوي بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =
-            error.response?.data?.error || error.message || "حدث خطأ أثناء ارسال الرد";
+            error.response?.data?.error || error.message || "حدث خطأ أثناء ارسال الشكوي";
         return {
             status: error.response?.status?.toString() || "500",
             message: errorMessage,

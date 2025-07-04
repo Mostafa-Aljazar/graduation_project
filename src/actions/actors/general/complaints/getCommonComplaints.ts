@@ -4,7 +4,7 @@ import { AqsaAPI } from '@/services';
 import { COMPLAINTS_STATUS, COMPLAINTS_TABS } from '@/content/actor/delegate/complaints';
 import { ComplaintResponse } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
 import { delegateComplaintFilterFormValues } from '@/validation/actor/delegate/complaints/delegateComplaintsSchema';
-import { UserType } from '@/constants/userTypes';
+import { USER_TYPE, UserType } from '@/constants/userTypes';
 import { fakeComplaintResponse, fakeComplaints } from '@/content/actor/common/complaints/fakeComplaints';
 import { CommonComplaintFilterFormValues } from '@/validation/actor/general/complaints/commonComplaintsSchema';
 
@@ -16,7 +16,10 @@ interface GetDelegatesComplaintsProps {
     search?: string;
     type: COMPLAINTS_TABS;
     actor_Id: number;
-    role: UserType;
+    role: Exclude<
+        (typeof USER_TYPE)[UserType],
+        typeof USER_TYPE.SECURITY_OFFICER
+    >;
 }
 
 export async function getCommonComplaints({
@@ -30,7 +33,8 @@ export async function getCommonComplaints({
     actor_Id,
 }: GetDelegatesComplaintsProps): Promise<ComplaintResponse> {
 
-    const fakeComplaintsData = fakeComplaints.filter((item => item.receiver.role == role));
+    // const fakeComplaintsData = fakeComplaints.filter((item => item.receiver.role == role));
+    const fakeComplaintsData = fakeComplaints
     const totalItems = fakeComplaintsData.length;
     const totalPages = Math.ceil(totalItems / limit);
 

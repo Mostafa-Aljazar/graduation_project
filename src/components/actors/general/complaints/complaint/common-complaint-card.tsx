@@ -18,27 +18,32 @@ import {
   changeStatusCommonComplaint,
   changeStatusCommonComplaintProps,
 } from '@/actions/actors/general/complaints/changeStatusCommonComplaint';
-import { USER_TYPE_LABELS } from '@/constants/userTypes';
+import { USER_TYPE, USER_TYPE_LABELS, UserType } from '@/constants/userTypes';
 import Common_Delete_Complaint from './common-delete-complaint';
 import Common_Complaint_Modal from './common-complaint-modal';
+import useAuth from '@/hooks/useAuth';
 
-interface DelegateComplaintCardProps {
+interface CommonComplaintCardProps {
   complaint: Complaint;
   actor_Id: number;
-  role: 'DELEGATE' | 'SECURITY';
+  role: Exclude<
+    (typeof USER_TYPE)[UserType],
+    typeof USER_TYPE.SECURITY_OFFICER
+  >;
 }
 
 export default function Common_Complaint_Card({
   complaint,
   actor_Id,
   role,
-}: DelegateComplaintCardProps) {
+}: CommonComplaintCardProps) {
   const [query] = useQueryStates({
     'complaints-tab': parseAsStringEnum<COMPLAINTS_TABS>(
       Object.values(COMPLAINTS_TABS)
     ).withDefault(COMPLAINTS_TABS.RECEIVED_COMPLAINTS),
   });
 
+  const { user } = useAuth();
   const [opened, { open, close }] = useDisclosure(false);
   const queryClient = useQueryClient();
 
@@ -84,7 +89,8 @@ export default function Common_Complaint_Card({
     if (!clickedOnDelete) {
       if (
         query['complaints-tab'] === COMPLAINTS_TABS.RECEIVED_COMPLAINTS &&
-        complaint.status === COMPLAINTS_STATUS.PENDING
+        complaint.status === COMPLAINTS_STATUS.PENDING &&
+        user?.role !== 'DISPLACED'
       ) {
         changeStatusMutation.mutate({
           complaint_Id: complaint.id,
@@ -160,13 +166,23 @@ export default function Common_Complaint_Card({
             </Text>
           </Stack>
 
-          {query['complaints-tab'] === COMPLAINTS_TABS.SENT_COMPLAINTS && (
-            <Common_Delete_Complaint
-              complaint_Id={complaint.id}
-              actor_Id={actor_Id}
-              role={role}
-            />
-          )}
+          {user?.id === actor_Id &&
+            user?.role === role &&
+            (role !== USER_TYPE.DISPLACED &&
+            role !== USER_TYPE.MANAGER &&
+            query['complaints-tab'] === COMPLAINTS_TABS.SENT_COMPLAINTS ? (
+              <Common_Delete_Complaint
+                complaint_Id={complaint.id}
+                actor_Id={actor_Id}
+                role={role}
+              />
+            ) : role === USER_TYPE.DISPLACED ? (
+              <Common_Delete_Complaint
+                complaint_Id={complaint.id}
+                actor_Id={actor_Id}
+                role={role}
+              />
+            ) : role === USER_TYPE.MANAGER ? null : null)}
         </Group>
       </Card>
 
