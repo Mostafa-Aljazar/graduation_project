@@ -1,6 +1,7 @@
 import { UserType } from '@/constants/userTypes';
 import { TYPE_AIDS } from '@/content/actor/manager/aids-management';
 
+// add complaints {read, reply}
 export type NotificationAction =
   | 'change_delegate'
   | 'edit'

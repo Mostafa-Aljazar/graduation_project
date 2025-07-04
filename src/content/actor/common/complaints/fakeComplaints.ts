@@ -1,0 +1,221 @@
+import { COMPLAINTS_STATUS } from '@/content/actor/delegate/complaints';
+import { Complaint, ComplaintResponse } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
+import { USER_TYPE } from '@/constants/userTypes';
+
+
+export const fakeComplaints: Complaint[] = [
+    {
+        id: 1,
+        date: '2024-10-20',
+        time: '10:30',
+        sender: {
+            id: 1,
+            name: 'محمد حسن',
+            image: 'https://example.com/images/mohamed.jpg',
+            role: USER_TYPE.DISPLACED,
+        },
+        receiver: {
+            id: 10,
+            name: 'أحمد سعيد',
+            image: 'https://example.com/images/ahmed.jpg',
+            role: USER_TYPE.DELEGATE,
+        },
+        title: 'مشكلة في الإيواء',
+        body: 'الخيمة التي أعيش بها غير صالحة للسكن.',
+        status: COMPLAINTS_STATUS.PENDING,
+    },
+    {
+        id: 2,
+        date: '2024-10-20',
+        time: '11:00',
+        sender: {
+            id: 2,
+            name: 'علي كمال',
+            image: 'https://example.com/images/ali.jpg',
+            role: USER_TYPE.DISPLACED,
+        },
+        receiver: {
+            id: 11,
+            name: 'منى يوسف',
+            image: 'https://example.com/images/mona.jpg',
+            role: USER_TYPE.DELEGATE,
+        },
+        title: 'نقص في المياه',
+        body: 'المنطقة تعاني من انقطاع المياه المستمر.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 3,
+        date: '2024-10-19',
+        time: '09:00',
+        sender: {
+            id: 3,
+            name: 'فاطمة ناصر',
+            image: 'https://example.com/images/fatima.jpg',
+            role: USER_TYPE.DISPLACED,
+        },
+        receiver: {
+            id: 12,
+            name: 'سامي رضوان',
+            image: 'https://example.com/images/sami.jpg',
+            role: USER_TYPE.MANAGER,
+        },
+        title: 'شكاوي متكررة',
+        body: 'تم تقديم نفس الشكوى عدة مرات بدون أي استجابة.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 4,
+        date: '2024-10-18',
+        time: '14:15',
+        sender: {
+            id: 4,
+            name: 'هالة خليل',
+            image: 'https://example.com/images/hala.jpg',
+            role: USER_TYPE.DISPLACED,
+        },
+        receiver: {
+            id: 13,
+            name: 'يوسف زيد',
+            image: 'https://example.com/images/yousef.jpg',
+            role: USER_TYPE.SECURITY,
+        },
+        title: 'سوء معاملة',
+        body: 'تم معاملتي بطريقة سيئة عند نقطة التفتيش.',
+        status: COMPLAINTS_STATUS.PENDING,
+    },
+    {
+        id: 5,
+        date: '2024-10-18',
+        time: '15:00',
+        sender: {
+            id: 5,
+            name: 'سليم عماد',
+            image: 'https://example.com/images/saleem.jpg',
+            role: USER_TYPE.DISPLACED,
+        },
+        receiver: {
+            id: 14,
+            name: 'نجوى عادل',
+            image: 'https://example.com/images/najwa.jpg',
+            role: USER_TYPE.MANAGER,
+        },
+        title: 'طلب نقل',
+        body: 'أرغب بنقل خيمتي لمكان أقل ازدحامًا.',
+        status: COMPLAINTS_STATUS.PENDING,
+    },
+    {
+        id: 6,
+        date: '2024-10-17',
+        time: '08:45',
+        sender: {
+            id: 6,
+            name: 'أحمد جهاد',
+            image: 'https://example.com/images/jihad.jpg',
+            role: USER_TYPE.DELEGATE,
+        },
+        receiver: {
+            id: 15,
+            name: 'رنا فتحي',
+            image: 'https://example.com/images/rana.jpg',
+            role: USER_TYPE.SECURITY,
+        },
+        title: 'تأخير في الاستجابة',
+        body: 'الشكوى لم يتم الرد عليها منذ أكثر من أسبوع.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 7,
+        date: '2024-10-17',
+        time: '12:00',
+        sender: {
+            id: 7,
+            name: 'عادل سمير',
+            image: 'https://example.com/images/adel.jpg',
+            role: USER_TYPE.MANAGER,
+        },
+        receiver: {
+            id: 16,
+            name: 'خالد طارق',
+            image: 'https://example.com/images/khaled.jpg',
+            role: USER_TYPE.DELEGATE,
+        },
+        title: 'مخالفة قواعد',
+        body: 'تم تجاهل تعليمات السلامة.',
+        status: COMPLAINTS_STATUS.PENDING,
+    },
+    {
+        id: 8,
+        date: '2024-10-16',
+        time: '10:30',
+        sender: {
+            id: 8,
+            name: 'سماح نبيل',
+            image: 'https://example.com/images/samah.jpg',
+            role: USER_TYPE.DISPLACED,
+        },
+        receiver: {
+            id: 17,
+            name: 'ليلى عوني',
+            image: 'https://example.com/images/leila.jpg',
+            role: USER_TYPE.MANAGER,
+        },
+        title: 'عدم توفر كهرباء',
+        body: 'انقطاع دائم في الكهرباء خلال الليل.',
+        status: COMPLAINTS_STATUS.READ,
+    },
+    {
+        id: 9,
+        date: '2024-10-15',
+        time: '16:00',
+        sender: {
+            id: 9,
+            name: 'حسين نمر',
+            image: 'https://example.com/images/hussein.jpg',
+            role: USER_TYPE.SECURITY,
+        },
+        receiver: {
+            id: 18,
+            name: 'إياد ناصر',
+            image: 'https://example.com/images/eyad.jpg',
+            role: USER_TYPE.DELEGATE,
+        },
+        title: 'سوء تفاهم',
+        body: 'حدث سوء فهم أثناء توزيع المساعدات.',
+        status: COMPLAINTS_STATUS.PENDING,
+    },
+    {
+        id: 10,
+        date: '2024-10-14',
+        time: '09:45',
+        sender: {
+            id: 10,
+            name: 'ليلى جهاد',
+            image: 'https://example.com/images/leila.jpg',
+            role: USER_TYPE.DISPLACED,
+        },
+        receiver: {
+            id: 19,
+            name: 'أمجد هاني',
+            image: 'https://example.com/images/amjad.jpg',
+            role: USER_TYPE.SECURITY,
+        },
+        title: 'مشكلة لوجستية',
+        body: 'المواد لم تصل في الوقت المحدد.',
+        status: COMPLAINTS_STATUS.PENDING,
+    },
+
+    // Add 10 more below following the same pattern
+]
+
+export const fakeComplaintResponse: ComplaintResponse = {
+    status: '200',
+    message: 'تم جلب الشكاوى بنجاح',
+    complaints: fakeComplaints,
+    pagination: {
+        page: 1,
+        limit: 20,
+        totalItems: 20,
+        totalPages: 1,
+    },
+};
