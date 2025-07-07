@@ -11,7 +11,6 @@ import {
 } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { getSecurityProfile } from '@/actions/actors/security/profile/getSecurityProfile';
-import { ISecurityResponse } from '@/@types/actors/security/profile/securityProfileResponse.type';
 import {
   GENDER_LABELS,
   MATERIAL_STATUS_LABELS,
@@ -19,13 +18,14 @@ import {
 import Image from 'next/image';
 import { MAN } from '@/assets/actor';
 import { USER_TYPE, USER_TYPE_LABELS } from '@/constants/userTypes';
+import { ISecurityProfileResponse } from '@/@types/actors/security/profile/securityProfileResponse.type';
 
 interface SecurityPersonProps {
   security_Id: number;
 }
 
 export function Security_Person({ security_Id }: SecurityPersonProps) {
-  const { data: profileData, isLoading } = useQuery<ISecurityResponse>({
+  const { data: profileData, isLoading } = useQuery<ISecurityProfileResponse>({
     queryKey: ['securityProfile', security_Id],
     queryFn: () => getSecurityProfile({ security_Id }),
   });
@@ -69,7 +69,7 @@ export function Security_Person({ security_Id }: SecurityPersonProps) {
       >
         <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} spacing='lg'>
           <InfoItem label='الاسم' value={user?.name} />
-          <InfoItem label='رقم الهوية' value={user?.nationalId} />
+          <InfoItem label='رقم الهوية' value={user?.identity} />
           <InfoItem
             label='الجنس'
             value={GENDER_LABELS[user?.gender || 'MALE']}
@@ -85,7 +85,7 @@ export function Security_Person({ security_Id }: SecurityPersonProps) {
           />
           <InfoItem
             label='الوظيفة'
-            value={USER_TYPE_LABELS[user?.job || USER_TYPE.SECURITY]}
+            value={USER_TYPE_LABELS[user?.rank || USER_TYPE.SECURITY]}
           />
           <InfoItem
             label='الدور'

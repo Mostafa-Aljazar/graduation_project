@@ -1,34 +1,24 @@
 import { GENDER, MATERIAL_STATUS } from "@/content/actor/delegate/profile-form"
 
-export interface ISecurityResponse {
+export interface ISecurityProfileResponse {
     status: string;
     message?: string;
-    user: ISecurityData;
+    user: ISecurityProfile;
     error?: string;
 }
 
-
-export interface ISecuritiesResponse {
-    status: string;
-    message?: string;
-    users: ISecurityData[];
-    error?: string;
-}
-
-export interface ISecurityData {
-    id: number
-    name: string
-    gender: GENDER
+export interface ISecurityProfile {
+    id: number;
+    name: string;
     profileImage: string
-    nationalId: string
+    gender: GENDER
+    identity: string;
     nationality: string
-
     education: string
     mobileNumber: string
     alternativeMobileNumber: string
     originalAddress: string
-
     socialStatus: MATERIAL_STATUS
-    job: "SECURITY"
-    role: "SECURITY" | "SECURITY_OFFICER"
+    rank: "SECURITY" | "SECURITY_OFFICER"
+    role: "SECURITY"
 }
