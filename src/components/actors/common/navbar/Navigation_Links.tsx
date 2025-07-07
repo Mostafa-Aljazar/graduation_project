@@ -107,7 +107,10 @@ export default function Navigation_Links() {
   ]);
 
   return (
-    <Box w='100%' className='shadow-xl rounded-[20px] !overflow-hidden'>
+    <Box
+      w='100%'
+      className='!shadow-xl !border-1 !border-gray-200 rounded-[20px] !overflow-hidden'
+    >
       <Stack gap={0}>
         {navLinks.map((link, index) => {
           const isActive = pathname.includes(link.href);
@@ -122,8 +125,20 @@ export default function Navigation_Links() {
                   'bg-gradient-to-l from-primary to-white font-semibold'
               )}
             >
-              {link.icon && <link.icon size={20} />}
-              <Text fz={16} fw={isActive ? 600 : 400} className='!text-nowrap'>
+              {link.icon && (
+                <link.icon
+                  size={20}
+                  className={cn(isActive ? '!text-white' : '!text-black')}
+                />
+              )}
+              <Text
+                fz={16}
+                fw={isActive ? 600 : 400}
+                className={cn(
+                  '!text-nowrap',
+                  isActive ? '!text-white' : '!text-black'
+                )}
+              >
                 {link.label}
               </Text>
             </Link>

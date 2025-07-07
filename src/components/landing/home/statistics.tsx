@@ -47,7 +47,7 @@ export default function Statistics() {
                 gap='sm'
                 wrap='nowrap'
                 align='center'
-                className='!justify-center md:!justify-start'
+                className='!justify-cenater md:!justify-start'
               >
                 <ThemeIcon variant='transparent' className='!text-primary'>
                   <stat.icon size={30} />
@@ -58,13 +58,16 @@ export default function Statistics() {
                       start={0}
                       end={typeof stat.value === 'number' ? stat.value : 0}
                       duration={1.5}
+                      // redraw={true}
                       enableScrollSpy
                       formattingFn={(val) =>
                         val >= 1000
                           ? `+${(val / 1000).toFixed(1)} K`
                           : `+${val}`
                       }
-                    />
+                    >
+                      {({ countUpRef }) => <span ref={countUpRef} />}
+                    </CountUp>
                   </Text>
                   <Text fz='lg' className='!text-primary'>
                     {stat.label}

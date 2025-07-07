@@ -20,7 +20,6 @@ export const getArticles = async ({ page = 1, limit = 5 }: getArticlesProps): Pr
     }
 
     //FIXME: Fake data implementation
-    const totalArticles = 20; // Simulate 20 articles in "database"
     const start = (page - 1) * limit;
     const end = start + limit;
 

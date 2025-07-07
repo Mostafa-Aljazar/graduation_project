@@ -101,7 +101,6 @@ export const FAKE_STORIES: Article_SuccessStory_Ad[] = [
   },
 ];
 
-// Updated Fake Articles with More Entries
 export const FAKE_ARTICLES: Article_SuccessStory_Ad[] = [
   {
     id: 1,
@@ -152,7 +151,7 @@ export const FAKE_ARTICLES: Article_SuccessStory_Ad[] = [
         </div>
       </div>
     `,
-    imgs: [HOME_HERO_SLIDER_3],
+    imgs: [HOME_HERO_SLIDER_2, HOME_HERO_SLIDER_1, HOME_HERO_SLIDER_3],
     createdAt: new Date('2025-05-01T08:00:00Z'),
     updatedAt: new Date('2025-05-26T15:06:00Z'),
   },
@@ -293,6 +292,60 @@ export const FAKE_ARTICLES: Article_SuccessStory_Ad[] = [
     imgs: [HOME_HERO_SLIDER_3],
     createdAt: new Date('2025-05-20T11:00:00Z'),
     updatedAt: new Date('2025-05-26T15:06:00Z'),
+  },
+  {
+    id: 5,
+    title: 'الصحة النفسية في المخيمات: دعم حيوي',
+    brief: 'أهمية تقديم الدعم النفسي لسكان المخيمات.',
+    content: `<div class="bg-white shadow-lg mx-auto p-6 rounded-lg max-w-4xl"><h1 class="mb-10 pb-4 border-red-500 border-b-2 text-4xl text-center">الصحة النفسية في المخيمات</h1><p class="text-gray-700 text-lg leading-relaxed">يعاني النازحون من ضغوط نفسية كبيرة بسبب النزوح وفقدان الأمان. يتطلب الأمر تدخلات مستمرة من متخصصين نفسيين وبرامج دعم مجتمعية.</p></div>`,
+    imgs: [HOME_HERO_SLIDER_1],
+    createdAt: new Date('2025-05-25T10:00:00Z'),
+    updatedAt: new Date('2025-05-26T15:06:00Z'),
+  },
+  {
+    id: 6,
+    title: 'المرأة في المخيمات: قصص صمود',
+    brief: 'كيف تقود النساء التغيير في ظروف صعبة؟',
+    content: `<div class="bg-white shadow-lg mx-auto p-6 rounded-lg max-w-4xl"><h1 class="mb-10 pb-4 border-pink-500 border-b-2 text-4xl text-center">دور المرأة في المخيمات</h1><p class="text-gray-700 text-lg leading-relaxed">النساء يتحملن مسؤوليات كبيرة في رعاية الأسر، والمشاركة في التعليم والدعم النفسي رغم التحديات.</p></div>`,
+    imgs: [HOME_HERO_SLIDER_2],
+    createdAt: new Date('2025-05-27T09:00:00Z'),
+    updatedAt: new Date('2025-05-27T15:00:00Z'),
+  },
+  {
+    id: 7,
+    title: 'التعليم غير الرسمي في المخيمات',
+    brief: 'مبادرات تطوعية لتعويض غياب المدارس.',
+    content: `<div class="bg-white shadow-lg mx-auto p-6 rounded-lg max-w-4xl"><h1 class="mb-10 pb-4 border-green-500 border-b-2 text-4xl text-center">التعليم غير الرسمي</h1><p class="text-gray-700 text-lg leading-relaxed">يبتكر المتطوعون طرقًا بسيطة للتعليم في ظل غياب المدارس، باستخدام القصص، والأنشطة التفاعلية، والتعلم الرقمي.</p></div>`,
+    imgs: [HOME_HERO_SLIDER_3],
+    createdAt: new Date('2025-05-28T11:00:00Z'),
+    updatedAt: new Date('2025-05-28T15:00:00Z'),
+  },
+  {
+    id: 8,
+    title: 'المبادرات الشبابية في مخيمات النزوح',
+    brief: 'كيف يقود الشباب التغيير من داخل الخيام؟',
+    content: `<div class="bg-white shadow-lg mx-auto p-6 rounded-lg max-w-4xl"><h1 class="mb-10 pb-4 border-orange-500 border-b-2 text-4xl text-center">مبادرات الشباب</h1><p class="text-gray-700 text-lg leading-relaxed">من ورش العمل إلى حملات النظافة، يطلق الشباب في المخيمات مبادرات إيجابية تساهم في تحسين الحياة اليومية.</p></div>`,
+    imgs: [HOME_HERO_SLIDER_1],
+    createdAt: new Date('2025-05-29T14:00:00Z'),
+    updatedAt: new Date('2025-05-29T16:00:00Z'),
+  },
+  {
+    id: 9,
+    title: 'الغذاء في المخيمات: بين الحاجة والمساعدات',
+    brief: 'نظرة على الواقع الغذائي للنازحين.',
+    content: `<div class="bg-white shadow-lg mx-auto p-6 rounded-lg max-w-4xl"><h1 class="mb-10 pb-4 border-b-2 border-brown-500 text-4xl text-center">توفير الغذاء</h1><p class="text-gray-700 text-lg leading-relaxed">تعتمد العديد من العائلات على المساعدات الغذائية، لكن التحديات اللوجستية تجعل التوزيع غير منتظم أحيانًا.</p></div>`,
+    imgs: [HOME_HERO_SLIDER_2],
+    createdAt: new Date('2025-05-30T08:00:00Z'),
+    updatedAt: new Date('2025-05-30T15:00:00Z'),
+  },
+  {
+    id: 10,
+    title: 'تجارب النجاح داخل المخيمات',
+    brief: 'قصص ملهمة لأشخاص تجاوزوا المحنة.',
+    content: `<div class="bg-white shadow-lg mx-auto p-6 rounded-lg max-w-4xl"><h1 class="mb-10 pb-4 border-teal-500 border-b-2 text-4xl text-center">قصص نجاح</h1><p class="text-gray-700 text-lg leading-relaxed">رغم الصعوبات، ينجح بعض النازحين في تأسيس أعمال صغيرة، أو استكمال تعليمهم بطرق غير تقليدية.</p></div>`,
+    imgs: [HOME_HERO_SLIDER_3],
+    createdAt: new Date('2025-06-01T12:00:00Z'),
+    updatedAt: new Date('2025-06-01T16:00:00Z'),
   },
 ];
 
