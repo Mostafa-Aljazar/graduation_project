@@ -165,14 +165,30 @@ export const FAKE_TASKS: Task[] = [
     },
 ];
 
-export const fakeTasksResponse: TasksResponse = {
-    status: '200',
-    message: 'تم جلب الشكاوى بنجاح',
-    tasks: FAKE_TASKS,
-    pagination: {
-        page: 1,
-        limit: 20,
-        totalItems: 20,
-        totalPages: 1,
-    },
+
+export const getFakeTasksResponse = ({
+    page = 1,
+    limit = 10,
+}: {
+    page?: number;
+    limit?: number;
+}): TasksResponse => {
+    const start = (page - 1) * limit;
+    const end = start + limit;
+
+    const paginatedTasks = FAKE_TASKS.slice(start, end);
+    const totalItems = FAKE_TASKS.length;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return {
+        status: "200",
+        message: "تم جلب المهام الأمنية بنجاح",
+        tasks: paginatedTasks,
+        pagination: {
+            page,
+            limit,
+            totalItems,
+            totalPages,
+        },
+    };
 };

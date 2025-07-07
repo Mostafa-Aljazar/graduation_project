@@ -3,7 +3,7 @@ export const USER_TYPE = {
     DELEGATE: 'DELEGATE',
     MANAGER: 'MANAGER',
     SECURITY: 'SECURITY',
-    SECURITY_OFFICER: 'SECURITY_OFFICER'
+    SECURITY_OFFICER: 'SECURITY_OFFICER'//remove it it
 } as const;
 
 export type UserType = keyof typeof USER_TYPE;
