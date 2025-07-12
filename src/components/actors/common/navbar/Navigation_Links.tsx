@@ -109,36 +109,35 @@ export default function Navigation_Links() {
   return (
     <Box
       w='100%'
-      className='!shadow-xl !border-1 !border-gray-200 rounded-[20px] !overflow-hidden'
+      className='bg-white shadow-lg border border-gray-200 rounded-2xl overflow-hidden'
     >
       <Stack gap={0}>
         {navLinks.map((link, index) => {
           const isActive = pathname.includes(link.href);
+
           return (
             <Link
               key={index}
               href={link.href}
               className={cn(
-                'flex items-center gap-2 px-2 py-4 text-dark hover:bg-gray-200 transition-colors border-0 border-gray-100',
-                index !== navLinks.length - 1 && 'border-b-1',
-                isActive &&
-                  'bg-gradient-to-l from-primary to-white font-semibold'
+                'flex items-center gap-3 px-5 py-4 transition-colors duration-200',
+                'border-b border-gray-100 last:border-b-0',
+                isActive
+                  ? 'bg-primary text-white font-semibold'
+                  : 'text-gray-700 hover:bg-gray-50 hover:text-dark'
               )}
             >
               {link.icon && (
                 <link.icon
                   size={20}
-                  className={cn(isActive ? '!text-white' : '!text-black')}
+                  className={cn(
+                    'transition-colors duration-200',
+                    isActive ? 'text-white' : 'text-gray-500'
+                  )}
                 />
               )}
-              <Text
-                fz={16}
-                fw={isActive ? 600 : 400}
-                className={cn(
-                  '!text-nowrap',
-                  isActive ? '!text-white' : '!text-black'
-                )}
-              >
+
+              <Text fz={15} fw={isActive ? 600 : 400} className='truncate'>
                 {link.label}
               </Text>
             </Link>

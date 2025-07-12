@@ -12,10 +12,8 @@ export default function Actor_Navbar() {
       justify='flex-start'
       align='center'
     >
-      {/* User Profile Section */}
       <ProfileInfo />
 
-      {/* Navigation Links */}
       <Navigation_Links />
     </Stack>
   );

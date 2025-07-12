@@ -1,15 +1,14 @@
 'use client';
 import { MAN } from '@/assets/actor';
+import { USER_RANK_LABELS, UserRank } from '@/constants/userTypes';
 import useAuth from '@/hooks/useAuth';
-import { logout } from '@/utils/auth/logout';
-import { Box, Button, Group, Stack, Text } from '@mantine/core';
-import { LogOut } from 'lucide-react';
+import { Box, Group, Skeleton, Stack, Text } from '@mantine/core';
+import { IdCard } from 'lucide-react';
 import Image from 'next/image';
-import React from 'react';
 
 export default function Profile_Info() {
-  const { user, isDelegate, isDisplaced, isSecurity, isSecurityOfficer } =
-    useAuth();
+  const { user } = useAuth();
+  const isLoading = !user;
 
   return (
     <Stack
@@ -18,13 +17,12 @@ export default function Profile_Info() {
       align='center'
       gap={10}
       pb={10}
-      className='!shadow-xl !rounded-[20px] !overflow-hidden'
+      className='bg-white !shadow-xl !rounded-[20px] !overflow-hidden'
     >
-      {/* Image */}
       <Box
         w='100%'
         h={70}
-        className='!relative !bg-gradient-to-l !from-primary !to-white !rounded-[20px]'
+        className='!relative !bg-gradient-to-b !from-primary !to-white !rounded-[20px]'
       >
         <Box
           pos='absolute'
@@ -34,62 +32,55 @@ export default function Profile_Info() {
           w={85}
           h={85}
         >
-          <Image
-            src={user?.image || MAN}
-            alt='Profile'
-            width={85}
-            height={85}
-            className='!object-cover'
-          />
+          {isLoading ? (
+            <Skeleton width={85} height={85} radius='50%' />
+          ) : (
+            <Image
+              src={user?.image || MAN}
+              alt='Profile'
+              width={85}
+              height={85}
+              className='!object-cover'
+            />
+          )}
         </Box>
       </Box>
 
-      <Group
-        justify='center'
-        align='baseline'
-        gap={3}
-        px={5}
-        mt={30}
-        wrap='nowrap'
-      >
-        <Text fw={500} fz={18} c='white' className='!text-primary !text-nowrap'>
-          {isSecurity
-            ? 'الأمن :'
-            : isSecurityOfficer
-            ? 'مسؤول الأمن :'
-            : isDelegate
-            ? 'المندوب :'
-            : isDisplaced
-            ? 'النازح :'
-            : 'المدير :'}
-        </Text>
-        <Text fw={400} fz={16} c='white' className='!text-primary'>
-          {user?.name}
-        </Text>
-      </Group>
-      <Text
-        fw={400}
-        fz={14}
-        c='white'
-        ta='center'
-        className='!text-primary'
-        dir='ltr'
-      >
-        {user?.idNumber ?? 'لا يوجد رقم هوية'}
-      </Text>
+      <Stack mt={30} align='center' gap={8}>
+        {isLoading ? (
+          <>
+            <Skeleton height={20} width={150} />
+            <Skeleton height={16} width={100} />
+          </>
+        ) : (
+          <>
+            <Text
+              fw={600}
+              fz={16}
+              ta='right'
+              c='white'
+              className='!text-primary'
+            >
+              {`ال${USER_RANK_LABELS[user.rank as UserRank]} : `}
+              {user.name}
+            </Text>
 
-      <Button
-        variant='transparent'
-        size='xs'
-        radius='md'
-        fw={500}
-        fz={16}
-        color='gray'
-        leftSection={<LogOut size={20} />}
-        onClick={logout}
-      >
-        تسجيل الخروج
-      </Button>
+            <Group gap={5} hidden={!user.identity}>
+              <IdCard size={20} className='!text-primary' />
+              <Text
+                fw={600}
+                fz={14}
+                c='white'
+                ta='center'
+                className='!text-primary'
+                dir='ltr'
+              >
+                {user.identity ?? 'لا يوجد رقم هوية'} :
+              </Text>
+            </Group>
+          </>
+        )}
+      </Stack>
     </Stack>
   );
 }

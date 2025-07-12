@@ -9,13 +9,7 @@ export default function Actor_Layout({
 }) {
   return (
     <Group wrap='nowrap' gap={0} justify='start' align='start' pt={60}>
-      <Stack
-        w={250}
-        // mih='100vh'
-        visibleFrom='lg'
-        justify='flex-start'
-        align='center'
-      >
+      <Stack w={250} visibleFrom='lg' justify='flex-start' align='center'>
         <Actor_Navbar />
       </Stack>
       <Stack mih='100vh' w={'100%'} h={'100%'} justify='start'>
