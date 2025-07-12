@@ -66,7 +66,7 @@ export const DEFAULT_CATEGORIES: CategoryRangeType[] = [
         label: '1-3 أفراد',
         min: 1,
         max: 3,
-        isDefault: true,
+        is_default: true,
         portion: 1,
     },
     {
@@ -74,7 +74,7 @@ export const DEFAULT_CATEGORIES: CategoryRangeType[] = [
         label: '4-6 أفراد',
         min: 4,
         max: 6,
-        isDefault: true,
+        is_default: true,
         portion: 2,
     },
     {
@@ -82,7 +82,7 @@ export const DEFAULT_CATEGORIES: CategoryRangeType[] = [
         label: '7-9 أفراد',
         min: 7,
         max: 9,
-        isDefault: true,
+        is_default: true,
         portion: 3,
     },
     {
@@ -90,7 +90,7 @@ export const DEFAULT_CATEGORIES: CategoryRangeType[] = [
         label: 'أكثر من 10 أفراد',
         min: 10,
         max: null,
-        isDefault: true,
+        is_default: true,
         portion: 4,
     },
 ];

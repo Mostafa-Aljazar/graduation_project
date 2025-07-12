@@ -1,23 +1,30 @@
 'use server';
 
-import { AqsaAPI } from '@/services';
 import { TYPE_AIDS, TYPE_GROUP_AIDS } from '@/content/actor/manager/aids-management';
 import { AidsResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import { fakeAidsResponse } from '@/content/actor/general/fake-aids';
+import { getFakeAidsResponse } from '@/content/actor/general/fake-aids';
+import { USER_TYPE, UserType } from '@/constants/userTypes';
 
 export interface getAidsProps {
+    actor_Id: number;
+    role: Exclude<
+        (typeof USER_TYPE)[UserType],
+        | typeof USER_TYPE.SECURITY_OFFICER
+        | typeof USER_TYPE.DISPLACED
+        | typeof USER_TYPE.SECURITY
+    >;
     page?: number;
     limit?: number;
     type?: TYPE_AIDS | null;
-    // date_range?: Date[] | null;
     date_range?: [string | null, string | null];
-    // recipients_range?: number[] | null;
     recipients_range?: [number | null, number | null]
     type_group_aids?: TYPE_GROUP_AIDS
 };
 
 // FIXME:
 export const getAids = async ({
+    actor_Id,
+    role,
     page = 1,
     limit = 5,
     type = null,
@@ -26,7 +33,8 @@ export const getAids = async ({
     type_group_aids
 }: getAidsProps): Promise<AidsResponse> => {
 
-    const fakeResponse: AidsResponse = fakeAidsResponse({ page, limit, type });
+    const fakeResponse: AidsResponse = getFakeAidsResponse({ page, limit, aid_status: type_group_aids });
+    // console.log("🚀 ~ fakeResponse:", fakeResponse)
     // Simulate API delay
     return await new Promise((resolve) => {
         setTimeout(() => {

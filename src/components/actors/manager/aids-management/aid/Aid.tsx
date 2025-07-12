@@ -1,7 +1,7 @@
 'use client';
 
 import { AidResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import { getAid } from '@/actions/actors/manager/aids-management/getAid';
+import { getAid } from '@/actions/actors/general/aids-management/getAid';
 import { LoadingOverlay, Stack } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
@@ -33,6 +33,7 @@ export default function Aid_Page({ aid_id }: AidProps) {
 
   return (
     <Stack pos={'relative'}>
+      Add_Aid_Page
       {/* <Add_Aid_Page aid_id={aid_id} />; */}
       <Add_Aid_Page initialData={data as AidResponse} aid_id={aid_id} />;
     </Stack>

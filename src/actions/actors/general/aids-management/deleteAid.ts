@@ -4,11 +4,11 @@ import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.t
 import { AqsaAPI } from "@/services";
 
 export interface deleteAidProps {
-    aid_ID: number;
+    aid_Id: number;
 }
 
 export const deleteAid = async ({
-    aid_ID,
+    aid_Id,
 }: deleteAidProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
@@ -24,7 +24,7 @@ export const deleteAid = async ({
 
     // Real implementation with filters
     try {
-        const response = await AqsaAPI.delete(`/manager/aids/${aid_ID}`);
+        const response = await AqsaAPI.delete(`/manager/aids/${aid_Id}`);
 
         return {
             status: "200",

@@ -32,15 +32,15 @@ import {
   AidResponse,
   SelectedDelegatePortion,
 } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import { addAid } from '@/actions/actors/manager/aids-management/addAid';
-import { updateAid } from '@/actions/actors/manager/aids-management/updateAid';
+import { addAid } from '@/actions/actors/general/aids-management/addAid';
+import { updateAid } from '@/actions/actors/general/aids-management/updateAid';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import Displaceds_List from '@/components/actors/general/Displaced/content/displaceds-list';
 import { DESTINATION_DISPLACED } from '@/content/actor/displaced/filter';
 import { DESTINATION_DELEGATES } from '@/content/actor/delegate/filter';
 import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
-import { getAid } from '@/actions/actors/manager/aids-management/getAid';
+import { getAid } from '@/actions/actors/general/aids-management/getAid';
 
 function Add_Aid_Header({
   mode,

@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Stack, Text, Group, Button } from '@mantine/core';
 import { Package, SquarePlus } from 'lucide-react';
 import Aids_Management_Filters from './aids-management-filters';
-import { getAids } from '@/actions/actors/manager/aids-management/getAids';
+import { getAids } from '@/actions/actors/general/aids-management/getAids';
 import Aids_List from './card/aids-list';
 import { TYPE_GROUP_AIDS } from '@/content/actor/manager/aids-management';
 import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
@@ -14,8 +14,9 @@ import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import useAuth from '@/hooks/useAuth';
 import { AidsResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { aidsManagementFilterFormType } from '@/validation/actor/manager/aids-management/aids-management-filters-schema';
+import { USER_TYPE } from '@/constants/userTypes';
 
-function Aids_Management_Header() {
+function Aids_Management_Header({ delegate_Id }: { delegate_Id?: number }) {
   const route = useRouter();
 
   const { user } = useAuth();
@@ -31,8 +32,8 @@ function Aids_Management_Header() {
         </Text>
       </Group>
       <Button
+        hidden={!!delegate_Id}
         rightSection={<SquarePlus size={16} />}
-        w={100}
         size='sm'
         fz={18}
         fw={500}
@@ -47,7 +48,15 @@ function Aids_Management_Header() {
   );
 }
 
-export default function Aids_Management_Content() {
+interface CommonAidsManagementContentProps {
+  delegate_Id?: number;
+  manager_Id?: number;
+}
+
+export default function Common_Aids_Management_Content({
+  delegate_Id,
+  manager_Id,
+}: CommonAidsManagementContentProps) {
   const [localFilters, setLocalFilters] =
     useState<aidsManagementFilterFormType>({
       type: null,
@@ -77,12 +86,14 @@ export default function Aids_Management_Content() {
         date_range: localFilters.date_range,
         recipients_range: localFilters.recipients_range,
         type_group_aids: query['aids-tab'],
+        actor_Id: actor_Id as number,
+        role: role,
       }),
   });
 
   return (
     <Stack w={'100%'}>
-      <Aids_Management_Header />
+      <Aids_Management_Header delegate_Id={delegate_Id} />
 
       <Aids_Management_Filters
         setLocalFilters={setLocalFilters}
@@ -96,6 +107,7 @@ export default function Aids_Management_Content() {
           data={AidsData?.aids || []}
           totalPages={AidsData?.pagination.totalPages || 1}
           isLoading={isLoading}
+          delegate_Id={delegate_Id}
         />
       )}
     </Stack>

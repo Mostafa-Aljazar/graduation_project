@@ -12,17 +12,17 @@ import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 
-interface AidDeleteModalProps {
-  aid_ID: number;
+interface CommonAidDeleteModalProps {
+  aid_Id: number;
   opened: boolean;
   close: () => void;
 }
 
-export default function Aid_Delete_Modal({
-  aid_ID,
+export default function Common_Aid_Delete_Modal({
+  aid_Id,
   opened,
   close,
-}: AidDeleteModalProps) {
+}: CommonAidDeleteModalProps) {
   const deleteMutation = useMutation<
     modalActionResponse,
     unknown,
@@ -57,7 +57,7 @@ export default function Aid_Delete_Modal({
 
   const handleClick = () => {
     deleteMutation.mutate({
-      aid_ID,
+      aid_Id,
     });
   };
 

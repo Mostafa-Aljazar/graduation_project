@@ -49,7 +49,7 @@ export const DELEGATE_ROUTES_fUNC = (
 
     // AIDS_MANAGEMENT
     AIDS_MANAGEMENT: `/actor/delegates/${delegate_Id}/aids-management`,
-    ADD_AID: `/actor/delegates/${delegate_Id}/aids-management/add`,
+    ADD_AID_DISPLACEDS: `/actor/delegates/${delegate_Id}/aids-management/${aid_Id}/add-displaceds`,
     AID: `/actor/delegates/${delegate_Id}/aids-management/${aid_Id}`,
   } as const;
 };

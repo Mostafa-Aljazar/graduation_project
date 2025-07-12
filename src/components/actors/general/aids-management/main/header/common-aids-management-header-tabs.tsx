@@ -17,7 +17,7 @@ import {
 import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import { useState, useRef } from 'react';
 
-export default function Aids_Management_Header_Tabs() {
+export default function Common_Aids_Management_Header_Tabs() {
   const [query, setQuery] = useQueryStates({
     'aids-tab': parseAsStringEnum<TYPE_GROUP_AIDS>(
       Object.values(TYPE_GROUP_AIDS)
@@ -44,7 +44,7 @@ export default function Aids_Management_Header_Tabs() {
         className='flex justify-center items-center'
         ref={setControlRef(tabKey)}
       >
-        <Group flex={1} wrap='nowrap' gap={3} justify='center' align='baseline'>
+        <Group flex={1} wrap='nowrap' gap={3} justify='center' align='center'>
           {IconComponent && (
             <ThemeIcon
               variant='transparent'

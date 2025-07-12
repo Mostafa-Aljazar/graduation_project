@@ -1,12 +1,11 @@
-import Aids_Management_Content from '@/components/actors/manager/aids-management/main/content/aids-management-content';
-import Aids_Management_Header_Tabs from '@/components/actors/manager/aids-management/main/header/aids-management-header-tabs';
-import { Stack } from '@mantine/core';
+import Common_Aids_Management_Page from '@/components/actors/general/aids-management/main/content/common-aids-management-page';
 
-export default function Aids_Management() {
-  return (
-    <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
-      <Aids_Management_Header_Tabs />
-      <Aids_Management_Content />
-    </Stack>
-  );
+export default async function Manager_Aids_Management({
+  params,
+}: {
+  params: Promise<{ manager_Id: string }>;
+}) {
+  const { manager_Id } = await params;
+
+  return <Common_Aids_Management_Page manager_Id={Number(manager_Id)} />;
 }
