@@ -4,7 +4,7 @@ import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.t
 import {
   receiveDisplacedAid,
   receiveDisplacedAidProps,
-} from '@/actions/actors/manager/aids-management/receiveDisplacedAid';
+} from '@/actions/actors/general/aids-management/receiveDisplacedAid';
 import useAuth from '@/hooks/useAuth';
 import { otpSchema, otpType } from '@/validation/auth/otpSchema';
 import {

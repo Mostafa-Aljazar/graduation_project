@@ -1,23 +1,35 @@
-import { Stack, Group, Text, Flex, Pagination, Center } from '@mantine/core';
+'use client';
+import { Stack, Group, Text, Flex, Pagination } from '@mantine/core';
 import { Package } from 'lucide-react';
-import Aid_Card from './aid-card';
-import Aid_Card_Skeleton from './aid-card-skeleton';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
+import { USER_TYPE, UserType } from '@/constants/userTypes';
+import Common_Aid_Card from './common-aid-card';
+import Common_Aid_Card_Skeleton from './common-aid-card-skeleton';
 
-interface AidsListProps {
+interface CommonAidsListProps {
   data: Aid[];
-  totalPages: number;
+  total_pages: number;
   isLoading: boolean;
-  delegate_Id?: number;
+  // delegate_Id?: number;
+  actor_Id: number;
+  role: Exclude<
+    (typeof USER_TYPE)[UserType],
+    | typeof USER_TYPE.SECURITY_OFFICER
+    | typeof USER_TYPE.DISPLACED
+    | typeof USER_TYPE.SECURITY
+  >;
 }
 
-export default function Aids_List({
+export default function Common_Aids_List({
   data,
-  totalPages,
+  total_pages,
   isLoading,
-  delegate_Id,
-}: AidsListProps) {
+  actor_Id,
+  role,
+}: // delegate_Id,
+CommonAidsListProps) {
+  console.log('🚀 ~ data:', data);
   const [activePage, setActivePage] = useQueryState(
     'aids-page',
     parseAsInteger.withDefault(1)
@@ -28,7 +40,7 @@ export default function Aids_List({
       {isLoading ? (
         <Stack gap='xs'>
           {Array.from({ length: 5 }).map((_, index) => (
-            <Aid_Card_Skeleton key={index} />
+            <Common_Aid_Card_Skeleton key={index} />
           ))}
         </Stack>
       ) : data.length === 0 ? (
@@ -41,16 +53,21 @@ export default function Aids_List({
       ) : (
         <Stack gap='xs'>
           {data.map((aid) => (
-            <Aid_Card aid={aid} key={aid.id} delegate_Id={delegate_Id} />
+            <Common_Aid_Card
+              aid={aid}
+              key={aid.id}
+              actor_Id={actor_Id}
+              role={role}
+            />
           ))}
         </Stack>
       )}
-      {!isLoading && totalPages > 1 && (
+      {!isLoading && total_pages > 1 && (
         <Flex justify='center' mt='xl'>
           <Pagination
             value={activePage}
             onChange={setActivePage}
-            total={totalPages}
+            total={total_pages}
             size='sm'
             radius='xl'
             withControls={false}

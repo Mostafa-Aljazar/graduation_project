@@ -29,7 +29,7 @@ import {
   displacedFilterValues,
 } from '@/validation/actor/general/displaced-filter-form';
 
-interface DisplacedFiltersProps {
+interface CommonDisplacedFiltersProps {
   setLocalFilters: React.Dispatch<React.SetStateAction<displacedFilterValues>>;
   displacedNum: number;
 }
@@ -44,10 +44,10 @@ const initData: displacedFilterValues = {
   delegate: [],
 };
 
-export default function DisplacedFilters({
+export default function Common_Displaced_Filters({
   setLocalFilters,
   displacedNum,
-}: DisplacedFiltersProps) {
+}: CommonDisplacedFiltersProps) {
   const [searchInput, setSearchInput] = useState('');
   const [resetKey, setResetKey] = useState(0);
   const [search, setSearch] = useQueryState(
@@ -113,12 +113,12 @@ export default function DisplacedFilters({
             w={{ base: '100%' }}
             placeholder='رقم الهوية/رقم الخيمة...'
             size='sm'
-            value={searchInput}
             classNames={{
               input:
                 '!border-none !outline-none placeholder:!text-sm !text-primary !font-normal',
             }}
             leftSection={<Search size={18} />}
+            value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
           <Button

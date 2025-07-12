@@ -5,7 +5,7 @@ import { Database, UserPlus } from 'lucide-react';
 import { Suspense, useState } from 'react';
 
 import { displacedFilterValues } from '@/validation/actor/general/displaced-filter-form';
-import Displaceds_Filters from './displaceds-filters';
+import Displaceds_Filters from './common-displaceds-filters';
 import Displaceds_Table from './displaceds-table';
 import { DESTINATION_DISPLACED } from '@/content/actor/displaced/filter';
 

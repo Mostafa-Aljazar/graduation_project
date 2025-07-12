@@ -4,6 +4,11 @@ export enum WIFE_STATUS {
     wet_nurse = 'wet_nurse'
 }
 
+export const WIFE_STATUS_LABELS: Record<WIFE_STATUS, string> = {
+    [WIFE_STATUS.pregnant]: 'حامل',
+    [WIFE_STATUS.wet_nurse]: 'مرضعة',
+};
+
 export enum AGES {
     less_than_6_month = 'less_than_6_month',
     from_6_month_to_2_years = 'from_6_month_to_2_years',
@@ -52,6 +57,11 @@ export enum CHRONIC_DISEASE {
     false = 'false',
     true = 'true',
 }
+
+export const CHRONIC_DISEASE_LABELS: Record<CHRONIC_DISEASE, string> = {
+    [CHRONIC_DISEASE.false]: 'لا يوجد',
+    [CHRONIC_DISEASE.true]: 'يوجد',
+};
 
 
 export enum DESTINATION_DISPLACED {
