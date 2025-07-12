@@ -1,21 +1,30 @@
-import { LOCALSTORAGE_SESSION_KEY } from "@/constants/sessionKey"
-import { z } from "zod"
-import { User } from "@/@types/auth/loginResponse.type"
+import { LOCALSTORAGE_SESSION_KEY } from "@/constants/sessionKey";
+import { z } from "zod";
+import { USER_TYPE, USER_RANK } from "@/constants/userTypes";
+import { StaticImageData } from "next/image";
+import { User } from "@/@types/auth/loginResponse.type";
 
-// Schema to validate the session data structure
+// Validate user data including optional fields and complex types
+const UserSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string().email(),
+  identity: z.number(),
+  phone_number: z.string(),
+  created_at: z.union([z.string(), z.date()]),
+  updated_at: z.union([z.string(), z.date()]).optional(),
+  // image: z.union([z.string(), z.instanceof(StaticImageData), z.null()]).optional(),
+  image: z.union([z.string(), z.null()]).optional(),
+  role: z.nativeEnum(USER_TYPE),
+  rank: z.nativeEnum(USER_RANK).optional(),
+});
+
+// Session schema with user nested
 const SessionSchema = z.object({
   token: z.string().min(1),
-  user: z.object({
-    id: z.number(),
-    name: z.string(),
-    email: z.string().email(),
-    idNumber: z.number(),
-    phone_number: z.string(),
-    created_at: z.union([z.string(), z.date()]), // Accept both string and date
-    role: z.enum(['DISPLACED', 'DELEGATE', 'MANAGER', 'SECURITY', 'SECURITY_OFFICER']),
-    image: z.string().nullable()
-  })
-})
+  user: UserSchema,
+});
+
 
 /**
  * Gets the user session from localStorage
@@ -29,45 +38,32 @@ const SessionSchema = z.object({
  * - Session data is invalid
  * - Any error occurs while parsing
  */
+
 export const getSession = (): { token: string; user: User } | null => {
   try {
-    const rawSession = localStorage.getItem(LOCALSTORAGE_SESSION_KEY)
-    if (!rawSession) return null
+    const rawSession = localStorage.getItem(LOCALSTORAGE_SESSION_KEY);
+    if (!rawSession) return null;
 
     // Parse the session data from localStorage
-    const parsedSession = JSON.parse(rawSession)
+    const parsedSession = JSON.parse(rawSession);
 
-    // Extract the relevant data
-    const sessionData = {
-      token: parsedSession.token,
-      user: {
-        id: parsedSession.user.id,
-        name: parsedSession.user.name,
-        email: parsedSession.user.email,
-        idNumber: parsedSession.user.idNumber,
-        phone_number: parsedSession.user.phone_number,
-        created_at: parsedSession.user.created_at,
-        role: parsedSession.user.role,
-        image: parsedSession.user.image || null
-      }
-    }
+    // Validate parsed data
+    const session = SessionSchema.safeParse(parsedSession);
+    if (!session.success) return null;
 
-    // Validate the data structure
-    const session = SessionSchema.safeParse(sessionData)
-    if (!session.success) return null
+    // Convert date strings to Date objects
+    const user = {
+      ...session.data.user,
+      created_at: new Date(session.data.user.created_at),
+      updated_at: session.data.user.updated_at ? new Date(session.data.user.updated_at) : undefined,
+    };
 
     // Transform the validated data to match the expected return type
     return {
       token: session.data.token,
-      user: {
-        ...session.data.user,
-        created_at: new Date(session.data.user.created_at)
-      }
-    }
-  } catch (error) {
-    console.error("Error parsing session:", error)
-    return null
+      user,
+    };
+  } catch {
+    return null;
   }
-}
-
-
+};

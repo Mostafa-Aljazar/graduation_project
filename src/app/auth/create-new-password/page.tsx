@@ -13,7 +13,6 @@ import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { AUTH_ROUTES } from '@/constants/routes';
 import { useQueryStates, parseAsString } from 'nuqs';
-import createNewPasswordResponse from '@/@types/auth/createNewPasswordResponse';
 import {
   createNewPassword,
   createNewPasswordProps,
@@ -22,6 +21,7 @@ import {
   createNewPasswordSchema,
   createNewPasswordType,
 } from '@/validation/auth/createNewPasswordSchema';
+import { generalAuthResponse } from '@/@types/auth/generalAuthResponse.type';
 
 export default function Create_New_Password() {
   const [error, setError] = useState('');
@@ -41,7 +41,7 @@ export default function Create_New_Password() {
   );
 
   const createNewPasswordMutation = useMutation<
-    createNewPasswordResponse,
+    generalAuthResponse,
     Error,
     createNewPasswordProps
   >({
@@ -94,8 +94,15 @@ export default function Create_New_Password() {
       h={'100%'}
       w={{ base: '100%', lg: 550 }}
       className='!rounded-xl'
+      pos={'relative'}
     >
-      <Text fw={500} fz={{ base: 28, md: 36 }} ta={'center'}>
+      <LoadingOverlay
+        visible={createNewPasswordMutation.isPending}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 0.3 }}
+      />
+
+      <Text fw={500} fz={{ base: 28, md: 32 }} ta={'center'}>
         إنشاء كلمة مرور جديدة
       </Text>
 
@@ -114,15 +121,10 @@ export default function Create_New_Password() {
           className='!relative !flex flex-col items-center gap-0'
           onSubmit={handleSubmit}
         >
-          <LoadingOverlay
-            visible={createNewPasswordMutation.isPending}
-            zIndex={1000}
-            overlayProps={{ radius: 'sm', blur: 0.3 }}
-          />
           <PasswordInput
             type='password'
             label={
-              <Text fw={400} c={'#817C74'} fz={16}>
+              <Text fw={500} fz={16} mb={3}>
                 كلمة المرور الجديدة
               </Text>
             }
@@ -132,7 +134,8 @@ export default function Create_New_Password() {
             key={form.key('password')}
             {...form.getInputProps('password')}
             classNames={{
-              input: '!text-sm',
+              input:
+                '!text-dark placeholder:!text-sm !text-primary !font-normal',
               error: '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
             }}
           />
@@ -140,7 +143,7 @@ export default function Create_New_Password() {
           <PasswordInput
             type='password'
             label={
-              <Text fw={400} c={'#817C74'} fz={16}>
+              <Text fw={500} fz={16} mb={3}>
                 تأكيد كلمة المرور
               </Text>
             }
@@ -151,7 +154,8 @@ export default function Create_New_Password() {
             key={form.key('confirm_password')}
             {...form.getInputProps('confirm_password')}
             classNames={{
-              input: '!text-sm',
+              input:
+                '!text-dark placeholder:!text-sm !text-primary !font-normal',
               error: '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
             }}
           />

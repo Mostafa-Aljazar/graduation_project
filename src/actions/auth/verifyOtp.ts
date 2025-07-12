@@ -1,5 +1,5 @@
 "use server";
-import verifyOtpResponse from "@/@types/auth/verifyOtpResponse.type";
+import { generalAuthResponse } from "@/@types/auth/generalAuthResponse.type";
 import { AqsaGuestAPI } from "@/services";
 
 
@@ -8,10 +8,10 @@ export type verifyOtpProps = {
     email: string
 }
 
-export const verifyOtp = async ({ email, otp }: verifyOtpProps): Promise<verifyOtpResponse> => {
+export const verifyOtp = async ({ email, otp }: verifyOtpProps): Promise<generalAuthResponse> => {
     //FIXME: remove this => just as an example
-    const FakeData: verifyOtpResponse = {
-        status: "200", // 500 | 200
+    const FakeData: generalAuthResponse = {
+        status: 200, // 500 | 200
         message: `تم التحقق من الرمز بنجاح ${otp} | ${email})}`,
         // error: "رمز التحقق غير صالح"
     }
@@ -35,20 +35,20 @@ export const verifyOtp = async ({ email, otp }: verifyOtpProps): Promise<verifyO
 
         if (response.data) {
             return {
-                status: "200",
+                status: 200,
                 message: "تم التحقق من الرمز بنجاح"
             };
         }
 
         return {
-            status: "500",
+            status: 500,
             message: "رمز التحقق غير صالح",
             error: "رمز التحقق غير صالح"
         };
 
     } catch (error: any) {
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: error.response?.data?.error || "رمز التحقق غير صالح",
             error: error.response?.data?.error || "رمز التحقق غير صالح"
         };

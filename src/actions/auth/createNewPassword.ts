@@ -1,5 +1,5 @@
 "use server";
-import createNewPasswordResponse from "@/@types/auth/createNewPasswordResponse";
+import { generalAuthResponse } from "@/@types/auth/generalAuthResponse.type";
 import { AqsaGuestAPI } from "@/services";
 
 
@@ -10,10 +10,10 @@ export type createNewPasswordProps = {
     confirm_password: string;
 }
 
-export const createNewPassword = async ({ email, password, confirm_password }: createNewPasswordProps): Promise<createNewPasswordResponse> => {
+export const createNewPassword = async ({ email, password, confirm_password }: createNewPasswordProps): Promise<generalAuthResponse> => {
     //FIXME: remove this => just as an example
-    const FakeData: createNewPasswordResponse = {
-        status: "200",
+    const FakeData: generalAuthResponse = {
+        status: 200,
         message: "تم تحديث كلمة المرور بنجاح"
     }
     return await new Promise((resolve) => {
@@ -30,18 +30,19 @@ export const createNewPassword = async ({ email, password, confirm_password }: c
 
         const response = await AqsaGuestAPI.post("/auth/create-password", {
             password,
+            confirm_password,
             email
         });
 
         if (response.data) {
             return {
-                status: "200",
+                status: 200,
                 message: "تم تحديث كلمة المرور بنجاح"
             };
         }
 
         return {
-            status: "500",
+            status: 500,
             message: "فشل في تحديث كلمة المرور",
             error: "فشل في تحديث كلمة المرور"
         };

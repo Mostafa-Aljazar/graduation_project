@@ -19,11 +19,11 @@ import {
   forgetPassword,
   forgetPasswordProps,
 } from '@/actions/auth/forgetPassword';
-import forgetPasswordResponse from '@/@types/auth/forgetPasswordResponse.type';
 import {
   forgetPasswordSchema,
   forgetPasswordType,
 } from '@/validation/auth/forgetPasswordSchema';
+import { generalAuthResponse } from '@/@types/auth/generalAuthResponse.type';
 
 export default function Forget_Password() {
   const form = useForm<forgetPasswordType>({
@@ -36,13 +36,13 @@ export default function Forget_Password() {
   const router = useRouter();
 
   const forgetPasswordMutation = useMutation<
-    forgetPasswordResponse,
+    generalAuthResponse,
     Error,
     forgetPasswordProps
   >({
     mutationFn: forgetPassword,
     onSuccess: (data) => {
-      if (Number(data.status) == 200) {
+      if (data.status == 200) {
         notifications.show({
           title: data.message,
           message: 'قم بالتحقق من بريدك الإلكتروني',
@@ -93,26 +93,27 @@ export default function Forget_Password() {
       h={'100%'}
       w={{ base: '100%', lg: 550 }}
       className='!rounded-xl'
+      pos={'relative'}
     >
-      <Text fw={500} fz={{ base: 28, md: 36 }} ta={'center'}>
+      <LoadingOverlay
+        visible={forgetPasswordMutation.isPending}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 0.3 }}
+      />
+
+      <Text fw={500} fz={{ base: 28, md: 32 }} ta={'center'}>
         نسيت كلمة المرور
       </Text>
 
       <Stack justify='center' align='center' gap={20} pos={'relative'}>
         <form
-          className='!relative flex flex-col items-center gap-0'
+          className='flex flex-col items-center gap-0'
           onSubmit={handleSubmit}
         >
-          <LoadingOverlay
-            visible={forgetPasswordMutation.isPending}
-            zIndex={1000}
-            overlayProps={{ radius: 'sm', blur: 0.3 }}
-          />
-
           <TextInput
             type='email'
             label={
-              <Text fw={400} c={'#817C74'} fz={16}>
+              <Text fw={500} fz={16} mb={3}>
                 البريد الإلكتروني
               </Text>
             }
@@ -122,18 +123,20 @@ export default function Forget_Password() {
             key={form.key('email')}
             {...form.getInputProps('email')}
             classNames={{
-              input: '!text-sm',
+              input:
+                '!text-dark placeholder:!text-sm !text-primary !font-normal',
               error: '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
             }}
           />
 
           <Button
             type='submit'
-            mt={32}
-            fz={20}
+            size='sm'
+            fz={18}
             fw={500}
             c={'white'}
             w={228}
+            mt={32}
             className={`!shadow-lg max-lg:!mt-10 ${
               !form.getValues().email ? '!bg-primary/70' : '!bg-primary'
             }`}
@@ -156,8 +159,11 @@ export default function Forget_Password() {
         </Group>
 
         <Text fw={500} fz={16} className='!text-primary'>
-          لديك حساب؟
-          <Link href={AUTH_ROUTES.LOGIN} className='hover:!cursor-pointer'>
+          لديك حساب؟{' '}
+          <Link
+            href={AUTH_ROUTES.LOGIN}
+            className='underline hover:!cursor-pointer'
+          >
             تسجيل الدخول
           </Link>
         </Text>

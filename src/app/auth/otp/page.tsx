@@ -15,14 +15,13 @@ import { useQueryStates, parseAsString, parseAsInteger } from 'nuqs';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { verifyOtp, verifyOtpProps } from '@/actions/auth/verifyOtp';
-import verifyOtpResponse from '@/@types/auth/verifyOtpResponse.type';
 import {
   forgetPassword,
   forgetPasswordProps,
 } from '@/actions/auth/forgetPassword';
-import forgetPasswordResponse from '@/@types/auth/forgetPasswordResponse.type';
 import { AUTH_ROUTES } from '@/constants/routes';
 import { otpSchema, otpType } from '@/validation/auth/otpSchema';
+import { generalAuthResponse } from '@/@types/auth/generalAuthResponse.type';
 
 export default function OTP() {
   return (
@@ -90,7 +89,7 @@ function OTPContent() {
 
   // Verify OTP mutation with better error handling
   const verifyOtpMutation = useMutation<
-    verifyOtpResponse,
+    generalAuthResponse,
     Error,
     verifyOtpProps
   >({
@@ -150,13 +149,13 @@ function OTPContent() {
 
   // Resend OTP mutation with better handling
   const resendOtpMutation = useMutation<
-    forgetPasswordResponse,
+    generalAuthResponse,
     Error,
     forgetPasswordProps
   >({
     mutationFn: forgetPassword,
     onSuccess: (data) => {
-      if (Number(data.status) == 200) {
+      if (data.status == 200) {
         notifications.show({
           title: 'تم اعادة إرسال رمز التحقق إلى بريدك الإلكتروني',
           message: ' قم بالتحقق من بريدك الإلكتروني مرة أخرى',
@@ -207,8 +206,15 @@ function OTPContent() {
       h={'100%'}
       w={{ base: '100%', lg: 550 }}
       className='!rounded-xl'
+      pos={'relative'}
     >
-      <Text fw={500} fz={{ base: 28, md: 36 }} ta={'center'}>
+      <LoadingOverlay
+        visible={verifyOtpMutation.isPending || resendOtpMutation.isPending}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 0.3 }}
+      />
+
+      <Text fw={500} fz={{ base: 28, md: 32 }} ta={'center'}>
         إدخال رمز التحقق
       </Text>
 
@@ -220,20 +226,14 @@ function OTPContent() {
           ta={'center'}
           w={{ base: 343, md: 400 }}
         >
-          لقد أرسلنا رمز التحقق إلى
+          لقد أرسلنا رمز التحقق إلى <br />
           <span className='font-bold'>{query.email}</span>
         </Text>
 
         <form
-          className='!relative flex flex-col items-center gap-0'
+          className='flex flex-col items-center gap-0'
           onSubmit={handleSubmit}
         >
-          <LoadingOverlay
-            visible={verifyOtpMutation.isPending || resendOtpMutation.isPending}
-            zIndex={1000}
-            overlayProps={{ radius: 'sm', blur: 0.3 }}
-          />
-
           <PinInput
             disabled={
               verifyOtpMutation.isPending ||
