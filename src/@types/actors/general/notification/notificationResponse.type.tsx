@@ -14,7 +14,7 @@ export type NotificationAction =
 
 export interface NotificationType {
   action: NotificationAction;
-  aidType?: TYPE_AIDS; // only for add-aid
+  aid_type?: TYPE_AIDS; // only for add-aid
 }
 
 export enum NotificationStatus {
@@ -29,7 +29,7 @@ export interface NotificationItem {
   title: string;
   body: string;
   status: NotificationStatus;
-  notificationType: NotificationType;
+  notification_type: NotificationType;
   from: {
     id: number;
     name: string;
@@ -38,14 +38,14 @@ export interface NotificationItem {
 }
 
 export interface NotificationsResponse {
-  status: string;
+  status: number;
   message?: string;
   notifications: NotificationItem[];
   error?: string;
   pagination: {
     page: number;
     limit: number;
-    totalItems: number;
-    totalPages: number;
+    total_items: number;
+    total_pages: number;
   };
 }

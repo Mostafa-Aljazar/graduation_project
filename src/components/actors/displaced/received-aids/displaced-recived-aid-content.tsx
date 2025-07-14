@@ -11,11 +11,11 @@ import {
   Paper,
 } from '@mantine/core';
 import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
-import { DISPLACED_RECEIVED_AIDS_TABS } from '@/content/actor/displaced/received-aid';
 import { getDisplacedReceivedAids } from '@/actions/actors/displaced/received-aids/getDisplacedReceivedAids';
 import { DisplacedReceivedAidsResponse } from '@/@types/actors/displaced/received-aids/displacedReceivedAidsResponse.type';
 import Displaced_Received_Aids_List from './displaced-received-aids-list';
 import { MessageCircleWarning } from 'lucide-react';
+import { DISPLACED_RECEIVED_AIDS_TABS } from '@/@types/actors/common-types/index.type';
 
 interface DelegateComplaintsContentProps {
   displaced_Id: number;
@@ -31,7 +31,7 @@ export default function Displaced_Received_Aid_Content({
     'received-aids-page': parseAsInteger.withDefault(1),
   });
 
-  const itemsPerPage = 7;
+  const items_per_page = 7;
 
   const {
     data: displacedReceivedAids,
@@ -42,9 +42,9 @@ export default function Displaced_Received_Aid_Content({
     queryFn: () =>
       getDisplacedReceivedAids({
         page: query['received-aids-page'],
-        limit: itemsPerPage,
-        tabType: query['received-aids-tab'],
-        displaced_ID: displaced_Id,
+        limit: items_per_page,
+        tab_type: query['received-aids-tab'],
+        displaced_Id: displaced_Id,
       }),
   });
 
@@ -74,11 +74,9 @@ export default function Displaced_Received_Aid_Content({
         </Paper>
       ) : (
         <Displaced_Received_Aids_List
-          receivedAids={displacedReceivedAids?.receivedAids || []}
-          totalPages={displacedReceivedAids?.pagination.totalPages || 1}
+          received_aids={displacedReceivedAids?.received_aids || []}
+          total_pages={displacedReceivedAids?.pagination.total_pages || 1}
           loading={isLoading}
-          displaced_Id={displaced_Id}
-          itemsPerPage={displacedReceivedAids?.pagination.limit || itemsPerPage}
         />
       )}
     </Box>

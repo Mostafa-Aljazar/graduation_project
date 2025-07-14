@@ -23,10 +23,16 @@ import {
   replyCommonComplaint,
   replyCommonComplaintProps,
 } from '@/actions/actors/general/complaints/replyCommonComplaint';
-import { COMPLAINTS_TABS } from '@/content/actor/delegate/complaints';
-import { USER_TYPE, USER_TYPE_LABELS, UserType } from '@/constants/userTypes';
+import {
+  USER_RANK,
+  USER_RANK_LABELS,
+  USER_TYPE,
+  UserRank,
+  UserType,
+} from '@/constants/userTypes';
 import { z } from 'zod';
 import useAuth from '@/hooks/useAuth';
+import { COMPLAINTS_TABS } from '@/@types/actors/common-types/index.type';
 
 const complaintSchema = z.object({
   reply: z.string().min(3, 'الرجاء إدخال الرد'),
@@ -37,10 +43,7 @@ type complaintType = z.infer<typeof complaintSchema>;
 interface CommonComplaintModalProps {
   complaint: Complaint;
   actor_Id: number;
-  role: Exclude<
-    (typeof USER_TYPE)[UserType],
-    typeof USER_TYPE.SECURITY_OFFICER
-  >;
+  role: UserType | UserRank;
   opened: boolean;
   close: () => void;
 }
@@ -113,8 +116,7 @@ export default function Common_Complaint_Modal({
   const isReply =
     user?.role === USER_TYPE.MANAGER ||
     ((user?.role === USER_TYPE.DELEGATE ||
-      user?.role === USER_TYPE.SECURITY ||
-      user?.role === USER_TYPE.SECURITY_OFFICER) &&
+      user?.rank === USER_RANK.SECURITY_OFFICER) &&
       query['complaints-tab'] === COMPLAINTS_TABS.RECEIVED_COMPLAINTS);
 
   return (
@@ -125,7 +127,7 @@ export default function Common_Complaint_Modal({
       centered
       radius='md'
       overlayProps={{ blur: 3 }}
-      withCloseButton
+      withCloseButton={false}
       title={
         <Text fz={16} fw={600} ta='center'>
           {complaint.title}
@@ -143,12 +145,12 @@ export default function Common_Complaint_Modal({
             <Text size='sm' c='dimmed'>
               {(() => {
                 const isOwner = user?.id === actor_Id && user?.role === role;
-
+                // REFACTOR: add user profile link
                 if (role === USER_TYPE.DISPLACED) {
                   return (
                     <>
                       إلى: {complaint.receiver.name} (
-                      {USER_TYPE_LABELS[complaint.receiver.role]})
+                      {USER_RANK_LABELS[complaint.receiver.role]})
                     </>
                   );
                 }
@@ -157,7 +159,7 @@ export default function Common_Complaint_Modal({
                   return (
                     <>
                       من: {complaint.sender.name} (
-                      {USER_TYPE_LABELS[complaint.sender.role]})
+                      {USER_RANK_LABELS[complaint.sender.role]})
                     </>
                   );
                 }
@@ -171,7 +173,7 @@ export default function Common_Complaint_Modal({
                   return (
                     <>
                       من: {complaint.sender.name} (
-                      {USER_TYPE_LABELS[complaint.sender.role]})
+                      {USER_RANK_LABELS[complaint.sender.role]})
                     </>
                   );
                 }
@@ -184,7 +186,7 @@ export default function Common_Complaint_Modal({
                   return (
                     <>
                       إلى: {complaint.receiver.name} (
-                      {USER_TYPE_LABELS[complaint.receiver.role]})
+                      {USER_RANK_LABELS[complaint.receiver.role]})
                     </>
                   );
                 }
@@ -194,7 +196,7 @@ export default function Common_Complaint_Modal({
                   return (
                     <>
                       من: {complaint.sender.name} (
-                      {USER_TYPE_LABELS[complaint.sender.role]})
+                      {USER_RANK_LABELS[complaint.sender.role]})
                     </>
                   );
                 }
@@ -203,7 +205,7 @@ export default function Common_Complaint_Modal({
                   return (
                     <>
                       إلى: {complaint.receiver.name} (
-                      {USER_TYPE_LABELS[complaint.receiver.role]})
+                      {USER_RANK_LABELS[complaint.receiver.role]})
                     </>
                   );
                 }
@@ -211,88 +213,6 @@ export default function Common_Complaint_Modal({
                 return null;
               })()}
             </Text>
-
-            {/* <Text size='sm' c='dimmed'>
-              {user?.id === actor_Id && user?.role === role ? (
-                <>
-                  {role === USER_TYPE.DISPLACED && (
-                    <>
-                      إلى: {complaint.receiver.name} (
-                      {USER_TYPE_LABELS[complaint.receiver.role]})
-                    </>
-                  )}
-
-                  {(role === USER_TYPE.DELEGATE ||
-                    role === USER_TYPE.SECURITY) &&
-                    query['complaints-tab'] ===
-                      COMPLAINTS_TABS.RECEIVED_COMPLAINTS && (
-                      <>
-                        من: {complaint.sender.name} (
-                        {USER_TYPE_LABELS[complaint.sender.role]})
-                      </>
-                    )}
-
-                  {(role === USER_TYPE.DELEGATE ||
-                    role === USER_TYPE.SECURITY) &&
-                    query['complaints-tab'] ===
-                      COMPLAINTS_TABS.SENT_COMPLAINTS && (
-                      <>
-                        إلى: {complaint.receiver.name} (
-                        {USER_TYPE_LABELS[complaint.receiver.role]})
-                      </>
-                    )}
-
-                  {role === USER_TYPE.MANAGER && (
-                    <>
-                      من: {complaint.sender.name} (
-                      {USER_TYPE_LABELS[complaint.sender.role]})
-                    </>
-                  )}
-                </>
-              ) : (
-                <>
-                  {role === USER_TYPE.DISPLACED && (
-                    <>
-                      إلى: {complaint.receiver.name} (
-                      {USER_TYPE_LABELS[complaint.receiver.role]})
-                    </>
-                  )}
-
-                  {(role === USER_TYPE.DELEGATE ||
-                    role === USER_TYPE.SECURITY) &&
-                    query['complaints-tab'] ===
-                      COMPLAINTS_TABS.RECEIVED_COMPLAINTS && (
-                      <>
-                        من: {complaint.sender.name} (
-                        {USER_TYPE_LABELS[complaint.sender.role]})
-                      </>
-                    )}
-
-                  {(role === USER_TYPE.DELEGATE ||
-                    role === USER_TYPE.SECURITY) &&
-                    query['complaints-tab'] ===
-                      COMPLAINTS_TABS.SENT_COMPLAINTS && (
-                      <>
-                        إلى: {complaint.receiver.name} (
-                        {USER_TYPE_LABELS[complaint.receiver.role]})
-                      </>
-                    )}
-
-                  {isReceived && (
-                    <>
-                      من: {complaint.sender.name} (
-                      {USER_TYPE_LABELS[complaint.sender.role]})
-                    </>
-                  )}
-                  {isSent && (
-                    <>
-                      إلى: {complaint.receiver.name} (
-                      {USER_TYPE_LABELS[complaint.receiver.role]})
-                    </>
-                  )}
-                </>
-              )}
-            </Text> */}
           </Group>
 
           <Group gap={5}>

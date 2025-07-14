@@ -1,10 +1,5 @@
 'use client';
 import {
-  COMPLAINTS_STATUS,
-  COMPLAINTS_STATUS_LABELS,
-} from '@/content/actor/delegate/complaints';
-
-import {
   Button,
   Group,
   Select,
@@ -30,17 +25,18 @@ import {
 } from '@/validation/actor/general/complaints/commonComplaintsSchema';
 import Common_Send_Complaint from './common-send-complaint';
 import useAuth from '@/hooks/useAuth';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
+import { USER_TYPE, UserRank, UserType } from '@/constants/userTypes';
+import {
+  COMPLAINTS_STATUS,
+  COMPLAINTS_STATUS_LABELS,
+} from '@/@types/actors/common-types/index.type';
 
 interface CommonComplaintsFiltersProps {
   setLocalFilters: Dispatch<SetStateAction<CommonComplaintFilterFormValues>>;
   complaintsNum?: number;
 
   actor_Id: number;
-  role: Exclude<
-    (typeof USER_TYPE)[UserType],
-    typeof USER_TYPE.SECURITY_OFFICER
-  >;
+  role: UserType | UserRank;
 }
 
 export default function Common_Complaints_Filters({
@@ -95,6 +91,7 @@ export default function Common_Complaints_Filters({
     setQuery({ 'complaints-page': 1 });
   };
 
+  const isOwner = user?.id == actor_Id && user?.role == role;
   return (
     <Stack w='100%' mb={20} gap={20}>
       <Group justify={'space-between'}>
@@ -114,9 +111,7 @@ export default function Common_Complaints_Filters({
           </Text>
         </Group>
 
-        {user?.id == actor_Id &&
-          user?.role == role &&
-          (role === USER_TYPE.MANAGER ? null : <Common_Send_Complaint />)}
+        {isOwner && role !== USER_TYPE.MANAGER && <Common_Send_Complaint />}
       </Group>
 
       <Group
@@ -145,6 +140,7 @@ export default function Common_Complaints_Filters({
           fw={500}
           c={'dark'}
           radius={'none'}
+          value={''}
           className='!bg-gray-300 !rounded-none'
           onClick={handleSearch}
         >

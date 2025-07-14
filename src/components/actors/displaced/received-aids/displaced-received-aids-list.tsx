@@ -15,41 +15,32 @@ import { MessageCircleWarning } from 'lucide-react';
 import { parseAsInteger, useQueryStates } from 'nuqs';
 import Displaced_Received_Aid_Card from './received-aid/displaced-received-aid-card';
 
+const SkeletonCard = () => (
+  <Paper withBorder radius='md' p='md' bg='gray.0' className='shadow-sm w-full'>
+    <Group gap='sm'>
+      <Skeleton height={40} width={40} circle />
+      <Stack gap={6} flex={1}>
+        <Skeleton height={12} width='60%' radius='xl' />
+        <Skeleton height={10} width='40%' radius='xl' />
+      </Stack>
+    </Group>
+  </Paper>
+);
+
 interface DisplacedReceivedAidsListProps {
-  receivedAids: DisplacedReceivedAid[];
-  itemsPerPage: number;
-  totalPages: number;
+  received_aids: DisplacedReceivedAid[];
+  total_pages: number;
   loading: boolean;
-  displaced_Id: number;
 }
 
 export default function Displaced_Received_Aids_List({
-  receivedAids,
-  totalPages,
+  received_aids,
+  total_pages,
   loading,
-  displaced_Id,
 }: DisplacedReceivedAidsListProps) {
   const [query, setQuery] = useQueryStates({
     'received-aids-page': parseAsInteger.withDefault(1),
   });
-
-  const SkeletonCard = () => (
-    <Paper
-      withBorder
-      radius='md'
-      p='md'
-      bg='gray.0'
-      className='shadow-sm w-full'
-    >
-      <Group gap='sm'>
-        <Skeleton height={40} width={40} circle />
-        <Stack gap={6} flex={1}>
-          <Skeleton height={12} width='60%' radius='xl' />
-          <Skeleton height={10} width='40%' radius='xl' />
-        </Stack>
-      </Group>
-    </Paper>
-  );
 
   return (
     <Stack pos='relative' gap='sm'>
@@ -59,7 +50,7 @@ export default function Displaced_Received_Aids_List({
             <SkeletonCard key={index} />
           ))}
         </Stack>
-      ) : receivedAids.length === 0 ? (
+      ) : received_aids.length === 0 ? (
         <Center
           mt={30}
           mih={200}
@@ -74,24 +65,23 @@ export default function Displaced_Received_Aids_List({
         </Center>
       ) : (
         <Stack gap='xs'>
-          {receivedAids.map((receivedAid) => (
+          {received_aids.map((received_aid) => (
             <Displaced_Received_Aid_Card
-              key={receivedAid.id}
-              receivedAid={receivedAid}
-              displaced_Id={displaced_Id}
+              key={received_aid.id}
+              received_aid={received_aid}
             />
           ))}
         </Stack>
       )}
 
-      {!loading && totalPages > 1 && (
+      {!loading && total_pages > 1 && (
         <Flex justify='center' mt='md'>
           <Pagination
             value={query['received-aids-page']}
             onChange={(value: number) =>
               setQuery({ 'received-aids-page': value })
             }
-            total={totalPages}
+            total={total_pages}
             size='sm'
             radius='xl'
             withControls={false}

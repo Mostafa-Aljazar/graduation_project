@@ -18,15 +18,12 @@ import {
   deleteCommonComplaint,
   deleteCommonComplaintProps,
 } from '@/actions/actors/general/complaints/deleteCommonComplaint';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
+import { USER_TYPE, UserRank, UserType } from '@/constants/userTypes';
 
 interface CommonDeleteComplaintProps {
   complaint_Id: number;
   actor_Id: number;
-  role: Exclude<
-    (typeof USER_TYPE)[UserType],
-    typeof USER_TYPE.SECURITY_OFFICER
-  >;
+  role: UserRank | UserType;
 }
 
 export default function Common_Delete_Complaint({
@@ -44,7 +41,7 @@ export default function Common_Delete_Complaint({
   >({
     mutationFn: deleteCommonComplaint,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تم الحذف',
           message: data.message,

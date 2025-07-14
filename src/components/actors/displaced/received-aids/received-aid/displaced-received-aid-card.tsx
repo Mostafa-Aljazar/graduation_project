@@ -1,40 +1,27 @@
 'use client';
 
-import {
-  Box,
-  Card,
-  Center,
-  Flex,
-  Group,
-  Stack,
-  Text,
-  ThemeIcon,
-} from '@mantine/core';
+import { Card, Flex, Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { cn } from '@/utils/cn';
 import { useDisclosure } from '@mantine/hooks';
-import { CalendarClock, CircleCheck, Info } from 'lucide-react';
-
+import { CalendarClock, CircleCheck } from 'lucide-react';
 import { DisplacedReceivedAid } from '@/@types/actors/displaced/received-aids/displacedReceivedAidsResponse.type';
-import { DISPLACED_RECEIVED_AIDS_TABS } from '@/content/actor/displaced/received-aid';
 import Displaced_Received_Aid_Modal from './displaced-received-aid-modal';
+import { DISPLACED_RECEIVED_AIDS_TABS } from '@/@types/actors/common-types/index.type';
 
 interface DisplacedReceivedAidCardProps {
-  receivedAid: DisplacedReceivedAid;
-  displaced_Id: number;
+  received_aid: DisplacedReceivedAid;
 }
 
 export default function Displaced_Received_Aid_Card({
-  receivedAid,
-  displaced_Id,
+  received_aid,
 }: DisplacedReceivedAidCardProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const isReceived =
-    receivedAid.tabType === DISPLACED_RECEIVED_AIDS_TABS.RECEIVED_AIDS;
+    received_aid.tab_type === DISPLACED_RECEIVED_AIDS_TABS.RECEIVED_AIDS;
 
   return (
     <>
       <Card
-        // p='md'
         radius='md'
         shadow='xs'
         onClick={open}
@@ -65,23 +52,23 @@ export default function Displaced_Received_Aid_Card({
               gap='xs'
             >
               <Text fz='xs' c='dimmed'>
-                {new Date(receivedAid.deliveryDate).toLocaleDateString()}
+                {new Date(received_aid.delivery_date).toLocaleDateString()}
               </Text>
               <Text fw={600} fz='sm' c='dark' className='truncate'>
                 {isReceived ? 'لقد استلمت' : 'لديك استلام'}{' '}
-                {receivedAid.aidName}
+                {received_aid.aid_name}
               </Text>
             </Flex>
 
             <Text fz='xs' c='gray.7' lineClamp={1}>
-              {receivedAid.aidContent}
+              {received_aid.aid_content}
             </Text>
           </Stack>
         </Group>
       </Card>
 
       <Displaced_Received_Aid_Modal
-        receivedAid={receivedAid}
+        receivedAid={received_aid}
         opened={opened}
         close={close}
       />

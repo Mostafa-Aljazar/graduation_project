@@ -1,19 +1,16 @@
 "use server";
 
 import { DisplacedProfile, DisplacedProfileResponse } from "@/@types/actors/displaced/profile/displacedProfileResponse.type";
-import { GENDER, MATERIAL_STATUS } from "@/content/actor/delegate/profile-form";
-import { fakeDisplacedProfileResponse } from "@/content/actor/displaced/fake-displaced-profile";
+import { fakeDisplacedProfileResponse } from "@/content/actor/displaced/fake-data/fake-displaced-profile";
 import { AqsaAPI } from "@/services";
 
-
-
 export interface getDisplacedProfileProps {
-    displaced_ID: number;
+    displaced_Id: number;
 };
 
-export const getDisplacedProfile = async ({ displaced_ID }: getDisplacedProfileProps): Promise<DisplacedProfileResponse> => {
+export const getDisplacedProfile = async ({ displaced_Id }: getDisplacedProfileProps): Promise<DisplacedProfileResponse> => {
 
-    const fakeData: DisplacedProfileResponse = fakeDisplacedProfileResponse({ displaced_ID: displaced_ID })
+    const fakeData: DisplacedProfileResponse = fakeDisplacedProfileResponse({ displaced_Id: displaced_Id })
 
     return await new Promise((resolve) => {
         setTimeout(() => {
@@ -22,18 +19,16 @@ export const getDisplacedProfile = async ({ displaced_ID }: getDisplacedProfileP
     });
 
     // Real implementation below, if needed
-
-
     try {
 
         /////////////////////////////////////////////////////////////
         // FIXME: THIS IS THE REAL IMPLEMENTATION
         /////////////////////////////////////////////////////////////
-        const response = await AqsaAPI.get(`/displaceds/${displaced_ID}/profile`);
+        const response = await AqsaAPI.get(`/displaceds/${displaced_Id}/profile`);
 
         if (response.data?.user) {
             return {
-                status: "200",
+                status: 200,
                 message: "تم تحميل بيانات الملف الشخصي بنجاح",
                 user: response.data.user,
             };
@@ -42,7 +37,7 @@ export const getDisplacedProfile = async ({ displaced_ID }: getDisplacedProfileP
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || error.message || "حدث خطأ أثناء تحميل الملف الشخصي";
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             user: {} as DisplacedProfile,
             error: errorMessage,

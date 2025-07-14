@@ -9,31 +9,25 @@ import {
   parseAsStringEnum,
   useQueryStates,
 } from 'nuqs';
-
-import {
-  COMPLAINTS_STATUS,
-  COMPLAINTS_TABS,
-} from '@/content/actor/delegate/complaints';
-
 import { ComplaintResponse } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
-import { USER_TYPE } from '@/constants/userTypes';
+import { USER_TYPE, UserRank, UserType } from '@/constants/userTypes';
 import { CommonComplaintFilterFormValues } from '@/validation/actor/general/complaints/commonComplaintsSchema';
 import { getCommonComplaints } from '@/actions/actors/general/complaints/getCommonComplaints';
 import Common_Complaints_Filters from './common-complaints-filters';
 import Common_Complaints_List from './common-complaints-list';
+import {
+  COMPLAINTS_STATUS,
+  COMPLAINTS_TABS,
+} from '@/@types/actors/common-types/index.type';
 
 interface CommonComplaintsContentProps {
-  delegate_Id?: number;
-  displaced_Id?: number;
-  security_Id?: number;
-  manager_Id?: number;
+  actor_Id: number;
+  rank: UserType | UserRank;
 }
 
 export default function Common_Complaints_Content({
-  delegate_Id,
-  displaced_Id,
-  security_Id,
-  manager_Id,
+  actor_Id,
+  rank,
 }: CommonComplaintsContentProps) {
   const [query, setQuery] = useQueryStates({
     'complaints-tab': parseAsStringEnum<COMPLAINTS_TABS>(
@@ -50,16 +44,7 @@ export default function Common_Complaints_Content({
     });
 
   const itemsPerPage = 5;
-
-  const role = manager_Id
-    ? USER_TYPE.MANAGER
-    : delegate_Id
-    ? USER_TYPE.DELEGATE
-    : displaced_Id
-    ? USER_TYPE.DISPLACED
-    : USER_TYPE.SECURITY;
-
-  const actor_Id = manager_Id || delegate_Id || security_Id || displaced_Id;
+  const role = rank;
 
   const {
     data: complaintsData,
@@ -74,7 +59,10 @@ export default function Common_Complaints_Content({
         status: localFilters.status || COMPLAINTS_STATUS.ALL,
         date_range: localFilters.date_range,
         search: query.search,
-        type: query['complaints-tab'],
+        complaint_type:
+          role == USER_TYPE.DISPLACED
+            ? COMPLAINTS_TABS.SENT_COMPLAINTS
+            : query['complaints-tab'],
         role,
         actor_Id: actor_Id!,
       }),
@@ -91,7 +79,7 @@ export default function Common_Complaints_Content({
     <Box dir='rtl' w='100%' p='md'>
       <Common_Complaints_Filters
         setLocalFilters={setLocalFilters}
-        complaintsNum={complaintsData?.pagination.totalItems ?? 0}
+        complaintsNum={complaintsData?.pagination.total_items ?? 0}
         actor_Id={actor_Id}
         role={role}
       />
@@ -104,8 +92,7 @@ export default function Common_Complaints_Content({
       ) : (
         <Common_Complaints_List
           complaints={complaintsData?.complaints || []}
-          totalPages={complaintsData?.pagination.totalPages || 1}
-          itemsPerPage={complaintsData?.pagination.limit || 10}
+          total_pages={complaintsData?.pagination.total_pages || 1}
           loading={isLoading}
           actor_Id={actor_Id}
           role={role}

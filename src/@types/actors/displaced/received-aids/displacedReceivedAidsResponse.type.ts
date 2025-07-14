@@ -1,34 +1,38 @@
-import { DISPLACED_RECEIVED_AIDS_TABS } from "@/content/actor/displaced/received-aid";
 import { TYPE_AIDS } from "@/content/actor/manager/aids-management";
+import { DISPLACED_RECEIVED_AIDS_TABS } from "../../common-types/index.type";
 
 export interface DisplacedReceivedAidsResponse {
-    status: string;
+    status: number;
     message?: string;
     error?: string;
-    receivedAids: DisplacedReceivedAid[];
+    received_aids: DisplacedReceivedAid[];
     pagination: {
         page: number;
         limit: number;
-        totalItems: number;
-        totalPages: number;
+        total_items: number;
+        total_pages: number;
     };
 }
 
 export interface DisplacedReceivedAid {
     id: number;
-    tabType: DISPLACED_RECEIVED_AIDS_TABS; // NEW: يحدد هل Received أو Provided
+    tab_type: DISPLACED_RECEIVED_AIDS_TABS;
 
-    aidName: string;
-    aidType: TYPE_AIDS;
-    aidContent: string;
-    deliveryLocation: string;
+    aid_name: string;
+    aid_type: TYPE_AIDS;
+    aid_content: string;
+    delivery_location: string;
 
-    deliveryDate: Date; // تاريخ التسليم في كل الحالات
-    receiptDate?: Date; // تاريخ الاستلام فقط إذا كان RECEIVED_AIDS
+    delivery_date: Date;
+    receipt_date?: Date;
 
-    aidGiver: {
-        giverId: number;
+    aid_giver: {
+        giver_id: number;
         name: string;
-        role: 'DELEGATE' | 'MANAGER';
+        role: "DELEGATE" | "MANAGER";
+        // role: Exclude<
+        //     (typeof USER_TYPE)[UserType],
+        //     typeof USER_TYPE.DISPLACED | typeof USER_TYPE.SECURITY
+        // >;
     };
 }

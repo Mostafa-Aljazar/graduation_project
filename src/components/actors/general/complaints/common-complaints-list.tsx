@@ -5,25 +5,20 @@ import { MessageCircleWarning } from 'lucide-react';
 import { Complaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
 import Common_Complaint_Card from './complaint/common-complaint-card';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
+import { UserRank, UserType } from '@/constants/userTypes';
 import Common_Complaint_Skeleton from './complaint/common-complaint-skeleton';
 
 interface CommonComplaintsListProps {
   complaints: Complaint[];
-  totalPages: number;
-  itemsPerPage: number;
+  total_pages: number;
   loading: boolean;
   actor_Id: number;
-  role: Exclude<
-    (typeof USER_TYPE)[UserType],
-    typeof USER_TYPE.SECURITY_OFFICER
-  >;
+  role: UserType | UserRank;
 }
 
 export default function Common_Complaints_List({
   complaints,
-  totalPages,
-  itemsPerPage,
+  total_pages,
   loading,
   actor_Id,
   role,
@@ -37,7 +32,7 @@ export default function Common_Complaints_List({
     <Stack pos={'relative'}>
       {loading ? (
         <Stack gap='xs'>
-          {Array.from({ length: itemsPerPage }).map((_, index) => (
+          {Array.from({ length: 8 }).map((_, index) => (
             <Common_Complaint_Skeleton key={index} />
           ))}
         </Stack>
@@ -60,12 +55,12 @@ export default function Common_Complaints_List({
           ))}
         </Stack>
       )}
-      {!loading && totalPages > 1 && (
+      {!loading && total_pages > 1 && (
         <Flex justify='center' mt='xl'>
           <Pagination
             value={query['complaints-page']}
             onChange={(value: number) => setQuery({ 'complaints-page': value })}
-            total={totalPages}
+            total={total_pages}
             size='sm'
             radius='xl'
             withControls={false}

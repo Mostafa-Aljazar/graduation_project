@@ -1,6 +1,7 @@
-import { COMPLAINTS_STATUS } from '@/content/actor/delegate/complaints';
 import { Complaint, ComplaintResponse } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
 import { USER_TYPE } from '@/constants/userTypes';
+import { GetCommonComplaintsProps } from '@/actions/actors/general/complaints/getCommonComplaints';
+import { COMPLAINTS_STATUS } from '@/@types/actors/common-types/index.type';
 
 
 export const fakeComplaints: Complaint[] = [
@@ -205,17 +206,40 @@ export const fakeComplaints: Complaint[] = [
         status: COMPLAINTS_STATUS.PENDING,
     },
 
-    // Add 10 more below following the same pattern
 ]
 
-export const fakeComplaintResponse: ComplaintResponse = {
-    status: '200',
-    message: 'تم جلب الشكاوى بنجاح',
-    complaints: fakeComplaints,
-    pagination: {
-        page: 1,
-        limit: 20,
-        totalItems: 20,
-        totalPages: 1,
-    },
+export const fakeComplaintsResponse = ({
+    page = 1,
+    limit = 5,
+    status = COMPLAINTS_STATUS.ALL,
+    date_range = [null, null],
+    search = '',
+    type,
+    role,
+    actor_Id,
+}: GetCommonComplaintsProps): ComplaintResponse => {
+
+    if (!fakeComplaints) {
+        return {
+            status: 500,
+            message: 'حدث خطأ أثناء جلب الشكاوي',
+            error: 'حدث خطأ أثناء جلب الشكاوي',
+            complaints: [],
+            pagination: { page: 1, limit: 0, total_items: 0, total_pages: 0 },
+        };
+    }
+
+    // const fakeComplaintsData = fakeComplaints.filter((item => item.receiver.role == role));
+    const fakeComplaintsData = fakeComplaints
+    const total_items = fakeComplaintsData.length;
+    const total_pages = Math.ceil(total_items / limit);
+    const paginatedComplaints = fakeComplaintsData.slice((page - 1) * limit, page * limit);
+
+    const fakeResponse: ComplaintResponse = {
+        status: 200,
+        complaints: paginatedComplaints,
+        pagination: { page, limit, total_items, total_pages },
+    };
+
+    return fakeResponse
 };

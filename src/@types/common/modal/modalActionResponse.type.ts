@@ -1,5 +1,5 @@
 export interface modalActionResponse {
-  status: string;
+  status: number;
   message: string;
   error?: string;
 }

@@ -13,7 +13,10 @@ import {
 } from 'lucide-react';
 
 import { ThemeIcon } from '@mantine/core';
-import { GET_AIDS_TYPE_ICONS } from '@/content/actor/manager/aids-management';
+import {
+  GET_AIDS_TYPE_ICONS,
+  TYPE_AIDS,
+} from '@/content/actor/manager/aids-management';
 import { NotificationItem } from '@/@types/actors/general/notification/notificationResponse.type';
 
 const ACTION_ICONS = {
@@ -31,10 +34,11 @@ interface Props {
 }
 
 export default function Notification_Icon({ notification }: Props) {
-  const { action, aidType } = notification.notificationType;
+  const notification_type = notification.notification_type;
 
-  if (action === 'add-aid' && aidType) {
-    const AidIcon = GET_AIDS_TYPE_ICONS[aidType];
+  if (notification_type.action === 'add-aid' && notification_type?.aid_type) {
+    const AidIcon =
+      GET_AIDS_TYPE_ICONS[notification_type.aid_type as keyof typeof TYPE_AIDS];
     if (AidIcon)
       return (
         <ThemeIcon color='blue' variant='light' size={40} radius='100%'>
@@ -43,7 +47,7 @@ export default function Notification_Icon({ notification }: Props) {
       );
   }
 
-  const actionKey = action as keyof typeof ACTION_ICONS;
+  const actionKey = notification_type.action as keyof typeof ACTION_ICONS;
   const ActionIcon = ACTION_ICONS[actionKey];
   if (ActionIcon)
     return (

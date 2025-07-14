@@ -1,10 +1,10 @@
-import { USER_TYPE } from "@/constants/userTypes";
+import { USER_RANK, USER_TYPE } from "@/constants/userTypes";
 import { z } from "zod";
 
 // Zod schema for form validation
 export const commonSendComplaintFormSchema = z.object({
     reception: z
-        .enum([USER_TYPE.MANAGER, USER_TYPE.SECURITY_OFFICER], {
+        .enum([USER_TYPE.MANAGER, USER_TYPE.DELEGATE, USER_RANK.SECURITY_OFFICER], {
             required_error: 'يجب اختيار جهة الاستقبال',
             invalid_type_error: 'جهة الاستقبال غير صالحة',
         })

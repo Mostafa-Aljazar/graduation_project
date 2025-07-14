@@ -1,25 +1,21 @@
 'use server';
 
 import { AqsaAPI } from '@/services';
-import { COMPLAINTS_STATUS, COMPLAINTS_TABS } from '@/content/actor/delegate/complaints';
 import { ComplaintResponse } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
-import { delegateComplaintFilterFormValues } from '@/validation/actor/delegate/complaints/delegateComplaintsSchema';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
-import { fakeComplaintResponse, fakeComplaints } from '@/content/actor/common/complaints/fakeComplaints';
+import { UserRank, UserType } from '@/constants/userTypes';
+import { fakeComplaints, fakeComplaintsResponse } from '@/content/actor/common/complaints/fake-complaints';
 import { CommonComplaintFilterFormValues } from '@/validation/actor/general/complaints/commonComplaintsSchema';
+import { COMPLAINTS_STATUS, COMPLAINTS_TABS } from '@/@types/actors/common-types/index.type';
 
-interface GetDelegatesComplaintsProps {
+export interface GetCommonComplaintsProps {
     page?: number;
     limit?: number;
     status?: COMPLAINTS_STATUS;
     date_range?: [string | null, string | null];
     search?: string;
-    type: COMPLAINTS_TABS;
+    complaint_type: COMPLAINTS_TABS;
     actor_Id: number;
-    role: Exclude<
-        (typeof USER_TYPE)[UserType],
-        typeof USER_TYPE.SECURITY_OFFICER
-    >;
+    role: UserType | UserRank
 }
 
 export async function getCommonComplaints({
@@ -28,67 +24,44 @@ export async function getCommonComplaints({
     status = COMPLAINTS_STATUS.ALL,
     date_range = [null, null],
     search = '',
-    type,
+    complaint_type,
     role,
     actor_Id,
-}: GetDelegatesComplaintsProps): Promise<ComplaintResponse> {
+}: GetCommonComplaintsProps): Promise<ComplaintResponse> {
 
-    // const fakeComplaintsData = fakeComplaints.filter((item => item.receiver.role == role));
-    const fakeComplaintsData = fakeComplaints
-    const totalItems = fakeComplaintsData.length;
-    const totalPages = Math.ceil(totalItems / limit);
+    const fakeResponse = fakeComplaintsResponse({ page, limit, status, date_range, search, complaint_type, role, actor_Id })
 
-    return new Promise((resolve) =>
-        setTimeout(() => {
-            resolve({
-                ...fakeComplaintResponse,
-                complaints: fakeComplaintsData.slice((page - 1) * limit, page * limit),
-                pagination: { page, limit, totalItems, totalPages },
-            });
-        }, 500)
-    );
+    return new Promise((resolve) => setTimeout(() => resolve(fakeResponse), 1000));
+
 
     try {
-        const params: Record<string, string | number> = {
-            page,
-            limit,
-            type,
+        const response = await AqsaAPI.post('/complaints', {
             actor_Id,
             role,
-        };
+            page,
+            limit,
+            complaint_type,
+            status,
+            date_range,
+            search: search.trim(),
+        });
 
-        if (status !== COMPLAINTS_STATUS.ALL) {
-            params.status = status;
-        }
-
-        if (date_range?.[0] && date_range?.[1]) {
-            params.date = date_range.join(',');
-        }
-
-        if (search?.trim()) {
-            params.search = search.trim();
-        }
-
-        const { data } = await AqsaAPI.get('/complaints', { params });
-
-        if (!data?.complaints) {
-            throw new Error('بيانات الشكاوى غير متوفرة');
-        }
-
-        const totalItems = data.pagination?.totalItems || data.complaints.length;
-        const totalPages = Math.ceil(totalItems / limit);
 
         return {
-            status: '200',
+            status: 200,
             message: 'تم جلب الشكاوى بنجاح',
-            complaints: data.complaints,
-            pagination: {
+            complaints: response.data.complaints,
+            pagination: response.data.pagination || {
                 page,
                 limit,
-                totalItems,
-                totalPages,
+                total_items: response.data.complaints.length,
+                total_pages: Math.ceil(response.data.complaints.length / limit),
             },
         };
+
+
+        throw new Error("بيانات الشكاوى غير متوفرة");
+
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || 'حدث خطأ أثناء جلب الشكاوى';
@@ -97,8 +70,9 @@ export async function getCommonComplaints({
             status: error.response?.status?.toString() || '500',
             message: errorMessage,
             complaints: [],
-            pagination: { page: 1, limit: 0, totalItems: 0, totalPages: 0 },
+            pagination: { page: 1, limit: 0, total_items: 0, total_pages: 0 },
             error: errorMessage,
         };
     }
+
 }

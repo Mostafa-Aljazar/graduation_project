@@ -19,11 +19,24 @@ import {
   MapPin,
   UserRoundCheck,
   Tags,
+  Package,
 } from 'lucide-react';
 import { DisplacedReceivedAid } from '@/@types/actors/displaced/received-aids/displacedReceivedAidsResponse.type';
-import { DISPLACED_RECEIVED_AIDS_TABS } from '@/content/actor/displaced/received-aid';
+import { DISPLACED_RECEIVED_AIDS_TABS } from '@/@types/actors/common-types/index.type';
+import { USER_TYPE } from '@/constants/userTypes';
+import {
+  GET_AIDS_TYPE_ICONS,
+  TYPE_AIDS,
+  TYPE_AIDS_LABELS,
+} from '@/content/actor/manager/aids-management';
+import React from 'react';
 
-interface Props {
+const getAidTypeIcon = (type: TYPE_AIDS) => {
+  const IconComponent = GET_AIDS_TYPE_ICONS[type] || Package;
+  return <IconComponent size={16} />;
+};
+
+interface DisplacedReceivedAidModalProps {
   receivedAid: DisplacedReceivedAid;
   opened: boolean;
   close: () => void;
@@ -33,9 +46,9 @@ export default function Displaced_Received_Aid_Modal({
   receivedAid,
   opened,
   close,
-}: Props) {
+}: DisplacedReceivedAidModalProps) {
   const isReceived =
-    receivedAid.tabType === DISPLACED_RECEIVED_AIDS_TABS.RECEIVED_AIDS;
+    receivedAid.tab_type === DISPLACED_RECEIVED_AIDS_TABS.RECEIVED_AIDS;
 
   return (
     <Modal
@@ -79,7 +92,7 @@ export default function Displaced_Received_Aid_Modal({
                   <Text size='xs' c='dimmed'>
                     اسم المساعدة
                   </Text>
-                  <Text size='sm'>{receivedAid.aidName}</Text>
+                  <Text size='sm'>{receivedAid.aid_name}</Text>
                 </Stack>
               </Group>
             </Paper>
@@ -89,13 +102,17 @@ export default function Displaced_Received_Aid_Modal({
             <Paper withBorder radius='md' p='sm' bg='gray.0'>
               <Group gap='xs' align='start'>
                 <ThemeIcon variant='light' color='grape' size='sm'>
-                  <Tags size={18} />
+                  {getAidTypeIcon(receivedAid.aid_type as TYPE_AIDS)}
                 </ThemeIcon>
                 <Stack gap={2}>
                   <Text size='xs' c='dimmed'>
                     نوع المساعدة
                   </Text>
-                  <Text size='sm'>{receivedAid.aidType}</Text>
+                  <Group>
+                    <Text size='sm'>
+                      {TYPE_AIDS_LABELS[receivedAid.aid_type]}
+                    </Text>
+                  </Group>
                 </Stack>
               </Group>
             </Paper>
@@ -111,7 +128,7 @@ export default function Displaced_Received_Aid_Modal({
                   <Text size='xs' c='dimmed'>
                     مكان التسليم
                   </Text>
-                  <Text size='sm'>{receivedAid.deliveryLocation}</Text>
+                  <Text size='sm'>{receivedAid.delivery_location}</Text>
                 </Stack>
               </Group>
             </Paper>
@@ -128,14 +145,14 @@ export default function Displaced_Received_Aid_Modal({
                     تاريخ التسليم
                   </Text>
                   <Text size='sm'>
-                    {new Date(receivedAid.deliveryDate).toLocaleDateString()}
+                    {new Date(receivedAid.delivery_date).toLocaleDateString()}
                   </Text>
                 </Stack>
               </Group>
             </Paper>
           </Grid.Col>
 
-          {isReceived && receivedAid.receiptDate && (
+          {isReceived && receivedAid.receipt_date && (
             <Grid.Col span={{ base: 12, md: 6 }}>
               <Paper withBorder radius='md' p='sm' bg='gray.0'>
                 <Group gap='xs' align='start'>
@@ -147,7 +164,7 @@ export default function Displaced_Received_Aid_Modal({
                       تاريخ الاستلام
                     </Text>
                     <Text size='sm'>
-                      {new Date(receivedAid.receiptDate).toLocaleDateString()}
+                      {new Date(receivedAid.receipt_date).toLocaleDateString()}
                     </Text>
                   </Stack>
                 </Group>
@@ -166,8 +183,8 @@ export default function Displaced_Received_Aid_Modal({
                     مقدم المساعدة
                   </Text>
                   <Text size='sm'>
-                    {receivedAid.aidGiver.name} (
-                    {receivedAid.aidGiver.role === 'DELEGATE'
+                    {receivedAid.aid_giver.name} (
+                    {receivedAid.aid_giver.role === USER_TYPE.DELEGATE
                       ? 'مندوب'
                       : 'مدير'}
                     )
@@ -184,7 +201,7 @@ export default function Displaced_Received_Aid_Modal({
                   وصف المساعدة
                 </Text>
                 <Text size='sm' c='dimmed'>
-                  {receivedAid.aidContent}
+                  {receivedAid.aid_content}
                 </Text>
               </Stack>
             </Paper>

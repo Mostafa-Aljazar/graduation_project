@@ -19,6 +19,7 @@ export default async function Displaced_Received_Aid({
       px={10}
     >
       <Displaced_Received_Aid_Header_Tabs />
+
       <Displaced_Received_Aid_Content displaced_Id={Number(displaced_Id)} />
     </Stack>
   );

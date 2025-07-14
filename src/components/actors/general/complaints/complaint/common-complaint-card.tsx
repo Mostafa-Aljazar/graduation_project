@@ -9,27 +9,29 @@ import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import { MAN } from '@/assets/actor';
-import {
-  COMPLAINTS_STATUS,
-  COMPLAINTS_TABS,
-} from '@/content/actor/delegate/complaints';
 import { parseAsStringEnum, useQueryStates } from 'nuqs';
 import {
   changeStatusCommonComplaint,
   changeStatusCommonComplaintProps,
 } from '@/actions/actors/general/complaints/changeStatusCommonComplaint';
-import { USER_TYPE, USER_TYPE_LABELS, UserType } from '@/constants/userTypes';
+import {
+  USER_RANK_LABELS,
+  USER_TYPE,
+  UserRank,
+  UserType,
+} from '@/constants/userTypes';
 import Common_Delete_Complaint from './common-delete-complaint';
 import Common_Complaint_Modal from './common-complaint-modal';
 import useAuth from '@/hooks/useAuth';
+import {
+  COMPLAINTS_STATUS,
+  COMPLAINTS_TABS,
+} from '@/@types/actors/common-types/index.type';
 
 interface CommonComplaintCardProps {
   complaint: Complaint;
   actor_Id: number;
-  role: Exclude<
-    (typeof USER_TYPE)[UserType],
-    typeof USER_TYPE.SECURITY_OFFICER
-  >;
+  role: UserType | UserRank;
 }
 
 export default function Common_Complaint_Card({
@@ -44,6 +46,9 @@ export default function Common_Complaint_Card({
   });
 
   const { user } = useAuth();
+
+  const isOwner = user?.id === actor_Id && user?.role === role;
+
   const [opened, { open, close }] = useDisclosure(false);
   const queryClient = useQueryClient();
 
@@ -148,9 +153,9 @@ export default function Common_Complaint_Card({
               <Text fz={16} className='!text-primary'>
                 {query['complaints-tab'] ==
                   COMPLAINTS_TABS.RECEIVED_COMPLAINTS &&
-                  `من ${USER_TYPE_LABELS[complaint.sender.role]}`}
+                  `من ${USER_RANK_LABELS[complaint.sender.role]}`}
                 {query['complaints-tab'] == COMPLAINTS_TABS.SENT_COMPLAINTS &&
-                  `الى ${USER_TYPE_LABELS[complaint.receiver.role]}`}
+                  `الى ${USER_RANK_LABELS[complaint.receiver.role]}`}
                 {' :'}
               </Text>
               <Text fz={16} className='!text-dark'>
@@ -166,23 +171,16 @@ export default function Common_Complaint_Card({
             </Text>
           </Stack>
 
-          {user?.id === actor_Id &&
-            user?.role === role &&
-            (role !== USER_TYPE.DISPLACED &&
-            role !== USER_TYPE.MANAGER &&
-            query['complaints-tab'] === COMPLAINTS_TABS.SENT_COMPLAINTS ? (
+          {isOwner &&
+            (role === USER_TYPE.DISPLACED ||
+              query['complaints-tab'] === COMPLAINTS_TABS.SENT_COMPLAINTS) &&
+            role !== USER_TYPE.MANAGER && (
               <Common_Delete_Complaint
                 complaint_Id={complaint.id}
                 actor_Id={actor_Id}
                 role={role}
               />
-            ) : role === USER_TYPE.DISPLACED ? (
-              <Common_Delete_Complaint
-                complaint_Id={complaint.id}
-                actor_Id={actor_Id}
-                role={role}
-              />
-            ) : role === USER_TYPE.MANAGER ? null : null)}
+            )}
         </Group>
       </Card>
 

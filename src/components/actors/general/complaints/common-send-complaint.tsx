@@ -5,7 +5,13 @@ import {
   sendCommonComplaint,
   sendCommonComplaintProps,
 } from '@/actions/actors/general/complaints/sendCommonComplaint';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
+import {
+  USER_RANK,
+  USER_RANK_LABELS,
+  USER_TYPE,
+  UserRank,
+  UserType,
+} from '@/constants/userTypes';
 import useAuth from '@/hooks/useAuth';
 import { cn } from '@/utils/cn';
 import {
@@ -29,27 +35,17 @@ import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { MessageSquareDiff, Send, X } from 'lucide-react';
 
-const ALLOWED_RECEPTIONS: Record<
-  UserType,
-  sendCommonComplaintProps['reception'][]
-> = {
+const ALLOWED_RECEPTIONS: Record<UserRank, UserRank[]> = {
   DISPLACED: [
     USER_TYPE.MANAGER,
     USER_TYPE.DELEGATE,
-    USER_TYPE.SECURITY_OFFICER,
+    USER_RANK.SECURITY_OFFICER,
   ],
-  DELEGATE: [USER_TYPE.MANAGER, USER_TYPE.SECURITY_OFFICER],
-  SECURITY: [USER_TYPE.MANAGER, USER_TYPE.SECURITY_OFFICER],
+  DELEGATE: [USER_TYPE.MANAGER, USER_RANK.SECURITY_OFFICER],
+  SECURITY: [USER_TYPE.MANAGER, USER_RANK.SECURITY_OFFICER],
   SECURITY_OFFICER: [USER_TYPE.MANAGER],
   MANAGER: [],
 };
-
-const RECEPTION_LABELS: Record<sendCommonComplaintProps['reception'], string> =
-  {
-    [USER_TYPE.MANAGER]: 'المدير',
-    [USER_TYPE.DELEGATE]: 'المندوب',
-    [USER_TYPE.SECURITY_OFFICER]: 'مسؤول الأمن',
-  };
 
 export default function Common_Send_Complaint() {
   const { user } = useAuth();
@@ -57,6 +53,11 @@ export default function Common_Send_Complaint() {
 
   const allowedReceptions =
     (user?.role && ALLOWED_RECEPTIONS[user.role as UserType]) || [];
+
+  const dynamicReceptionOptions = allowedReceptions.map((value) => ({
+    value: value as UserRank,
+    label: USER_RANK_LABELS[value as UserRank],
+  }));
 
   const formSchema = commonSendComplaintFormSchema.refine(
     (data) => allowedReceptions.includes(data.reception),
@@ -82,7 +83,7 @@ export default function Common_Send_Complaint() {
   >({
     mutationFn: sendCommonComplaint,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تمت العملية بنجاح',
           message: data.message,
@@ -113,17 +114,14 @@ export default function Common_Send_Complaint() {
 
     sendCommonComplaintMutation.mutate({
       actor_Id: user.id,
-      role: user.role as sendCommonComplaintProps['role'],
+      role: (user.role == USER_TYPE.SECURITY
+        ? user.rank
+        : user.role) as sendCommonComplaintProps['role'],
       reception: values.reception,
       title: values.title,
       content: values.content,
     });
   };
-
-  const dynamicReceptionOptions = allowedReceptions.map((value) => ({
-    value,
-    label: RECEPTION_LABELS[value],
-  }));
 
   const disabled =
     sendCommonComplaintMutation.isPending || allowedReceptions.length === 0;

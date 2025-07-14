@@ -1,10 +1,7 @@
-import { GENDER, MATERIAL_STATUS } from "@/content/actor/delegate/profile-form"
-import { ACCOMMODATION_TYPE, AGES, CASE_TYPE } from "@/content/actor/displaced/filter"
-
-
+import { ACCOMMODATION_TYPE, AGES, FAMILY_STATUS_TYPE, GENDER, SOCIAL_STATUS, } from "../../common-types/index.type";
 
 export interface DisplacedProfileResponse {
-    status: string;
+    status: number;
     message?: string;
     user: DisplacedProfile;
     error?: string;
@@ -14,43 +11,47 @@ export interface DisplacedProfile {
     id: number
     name: string
     gender: GENDER
-    profileImage: string
-    nationalId: string
+    profile_image: string
+    identity: string
     nationality: string
-    originalAddress: string
+    original_address: string
+    phone_number: string
+    alternative_phone_number?: string
 
     wives: {
         name: string
-        nationalId: string
+        identity: string
         nationality: string
-        isPregnant: boolean
-        isWetNurse: boolean
+        is_pregnant: boolean
+        is_wet_nurse: boolean
     }[]
 
     socialStatus: {
-        status: MATERIAL_STATUS
-        numberOfWives: number
-        numberOfMales: number
-        numberOfFemales: number
-        totalFamilyMembers: number
-        ageGroups: Record<AGES, number>
+        status: SOCIAL_STATUS
+        number_of_wives: number
+        number_of_males: number
+        number_of_females: number
+        total_family_members: number
+        age_groups: Record<AGES, number>
 
     }
 
     displacement: {
-        tentNumber: string
-        tentType: ACCOMMODATION_TYPE
-        CaseType: CASE_TYPE
-        displacementDate: string
+        tent_number: string
+        tent_type: ACCOMMODATION_TYPE
 
-        delegateName: string
-        delegatePhone: string
-        campManager: string
-        campManagerPhone: string
+        family_status_type: FAMILY_STATUS_TYPE
+        displacement_date: string
+
+        delegate_name: string
+        delegate_phone: string
+
+        camp_manager: string
+        camp_managerPhone: string
     }
 
 
-    warInjuries: {
+    war_injuries: {
         name: string
         injury: string
     }[]
@@ -59,10 +60,10 @@ export interface DisplacedProfile {
         name: string
     }[]
 
-    medicalConditions: {
+    medical_conditions: {
         name: string
         condition: string
     }[]
 
-    additionalNotes: string
+    additional_notes: string
 }

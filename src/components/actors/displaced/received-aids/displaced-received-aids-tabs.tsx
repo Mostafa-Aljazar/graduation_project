@@ -3,7 +3,7 @@
 import {
   DISPLACED_RECEIVED_AIDS_TABS,
   GET_DISPLACED_RECEIVED_AIDS_TABS,
-} from '@/content/actor/displaced/received-aid';
+} from '@/@types/actors/common-types/index.type';
 import { cn } from '@/utils/cn';
 import {
   Divider,
@@ -14,7 +14,7 @@ import {
   Text,
   ThemeIcon,
 } from '@mantine/core';
-import { parseAsStringEnum, useQueryStates } from 'nuqs';
+import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import { useState, useRef } from 'react';
 
 export default function Displaced_Received_Aid_Header_Tabs() {
@@ -22,6 +22,7 @@ export default function Displaced_Received_Aid_Header_Tabs() {
     'received-aids-tab': parseAsStringEnum<DISPLACED_RECEIVED_AIDS_TABS>(
       Object.values(DISPLACED_RECEIVED_AIDS_TABS)
     ).withDefault(DISPLACED_RECEIVED_AIDS_TABS.RECEIVED_AIDS),
+    'received-aids-page': parseAsInteger.withDefault(1),
   });
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
@@ -91,6 +92,7 @@ export default function Displaced_Received_Aid_Header_Tabs() {
           if (value) {
             setQuery({
               'received-aids-tab': value as DISPLACED_RECEIVED_AIDS_TABS,
+              'received-aids-page': 1, // reset to first page when tab changes
             });
           }
         }}

@@ -1,4 +1,4 @@
-import { COMPLAINTS_STATUS } from "@/content/actor/delegate/complaints";
+import { COMPLAINTS_STATUS } from "@/@types/actors/common-types/index.type";
 import { z } from "zod";
 
 export const CommonComplaintFilterFormSchema = z.object({

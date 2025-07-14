@@ -13,9 +13,9 @@ import {
   changeNotificationStatusProps,
 } from '@/actions/actors/general/notifications/changeNotificationStatus';
 import { notifications } from '@mantine/notifications';
-import { parseAsInteger, useQueryStates } from 'nuqs';
 import useAuth from '@/hooks/useAuth';
 import { useDisclosure } from '@mantine/hooks';
+import { USER_RANK_LABELS, UserType } from '@/constants/userTypes';
 
 interface NotificationCardProps {
   notification: NotificationItem;
@@ -36,7 +36,7 @@ export default function Notification_Card({
   >({
     mutationFn: changeNotificationStatus,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تمت العملية بنجاح',
           message: data.message,
@@ -66,6 +66,7 @@ export default function Notification_Card({
       changeStatusMutation.mutate({
         notification_Id: n.id,
         actor_Id: user?.id ?? 0,
+        role: user?.role as UserType,
       });
     }
     openModal();
@@ -99,7 +100,8 @@ export default function Notification_Card({
               </Text>
             </Flex>
             <Text size='sm' c='dimmed'>
-              من: {notification.from.name} ({notification.from.role})
+              من: {notification.from.name} (
+              {` ${USER_RANK_LABELS[notification.from.role]} `})
             </Text>
           </Stack>
         </Group>
