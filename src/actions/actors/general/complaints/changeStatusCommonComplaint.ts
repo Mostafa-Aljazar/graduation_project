@@ -1,16 +1,14 @@
 "use server";
 
 import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
-import { USER_TYPE, UserType } from "@/constants/userTypes";
+import { USER_RANK, USER_TYPE, UserRank, UserType } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
 export interface changeStatusCommonComplaintProps {
     complaint_Id: number;
     actor_Id: number;
-    role: Exclude<
-        (typeof USER_TYPE)[UserType],
-        typeof USER_TYPE.SECURITY_OFFICER
-    >;
+    role: Exclude<UserRank, typeof USER_RANK.SECURITY | typeof USER_RANK.DISPLACED>;
+
 }
 
 export const changeStatusCommonComplaint = async ({
@@ -18,7 +16,7 @@ export const changeStatusCommonComplaint = async ({
 }: changeStatusCommonComplaintProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
+        status: 200,
         message: `تم تغيير حالة الشكوى بنجاح`,
 
     }
@@ -33,21 +31,19 @@ export const changeStatusCommonComplaint = async ({
     // Real implementation with filters
 
     try {
-        const response = await AqsaAPI.put("/complaints/changeStatus", {
-            params: {
-                complaint_Id, actor_Id, role
-            },
+        const response = await AqsaAPI.put(`/complaints/${complaint_Id}/changeStatus`, {
+            actor_Id, role
         });
 
         return {
-            status: "200",
+            status: 200,
             message: `تم تغيير حالة الشكوى بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء تغيير حالة الشكوى";
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };

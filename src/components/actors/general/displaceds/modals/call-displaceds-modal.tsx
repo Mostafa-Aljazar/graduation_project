@@ -23,12 +23,12 @@ const callSchema = z.object({
 export type callType = z.infer<typeof callSchema>;
 
 interface CallModalProps {
-  displacedIDs: number[];
+  displacedIds: number[];
   opened: boolean;
   close: () => void;
 }
 export default function Call_Displaced_Modal({
-  displacedIDs,
+  displacedIds,
   opened,
   close,
 }: CallModalProps) {
@@ -76,7 +76,7 @@ export default function Call_Displaced_Modal({
   const handleSubmit = (values: callType) => {
     console.log('🚀 ~ handleSubmit ~ values:', values);
     callMutation.mutate({
-      displacedIDs,
+      displacedIds,
       dateTime: values.dateTime,
       details: values.details,
     });

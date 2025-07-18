@@ -15,6 +15,7 @@ import {
   changeStatusCommonComplaintProps,
 } from '@/actions/actors/general/complaints/changeStatusCommonComplaint';
 import {
+  USER_RANK,
   USER_RANK_LABELS,
   USER_TYPE,
   UserRank,
@@ -95,12 +96,15 @@ export default function Common_Complaint_Card({
       if (
         query['complaints-tab'] === COMPLAINTS_TABS.RECEIVED_COMPLAINTS &&
         complaint.status === COMPLAINTS_STATUS.PENDING &&
-        user?.role !== 'DISPLACED'
+        user?.role !== USER_TYPE.DISPLACED
       ) {
         changeStatusMutation.mutate({
           complaint_Id: complaint.id,
           actor_Id,
-          role,
+          role: role as Exclude<
+            UserRank,
+            typeof USER_RANK.SECURITY | typeof USER_RANK.DISPLACED
+          >,
         });
       }
       open();

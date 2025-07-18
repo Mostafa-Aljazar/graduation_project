@@ -1,5 +1,5 @@
 import { Displaced, DisplacedsIDsResponse, DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
-import { displacedFilterValues } from '@/validation/actor/general/displaced-filter-form';
+import { displacedFilterValues } from '@/validation/actor/general/displaceds-filter-form';
 
 // Fake Displaced Data
 export const fakeDisplaced: Displaced[] = [

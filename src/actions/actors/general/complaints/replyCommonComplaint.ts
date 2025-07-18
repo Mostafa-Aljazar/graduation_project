@@ -1,17 +1,14 @@
 "use server";
 
 import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
-import { USER_TYPE, UserType } from "@/constants/userTypes";
+import { USER_RANK, UserRank } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
 export interface replyCommonComplaintProps {
     complaint_Id: number;
     actor_Id: number;
-    role: Exclude<
-        (typeof USER_TYPE)[UserType],
-        typeof USER_TYPE.SECURITY_OFFICER
-    >; reply: string;
-
+    role: Exclude<UserRank, typeof USER_RANK.SECURITY | typeof USER_RANK.DISPLACED>;
+    reply: string;
 }
 
 export const replyCommonComplaint = async ({
@@ -25,7 +22,7 @@ export const replyCommonComplaint = async ({
 
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
+        status: 200,
         message: `تم ارسال الرد بنجاح`,
 
     }
@@ -40,27 +37,22 @@ export const replyCommonComplaint = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
 
-
-
-
-
     try {
-        const response = await AqsaAPI.post("/complaints/reply", {
-            complaint_Id,
+        const response = await AqsaAPI.post(`/complaints/${complaint_Id}/reply`, {
             actor_Id,
             role,
             reply,
         });
 
         return {
-            status: "200",
+            status: 200,
             message: `تم ارسال الرد بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء ارسال الرد";
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };

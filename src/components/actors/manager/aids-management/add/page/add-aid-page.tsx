@@ -36,7 +36,7 @@ import { addAid } from '@/actions/actors/general/aids-management/addAid';
 import { updateAid } from '@/actions/actors/general/aids-management/updateAid';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import Displaceds_List from '@/components/actors/general/Displaced/content/displaceds-list';
+import Displaceds_List from '@/components/actors/general/displaceds/content/displaceds-list';
 import { DESTINATION_DISPLACED } from '@/content/actor/displaced/filter';
 import { DESTINATION_DELEGATES } from '@/content/actor/delegate/filter';
 import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';

@@ -32,12 +32,12 @@ export const deleteCommonComplaint = async ({
 
     // Real implementation with filters
     try {
-        const response = await AqsaAPI.delete("/complaints", {
+
+        const response = await AqsaAPI.delete(`/complaints/${complaint_Id}`, {
             params: {
-                complaint_Id,
                 actor_Id,
-                role,
-            },
+                role
+            }
         });
 
         return {

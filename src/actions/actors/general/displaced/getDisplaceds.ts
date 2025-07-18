@@ -3,7 +3,7 @@
 import { DisplacedsResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
 import { fakeDisplacedResponse } from "@/content/actor/general/fake-displaced";
 import { AqsaAPI } from "@/services";
-import { displacedFilterValues } from "@/validation/actor/general/displaced-filter-form";
+import { displacedFilterValues } from "@/validation/actor/general/displaceds-filter-form";
 
 type Props = {
     page?: number;

@@ -67,7 +67,7 @@ export async function getCommonComplaints({
             error.response?.data?.error || error.message || 'حدث خطأ أثناء جلب الشكاوى';
 
         return {
-            status: error.response?.status?.toString() || '500',
+            status: error.response?.status || 500,
             message: errorMessage,
             complaints: [],
             pagination: { page: 1, limit: 0, total_items: 0, total_pages: 0 },

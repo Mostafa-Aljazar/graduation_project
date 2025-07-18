@@ -105,7 +105,10 @@ export default function Common_Complaint_Modal({
       reply: values.reply,
       complaint_Id: complaint.id,
       actor_Id,
-      role,
+      role: role as Exclude<
+        UserRank,
+        typeof USER_RANK.SECURITY | typeof USER_RANK.DISPLACED
+      >,
     });
   };
 

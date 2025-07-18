@@ -1,6 +1,6 @@
 'use client';
-import Displaceds_List from '@/components/actors/general/Displaced/content/displaceds-list';
-import { DESTINATION_DISPLACED } from '@/content/actor/displaced/filter';
+import { DESTINATION_DISPLACED } from '@/@types/actors/common-types/index.type';
+import Displaceds_List from '@/components/actors/general/displaceds/content/displaceds-list';
 import { useState } from 'react';
 
 export default function Displaceds() {
@@ -10,10 +10,7 @@ export default function Displaceds() {
 
   return (
     <Displaceds_List
-      destination={DESTINATION_DISPLACED.DISPLACEDS}
-      selectedDisplacedIds={selectedDisplacedIds}
-      setSelectedDisplacedIds={setSelectedDisplacedIds}
-      showAddButton={true}
+    // destination={DESTINATION_DISPLACED.DISPLACEDS}
     />
   );
 }

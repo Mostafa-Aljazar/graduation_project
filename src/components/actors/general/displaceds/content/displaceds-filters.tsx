@@ -13,7 +13,7 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
-import { FileUp, ListFilter, RotateCcw, Search } from 'lucide-react';
+import { ListFilter, RotateCcw, Search } from 'lucide-react';
 import { parseAsString, useQueryState } from 'nuqs';
 import { useState } from 'react';
 import {
@@ -30,42 +30,34 @@ import {
 } from '@/@types/actors/common-types/index.type';
 import { fakeDelegates } from '@/content/actor/general/fake-delegates';
 import {
-  displacedFilterSchema,
-  displacedFilterValues,
+  displacedsFilterSchema,
+  displacedsFilterValues,
 } from '@/validation/actor/general/displaceds-filter-form';
-import {
-  USER_RANK,
-  USER_TYPE,
-  UserRank,
-  UserType,
-} from '@/constants/userTypes';
-import { cn } from '@/utils/cn';
+import useAuth from '@/hooks/useAuth';
 
-interface CommonDisplacedFiltersProps {
-  setLocalFilters: React.Dispatch<React.SetStateAction<displacedFilterValues>>;
+interface DisplacedsFiltersProps {
+  destination?: 'AID' | 'DISPLACEDS';
+
+  setLocalFilters: React.Dispatch<React.SetStateAction<displacedsFilterValues>>;
   displacedNum: number;
-
-  actor_Id: number;
-  role?: Exclude<
-    UserRank,
-    typeof USER_RANK.DISPLACED | typeof USER_RANK.SECURITY
-  >;
 }
 
-export default function Aid_Add_Displaceds_Filters({
+export default function Displaceds_Filters({
+  destination,
   setLocalFilters,
   displacedNum,
-  actor_Id,
-  role,
-}: CommonDisplacedFiltersProps) {
-  const initData: displacedFilterValues = {
+}: // actor_Id,
+// role,
+DisplacedsFiltersProps) {
+  const { user } = useAuth();
+  const initData: displacedsFilterValues = {
     wife_status: null,
     family_number: null,
     ages: [],
     chronic_disease: null,
     accommodation_type: null,
-    case_type: null,
-    delegate: [actor_Id.toString()],
+    family_status_type: null,
+    delegate: user?.id ? [user?.id.toString()] : [],
   };
 
   const [searchInput, setSearchInput] = useState('');
@@ -75,9 +67,9 @@ export default function Aid_Add_Displaceds_Filters({
     parseAsString.withDefault('')
   );
 
-  const form = useForm<displacedFilterValues>({
+  const form = useForm<displacedsFilterValues>({
     initialValues: initData,
-    validate: zodResolver(displacedFilterSchema),
+    validate: zodResolver(displacedsFilterSchema),
   });
 
   const handleApplyFilters = () => {
@@ -288,7 +280,7 @@ export default function Aid_Add_Displaceds_Filters({
               value: item.id.toString(),
               label: item.name,
             }))}
-            disabled={role == 'DELEGATE'}
+            // disabled={destination == 'AID' && role == 'DELEGATE'}
             size='sm'
             key={`delegate-${resetKey}`}
             {...form.getInputProps('delegate')}

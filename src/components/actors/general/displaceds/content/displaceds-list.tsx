@@ -4,24 +4,28 @@ import { Button, Group, Stack, Text } from '@mantine/core';
 import { Database, UserPlus } from 'lucide-react';
 import { Suspense, useState } from 'react';
 
-import { displacedFilterValues } from '@/validation/actor/general/displaced-filter-form';
-import Displaceds_Filters from './common-displaceds-filters';
+import { displacedsFilterValues } from '@/validation/actor/general/displaceds-filter-form';
 import Displaceds_Table from './displaceds-table';
-import { DESTINATION_DISPLACED } from '@/content/actor/displaced/filter';
+import useAuth from '@/hooks/useAuth';
+import { USER_TYPE } from '@/constants/userTypes';
+import Common_Displaceds_Filters from '../../common-displaceds/common-displaceds-filters';
+import Displaceds_Filters from './displaceds-filters';
+import { useRouter } from 'next/navigation';
+import { GENERAL_ACTOR_ROUTES } from '@/constants/routes';
 
-function DisplacedListHeader({
-  title,
-  showAddButton,
-}: {
-  title?: string;
-  showAddButton?: boolean;
-}) {
+function Displaced_List_Header() {
+  const { user } = useAuth();
+
+  const router = useRouter();
+  const showAddButton =
+    user?.role == USER_TYPE.DELEGATE || user?.role == USER_TYPE.MANAGER;
+
   return (
     <Group justify='space-between' align='center'>
       <Group gap={10}>
         <Database size={20} className='!text-primary' />
         <Text fw={600} fz={18} className='!text-primary'>
-          {title ?? 'بيانات النازحين:'}
+          بيانات النازحين :
         </Text>
       </Group>
       {showAddButton && (
@@ -33,6 +37,7 @@ function DisplacedListHeader({
           radius='lg'
           className='!bg-primary'
           rightSection={<UserPlus size={16} />}
+          onClick={() => router.push(GENERAL_ACTOR_ROUTES.ADD_DISPLACEDS)}
         >
           إضافة نازح
         </Button>
@@ -42,31 +47,23 @@ function DisplacedListHeader({
 }
 
 interface DisplacedListProps {
-  destination: DESTINATION_DISPLACED;
-  title?: string;
-  setSelectedDisplacedIds: React.Dispatch<React.SetStateAction<number[]>>;
-  selectedDisplacedIds: number[];
-  receivedDisplaced?: { displaced_ID: number; receivedTime: Date }[];
-  aid_id?: number;
-  showAddButton?: boolean;
+  // destination: DESTINATION_DISPLACED;
+  // title?: string;
+  // setSelectedDisplacedIds: React.Dispatch<React.SetStateAction<number[]>>;
+  // selectedDisplacedIds: number[];
+  // receivedDisplaced?: { displaced_ID: number; receivedTime: Date }[];
+  // aid_id?: number;
+  // showAddButton?: boolean;
 }
 
-export default function Displaceds_List({
-  destination,
-  title,
-  setSelectedDisplacedIds,
-  selectedDisplacedIds,
-  receivedDisplaced,
-  aid_id,
-  showAddButton = false,
-}: DisplacedListProps) {
-  const [localFilters, setLocalFilters] = useState<displacedFilterValues>({
+export default function Displaceds_List({}: DisplacedListProps) {
+  const [localFilters, setLocalFilters] = useState<displacedsFilterValues>({
     wife_status: null,
     family_number: null,
     ages: [],
     chronic_disease: null,
     accommodation_type: null,
-    case_type: null,
+    family_status_type: null,
     delegate: [],
   });
 
@@ -74,7 +71,7 @@ export default function Displaceds_List({
 
   return (
     <Stack p={10} pos='relative' w='100%'>
-      <DisplacedListHeader title={title} showAddButton={showAddButton} />
+      <Displaced_List_Header />
 
       <Suspense fallback={<div>جارٍ التحميل...</div>}>
         <Displaceds_Filters
@@ -85,13 +82,13 @@ export default function Displaceds_List({
 
       <Suspense fallback={<div>جارٍ التحميل...</div>}>
         <Displaceds_Table
-          destination={destination}
+          // destination={destination}
           localFilters={localFilters}
           setDisplacedNum={setDisplacedNum}
-          setSelectedRows={setSelectedDisplacedIds}
-          selectedRows={selectedDisplacedIds}
-          receivedDisplaced={receivedDisplaced}
-          aid_id={aid_id}
+          // setSelectedRows={setSelectedDisplacedIds}
+          // selectedRows={selectedDisplacedIds}
+          // receivedDisplaced={receivedDisplaced}
+          // aid_id={aid_id}
         />
       </Suspense>
     </Stack>

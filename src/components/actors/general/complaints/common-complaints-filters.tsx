@@ -192,16 +192,16 @@ export default function Common_Complaints_Filters({
 
           <Group flex={1} justify='end'>
             <Button
+              size='sm'
+              radius='md'
               type='button'
               w={100}
-              size='sm'
               px={15}
               fz={16}
               fw={500}
               c={'dark'}
-              radius={'lg'}
               className='!justify-end !items-end !self-end !bg-gray-300 !shadow-lg'
-              rightSection={<RotateCcw size={18} />}
+              rightSection={<RotateCcw size={16} />}
               onClick={handleReset}
             >
               إفراغ
@@ -210,13 +210,13 @@ export default function Common_Complaints_Filters({
               type='submit'
               w={100}
               size='sm'
+              radius='md'
               px={15}
               fz={16}
               fw={500}
               c={'white'}
-              radius={'lg'}
               className='!justify-end !items-end !self-end !bg-primary !shadow-lg'
-              rightSection={<ListFilter size={18} />}
+              rightSection={<ListFilter size={16} />}
             >
               فلتر
             </Button>

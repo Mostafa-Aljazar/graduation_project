@@ -3,20 +3,14 @@
 import { Group, Stack, Text } from '@mantine/core';
 import { Database } from 'lucide-react';
 import { Suspense, useState } from 'react';
-import { displacedFilterValues } from '@/validation/actor/general/displaced-filter-form';
+import {} from '@/validation/actor/general/displaceds-filter-form';
 import Displaceds_Filters from '../../delegate/aids-management/aid/delivery-displaceds/aid-delivery-displaceds-filters';
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 
-interface CommonDisplacedListProps {
-  aid_Data: Aid;
-  selectedDisplacedIds: number[];
-}
+interface CommonDisplacedListProps {}
 
-export default function Common_Displaceds_List({
-  aid_Data,
-  selectedDisplacedIds,
-}: CommonDisplacedListProps) {
-  const [localFilters, setLocalFilters] = useState<displacedFilterValues>({
+export default function Common_Displaceds_List({}: CommonDisplacedListProps) {
+  const [localFilters, setLocalFilters] = useState<displacedsFilterValues>({
     wife_status: null,
     family_number: null,
     ages: [],

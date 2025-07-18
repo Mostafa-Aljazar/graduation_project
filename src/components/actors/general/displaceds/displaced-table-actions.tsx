@@ -17,12 +17,12 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import useAuth from '@/hooks/useAuth';
-import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
-import Delete_Displaced_Modal from './modals/Delete_Displaced_Modal';
-import Call_Displaced_Modal from './modals/Call_Displaced_Modal';
-import Update_Displaced_Modal from './modals/Update_Displaced_Modal';
-import Meeting_Displaced_Modal from './modals/Meeting_Displaced_Modal';
-import Change_Delegate_In_Displaced_Modal from './modals/Change_Delegate_In_Displaced_Modal';
+import Delete_Displaced_Modal from './modals/delete-displaced-modal';
+import Call_Displaced_Modal from './modals/call-displaceds-modal';
+import Update_Displaced_Modal from './modals/update-displaced-modal';
+import Meeting_Displaced_Modal from './modals/meeting-displaced-modal';
+import Change_Delegate_In_Displaced_Modal from './modals/change-delegate-in-displaceds-modal';
+import { ACTION_ADD_EDIT_DISPLAY } from '@/@types/actors/common-types/index.type';
 
 // Define the type for action items
 interface ActionItem {
@@ -31,18 +31,18 @@ interface ActionItem {
   action: () => void;
 }
 
-interface Props {
-  displaced_ID?: number;
+interface DisplacedTableActionsProps {
+  displaced_Id?: number;
   // many
-  displaced_IDs?: number[];
+  displaced_Ids?: number[];
   disabled?: boolean;
 }
 
 export default function Displaced_Table_Actions({
-  displaced_ID,
-  displaced_IDs,
+  displaced_Id,
+  displaced_Ids,
   disabled,
-}: Props) {
+}: DisplacedTableActionsProps) {
   const { isDelegate, isManager, isSecurity, isSecurityOfficer } = useAuth();
   const [openedPopover, setOpenedPopover] = useState(false);
   const [modalType, setModalType] = useState<
@@ -51,7 +51,6 @@ export default function Displaced_Table_Actions({
 
   const router = useRouter();
 
-  // Handlers to open specific modals
   const openModal = (type: typeof modalType) => {
     setModalType(type);
     setOpenedPopover(false); // Close the popover
@@ -59,32 +58,21 @@ export default function Displaced_Table_Actions({
 
   const closeModal = () => setModalType(null);
 
-  const Admin_General_ACTIONS: ActionItem[] = [
-    {
-      label: 'حذف',
-      icon: Trash,
-      action: () => openModal('delete'),
-    },
-    {
-      label: 'استدعاء',
-      icon: Speech,
-      action: () => openModal('call'),
-    },
+  const buildRoute = (id: number, edit = false) => {
+    const base = DISPLACED_ROUTES_fUNC(id);
+    return edit
+      ? `${base.PROFILE}?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
+      : base.PROFILE;
+  };
 
-    {
-      label: 'تحديث بيانات',
-      icon: UserCog,
-      action: () => openModal('update'),
-    },
-    {
-      label: 'اجتماع',
-      icon: Users,
-      action: () => openModal('meeting'),
-    },
+  const commonActions: ActionItem[] = [
+    { label: 'حذف', icon: Trash, action: () => openModal('delete') },
+    { label: 'استدعاء', icon: Speech, action: () => openModal('call') },
+    { label: 'تحديث بيانات', icon: UserCog, action: () => openModal('update') },
+    { label: 'اجتماع', icon: Users, action: () => openModal('meeting') },
   ];
 
-  const Manager_General_ACTIONS: ActionItem[] = [
-    ...Admin_General_ACTIONS,
+  const managerExtras: ActionItem[] = [
     {
       label: 'تغيير المندوب',
       icon: Repeat,
@@ -92,77 +80,46 @@ export default function Displaced_Table_Actions({
     },
   ];
 
-  const Manager_Single_ACTIONS: ActionItem[] = [
+  const viewEditActions: ActionItem[] = [
     {
       label: 'عرض',
       icon: Eye,
-      action: () =>
-        router.push(DISPLACED_ROUTES_fUNC(displaced_ID || -1).PROFILE),
+      action: () => router.push(buildRoute(displaced_Id || 0)),
     },
     {
       label: 'تعديل',
       icon: UserPen,
-      action: () =>
-        router.push(
-          DISPLACED_ROUTES_fUNC(displaced_ID || -1).PROFILE +
-            `?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
-        ),
+      action: () => router.push(buildRoute(displaced_Id || 0, true)),
     },
-    ...Manager_General_ACTIONS,
   ];
 
-  const Delegate_Single_ACTIONS: ActionItem[] = [
+  const securityActions: ActionItem[] = [
     {
       label: 'عرض',
       icon: Eye,
-      action: () =>
-        router.push(DISPLACED_ROUTES_fUNC(displaced_ID || -1).PROFILE),
+      action: () => router.push(buildRoute(displaced_Id || 0)),
     },
-    {
-      label: 'تعديل',
-      icon: UserPen,
-      action: () =>
-        router.push(
-          DISPLACED_ROUTES_fUNC(displaced_ID || -1).PROFILE +
-            `?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
-        ),
-    },
-    ...Admin_General_ACTIONS,
+    { label: 'استدعاء', icon: Speech, action: () => openModal('call') },
   ];
 
-  const Security_ACTIONS: ActionItem[] = [
-    {
-      label: 'عرض',
-      icon: Eye,
-      action: () =>
-        router.push(DISPLACED_ROUTES_fUNC(displaced_ID || 0).PROFILE),
-    },
+  const getActions = (): ActionItem[] => {
+    if (isManager && displaced_Ids) return [...commonActions, ...managerExtras];
+    if (isManager && displaced_Id)
+      return [...viewEditActions, ...commonActions, ...managerExtras];
+    if (isDelegate && displaced_Ids) return [...commonActions];
+    if (isDelegate && displaced_Id)
+      return [...viewEditActions, ...commonActions];
+    if (isSecurity || isSecurityOfficer) return securityActions;
+    return [];
+  };
 
-    {
-      label: 'استدعاء',
-      icon: Speech,
-      action: () => openModal('call'),
-    },
-  ];
-
-  // Filter actions based on user role
-  const ACTIONS: ActionItem[] =
-    isManager && displaced_IDs
-      ? Manager_General_ACTIONS
-      : isManager && displaced_ID
-      ? Manager_Single_ACTIONS
-      : isDelegate && displaced_IDs
-      ? Admin_General_ACTIONS
-      : isDelegate && displaced_ID
-      ? Delegate_Single_ACTIONS
-      : isSecurity || isSecurityOfficer
-      ? Security_ACTIONS
-      : [];
+  const ACTIONS = getActions();
+  const IDs = displaced_Ids || (displaced_Id ? [displaced_Id] : []);
 
   const Dropdown_Items = ACTIONS.map((item, index) => (
     <Button
-      justify='flex-start'
       key={item.label}
+      justify='flex-start'
       leftSection={
         <ThemeIcon variant='transparent' className='!text-dark'>
           <item.icon size={16} />
@@ -173,17 +130,14 @@ export default function Displaced_Table_Actions({
       fz={16}
       fw={500}
       className={cn(
-        '!text-dark !rounded-none hover:!bg-second-light',
+        'hover:!bg-second-light !rounded-none !text-dark',
         index + 1 !== ACTIONS.length && '!border-gray-100 !border-0 !border-b-1'
       )}
-      onClick={() => {
-        item.action();
-      }}
+      onClick={item.action}
     >
       {item.label}
     </Button>
   ));
-  const IDs = displaced_IDs || (displaced_ID ? [displaced_ID] : []);
 
   return (
     <>
@@ -200,7 +154,7 @@ export default function Displaced_Table_Actions({
         classNames={{ arrow: '!border-none' }}
       >
         <Popover.Target>
-          {displaced_IDs ? (
+          {displaced_Ids ? (
             <Button
               type='button'
               w={130}
@@ -208,8 +162,8 @@ export default function Displaced_Table_Actions({
               px={15}
               fz={16}
               fw={500}
-              c={'white'}
-              radius={'lg'}
+              c='white'
+              radius='md'
               className='!justify-end !items-end !self-end !bg-primary !shadow-lg'
               rightSection={<Hammer size={15} />}
               disabled={disabled}
@@ -227,7 +181,6 @@ export default function Displaced_Table_Actions({
             </ActionIcon>
           )}
         </Popover.Target>
-
         <Popover.Dropdown p={0} className='!bg-gray-200 !border-none'>
           <Stack justify='flex-start' gap={0}>
             {Dropdown_Items}
@@ -235,41 +188,36 @@ export default function Displaced_Table_Actions({
         </Popover.Dropdown>
       </Popover>
 
-      {/* Change Delegate Modal */}
-      {(isDelegate || isManager) && (
+      {isManager && (
         <Change_Delegate_In_Displaced_Modal
-          displacedIDs={IDs}
+          displacedIds={IDs}
           opened={modalType === 'change_delegate'}
           close={closeModal}
         />
       )}
 
-      {/* Delete Confirmation Modal */}
       {(isDelegate || isManager) && (
         <Delete_Displaced_Modal
-          displacedIDs={IDs}
+          displacedIds={IDs}
           opened={modalType === 'delete'}
           close={closeModal}
         />
       )}
 
-      {/* Call Details Modal */}
       <Call_Displaced_Modal
-        displacedIDs={IDs}
+        displacedIds={IDs}
         opened={modalType === 'call'}
         close={closeModal}
       />
 
-      {/* Update Data Modal */}
       {(isDelegate || isManager) && (
         <Update_Displaced_Modal
-          displacedIDs={IDs}
+          displacedIds={IDs}
           opened={modalType === 'update'}
           close={closeModal}
         />
       )}
 
-      {/* Meeting Confirmation Modal */}
       {(isDelegate || isManager) && (
         <Meeting_Displaced_Modal
           displacedIDs={IDs}

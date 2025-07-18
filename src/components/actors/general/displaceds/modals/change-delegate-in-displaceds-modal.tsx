@@ -20,13 +20,13 @@ const changeDelegateSchema = z.object({
 export type changeDelegateType = z.infer<typeof changeDelegateSchema>;
 
 interface ChangeDelegateModalProps {
-  displacedIDs: number[];
+  displacedIds: number[];
   opened: boolean;
   close: () => void;
 }
 
 export default function Change_Delegate_In_Displaced_Modal({
-  displacedIDs,
+  displacedIds,
   opened,
   close,
 }: ChangeDelegateModalProps) {
@@ -87,7 +87,7 @@ export default function Change_Delegate_In_Displaced_Modal({
 
   const handleSubmit = (values: changeDelegateType) => {
     changeMutation.mutate({
-      displacedIDs,
+      displacedIds,
       delegateId: Number(values.delegateId),
     });
   };

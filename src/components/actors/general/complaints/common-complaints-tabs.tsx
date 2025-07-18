@@ -3,7 +3,7 @@
 import {
   COMPLAINTS_TABS,
   GET_COMPLAINTS_TABS,
-} from '@/content/actor/delegate/complaints';
+} from '@/@types/actors/common-types/index.type';
 import { cn } from '@/utils/cn';
 import {
   Divider,

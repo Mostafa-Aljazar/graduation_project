@@ -4,7 +4,7 @@ import { USER_TYPE, UserType } from '@/constants/userTypes';
 import { Stack } from '@mantine/core';
 import { useState } from 'react';
 import { DESTINATION_AID } from '../../common/delegate-aid-page';
-import { displacedFilterValues } from '@/validation/actor/general/displaced-filter-form';
+import { displacedFilterValues } from '@/validation/actor/general/displaceds-filter-form';
 import Aid_Add_Displaceds_Filters from './aid-add-displaceds-filters';
 import Aid_Ad_Displaceds_Table from './aid-add-displaceds-table';
 

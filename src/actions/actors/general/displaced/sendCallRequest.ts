@@ -4,20 +4,20 @@ import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.t
 import { AqsaAPI } from "@/services";
 
 export interface sendCallRequestProps {
-    displacedIDs: number[];
+    displacedIds: number[];
     dateTime: Date;
     details: string;
 }
 
 export const sendCallRequest = async ({
-    displacedIDs,
+    displacedIds,
     dateTime,
     details,
 }: sendCallRequestProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
-        message: `تم إنشاء استدعاء لـ ${displacedIDs.length} نازح بنجاح`,
+        status: 200,
+        message: `تم إنشاء استدعاء لـ ${displacedIds.length} نازح بنجاح`,
 
     }
     // Simulate API delay for fake data
@@ -31,20 +31,20 @@ export const sendCallRequest = async ({
 
     try {
         const response = await AqsaAPI.post("/displaceds/calls", {
-            displacedIDs,
+            displacedIds,
             dateTime,
             details,
         });
 
         return {
-            status: "200",
-            message: `تم إنشاء استدعاء لـ ${displacedIDs.length} نازح بنجاح`,
+            status: 200,
+            message: `تم إنشاء استدعاء لـ ${displacedIds.length} نازح بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء إنشاء الاستدعاء";
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };

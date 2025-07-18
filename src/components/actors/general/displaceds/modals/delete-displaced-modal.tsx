@@ -10,13 +10,13 @@ import { useMutation } from '@tanstack/react-query';
 import React from 'react';
 
 interface DeleteModalProps {
-  displacedIDs: number[];
+  displacedIds: number[];
   opened: boolean;
   close: () => void;
 }
 
 export default function Delete_Displaced_Modal({
-  displacedIDs,
+  displacedIds,
   opened,
   close,
 }: DeleteModalProps) {
@@ -54,7 +54,7 @@ export default function Delete_Displaced_Modal({
 
   const handleClick = () => {
     deleteMutation.mutate({
-      displacedIDs,
+      displacedIds,
     });
   };
 
@@ -73,12 +73,12 @@ export default function Delete_Displaced_Modal({
       centered
     >
       <Stack>
-        {displacedIDs?.length == 1 && (
+        {displacedIds?.length == 1 && (
           <Text fz={16} fw={500}>
             هل أنت متأكد من حذف هذا النازح؟ هذا الإجراء لا يمكن التراجع عنه.
           </Text>
         )}
-        {displacedIDs?.length > 1 && (
+        {displacedIds?.length > 1 && (
           <Text fz={16} fw={500}>
             هل أنت متأكد من حذف هؤلاء النازحين؟ هذا الإجراء لا يمكن التراجع عنه.
           </Text>

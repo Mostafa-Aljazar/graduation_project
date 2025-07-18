@@ -21,7 +21,10 @@ export default function useAuth() {
       setIsDelegate(session.user.role === USER_TYPE.DELEGATE);
       setIsDisplaced(session.user.role === USER_TYPE.DISPLACED);
       setIsSecurity(session.user.role === USER_TYPE.SECURITY);
-      setIsSecurityOfficer(session.user.rank === USER_RANK.SECURITY_OFFICER);
+      setIsSecurityOfficer(
+        (session.user.role === USER_TYPE.SECURITY && session.user.rank) ===
+          USER_RANK.SECURITY_OFFICER
+      );
       setUser(session.user);
     }
   }, []);

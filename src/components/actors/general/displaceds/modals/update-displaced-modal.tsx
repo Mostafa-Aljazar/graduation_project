@@ -9,13 +9,13 @@ import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 
 interface UpdateModalProps {
-  displacedIDs: number[];
+  displacedIds: number[];
   opened: boolean;
   close: () => void;
 }
 
 export default function Update_Displaced_Modal({
-  displacedIDs,
+  displacedIds,
   opened,
   close,
 }: UpdateModalProps) {
@@ -53,7 +53,7 @@ export default function Update_Displaced_Modal({
 
   const handleClick = () => {
     updateMutation.mutate({
-      displacedIDs,
+      displacedIds,
     });
   };
 

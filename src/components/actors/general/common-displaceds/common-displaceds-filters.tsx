@@ -13,41 +13,53 @@ import {
   TextInput,
 } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
-import { FileUp, ListFilter, RotateCcw, Search } from 'lucide-react';
+import { ListFilter, RotateCcw, Search } from 'lucide-react';
 import { parseAsString, useQueryState } from 'nuqs';
 import { useState } from 'react';
 import {
   ACCOMMODATION_TYPE,
+  ACCOMMODATION_TYPE_LABELS,
   AGES,
-  CASE_TYPE,
+  AGES_LABELS,
+  FAMILY_STATUS_TYPE,
+  FAMILY_STATUS_TYPE_LABELS,
   CHRONIC_DISEASE,
+  CHRONIC_DISEASE_LABELS,
   WIFE_STATUS,
-} from '@/content/actor/displaced/filter';
+  WIFE_STATUS_LABELS,
+} from '@/@types/actors/common-types/index.type';
 import { fakeDelegates } from '@/content/actor/general/fake-delegates';
 import {
-  displacedFilterSchema,
-  displacedFilterValues,
-} from '@/validation/actor/general/displaced-filter-form';
+  displacedsFilterSchema,
+  displacedsFilterValues,
+} from '@/validation/actor/general/displaceds-filter-form';
+import useAuth from '@/hooks/useAuth';
 
-interface CommonDisplacedFiltersProps {
-  setLocalFilters: React.Dispatch<React.SetStateAction<displacedFilterValues>>;
+interface CommonDisplacedsFiltersProps {
+  destination?: 'AID' | 'DISPLACEDS';
+
+  setLocalFilters: React.Dispatch<React.SetStateAction<displacedsFilterValues>>;
   displacedNum: number;
 }
 
-const initData: displacedFilterValues = {
-  wife_status: null,
-  family_number: null,
-  ages: [],
-  chronic_disease: null,
-  accommodation_type: null,
-  case_type: null,
-  delegate: [],
-};
-
-export default function Common_Displaced_Filters({
+export default function Common_Displaceds_Filters({
+  destination,
   setLocalFilters,
   displacedNum,
-}: CommonDisplacedFiltersProps) {
+}: // actor_Id,
+// role,
+CommonDisplacedsFiltersProps) {
+  const { user } = useAuth();
+  const initData: displacedsFilterValues = {
+    wife_status: null,
+    family_number: null,
+    ages: [],
+    chronic_disease: null,
+    accommodation_type: null,
+    family_status_type: null,
+    delegate: user?.id ? [user?.id.toString()] : [],
+  };
+
   const [searchInput, setSearchInput] = useState('');
   const [resetKey, setResetKey] = useState(0);
   const [search, setSearch] = useQueryState(
@@ -55,9 +67,9 @@ export default function Common_Displaced_Filters({
     parseAsString.withDefault('')
   );
 
-  const form = useForm<displacedFilterValues>({
+  const form = useForm<displacedsFilterValues>({
     initialValues: initData,
-    validate: zodResolver(displacedFilterSchema),
+    validate: zodResolver(displacedsFilterSchema),
   });
 
   const handleApplyFilters = () => {
@@ -87,10 +99,11 @@ export default function Common_Displaced_Filters({
         direction={{ base: 'column', md: 'row' }}
         gap={{ base: 10, md: 0 }}
         justify='space-between'
+        align={'start'}
       >
         <Group flex={1} gap={10}>
           <Text fw={600} fz={18} className='!text-primary'>
-            الفلاتر :
+            عدد النازحين :
           </Text>
           <Text
             fz={14}
@@ -103,52 +116,40 @@ export default function Common_Displaced_Filters({
             نازح
           </Text>
         </Group>
-        <Group
-          flex={2}
-          gap={0}
-          wrap='nowrap'
-          className='border-1 border-gray-300 rounded-lg overflow-hidden'
-        >
-          <TextInput
-            w={{ base: '100%' }}
-            placeholder='رقم الهوية/رقم الخيمة...'
-            size='sm'
-            classNames={{
-              input:
-                '!border-none !outline-none placeholder:!text-sm !text-primary !font-normal',
-            }}
-            leftSection={<Search size={18} />}
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-          />
-          <Button
-            w={80}
-            size='sm'
-            px={10}
-            fz={16}
-            fw={500}
-            c='dark'
-            radius='none'
-            className='!bg-gray-300 !rounded-none'
-            onClick={handleSearch}
+
+        <Stack flex={2} gap={2}>
+          <Group
+            gap={0}
+            wrap='nowrap'
+            className='border-1 border-gray-300 rounded-lg overflow-hidden'
           >
-            بحث
-          </Button>
-        </Group>
-        <Group flex={1} justify='end'>
-          <Button
-            size='sm'
-            px={15}
-            fz={16}
-            fw={500}
-            c='white'
-            radius='lg'
-            className='!justify-end !items-end !self-end !bg-primary !shadow-lg'
-            rightSection={<FileUp size={16} />}
-          >
-            تصدير
-          </Button>
-        </Group>
+            <TextInput
+              w={{ base: '100%' }}
+              placeholder='رقم الهوية/رقم الخيمة...'
+              size='sm'
+              classNames={{
+                input:
+                  '!border-none !outline-none placeholder:!text-sm !text-primary !font-normal',
+              }}
+              leftSection={<Search size={18} />}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
+            <Button
+              onClick={handleSearch}
+              w={80}
+              size='sm'
+              px={10}
+              fz={16}
+              fw={500}
+              c='dark'
+              radius='none'
+              className='!bg-gray-300 !rounded-none'
+            >
+              بحث
+            </Button>
+          </Group>
+        </Stack>
       </Flex>
       <form onSubmit={form.onSubmit(handleApplyFilters)}>
         <SimpleGrid
@@ -164,10 +165,10 @@ export default function Common_Displaced_Filters({
               </Text>
             }
             placeholder='حالة الزوجة'
-            data={[
-              { label: 'حامل', value: WIFE_STATUS.pregnant },
-              { label: 'مرضعة', value: WIFE_STATUS.wet_nurse },
-            ]}
+            data={Object.entries(WIFE_STATUS).map(([key, value]) => ({
+              value: value,
+              label: WIFE_STATUS_LABELS[value],
+            }))}
             size='sm'
             key={`wife_status-${resetKey}`}
             {...form.getInputProps('wife_status')}
@@ -200,26 +201,10 @@ export default function Common_Displaced_Filters({
               </Text>
             }
             placeholder='حدد أعمار الأفراد'
-            data={[
-              { label: 'أقل من 6 شهور', value: AGES.less_than_6_month },
-              {
-                label: 'من 6 شهور إلى عامين',
-                value: AGES.from_6_month_to_2_years,
-              },
-              {
-                label: 'من 2 عام إلى 6 أعوام',
-                value: AGES.from_2_years_to_6_years,
-              },
-              {
-                label: 'من 6 أعوام إلى 12 عام',
-                value: AGES.from_6_years_to_12_years,
-              },
-              {
-                label: 'من 12 عام إلى 18 عام',
-                value: AGES.from_12_years_to_18_years,
-              },
-              { label: 'أكبر من 18 عام', value: AGES.more_than_18 },
-            ]}
+            data={Object.entries(AGES).map(([key, value]) => ({
+              value: value,
+              label: AGES_LABELS[value],
+            }))}
             size='sm'
             key={`ages-${resetKey}`}
             {...form.getInputProps('ages')}
@@ -234,10 +219,10 @@ export default function Common_Displaced_Filters({
               </Text>
             }
             placeholder='الحالة'
-            data={[
-              { label: 'لا يوجد', value: CHRONIC_DISEASE.false },
-              { label: 'يوجد', value: CHRONIC_DISEASE.true },
-            ]}
+            data={Object.entries(CHRONIC_DISEASE).map(([key, value]) => ({
+              value: value,
+              label: CHRONIC_DISEASE_LABELS[value],
+            }))}
             size='sm'
             key={`chronic_disease-${resetKey}`}
             {...form.getInputProps('chronic_disease')}
@@ -253,14 +238,10 @@ export default function Common_Displaced_Filters({
               </Text>
             }
             placeholder='المكان'
-            data={[
-              { label: 'داخلي - خيمة', value: ACCOMMODATION_TYPE.indoor_tent },
-              {
-                label: 'داخلي - مبنى',
-                value: ACCOMMODATION_TYPE.indoor_building,
-              },
-              { label: 'خارجي', value: ACCOMMODATION_TYPE.outdoor },
-            ]}
+            data={Object.entries(ACCOMMODATION_TYPE).map(([key, value]) => ({
+              value: value,
+              label: ACCOMMODATION_TYPE_LABELS[value],
+            }))}
             size='sm'
             key={`accommodation_type-${resetKey}`}
             {...form.getInputProps('accommodation_type')}
@@ -276,11 +257,10 @@ export default function Common_Displaced_Filters({
               </Text>
             }
             placeholder='الحالة'
-            data={[
-              { label: 'عادية', value: CASE_TYPE.normal },
-              { label: 'صعبة', value: CASE_TYPE.difficult },
-              { label: 'حرجة', value: CASE_TYPE.critical },
-            ]}
+            data={Object.entries(FAMILY_STATUS_TYPE).map(([key, value]) => ({
+              value: value,
+              label: FAMILY_STATUS_TYPE_LABELS[value],
+            }))}
             size='sm'
             key={`case_type-${resetKey}`}
             {...form.getInputProps('case_type')}
@@ -300,12 +280,15 @@ export default function Common_Displaced_Filters({
               value: item.id.toString(),
               label: item.name,
             }))}
+            // disabled={destination == 'AID' && role == 'DELEGATE'}
             size='sm'
             key={`delegate-${resetKey}`}
             {...form.getInputProps('delegate')}
             classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
+              input:
+                'placeholder:!text-sm  placeholder-shown:!hidden placeholder:!hidden !text-primary !font-normal',
             }}
+            className='placeholder-shown:!hidden'
           />
           <Group visibleFrom='lg' />
           <Group flex={1} justify='end'>

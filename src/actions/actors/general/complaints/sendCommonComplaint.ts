@@ -32,7 +32,7 @@ export const sendCommonComplaint = async ({
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: 200,
-        message: `تم ارسال الرد بنجاح`,
+        message: `تم ارسال الشكوي بنجاح`,
 
     }
     // Simulate API delay
@@ -47,7 +47,7 @@ export const sendCommonComplaint = async ({
     /////////////////////////////////////////////////////////////
 
     try {
-        const response = await AqsaAPI.post("/complaints/send-complaints", {
+        const response = await AqsaAPI.post("/complaints/send-complaint", {
             actor_Id,
             role,
             reception,

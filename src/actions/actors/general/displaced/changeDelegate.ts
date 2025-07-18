@@ -4,18 +4,18 @@ import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.t
 import { AqsaAPI } from "@/services";
 
 export interface changeDelegateProps {
-    displacedIDs: number[];
+    displacedIds: number[];
     delegateId: number;
 }
 
 export const changeDelegate = async ({
-    displacedIDs,
+    displacedIds,
     delegateId,
 }: changeDelegateProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
-        message: `تم تغيبر المندوب لـ ${displacedIDs.length} نازح بنجاح`,
+        status: 200,
+        message: `تم تغيبر المندوب لـ ${displacedIds.length} نازح بنجاح`,
 
     }
     // Simulate API delay for fake data
@@ -28,20 +28,20 @@ export const changeDelegate = async ({
     // Real implementation with filters
 
     try {
-        const response = await AqsaAPI.post("/displaceds/changeDelegate", {
-            displacedIDs,
+        const response = await AqsaAPI.post("/displaceds/change-delegate", {
+            displacedIds,
             delegateId,
         });
 
         return {
-            status: "200",
-            message: `تم تغيبر المندوب لـ ${displacedIDs.length} نازح بنجاح`,
+            status: 200,
+            message: `تم تغيبر المندوب لـ ${displacedIds.length} نازح بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء إنشاء الاستدعاء";
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };
