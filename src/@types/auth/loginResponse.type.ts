@@ -9,7 +9,7 @@ export interface User {
     phone_number: string;
     created_at: Date;
     updated_at?: Date;
-    image?: string | StaticImageData | null;
+    profile_image?: string | StaticImageData | null;
     role: UserType; // used for auth-based routing
     rank?: UserRank; // used for permission/access levels
 }

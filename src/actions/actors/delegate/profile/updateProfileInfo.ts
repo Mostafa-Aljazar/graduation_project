@@ -1,32 +1,37 @@
 // src/actions/actors/delegate/profile/updateProfileInfo.ts
 "use server";
 
-import { DelegateProfile, DelegateProfileResponse } from "@/@types/actors/delegate/profile/profileResponse.type";
+import { DelegateProfile, DelegateProfileResponse } from "@/@types/actors/delegate/profile/delegateProfileResponse.type";
 import { AqsaAPI } from "@/services";
-import { delegateUpdatePayload } from "@/validation/actor/delegate/profileSchema"; // Import the new payload type
+import { delegateProfileType } from "@/validation/actor/delegate/delegate-profile-schema"; // Import the new payload type
 
-export const updateDelegateProfile = async (payload: delegateUpdatePayload): Promise<DelegateProfileResponse> => {
+
+export interface UpdateDelegateProfileProps {
+    delegate_Id: number;
+    payload: delegateProfileType;
+}
+export const updateDelegateProfile = async ({ delegate_Id, payload }: UpdateDelegateProfileProps): Promise<DelegateProfileResponse> => {
     try {
 
         // FIXME: remove this => just as an example
         const fakeData: DelegateProfileResponse = {
-            status: "200",
+            status: 200,
             message: "تم تحديث الملف الشخصي بنجاح",
             user: {
+                id: 0,//FIXME:
                 // ...currentProfile, // Keep existing read-only fields
                 name: payload.name,
-                idNumber: payload.idNumber,
+                identity: payload.identity,
                 gender: payload.gender,
-                maritalStatus: payload.maritalStatus,
+                social_status: payload.social_status,
                 nationality: payload.nationality,
                 email: payload.email,
                 age: payload.age,
                 education: payload.education,
-                mobileNumber: payload.mobileNumber as string,
-                alternativeNumber: payload.alternativeNumber as string,
-                avatar: payload.avatar as string,
-                numberOfFamilies: 0,
-                numberOfResponsibleCamps: 0
+                phone_number: payload.phone_number as string,
+                alternative_phone_number: payload.alternative_phone_number as string,
+                profile_image: payload.profile_image as string,
+
             },
         };
         // Simulate API delay
@@ -41,54 +46,55 @@ export const updateDelegateProfile = async (payload: delegateUpdatePayload): Pro
         /////////////////////////////////////////////////////////////
 
         // Prepare API payload (no formData, directly use the object)
-        // const apiPayload = {
-        //   name: payload.name,
-        //   idNumber: Number(payload.idNumber),
-        //   gender: payload.gender,
-        //   maritalStatus: payload.maritalStatus,
-        //   nationality: payload.nationality,
-        //   email: payload.email,
-        //   age: Number(payload.age),
-        //   education: payload.education,
-        //   mobileNumber: payload.mobileNumber,
-        //   alternativeNumber: payload.alternativeNumber || undefined,
-        //   avatar: payload.avatar || undefined,
-        //   // numberOfResponsibleCamps and numberOfFamilies are not sent in the update
-        //   // as they are read-only from the backend's perspective.
-        // };
+        const apiPayload = {
+            name: payload.name,
+            identity: payload.identity,
+            gender: payload.gender,
+            social_status: payload.social_status,
+            nationality: payload.nationality,
+            email: payload.email,
+            age: payload.age,
+            education: payload.education,
+            phone_number: payload.phone_number,
+            alternative_phone_number: payload.alternative_phone_number,
+            profile_image: payload.profile_image,
+        };
+
 
         // Update profile via API
-        // const response = await AqsaAPI.put("/delegate/profile", apiPayload);
 
-        // if (response.data?.user) {
-        //   return {
-        //     status: "200",
-        //     message: "تم تحديث الملف الشخصي بنجاح",
-        //     user: response.data.user,
-        //   };
-        // }
+        const response = await AqsaAPI.put(`/delegates/${delegate_Id}/profile`, apiPayload);
 
-        // throw new Error("فشل في تحديث الملف الشخصي");
+        if (response.data?.user) {
+            return {
+                status: 200,
+                message: "تم تحديث الملف الشخصي بنجاح",
+                user: response.data.user,
+            };
+        }
+
+        throw new Error("فشل في تحديث الملف الشخصي");
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || error.message || "bbbbحدث خطأ أثناء تحديث الملف الشخصي";
         return {
             status: error.response?.status?.toString() || "500",
             message: errorMessage,
             user: { // Return a partial or default user object on error
+                id: 0,//FIXME:
                 name: payload.name || "",
-                idNumber: payload.idNumber || 0,
+                identity: payload.identity || "",
                 gender: payload.gender || "male",
-                maritalStatus: payload.maritalStatus || "single",
+                social_status: payload.social_status || "single",
                 nationality: payload.nationality || "",
                 email: payload.email || "",
                 age: payload.age || 0,
                 education: payload.education || "",
-                mobileNumber: payload.mobileNumber || "",
-                alternativeNumber: payload.alternativeNumber || "",
-                avatar: payload.avatar || null,
+                phone_number: payload.phone_number || "",
+                alternative_phone_number: payload.alternative_phone_number || "",
+                profile_image: payload.profile_image || null,
                 // These are not part of the payload, so we'll set defaults or null
-                numberOfResponsibleCamps: 0,
-                numberOfFamilies: 0,
+                number_of_responsible_camps: 0,
+                number_of_families: 0,
             },
             error: errorMessage,
         };

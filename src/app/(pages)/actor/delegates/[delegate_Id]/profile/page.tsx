@@ -8,5 +8,5 @@ export default async function Delegate_Profile({
 }) {
   const { delegate_Id } = await params;
 
-  return <Delegate_Profile_Form delegate_ID={Number(delegate_Id)} />;
+  return <Delegate_Profile_Form delegate_Id={Number(delegate_Id)} />;
 }

@@ -8,7 +8,7 @@ import Image from 'next/image';
 
 export default function Profile_Info() {
   const { user } = useAuth();
-  const isLoading = !user;
+  const isLoading = user ? false : true;
 
   return (
     <Stack
@@ -36,7 +36,7 @@ export default function Profile_Info() {
             <Skeleton width={85} height={85} radius='50%' />
           ) : (
             <Image
-              src={user?.image || MAN}
+              src={user?.profile_image || MAN}
               alt='Profile'
               width={85}
               height={85}
@@ -61,11 +61,11 @@ export default function Profile_Info() {
               c='white'
               className='!text-primary'
             >
-              {`ال${USER_RANK_LABELS[user.rank as UserRank]} : `}
-              {user.name}
+              {`ال${USER_RANK_LABELS[user?.rank as UserRank]} : `}
+              {user?.name}
             </Text>
 
-            <Group gap={5} hidden={!user.identity}>
+            <Group gap={5}>
               <IdCard size={20} className='!text-primary' />
               <Text
                 fw={600}
@@ -75,7 +75,7 @@ export default function Profile_Info() {
                 className='!text-primary'
                 dir='ltr'
               >
-                {user.identity ?? 'لا يوجد رقم هوية'} :
+                {user?.identity ?? 'لا يوجد رقم هوية'} :
               </Text>
             </Group>
           </>
