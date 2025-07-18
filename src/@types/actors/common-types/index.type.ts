@@ -1,5 +1,15 @@
 import { Gift, HandHeart, MessageCircleQuestion, MessageSquareWarning } from "lucide-react";
 
+
+
+export enum ACTION_ADD_EDIT_DISPLAY {
+    DISPLAY = "DISPLAY",
+    ADD = 'ADD',
+    EDIT = 'EDIT',
+}
+
+/////////////////////////////////////////////////////////////////////////
+
 export enum SOCIAL_STATUS {
     SINGLE = 'SINGLE',
     MARRIED = 'MARRIED',

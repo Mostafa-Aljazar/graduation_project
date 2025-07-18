@@ -19,7 +19,8 @@ export const Custom_Phone_Input = forwardRef<
     size='sm'
     w='100%'
     classNames={{
-      input: 'placeholder:!text-sm !text-primary !font-medium',
+      input:
+        'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
       label: '!w-full',
     }}
     {...props}

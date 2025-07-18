@@ -1,8 +1,10 @@
 'use client';
+
 import {
   ActionIcon,
   Box,
   Button,
+  Group,
   LoadingOverlay,
   NativeSelect,
   NumberInput,
@@ -17,8 +19,7 @@ import { useForm, zodResolver } from '@mantine/form';
 import {
   delegateProfileType,
   delegateProfileSchema,
-  delegateUpdatePayload,
-} from '@/validation/actor/delegate/profileSchema';
+} from '@/validation/actor/delegate/delegate-profile-schema';
 import '@mantine/core/styles.css';
 import { Camera, Save, UserPen } from 'lucide-react';
 import { Custom_Phone_Input } from '@/components/common/custom/Custom_Phone_Input';
@@ -29,39 +30,45 @@ import { notifications } from '@mantine/notifications';
 import Upload_Media from '@/components/actors/common/upload-files/Upload_Media';
 import Image from 'next/image';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { updateDelegateProfile } from '@/actions/actors/delegate/profile/updateProfileInfo';
-import { getDelegateProfile } from '@/actions/actors/delegate/profile/getProfileInfo';
+import {
+  updateDelegateProfile,
+  UpdateDelegateProfileProps,
+} from '@/actions/actors/delegate/profile/updateProfileInfo';
+import { getDelegateProfile } from '@/actions/actors/delegate/profile/getDelegateProfile';
 import useAuth from '@/hooks/useAuth';
 import { MAN } from '@/assets/actor';
-import { DelegateProfileResponse } from '@/@types/actors/delegate/profile/profileResponse.type';
+import { DelegateProfileResponse } from '@/@types/actors/delegate/profile/delegateProfileResponse.type';
 import { parseAsStringEnum, useQueryState } from 'nuqs';
-import { ACTION_ADD_EDIT_DISPLAY } from '@/constants'; // Assuming ACTION_ADD_EDIT_DISPLAY is defined here
-import { addNewDelegate } from '@/actions/actors/delegate/profile/addNewDelegate';
+import {
+  addNewDelegate,
+  addNewDelegateProps,
+} from '@/actions/actors/delegate/profile/addNewDelegate';
 import { useRouter } from 'next/navigation';
+import { GENERAL_ACTOR_ROUTES } from '@/constants/routes';
 import {
-  AUTH_ROUTES,
-  GENERAL_ACTOR_ROUTES,
-  LANDING_ROUTES,
-} from '@/constants/routes';
-import {
+  ACTION_ADD_EDIT_DISPLAY,
   GENDER,
   GENDER_LABELS,
-  MATERIAL_STATUS,
-  MATERIAL_STATUS_LABELS,
-} from '@/content/actor/delegate/profile-form';
+  SOCIAL_STATUS,
+  SOCIAL_STATUS_LABELS,
+} from '@/@types/actors/common-types/index.type';
 
 interface DelegateProfileFormProps {
-  delegate_ID?: number;
+  delegate_Id?: number;
 }
 
 export default function Delegate_Profile_Form({
-  delegate_ID,
+  delegate_Id,
 }: DelegateProfileFormProps) {
-  console.log('🚀 ~ delegate_ID:', delegate_ID);
   const { startUpload } = useUploadThing('mediaUploader');
-  const [avatarImage, setAvatarImage] = useState<File | string | null>(MAN.src);
+  const [profileImage, setProfileImage] = useState<File | string | null>(
+    MAN.src
+  );
   const [uploading, setUploading] = useState(false);
-  const { isAuthenticated, isDelegate, isManager } = useAuth(); // Get isManager from useAuth
+
+  const { isAuthenticated, isDelegate, isManager, user } = useAuth();
+  const isOwner = isDelegate && user?.id === delegate_Id;
+
   const router = useRouter();
 
   const [query, setQuery] = useQueryState(
@@ -71,143 +78,127 @@ export default function Delegate_Profile_Form({
     ).withDefault(ACTION_ADD_EDIT_DISPLAY.DISPLAY)
   );
 
-  // useEffect(() => {
-  //   if (!isAuthenticated) {
-  //     router.replace(AUTH_ROUTES.LOGIN);
-  //   }
-  // }, []);
-
-  // Determine if it's an 'add' operation (only for managers)
   const isAddMode = isManager && query === ACTION_ADD_EDIT_DISPLAY.ADD;
-  // Determine if it's an 'edit' mode (for delegates and managers)
-  const isEditMode = query === ACTION_ADD_EDIT_DISPLAY.EDIT;
-  // Determine if it's a 'display' mode
+  const isEditMode =
+    (isManager || isOwner) && query === ACTION_ADD_EDIT_DISPLAY.EDIT;
   const isDisplayMode = query === ACTION_ADD_EDIT_DISPLAY.DISPLAY;
 
-  // Form setup
   const form = useForm<delegateProfileType>({
     mode: 'uncontrolled',
     initialValues: {
-      avatar: null, // Default to null for new entries
       name: '',
-      idNumber: 0,
       gender: GENDER.MALE,
-      maritalStatus: MATERIAL_STATUS.SINGLE,
+      social_status: SOCIAL_STATUS.SINGLE,
+      identity: '',
       nationality: '',
       email: '',
       age: 0,
       education: '',
-      mobileNumber: '',
-      alternativeNumber: '',
-      numberOfResponsibleCamps: 0, // Keep for initial display/default for new
-      numberOfFamilies: 0, // Keep for initial display/default for new
+      phone_number: '',
+      alternative_phone_number: '',
+      // number_of_responsible_camps: 0,
+      // number_of_families: 0,
     },
     validate: zodResolver(delegateProfileSchema),
     validateInputOnChange: true,
   });
 
-  // Fetch initial profile data ONLY if not in 'add' mode
   const {
-    data: profileData,
-    isLoading,
+    data: delegateProfileData,
+    isLoading: isLoadingFetch,
     refetch,
   } = useQuery<DelegateProfileResponse>({
-    queryKey: ['delegateProfile', delegate_ID], // Include delegate_ID in queryKey for re-fetching when it changes
-    queryFn: () => getDelegateProfile({ delegate_ID: Number(delegate_ID) }), // Pass object with delegate_ID    queryFn: getDelegateProfile,
-    enabled: isDisplayMode || isEditMode || !!delegate_ID,
+    queryKey: ['delegateProfile', delegate_Id],
+    queryFn: () => getDelegateProfile({ delegate_Id: delegate_Id as number }),
+    enabled: isDisplayMode || isEditMode || !!delegate_Id,
   });
-  console.log('🚀 ~ profileData:', profileData);
 
-  // Handle profile data and errors for existing profiles
   useEffect(() => {
     if (
       !isAddMode &&
-      profileData &&
-      profileData.status === '200' &&
-      profileData.user
+      delegateProfileData &&
+      delegateProfileData.status === 200 &&
+      delegateProfileData.user
     ) {
-      setAvatarImage(profileData.user.avatar || MAN.src);
-      form.setFieldValue('name', profileData.user.name);
-      form.setFieldValue('idNumber', profileData.user.idNumber);
-      form.setFieldValue('gender', profileData.user.gender);
-      form.setFieldValue('maritalStatus', profileData.user.maritalStatus);
-      form.setFieldValue('nationality', profileData.user.nationality);
-      form.setFieldValue('email', profileData.user.email);
-      form.setFieldValue('age', profileData.user.age);
-      form.setFieldValue('education', profileData.user.education);
-      if (profileData.user.mobileNumber.length == 10) {
+      setProfileImage(delegateProfileData.user.profile_image || MAN.src);
+      form.setFieldValue('name', delegateProfileData.user.name);
+      form.setFieldValue('identity', delegateProfileData.user.identity);
+      form.setFieldValue('gender', delegateProfileData.user.gender);
+      form.setFieldValue(
+        'social_status',
+        delegateProfileData.user.social_status
+      );
+      form.setFieldValue('nationality', delegateProfileData.user.nationality);
+      form.setFieldValue('email', delegateProfileData.user.email);
+      form.setFieldValue('age', delegateProfileData.user.age);
+      form.setFieldValue('education', delegateProfileData.user.education);
+      if (delegateProfileData.user.phone_number.length == 10) {
         form.setFieldValue(
-          'mobileNumber',
-          `+97${profileData.user.mobileNumber}`
+          'phone_number',
+          `+97${delegateProfileData.user.phone_number}`
         );
       } else {
-        form.setFieldValue('mobileNumber', profileData.user.mobileNumber);
+        form.setFieldValue(
+          'phone_number',
+          delegateProfileData.user.phone_number
+        );
       }
 
       if (
-        profileData.user.alternativeNumber &&
-        profileData.user.alternativeNumber.length == 10
+        delegateProfileData.user.alternative_phone_number &&
+        delegateProfileData.user.alternative_phone_number.length == 10
       ) {
         form.setFieldValue(
-          'alternativeNumber',
-          `+97${profileData.user.alternativeNumber}` || ''
+          'alternative_phone_number',
+          `+97${delegateProfileData.user.alternative_phone_number}` || ''
         );
       } else {
         form.setFieldValue(
-          'alternativeNumber',
-          profileData.user.alternativeNumber || ''
+          'alternative_phone_number',
+          delegateProfileData.user.alternative_phone_number || ''
         );
       }
-
-      // Set read-only fields from backend
-      form.setFieldValue(
-        'numberOfResponsibleCamps',
-        profileData.user.numberOfResponsibleCamps || 0
-      );
-      form.setFieldValue(
-        'numberOfFamilies',
-        profileData.user.numberOfFamilies || 0
-      );
     }
-    if (!isAddMode && profileData && profileData.status !== '200') {
-      const errorMessage =
-        profileData?.error || 'فشل في تحميل بيانات الملف الشخصي للمندوب';
+
+    if (
+      !isAddMode &&
+      delegateProfileData &&
+      delegateProfileData.status !== 200
+    ) {
       notifications.show({
         title: 'خطأ',
-        message: errorMessage,
+        message:
+          delegateProfileData.error ||
+          'فشل في تحميل بيانات الملف الشخصي للمندوب',
         color: 'red',
         position: 'top-left',
         withBorder: true,
       });
     }
-    // If in 'add' mode, clear the form for a new entry
+
     if (isAddMode) {
       form.reset();
-      form.clearErrors();
-
-      setAvatarImage(MAN.src); // Reset avatar to default
+      setProfileImage(MAN.src);
     }
-  }, [profileData, isAddMode]); // Added form to dependencies
+  }, [delegateProfileData, isAddMode]);
 
-  // Clean up URL.createObjectURL to prevent memory leaks
   useEffect(() => {
-    if (avatarImage instanceof File) {
-      const objectUrl = URL.createObjectURL(avatarImage);
+    if (profileImage instanceof File) {
+      const objectUrl = URL.createObjectURL(profileImage);
       return () => URL.revokeObjectURL(objectUrl);
     }
-  }, [avatarImage]);
+  }, [profileImage]);
 
-  // Mutation for updating profile
   const updateProfileMutation = useMutation<
     DelegateProfileResponse,
     Error,
-    delegateUpdatePayload
+    UpdateDelegateProfileProps
   >({
     mutationFn: updateDelegateProfile,
     onSuccess: (data) => {
-      setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY); // Go back to display mode
+      setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY);
 
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تم التحديث',
           message: 'تم تحديث الملف الشخصي للمندوب بنجاح',
@@ -217,26 +208,24 @@ export default function Delegate_Profile_Form({
         });
         form.setValues({
           name: data.user.name,
-          idNumber: data.user.idNumber,
-          gender: data.user.gender,
-          maritalStatus: data.user.maritalStatus,
           nationality: data.user.nationality,
+          gender: data.user.gender,
+          social_status: data.user.social_status,
+          identity: data.user.identity,
           email: data.user.email,
-          age: data.user.age,
+          age: data.user.age as number,
           education: data.user.education,
-          mobileNumber: data.user.mobileNumber,
-          alternativeNumber: data.user.alternativeNumber || '',
-          numberOfResponsibleCamps: data.user.numberOfResponsibleCamps,
-          numberOfFamilies: data.user.numberOfFamilies,
+          phone_number: data.user.phone_number,
+          alternative_phone_number: data.user.alternative_phone_number || '',
         });
-        setAvatarImage(data.user.avatar || MAN.src);
-        refetch(); // Re-fetch data to ensure UI is in sync with backend
+        setProfileImage(data.user.profile_image || MAN.src);
+        refetch();
       } else {
         throw new Error(data.error || 'فشل في تحديث الملف الشخصي للمندوب');
       }
     },
-    onError: (error: any) => {
-      setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY); // Go back to display mode even on error
+    onError: (error) => {
+      setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY);
 
       const errorMessage =
         error?.message || 'حدث خطأ أثناء تحديث الملف الشخصي للمندوب';
@@ -251,16 +240,14 @@ export default function Delegate_Profile_Form({
     },
   });
 
-  // Mutation for adding new delegate
   const addDelegateMutation = useMutation<
     DelegateProfileResponse,
     Error,
-    delegateUpdatePayload
+    addNewDelegateProps
   >({
     mutationFn: addNewDelegate,
     onSuccess: (data) => {
-      if (Number(data.status) === 201) {
-        // 201 Created
+      if (data.status === 201) {
         notifications.show({
           title: 'تم الإضافة',
           message: 'تم إضافة المندوب الجديد بنجاح',
@@ -268,17 +255,13 @@ export default function Delegate_Profile_Form({
           position: 'top-left',
           withBorder: true,
         });
-        // form.reset(); // Clear the form after successful addition
-        // setAvatarImage(MAN.src); // Reset avatar to default
-        // Optionally, refetch delegate list or navigate
-        // setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY); // Go back to display mode
         router.push(GENERAL_ACTOR_ROUTES.DELEGATES);
       } else {
         throw new Error(data.error || 'فشل في إضافة المندوب الجديد');
       }
     },
-    onError: (error: any) => {
-      setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY); // Go back to display mode even on error
+    onError: (error) => {
+      setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY);
 
       const errorMessage =
         error?.message || 'حدث خطأ أثناء إضافة المندوب الجديد';
@@ -293,17 +276,15 @@ export default function Delegate_Profile_Form({
     },
   });
 
-  // Handle image uploads (same as before)
   const uploadImages = async (file: File | null): Promise<string | null> => {
     if (!file) return null;
     try {
-      setUploading(true); // Start uploading indicator
+      setUploading(true);
       const mediaUrl = await handleUploadMedia(file, startUpload);
-      if (!mediaUrl) {
+      if (!mediaUrl)
         throw new Error('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.');
-      }
       return mediaUrl;
-    } catch (error) {
+    } catch {
       notifications.show({
         title: 'فشل الرفع',
         message: 'فشل في رفع الصورة. يرجى المحاولة مرة أخرى.',
@@ -313,37 +294,40 @@ export default function Delegate_Profile_Form({
       });
       return null;
     } finally {
-      setUploading(false); // End uploading indicator
+      setUploading(false);
     }
   };
 
-  // Handle form submission
   const handleSubmit = form.onSubmit(async (values: delegateProfileType) => {
+    console.log('🚀 ~ handleSubmit ~ values:', values);
+
+    const avatarUrl =
+      profileImage && profileImage instanceof File
+        ? await uploadImages(profileImage)
+        : (profileImage as string | null);
+
+    const payload: delegateProfileType = {
+      name: values.name,
+      gender: values.gender,
+      identity: values.identity,
+      nationality: values.nationality,
+      social_status: values.social_status,
+      email: values.email,
+      age: values.age,
+      education: values.education,
+      phone_number: values.phone_number,
+      alternative_phone_number: values.alternative_phone_number,
+      profile_image: avatarUrl ?? null,
+    };
+
     try {
-      const avatarUrl =
-        avatarImage && avatarImage instanceof File
-          ? await uploadImages(avatarImage)
-          : (avatarImage as string | null); // Cast to string | null
-
-      // Construct the payload for updateDelegateProfile or addNewDelegate
-      const payload: delegateUpdatePayload = {
-        name: values.name,
-        idNumber: values.idNumber,
-        gender: values.gender,
-        maritalStatus: values.maritalStatus,
-        nationality: values.nationality,
-        email: values.email,
-        age: values.age,
-        education: values.education,
-        mobileNumber: values.mobileNumber,
-        alternativeNumber: values.alternativeNumber,
-        avatar: avatarUrl ?? null, // Ensure avatar is string or null
-      };
-
       if (isAddMode) {
-        addDelegateMutation.mutate(payload);
+        addDelegateMutation.mutate({ payload });
       } else if (isEditMode) {
-        updateProfileMutation.mutate(payload);
+        updateProfileMutation.mutate({
+          delegate_Id: delegate_Id as number,
+          payload,
+        });
       }
     } catch (error: any) {
       const errorMessage = error?.message || 'فشل في حفظ الملف الشخصي للمندوب';
@@ -358,14 +342,13 @@ export default function Delegate_Profile_Form({
     }
   });
 
-  // Determine loading state from either mutation
   const isMutationLoading =
     updateProfileMutation.isPending || addDelegateMutation.isPending;
 
   return (
-    <Stack p={10} pos={'relative'}>
+    <Stack p={10} pos='relative'>
       <LoadingOverlay
-        visible={isLoading || isMutationLoading || uploading}
+        visible={isLoadingFetch || isMutationLoading || uploading}
         zIndex={49}
         overlayProps={{ radius: 'sm', blur: 0.3 }}
       />
@@ -383,16 +366,20 @@ export default function Delegate_Profile_Form({
           w={100}
           h={100}
         >
-          {avatarImage ? (
-            <img
-              src={
-                avatarImage instanceof File
-                  ? URL.createObjectURL(avatarImage)
-                  : avatarImage
-              }
-              alt='Avatar'
-              className='w-[100px] h-[100px] !object-contain'
-            />
+          {profileImage ? (
+            profileImage instanceof File ? (
+              <img
+                src={URL.createObjectURL(profileImage)}
+                alt='Avatar'
+                className='w-[100px] h-[100px] !object-contain'
+              />
+            ) : (
+              <img
+                src={profileImage}
+                alt='Avatar'
+                className='w-[100px] h-[100px] !object-contain'
+              />
+            )
           ) : (
             <Image
               src={MAN}
@@ -402,7 +389,7 @@ export default function Delegate_Profile_Form({
             />
           )}
           {(isEditMode || isAddMode) && (
-            <Upload_Media File_Type='image' setFileObject={setAvatarImage}>
+            <Upload_Media File_Type='image' setFileObject={setProfileImage}>
               <ActionIcon
                 variant='outline'
                 color='gray.5'
@@ -423,19 +410,45 @@ export default function Delegate_Profile_Form({
       </Box>
 
       <Stack my={30}>
-        <Text w='100%' ta='start' fz={24} fw={600} className='!text-primary'>
-          {isAddMode ? 'إضافة مندوب جديد:' : 'بياناتي الشخصية:'}
-        </Text>
-        <form className='flex flex-col items-center w-full'>
+        <Group wrap='nowrap' align='center'>
+          <Text ta='start' fz={20} fw={600} className='!text-primary'>
+            {isAddMode ? 'إضافة مندوب جديد:' : 'البيانات الشخصية:'}
+          </Text>
+
+          {(isManager || isOwner) && isDisplayMode && (
+            <Button
+              variant='filled'
+              size='xs'
+              color='primary'
+              type='submit'
+              rightSection={<UserPen size={16} />}
+              loading={isMutationLoading}
+              onClick={() => setQuery(ACTION_ADD_EDIT_DISPLAY.EDIT)}
+              fw={500}
+              fz={16}
+              className='shadow-sm'
+            >
+              تعديل
+            </Button>
+          )}
+        </Group>
+        <form
+          onSubmit={handleSubmit}
+          className='flex flex-col items-center w-full'
+        >
           <SimpleGrid
             cols={{ base: 1, md: 2, lg: 3 }}
             verticalSpacing='sm'
-            w={'100%'}
+            w='100%'
           >
-            {/* Name */}
             <TextInput
               label={
-                <Text fz={18} fw={500} className='!text-dark !text-nowrap'>
+                <Text
+                  fz={16}
+                  fw={500}
+                  mb={4}
+                  className='!text-dark !text-nowrap'
+                >
                   الاسم :
                 </Text>
               }
@@ -443,16 +456,22 @@ export default function Delegate_Profile_Form({
               size='sm'
               w='100%'
               classNames={{
-                input: 'placeholder:!text-sm !text-primary !font-medium',
+                input:
+                  'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
               }}
-              key={form.key('name')}
               {...form.getInputProps('name')}
               disabled={isDisplayMode}
             />
-            {/* ID Number */}
-            <NumberInput
+
+            <TextInput
+              type='number'
               label={
-                <Text fz={18} fw={500} className='!text-dark !text-nowrap'>
+                <Text
+                  fz={16}
+                  fw={500}
+                  mb={4}
+                  className='!text-dark !text-nowrap'
+                >
                   رقم الهوية :
                 </Text>
               }
@@ -460,19 +479,21 @@ export default function Delegate_Profile_Form({
               size='sm'
               w='100%'
               classNames={{
-                input: 'placeholder:!text-sm !text-primary !font-medium',
+                input:
+                  'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
               }}
-              maxLength={9}
-              min={0}
-              allowDecimal={false}
-              key={form.key('idNumber')}
-              {...form.getInputProps('idNumber')}
+              {...form.getInputProps('identity')}
               disabled={isDisplayMode}
             />
-            {/* Gender */}
+
             <NativeSelect
               label={
-                <Text fz={18} fw={500} className='!text-dark !text-nowrap'>
+                <Text
+                  fz={16}
+                  fw={500}
+                  mb={4}
+                  className='!text-dark !text-nowrap'
+                >
                   الجنس :
                 </Text>
               }
@@ -483,34 +504,47 @@ export default function Delegate_Profile_Form({
               size='sm'
               w='100%'
               classNames={{
-                input: 'placeholder:!text-sm !text-primary !font-medium',
+                input:
+                  'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
               }}
-              key={form.key('gender')}
               {...form.getInputProps('gender')}
               disabled={isDisplayMode}
             />
+
             <NativeSelect
               label={
-                <Text fz={18} fw={500} className='!text-dark !text-nowrap'>
+                <Text
+                  fz={16}
+                  fw={500}
+                  mb={4}
+                  className='!text-dark !text-nowrap'
+                >
                   الحالة الاجتماعية :
                 </Text>
               }
-              data={Object.entries(MATERIAL_STATUS).map(([key, value]) => ({
+              data={Object.entries(SOCIAL_STATUS).map(([key, value]) => ({
                 value: value,
-                label: MATERIAL_STATUS_LABELS[value],
+                label: SOCIAL_STATUS_LABELS[value],
               }))}
               size='sm'
               w='100%'
               classNames={{
-                input: 'placeholder:!text-sm !text-primary !font-medium',
+                input:
+                  'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
               }}
-              key={form.key('maritalStatus')}
-              {...form.getInputProps('maritalStatus')}
+              {...form.getInputProps('social_status')}
               disabled={isDisplayMode}
+              // className='font-normal'
             />
+
             <TextInput
               label={
-                <Text fz={18} fw={500} className='!text-dark !text-nowrap'>
+                <Text
+                  fz={16}
+                  fw={500}
+                  mb={4}
+                  className='!text-dark !text-nowrap'
+                >
                   الجنسية :
                 </Text>
               }
@@ -518,16 +552,21 @@ export default function Delegate_Profile_Form({
               size='sm'
               w='100%'
               classNames={{
-                input: 'placeholder:!text-sm !text-primary !font-medium',
+                input:
+                  'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
               }}
-              key={form.key('nationality')}
               {...form.getInputProps('nationality')}
               disabled={isDisplayMode}
             />
 
             <TextInput
               label={
-                <Text fz={18} fw={500} className='!text-dark !text-nowrap'>
+                <Text
+                  fz={16}
+                  fw={500}
+                  mb={4}
+                  className='!text-dark !text-nowrap'
+                >
                   البريد الإلكتروني :
                 </Text>
               }
@@ -536,9 +575,9 @@ export default function Delegate_Profile_Form({
               size='sm'
               w='100%'
               classNames={{
-                input: 'placeholder:!text-sm !text-primary !font-medium',
+                input:
+                  'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
               }}
-              key={form.key('email')}
               {...form.getInputProps('email')}
               disabled={isDisplayMode}
             />
@@ -553,11 +592,12 @@ export default function Delegate_Profile_Form({
               size='sm'
               w='100%'
               classNames={{
-                input: 'placeholder:!text-sm !text-primary !font-medium',
+                input:
+                  'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
               }}
               // min={18}
               // max={100}
-              defaultValue={isEditMode ? profileData?.user.age : 0}
+              defaultValue={isEditMode ? delegateProfileData?.user.age : 0}
               allowDecimal={false}
               key={form.key('age')}
               {...form.getInputProps('age')}
@@ -566,7 +606,12 @@ export default function Delegate_Profile_Form({
 
             <TextInput
               label={
-                <Text fz={18} fw={500} className='!text-dark !text-nowrap'>
+                <Text
+                  fz={16}
+                  fw={500}
+                  mb={4}
+                  className='!text-dark !text-nowrap'
+                >
                   المؤهل العلمي :
                 </Text>
               }
@@ -574,140 +619,140 @@ export default function Delegate_Profile_Form({
               size='sm'
               w='100%'
               classNames={{
-                input: 'placeholder:!text-sm !text-primary !font-medium',
+                input:
+                  'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
               }}
-              key={form.key('education')}
               {...form.getInputProps('education')}
               disabled={isDisplayMode}
             />
 
             <Stack w='100%' gap={0}>
-              <Text
-                fz={18}
-                fw={500}
-                w={'100%'}
-                className='!text-dark !text-nowrap'
-              >
+              <Text fz={16} fw={500} mb={4} className='!text-dark !text-nowrap'>
                 رقم الجوال :
               </Text>
               <Box dir='ltr' className='w-full'>
                 <PhoneInput
-                  name='mobileNumber'
+                  name='phone_number'
+                  international
+                  countryCallingCodeEditable={true}
+                  defaultCountry='PS'
+                  inputComponent={Custom_Phone_Input}
+                  placeholder='ادخل رقم الجوال...'
+                  value={form.getValues().phone_number as string}
+                  key={form.key('phone_number')}
+                  {...form.getInputProps('phone_number')}
+                  disabled={isDisplayMode}
+                />
+                {/* <PhoneInput
+                  name='phone_number'
                   international
                   countryCallingCodeEditable={false}
                   defaultCountry='PS'
                   inputComponent={Custom_Phone_Input}
                   placeholder='ادخل رقم الجوال...'
-                  value={form.getValues().mobileNumber as string}
-                  key={form.key('mobileNumber')}
-                  {...form.getInputProps('mobileNumber')}
+                  value={form.values.phone_number}
+                  className='!bg-white !font-normal !text-primary placeholder:!text-sm disabled:!cursor-text'
+                  {...form.getInputProps('phone_number')}
                   disabled={isDisplayMode}
-                />
+                /> */}
               </Box>
             </Stack>
 
-            {isEditMode ||
-            isAddMode || // Allow entry in edit/add mode
-            (profileData?.user.alternativeNumber &&
-              profileData.user.alternativeNumber !== '') ? ( // Or display if exists
+            {(isEditMode ||
+              isAddMode ||
+              (delegateProfileData?.user.alternative_phone_number &&
+                delegateProfileData.user.alternative_phone_number !== '')) && (
               <Stack w='100%' gap={0}>
                 <Text
-                  fz={18}
+                  fz={16}
                   fw={500}
-                  w='100%'
+                  mb={4}
                   className='!text-dark !text-nowrap'
                 >
                   رقم بديل :
                 </Text>
                 <Box dir='ltr' className='w-full'>
                   <PhoneInput
-                    name='alternativeNumber'
+                    name='alternative_phone_number'
                     international
                     countryCallingCodeEditable={false}
                     defaultCountry='PS'
                     inputComponent={Custom_Phone_Input}
                     placeholder='ادخل رقم بديل...'
-                    value={form.getValues().alternativeNumber as string}
-                    key={form.key('alternativeNumber')}
-                    {...form.getInputProps('alternativeNumber')}
+                    value={form.getValues().alternative_phone_number as string}
+                    {...form.getInputProps('alternative_phone_number')}
                     disabled={isDisplayMode}
                   />
                 </Box>
               </Stack>
-            ) : null}
+            )}
 
-            {/* Number of Responsible Camps - READ-ONLY, only visible in display/edit mode for existing profiles */}
             {!isAddMode && (
               <TextInput
                 label={
-                  <Text fz={18} fw={500} className='!text-dark !text-nowrap'>
+                  <Text
+                    fz={16}
+                    fw={500}
+                    mb={4}
+                    className='!text-dark !text-nowrap'
+                  >
                     عدد المخيمات المسؤولة :
                   </Text>
                 }
-                // value={form.values.numberOfResponsibleCamps.toString()}
+                value={
+                  delegateProfileData?.user.number_of_responsible_camps || 0
+                }
+                classNames={{
+                  input:
+                    'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
+                }}
                 size='sm'
                 w='100%'
-                classNames={{
-                  input: 'placeholder:!text-sm !text-primary !font-medium',
-                }}
-                disabled // Always disabled as it's read-only
-                key={form.key('numberOfResponsibleCamps')}
-                {...form.getInputProps('numberOfResponsibleCamps')}
+                disabled
               />
             )}
-            {/* Number of Families - READ-ONLY, only visible in display/edit mode for existing profiles */}
+
             {!isAddMode && (
               <TextInput
                 label={
-                  <Text fz={18} fw={500} className='!text-dark !text-nowrap'>
+                  <Text
+                    fz={16}
+                    fw={500}
+                    mb={4}
+                    className='!text-dark !text-nowrap'
+                  >
                     عدد العائلات :
                   </Text>
                 }
-                // value={form.values.numberOfFamilies.toString()}
+                classNames={{
+                  input:
+                    'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
+                }}
+                value={delegateProfileData?.user.number_of_families || 0}
                 size='sm'
                 w='100%'
-                classNames={{
-                  input: 'placeholder:!text-sm !text-primary !font-medium',
-                }}
-                disabled // Always disabled as it's read-only
-                key={form.key('numberOfFamilies')}
-                {...form.getInputProps('numberOfFamilies')}
+                disabled
               />
             )}
           </SimpleGrid>
 
-          {(isDelegate || isManager) && isDisplayMode && (
+          {(isEditMode || isAddMode) && (
             <Button
-              mt={32}
-              fz={20}
+              mt={20}
+              type='submit'
+              rightSection={
+                isEditMode ? <UserPen size={16} /> : <Save size={16} />
+              }
+              loading={isMutationLoading}
+              className='!bg-primary shadow-sm'
+              // py={10}
+              size='sm'
               fw={500}
-              // w={150}
-              c={'white'}
-              className='!bg-primary !shadow-lg max-lg:!mt-10'
-              onClick={() => setQuery(ACTION_ADD_EDIT_DISPLAY.EDIT)}
-              rightSection={<UserPen size={18} />}
+              fz={16}
             >
-              تعديل
+              {isAddMode ? 'إضافة' : 'حفظ التعديلات'}
             </Button>
           )}
-
-          {(isEditMode || isAddMode) && (isDelegate || isManager) ? (
-            <Button
-              loading={isMutationLoading}
-              mt={32}
-              fz={20}
-              fw={500}
-              // w={150}
-              c={'white'}
-              className={`!shadow-lg max-lg:!mt-10 !bg-primary ${
-                !form.isValid() ? '!bg-primary/70' : '!bg-primary'
-              }`}
-              onClick={() => handleSubmit()}
-              rightSection={<Save size={18} />}
-            >
-              حفظ
-            </Button>
-          ) : null}
         </form>
       </Stack>
     </Stack>
