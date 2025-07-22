@@ -1,5 +1,5 @@
 "use server";
-import { ISecurityProfile, ISecurityProfileResponse } from "@/@types/actors/security/profile/securityProfileResponse.type";
+import { SecurityProfile, SecurityProfileResponse } from "@/@types/actors/security/profile/securityProfileResponse.type";
 import { fakeSecurityProfileResponse } from "@/content/actor/security/fake-security-profile";
 import { AqsaAPI } from "@/services";
 
@@ -9,9 +9,9 @@ export interface getSecurityProfileProps {
     security_Id: number;
 };
 
-export const getSecurityProfile = async ({ security_Id }: getSecurityProfileProps): Promise<ISecurityProfileResponse> => {
+export const getSecurityProfile = async ({ security_Id }: getSecurityProfileProps): Promise<SecurityProfileResponse> => {
 
-    const fakeData: ISecurityProfileResponse = fakeSecurityProfileResponse({ security_Id: security_Id })
+    const fakeData: SecurityProfileResponse = fakeSecurityProfileResponse({ security_Id: security_Id })
 
     return await new Promise((resolve) => {
         setTimeout(() => {
@@ -31,7 +31,7 @@ export const getSecurityProfile = async ({ security_Id }: getSecurityProfileProp
 
         if (response.data?.user) {
             return {
-                status: "200",
+                status: 200,
                 message: "تم تحميل بيانات الملف الشخصي بنجاح",
                 user: response.data.user,
             };
@@ -42,7 +42,7 @@ export const getSecurityProfile = async ({ security_Id }: getSecurityProfileProp
         return {
             status: error.response?.status?.toString() || "500",
             message: errorMessage,
-            user: {} as ISecurityProfile,
+            user: {} as SecurityProfile,
             error: errorMessage,
         };
     }
