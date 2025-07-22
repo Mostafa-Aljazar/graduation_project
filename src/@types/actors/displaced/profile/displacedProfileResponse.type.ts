@@ -8,8 +8,9 @@ export interface DisplacedProfileResponse {
 }
 
 export interface DisplacedProfile {
-    id: number
+    id?: number; //HINT: optional in create delegate
     name: string
+    email: string
     gender: GENDER
     profile_image: string
     identity: string
@@ -26,7 +27,7 @@ export interface DisplacedProfile {
         is_wet_nurse: boolean
     }[]
 
-    socialStatus: {
+    social_status: {
         status: SOCIAL_STATUS
         number_of_wives: number
         number_of_males: number

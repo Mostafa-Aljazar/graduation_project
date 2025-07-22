@@ -1,4 +1,4 @@
-import Displaced_Person from '@/components/actors/displaced/profile/displaced-profile';
+import Displaced_Profile_Form from '@/components/actors/displaced/profile/displaced-profile-form';
 
 export default async function Displaced_Profile({
   params,
@@ -7,5 +7,5 @@ export default async function Displaced_Profile({
 }) {
   const { displaced_Id } = await params;
 
-  return <Displaced_Person displaced_Id={Number(displaced_Id)} />;
+  return <Displaced_Profile_Form displaced_Id={Number(displaced_Id)} />;
 }

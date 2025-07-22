@@ -21,7 +21,7 @@ import {
   delegateProfileSchema,
 } from '@/validation/actor/delegate/delegate-profile-schema';
 import '@mantine/core/styles.css';
-import { Camera, Save, UserPen } from 'lucide-react';
+import { Camera, Save, UserPen, X } from 'lucide-react';
 import { Custom_Phone_Input } from '@/components/common/custom/Custom_Phone_Input';
 import { useUploadThing } from '@/utils/uploadthing/uploadthing';
 import { useEffect, useState } from 'react';
@@ -52,6 +52,7 @@ import {
   SOCIAL_STATUS,
   SOCIAL_STATUS_LABELS,
 } from '@/@types/actors/common-types/index.type';
+import { cn } from '@/utils/cn';
 
 interface DelegateProfileFormProps {
   delegate_Id?: number;
@@ -65,6 +66,7 @@ export default function Delegate_Profile_Form({
     MAN.src
   );
   const [uploading, setUploading] = useState(false);
+  const [saveChange, setSave] = useState(0);
 
   const { isAuthenticated, isDelegate, isManager, user } = useAuth();
   const isOwner = isDelegate && user?.id === delegate_Id;
@@ -113,7 +115,7 @@ export default function Delegate_Profile_Form({
     enabled: isDisplayMode || isEditMode || !!delegate_Id,
   });
 
-  useEffect(() => {
+  const applyData = () => {
     if (
       !isAddMode &&
       delegateProfileData &&
@@ -180,7 +182,11 @@ export default function Delegate_Profile_Form({
       form.reset();
       setProfileImage(MAN.src);
     }
-  }, [delegateProfileData, isAddMode]);
+  };
+
+  useEffect(() => {
+    applyData();
+  }, [delegateProfileData, isAddMode, saveChange]);
 
   useEffect(() => {
     if (profileImage instanceof File) {
@@ -687,14 +693,14 @@ export default function Delegate_Profile_Form({
               </Stack>
             )}
 
-            {!isAddMode && (
+            {!isAddMode && !isEditMode && (
               <TextInput
                 label={
                   <Text
                     fz={16}
                     fw={500}
                     mb={4}
-                    className='!text-dark !text-nowrap'
+                    // className={cn(isEditMode&&)}
                   >
                     عدد المخيمات المسؤولة :
                   </Text>
@@ -712,7 +718,7 @@ export default function Delegate_Profile_Form({
               />
             )}
 
-            {!isAddMode && (
+            {!isAddMode && !isEditMode && (
               <TextInput
                 label={
                   <Text
@@ -736,8 +742,9 @@ export default function Delegate_Profile_Form({
             )}
           </SimpleGrid>
 
-          {(isEditMode || isAddMode) && (
+          <Group hidden={isDisplayMode}>
             <Button
+              w={100}
               mt={20}
               type='submit'
               rightSection={
@@ -750,9 +757,28 @@ export default function Delegate_Profile_Form({
               fw={500}
               fz={16}
             >
-              {isAddMode ? 'إضافة' : 'حفظ التعديلات'}
+              {isAddMode ? 'إضافة' : 'حفظ'}
             </Button>
-          )}
+            <Button
+              w={100}
+              mt={20}
+              rightSection={<X size={16} />}
+              className='!bg-red-500 shadow-sm'
+              size='sm'
+              fw={500}
+              fz={16}
+              onClick={() => {
+                // TODO: apply do not save data
+                // applyData();
+                // form.reset();
+                // router.push('');
+                // setSave((prev) => prev + 1);
+                // setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY);
+              }}
+            >
+              الغاء
+            </Button>
+          </Group>
         </form>
       </Stack>
     </Stack>
