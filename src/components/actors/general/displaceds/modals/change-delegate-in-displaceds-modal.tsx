@@ -5,7 +5,7 @@ import { getDelegates } from '@/actions/actors/general/delegates/getDelegates';
 import {
   changeDelegate,
   changeDelegateProps,
-} from '@/actions/actors/general/displaced/changeDelegate';
+} from '@/actions/actors/general/displaceds/changeDelegate';
 import { Button, Group, Modal, Select, Stack, Text } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';

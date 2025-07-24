@@ -58,7 +58,7 @@ interface SecurityPersonProps {
   destination?: string;
 }
 
-export function Security_Profile_Form({
+export default function Security_Profile_Form({
   security_Id,
   destination,
 }: SecurityPersonProps) {
@@ -123,7 +123,7 @@ export function Security_Profile_Form({
     if (!isAddMode && securityProfileData) {
       if (securityProfileData.status === 200 && securityProfileData.user) {
         const user = securityProfileData.user;
-        setProfileImage(user.profile_image || MAN.src);
+        setProfileImage(MAN.src || user.profile_image || MAN.src);
         form.setValues({
           name: user.name,
           email: user.email || '',

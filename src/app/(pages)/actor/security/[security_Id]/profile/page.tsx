@@ -1,4 +1,4 @@
-import { Security_Profile_Form } from '@/components/actors/security/profile/security-profile-form';
+import Security_Profile_Form from '@/components/actors/security/profile/security-profile-form';
 
 export default async function Security_Profile({
   params,

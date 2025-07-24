@@ -12,7 +12,7 @@ export const sendSecurityUpdateRequest = async ({
 }: sendSecurityUpdateRequestProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
+        status: 200,
         message: `تم ارسال طلب تحديث لـ ${security_Ids.length} عنصر أمني بنجاح`,
     };
 
@@ -30,7 +30,7 @@ export const sendSecurityUpdateRequest = async ({
         });
 
         return {
-            status: "200",
+            status: 200,
             message: `تم ارسال طلب تحديث لـ ${security_Ids.length} عنصر أمني بنجاح`,
         };
     } catch (error: any) {
@@ -39,7 +39,7 @@ export const sendSecurityUpdateRequest = async ({
             error.message ||
             "حدث خطأ أثناء ارسال طلب تحديث البيانات";
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };

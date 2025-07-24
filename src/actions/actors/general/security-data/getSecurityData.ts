@@ -1,6 +1,6 @@
 "use server";
 
-import { ISecuritiesResponse } from "@/@types/actors/general/security-data/securitiesDataResponse.types";
+import { SecuritiesResponse } from "@/@types/actors/general/security-data/securitiesDataResponse.types";
 import { fakeSecuritiesResponse } from "@/content/actor/security/fake-securities";
 import { AqsaAPI } from "@/services";
 
@@ -14,7 +14,7 @@ export const getSecurityData = async ({
     page = 1,
     limit = 15,
     search,
-}: getSecurityDataProps): Promise<ISecuritiesResponse> => {
+}: getSecurityDataProps): Promise<SecuritiesResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData = fakeSecuritiesResponse({ page, limit });
 
@@ -53,14 +53,14 @@ export const getSecurityData = async ({
             "حدث خطأ أثناء جلب بيانات أفراد الأمن";
 
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             securities: [],
             pagination: {
                 page: 1,
                 limit: 0,
-                totalItems: 0,
-                totalPages: 0,
+                total_items: 0,
+                total_pages: 0,
             },
             error: errorMessage,
         };

@@ -3,7 +3,7 @@ import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.t
 import {
   deleteDisplaced,
   deleteDisplacedsProps,
-} from '@/actions/actors/general/displaced/deleteDisplaced';
+} from '@/actions/actors/general/displaceds/deleteDisplaced';
 import {
   deleteAid,
   deleteAidProps,

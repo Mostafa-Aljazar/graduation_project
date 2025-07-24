@@ -46,17 +46,7 @@ function Displaced_List_Header() {
   );
 }
 
-interface DisplacedListProps {
-  // destination: DESTINATION_DISPLACED;
-  // title?: string;
-  // setSelectedDisplacedIds: React.Dispatch<React.SetStateAction<number[]>>;
-  // selectedDisplacedIds: number[];
-  // receivedDisplaced?: { displaced_ID: number; receivedTime: Date }[];
-  // aid_id?: number;
-  // showAddButton?: boolean;
-}
-
-export default function Displaceds_List({}: DisplacedListProps) {
+export default function Displaceds_List() {
   const [localFilters, setLocalFilters] = useState<displacedsFilterValues>({
     wife_status: null,
     family_number: null,

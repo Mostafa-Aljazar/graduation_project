@@ -16,7 +16,7 @@ export const sendSecurityMeetingRequest = async ({
 }: sendSecurityMeetingRequestProps): Promise<modalActionResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
+        status: 200,
         message: `تم إرسال طلب الاجتماع لـ ${security_Ids.length} عنصر أمني بنجاح`,
     };
 
@@ -36,7 +36,7 @@ export const sendSecurityMeetingRequest = async ({
         });
 
         return {
-            status: response.status.toString(),
+            status: response.status,
             message: `تم إرسال طلب الاجتماع لـ ${security_Ids.length} عنصر أمني بنجاح`,
         };
     } catch (error: any) {
@@ -45,7 +45,7 @@ export const sendSecurityMeetingRequest = async ({
             error.message ||
             "حدث خطأ أثناء إرسال طلب الاجتماع";
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };

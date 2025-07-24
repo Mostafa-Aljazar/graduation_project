@@ -14,7 +14,7 @@ export const deleteSecurityMembers = async ({
 
     // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
+        status: 200,
         message: `تم حذف ${security_Ids.length} عنصر أمني بنجاح`,
 
     }
@@ -34,14 +34,14 @@ export const deleteSecurityMembers = async ({
         });
 
         return {
-            status: response.status.toString(),
+            status: response.status,
             message: `تم حذف ${security_Ids.length} عنصر أمني بنجاح`,
         };
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء حذف العناصر الأمنية";
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };

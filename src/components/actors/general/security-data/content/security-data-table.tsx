@@ -1,13 +1,18 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
+  ActionIcon,
+  Center,
   Checkbox,
   Group,
+  Loader,
   LoadingOverlay,
   Pagination,
+  Stack,
   Table,
   Text,
+  ThemeIcon,
 } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
@@ -15,6 +20,8 @@ import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
 import { getSecurityData } from '@/actions/actors/general/security-data/getSecurityData';
 import { getSecuritiesIds } from '@/actions/actors/general/security-data/getSecuritiesIds';
 import Security_Data_Table_Actions from '../security-data-table-actions';
+import { SecuritiesResponse } from '@/@types/actors/general/security-data/securitiesDataResponse.types';
+import { ListChecks, ListX, Users } from 'lucide-react';
 
 interface SecurityTableProps {
   setSecurityNum: (count: number) => void;
@@ -23,100 +30,223 @@ interface SecurityTableProps {
 export default function Security_Data_Table({
   setSecurityNum,
 }: SecurityTableProps) {
-  const [limit] = useState(10);
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  console.log('🚀 ~ selectedRows:', selectedRows);
-  const [selectAll, setSelectAll] = useState(false);
-  console.log('🚀 ~ selectAll:', selectAll);
+  const [query, setQuery] = useQueryStates(
+    {
+      security_page: parseAsInteger.withDefault(1),
+      search: parseAsString.withDefault(''),
+    },
+    { shallow: true }
+  );
 
-  const [query, setQuery] = useQueryStates({
-    search: parseAsString.withDefault(''),
-    security_page: parseAsInteger.withDefault(1),
-  });
+  const [selectedSecurityIds, setSelectedSecurityIds] = useState<number[]>([]);
+  const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
 
-  const page = query.security_page;
+  const currentPage = query.security_page || 1;
+  const limit = 7;
+  const offset = (currentPage - 1) * limit;
 
   const {
     data: securityData,
-    isLoading,
-    error,
-  } = useQuery({
+    isLoading: isLoadingRegular,
+    error: queryError,
+  } = useQuery<SecuritiesResponse, Error>({
     queryKey: ['securities', query],
     queryFn: () =>
       getSecurityData({
-        page,
+        page: query.security_page,
         search: query.search,
-        limit,
+        limit: 7,
       }),
     retry: 1,
   });
 
+  const {
+    data: allSecuritiesIDs,
+    isLoading: isLoadingAll,
+    error: allQueryError,
+  } = useQuery({
+    queryKey: ['securities_all_ids'],
+    queryFn: async () => {
+      const response = await getSecuritiesIds({ search: query.search });
+
+      return response.security_Ids;
+    },
+    enabled: selectAllAcrossPages,
+    retry: 1,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const isLoading = isLoadingAll || isLoadingRegular;
+  const error = allQueryError || queryError;
+
   useEffect(() => {
     if (securityData) {
-      setSecurityNum(securityData.pagination.totalItems);
+      setSecurityNum(securityData.pagination.total_items);
     }
   }, [securityData]);
 
-  const { data: allSecuritiesIDs, isLoading: isLoadingAll } = useQuery({
-    queryKey: ['securities_all_ids', query.search],
-    queryFn: async () => {
-      const response = await getSecuritiesIds({ search: query.search });
-      return response.securityIds;
-    },
-    enabled: selectAll,
-    retry: 1,
-  });
-
   useEffect(() => {
-    if (selectAll && allSecuritiesIDs?.length) {
-      setSelectedRows(allSecuritiesIDs);
+    if (allSecuritiesIDs && selectAllAcrossPages) {
+      setSelectedSecurityIds(allSecuritiesIDs);
     }
-  }, [selectAll, allSecuritiesIDs]);
+  }, [allSecuritiesIDs, selectAllAcrossPages]);
 
-  const handleSelectAllChange = (checked: boolean) => {
-    setSelectAll(checked);
-    if (!checked) setSelectedRows([]);
+  const isRowSelected = (id: number) => selectedSecurityIds.includes(id);
+
+  const areAllPagesRowsSelected = () =>
+    selectedSecurityIds.length === (securityData?.pagination?.total_items || 0);
+
+  const handleRowSelection = (id: number, checked: boolean) => {
+    if (checked) {
+      setSelectedSecurityIds((prev) => [
+        ...prev.filter((rowId) => rowId !== id),
+        id,
+      ]);
+      if (areAllPagesRowsSelected()) setSelectAllAcrossPages(true);
+    } else {
+      setSelectedSecurityIds((prev) => prev.filter((rowId) => rowId !== id));
+      setSelectAllAcrossPages(false);
+    }
   };
 
-  const handleRowChange = (id: number, checked: boolean) => {
-    setSelectedRows((prev) =>
-      checked ? [...new Set([...prev, id])] : prev.filter((i) => i !== id)
-    );
-    if (!checked) setSelectAll(false);
+  const handleSelectAllAcrossAllPages = (checked: boolean) => {
+    if (checked) {
+      setSelectAllAcrossPages(true);
+      setSelectedSecurityIds(allSecuritiesIDs || []);
+    } else {
+      setSelectAllAcrossPages(false);
+      setSelectedSecurityIds([]);
+    }
   };
 
-  const areAllPageRowsSelected = () => {
-    const pageIds = securityData?.securities.map((s) => s.id) || [];
-    return pageIds.every((id) => selectedRows.includes(id));
-  };
+  const columns = (
+    <Table.Tr>
+      <Table.Th px={5} ta='center' style={{ width: 40 }}>
+        <ActionIcon
+          mx={'auto'}
+          variant='light'
+          aria-label='Select all rows across all pages'
+          disabled={!securityData?.securities?.length}
+          onClick={() =>
+            handleSelectAllAcrossAllPages(!areAllPagesRowsSelected())
+          }
+        >
+          {areAllPagesRowsSelected() ? (
+            <ListX size={18} />
+          ) : (
+            <ListChecks size={18} />
+          )}
+        </ActionIcon>
+      </Table.Th>
+      <Table.Th px={5} ta='center'>
+        الرقم
+      </Table.Th>
+      <Table.Th px={5} ta='center' style={{ whiteSpace: 'nowrap' }}>
+        الاسم
+      </Table.Th>
+      <Table.Th px={5} ta='center'>
+        رقم الهوية
+      </Table.Th>
+      <Table.Th px={5} ta='center'>
+        رقم الجوال
+      </Table.Th>
+      <Table.Th px={5} ta='center' style={{ whiteSpace: 'nowrap' }}>
+        الرتبة
+      </Table.Th>
+      <Table.Th px={5} ta='center'>
+        الإجراءات
+      </Table.Th>
+    </Table.Tr>
+  );
 
-  const toggleSelectAllOnPage = (checked: boolean) => {
-    const pageIds = securityData?.securities.map((s) => s.id) || [];
-    setSelectedRows((prev) => {
-      return checked
-        ? Array.from(new Set([...prev, ...pageIds]))
-        : prev.filter((id) => !pageIds.includes(id));
-    });
-    if (!checked) setSelectAll(false);
-  };
+  const rows = useMemo(() => {
+    return (securityData?.securities || []).map((element, index) => (
+      <Table.Tr
+        key={element.id}
+        bg={
+          isRowSelected(element.id)
+            ? 'var(--mantine-color-blue-light)'
+            : undefined
+        }
+      >
+        <Table.Td px={5} ta='center'>
+          <Checkbox
+            mx={'auto'}
+            aria-label='Select row'
+            checked={isRowSelected(element.id)}
+            onChange={(e) =>
+              handleRowSelection(element.id, e.currentTarget.checked)
+            }
+          />
+        </Table.Td>
+        <Table.Td px={5} ta='center'>
+          {offset + index + 1}
+        </Table.Td>
+        <Table.Td px={5} ta='center' style={{ whiteSpace: 'nowrap' }}>
+          {element.name}
+        </Table.Td>
+        <Table.Td px={5} ta='center'>
+          {element.identity}
+        </Table.Td>
+        <Table.Td px={5} ta='center'>
+          {element.mobile_number}
+        </Table.Td>
+        <Table.Td px={5} ta='center' style={{ whiteSpace: 'nowrap' }}>
+          {element.role}
+        </Table.Td>
+        <Table.Td px={5} ta='center'>
+          <Security_Data_Table_Actions security_Id={element.id} />
+        </Table.Td>
+      </Table.Tr>
+    ));
+  }, [securityData, selectedSecurityIds]);
+
+  const noSecurities = (
+    <Table.Tr>
+      <Table.Td colSpan={9}>
+        <Center w='100%' py={30}>
+          <Stack align='center' gap={8}>
+            <ThemeIcon variant='light' radius='xl' size={50} color='gray'>
+              <Users size={25} />
+            </ThemeIcon>
+            <Text ta='center' c='dimmed' fw={500} size='md'>
+              لا توجد بيانات للأمن
+            </Text>
+          </Stack>
+        </Center>
+      </Table.Td>
+    </Table.Tr>
+  );
 
   return (
     <>
-      <Group justify='space-between' mb={10}>
-        {selectedRows.length > 0 && (
-          <Text>تم تحديد {selectedRows.length} عنصر</Text>
-        )}
+      <Group
+        justify='space-between'
+        align='center'
+        wrap='nowrap'
+        hidden={selectedSecurityIds.length === 0}
+      >
+        <Group flex={1}>
+          {selectAllAcrossPages ? (
+            <Text size='md' fw={500} style={{ whiteSpace: 'nowrap' }}>
+              تم تحديد جميع العناصر عبر جميع الصفحات
+              {isLoadingAll && <Loader size='xs' ml={5} />}
+              {allQueryError && ` (خطأ: ${allQueryError.message})`}
+            </Text>
+          ) : (
+            <Text size='md' fw={500}>
+              تم تحديد {selectedSecurityIds.length} عنصر
+            </Text>
+          )}
+        </Group>
 
-        {selectedRows.length > 0 && (
-          <Security_Data_Table_Actions
-            security_Ids={selectedRows}
-            disabled={selectedRows?.length === 0 || isLoadingAll}
-          />
-
-          // <Displaced_Table_Actions
-          //   disabled={selectedRows?.length === 0 || isLoadingAll}
-          //   displaced_IDs={selectedRows}
-          // />
+        {selectedSecurityIds.length > 0 && (
+          <Group justify='flex-end' flex={1}>
+            <Security_Data_Table_Actions
+              security_Ids={selectedSecurityIds}
+              disabled={selectedSecurityIds?.length === 0 || isLoadingAll}
+            />
+          </Group>
         )}
       </Group>
 
@@ -129,92 +259,43 @@ export default function Security_Data_Table({
 
         {error && (
           <Text c='red' ta='center'>
+            {error.message}
             فشل في تحميل البيانات
           </Text>
         )}
 
         <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead>
-            <Table.Tr>
-              <Table.Th ta='center'>
-                <Checkbox
-                  aria-label='Select all securities'
-                  checked={selectAll}
-                  indeterminate={!selectAll && selectedRows.length > 0}
-                  onChange={(e) => {
-                    const checked = e.currentTarget.checked;
-                    setSelectAll(checked);
-                    if (checked) {
-                      // تحديد كل الـ IDs من كل الصفحات
-                      if (allSecuritiesIDs?.length) {
-                        setSelectedRows(allSecuritiesIDs);
-                      }
-                    } else {
-                      setSelectedRows([]);
-                    }
-                  }}
-                  disabled={isLoadingAll}
-                />
-              </Table.Th>
-
-              <Table.Th ta='center'>#</Table.Th>
-              <Table.Th ta='center'>الاسم</Table.Th>
-              <Table.Th ta='center'>رقم الهوية</Table.Th>
-              <Table.Th ta='center'>رقم الجوال</Table.Th>
-              <Table.Th ta='center'>الجنس</Table.Th>
-              <Table.Th ta='center'>الحالة الاجتماعية</Table.Th>
-              <Table.Th ta='center'>الرتبة</Table.Th>
-              <Table.Th ta='center'>التحكم</Table.Th>
-            </Table.Tr>
+          <Table.Thead
+            style={{
+              position: 'sticky',
+              top: 0,
+              background: 'white',
+              zIndex: 1,
+            }}
+          >
+            {columns}
           </Table.Thead>
 
-          <Table.Tbody>
-            {(securityData?.securities || []).map((security, index) => (
-              <Table.Tr
-                key={security.id}
-                bg={
-                  selectedRows.includes(security.id)
-                    ? 'var(--mantine-color-blue-light)'
-                    : undefined
-                }
-              >
-                <Table.Td ta='center'>
-                  <Checkbox
-                    checked={selectedRows.includes(security.id)}
-                    onChange={(e) =>
-                      handleRowChange(security.id, e.currentTarget.checked)
-                    }
-                  />
-                </Table.Td>
-                <Table.Td ta='center'>
-                  {(page - 1) * limit + index + 1}
-                </Table.Td>
-                <Table.Td ta='center'>{security.name}</Table.Td>
-                <Table.Td ta='center'>{security.identity}</Table.Td>
-                <Table.Td ta='center'>{security.mobileNumber}</Table.Td>
-                <Table.Td ta='center'>{security.gender}</Table.Td>
-                <Table.Td ta='center'>{security.socialStatus}</Table.Td>
-                <Table.Td ta='center'>{security.job}</Table.Td>
-                <Table.Th ta='center'>
-                  <Security_Data_Table_Actions security_Id={security.id} />
-                </Table.Th>
-              </Table.Tr>
-            ))}
-          </Table.Tbody>
+          <Table.Tbody>{rows.length === 0 ? noSecurities : rows}</Table.Tbody>
         </Table>
       </Table.ScrollContainer>
 
-      <Group justify='center'>
-        <Pagination
-          value={page}
-          onChange={(val) => setQuery({ security_page: val })}
-          total={securityData?.pagination.totalPages || 1}
-          pt={20}
-          size='sm'
-          radius='xl'
-          withControls={false}
-        />
-      </Group>
+      <Pagination
+        value={currentPage}
+        onChange={(page) =>
+          setQuery((prev) => ({ ...prev, security_page: page }))
+        }
+        total={securityData?.pagination?.total_pages || 0}
+        pt={30}
+        size='sm'
+        mx='auto'
+        radius='xl'
+        withControls={false}
+        classNames={{
+          dots: '!rounded-full !text-gray-300 border-1',
+          control: '!rounded-full',
+        }}
+      />
     </>
   );
 }
