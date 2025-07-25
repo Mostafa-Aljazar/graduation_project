@@ -15,25 +15,21 @@ export const getDisplacedProfile = async ({ displaced_Id }: getDisplacedProfileP
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 1000);
+        }, 500);
     });
 
-    // Real implementation below, if needed
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-
-        /////////////////////////////////////////////////////////////
-        // FIXME: THIS IS THE REAL IMPLEMENTATION
-        /////////////////////////////////////////////////////////////
-        const response = await AqsaAPI.get(`/displaceds/${displaced_Id}/profile`);
+        const response = await AqsaAPI.get<DisplacedProfileResponse>(`/displaceds/${displaced_Id}/profile`);
 
         if (response.data?.user) {
-            return {
-                status: 200,
-                message: "تم تحميل بيانات الملف الشخصي بنجاح",
-                user: response.data.user,
-            };
+            return response.data
         }
+
         throw new Error("فشل في تحميل بيانات الملف الشخصي");
+
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || error.message || "حدث خطأ أثناء تحميل الملف الشخصي";
         return {

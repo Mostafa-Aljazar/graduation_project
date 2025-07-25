@@ -69,7 +69,7 @@ export default function Displaced_Received_Aid_Header_Tabs() {
             fz={{ base: 14, md: 16 }}
             lh={1.25}
             className={cn(
-              ' !text-nowrap overflow-hidden !overflow-ellipsis',
+              '!overflow-ellipsis overflow-hidden !text-nowrap',
               query['received-aids-tab'] === tabKey
                 ? '!text-primary !font-bold'
                 : '!font-medium !text-[#817C74]'
@@ -92,7 +92,7 @@ export default function Displaced_Received_Aid_Header_Tabs() {
           if (value) {
             setQuery({
               'received-aids-tab': value as DISPLACED_RECEIVED_AIDS_TABS,
-              'received-aids-page': 1, // reset to first page when tab changes
+              'received-aids-page': 1,
             });
           }
         }}

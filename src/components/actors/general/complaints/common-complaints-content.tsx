@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Box, Text } from '@mantine/core';
+import { Box, Center, Paper, Text, ThemeIcon } from '@mantine/core';
 import {
   parseAsInteger,
   parseAsString,
@@ -19,6 +19,7 @@ import {
   COMPLAINTS_STATUS,
   COMPLAINTS_TABS,
 } from '@/@types/actors/common-types/index.type';
+import { MessageCircleWarning } from 'lucide-react';
 
 interface CommonComplaintsContentProps {
   actor_Id: number;
@@ -43,7 +44,7 @@ export default function Common_Complaints_Content({
       date_range: [null, null],
     });
 
-  const limit = 5;
+  const limit = 7;
   const role = rank;
 
   const {
@@ -76,6 +77,7 @@ export default function Common_Complaints_Content({
       <Text c='red'>لا يمكن تحميل الشكاوى، لم يتم تحديد هوية المستخدم.</Text>
     );
   }
+  const hasError = Boolean(error) || Boolean(complaintsData?.error);
 
   return (
     <Box dir='rtl' w='100%' p='sm'>
@@ -86,12 +88,26 @@ export default function Common_Complaints_Content({
         role={role}
       />
 
-      {error || complaintsData?.error ? (
-        <Text c='red' mt='md'>
-          {complaintsData?.error ||
-            error?.message ||
-            'حدث خطأ أثناء جلب الشكاوى'}
-        </Text>
+      {hasError ? (
+        <Paper
+          p='md'
+          withBorder
+          mt='md'
+          className='!bg-red-100 rounded-md text-center'
+        >
+          <Box>
+            <Center mb='sm'>
+              <ThemeIcon color='red' variant='light' size='lg'>
+                <MessageCircleWarning />
+              </ThemeIcon>
+            </Center>
+            <Text c='red' fw={600}>
+              {complaintsData?.error ||
+                error?.message ||
+                'حدث خطأ أثناء جلب الشكاوى'}
+            </Text>
+          </Box>
+        </Paper>
       ) : (
         <Common_Complaints_List
           complaints={complaintsData?.complaints || []}

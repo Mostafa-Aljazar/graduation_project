@@ -31,7 +31,7 @@ export default function Displaced_Received_Aid_Content({
     'received-aids-page': parseAsInteger.withDefault(1),
   });
 
-  const items_per_page = 7;
+  const limit = 7;
 
   const {
     data: displacedReceivedAids,
@@ -42,10 +42,11 @@ export default function Displaced_Received_Aid_Content({
     queryFn: () =>
       getDisplacedReceivedAids({
         page: query['received-aids-page'],
-        limit: items_per_page,
+        limit: limit,
         tab_type: query['received-aids-tab'],
         displaced_Id: displaced_Id,
       }),
+    enabled: !!displaced_Id,
   });
 
   const hasError = Boolean(error) || Boolean(displacedReceivedAids?.error);

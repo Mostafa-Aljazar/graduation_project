@@ -127,7 +127,9 @@ export default function Security_Profile_Form({
     if (!isAddMode && securityProfileData) {
       if (securityProfileData.status === 200 && securityProfileData.user) {
         const user = securityProfileData.user;
+
         setProfileImage(MAN.src || user.profile_image || MAN.src);
+
         form.setValues({
           name: user.name,
           email: user.email || '',
@@ -662,17 +664,19 @@ export default function Security_Profile_Form({
               ))}
 
           {(isEditMode || isAddMode) && (
-            <Group justify='space-between' mt={20}>
+            <Group justify='center' w={'100%'} mt={20}>
               <Button
                 type='submit'
                 variant='filled'
                 size='xs'
                 color='primary'
-                rightSection={<Save size={16} />}
                 loading={isMutationLoading}
                 fw={500}
                 fz={16}
                 className='shadow-sm'
+                rightSection={
+                  isEditMode ? <UserPen size={16} /> : <Save size={16} />
+                }
               >
                 {isAddMode ? 'إضافة' : 'حفظ التعديلات'}
               </Button>

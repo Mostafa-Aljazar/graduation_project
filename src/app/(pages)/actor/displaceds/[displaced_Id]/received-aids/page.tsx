@@ -10,16 +10,8 @@ export default async function Displaced_Received_Aid({
   const { displaced_Id } = await params;
 
   return (
-    <Stack
-      justify={'center'}
-      align={'center'}
-      py={20}
-      gap={30}
-      w={'100%'}
-      px={10}
-    >
+    <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
       <Displaced_Received_Aid_Header_Tabs />
-
       <Displaced_Received_Aid_Content displaced_Id={Number(displaced_Id)} />
     </Stack>
   );

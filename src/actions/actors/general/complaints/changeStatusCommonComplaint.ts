@@ -31,7 +31,7 @@ export const changeStatusCommonComplaint = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.put(`/complaints/${complaint_Id}/changeStatus`, {
+        const response = await AqsaAPI.put<modalActionResponse>(`/complaints/${complaint_Id}/changeStatus`, {
             actor_Id, role
         });
 

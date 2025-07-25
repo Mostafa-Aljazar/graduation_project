@@ -1,5 +1,6 @@
 import { ACCOMMODATION_TYPE, AGES, FAMILY_STATUS_TYPE, GENDER, SOCIAL_STATUS } from "@/@types/actors/common-types/index.type";
 import { DisplacedProfile, DisplacedProfileResponse } from "@/@types/actors/displaced/profile/displacedProfileResponse.type";
+import { USER_TYPE } from "@/constants/userTypes";
 
 
 export const fakeDisplacedProfile: DisplacedProfile = {
@@ -81,7 +82,8 @@ export const fakeDisplacedProfile: DisplacedProfile = {
             condition: 'سكري',
         },
     ],
-
+    rank: USER_TYPE.DISPLACED,
+    role: USER_TYPE.DISPLACED,
     additional_notes: 'العائلة بحاجة إلى حليب أطفال وأدوية مزمنة.',
 }
 

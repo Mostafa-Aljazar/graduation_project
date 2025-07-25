@@ -22,29 +22,25 @@ export async function getDisplacedReceivedAids({
 
     return new Promise((resolve) => setTimeout(() => resolve(fakeResponse), 1000));
 
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.post(`/displaceds/${displaced_Id}/received-aids`, {
-            page,
-            limit,
-            tab_type,
-        });
-
-        if (!response.data?.receivedAids) {
-            throw new Error('بيانات المساعدات غير متوفرة');
-        }
-
-        return {
-            status: 200,
-            message: 'تم جلب المساعدات بنجاح',
-            received_aids: response.data.receivedAids,
-            pagination: response.data.pagination || {
+        const response = await AqsaAPI.get<DisplacedReceivedAidsResponse>(`/displaceds/${displaced_Id}/received-aids`, {
+            params: {
                 page,
                 limit,
-                total_items: response.data.receivedAids.length,
-                total_pages: Math.ceil(response.data.receivedAids.length / limit),
-            },
-        };
+                tab_type,
+            }
+        });
+
+        if (response.data?.received_aids) {
+            return response.data
+        }
+
+        throw new Error('بيانات المساعدات غير متوفرة');
+
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || 'حدث خطأ أثناء جلب المساعدات';
@@ -52,9 +48,9 @@ export async function getDisplacedReceivedAids({
         return {
             status: error.response?.status || 500,
             message: errorMessage,
-            error: errorMessage,
             received_aids: [],
             pagination: { page: 1, limit: 0, total_items: 0, total_pages: 0 },
+            error: errorMessage,
         };
     }
 }

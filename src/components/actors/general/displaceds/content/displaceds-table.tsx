@@ -55,7 +55,7 @@ export default function Displaceds_Table({
     isLoading: isLoadingRegular,
     error: queryError,
   } = useQuery<DisplacedsResponse, Error>({
-    queryKey: ['displaced', query, localFilters],
+    queryKey: ['displaceds', query, localFilters],
     queryFn: () =>
       getDisplaceds({
         page: currentPage,

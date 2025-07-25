@@ -1,3 +1,4 @@
+import { USER_TYPE, UserType } from "@/constants/userTypes";
 import { ACCOMMODATION_TYPE, AGES, FAMILY_STATUS_TYPE, GENDER, SOCIAL_STATUS, } from "../../common-types/index.type";
 
 export interface DisplacedProfileResponse {
@@ -65,6 +66,14 @@ export interface DisplacedProfile {
         name: string
         condition: string
     }[]
+
+    role: Exclude<
+        UserType,
+        typeof USER_TYPE.SECURITY | typeof USER_TYPE.DELEGATE | typeof USER_TYPE.MANAGER>;
+
+    rank: Exclude<
+        UserType,
+        typeof USER_TYPE.SECURITY | typeof USER_TYPE.DELEGATE | typeof USER_TYPE.MANAGER>;
 
     additional_notes: string
 }

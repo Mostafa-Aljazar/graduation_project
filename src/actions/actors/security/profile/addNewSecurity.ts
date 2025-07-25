@@ -13,7 +13,6 @@ export const addNewSecurity = async ({
     payload,
 }: AddNewSecurityProps): Promise<SecurityProfileResponse> => {
 
-    // Fake implementation for demonstration. Replace with real API call.
     const fakeData: SecurityProfileResponse = {
         status: 201,
         message: "تم إضافة الامن الجديد بنجاح",

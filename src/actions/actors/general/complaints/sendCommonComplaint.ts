@@ -1,7 +1,7 @@
 "use server";
 
 import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
-import { USER_RANK, USER_TYPE, UserRank, UserType } from "@/constants/userTypes";
+import { USER_RANK, UserRank } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
 export interface sendCommonComplaintProps {

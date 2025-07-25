@@ -1,6 +1,6 @@
 'use client';
 
-import { Stack, Group, Text, Flex, Pagination } from '@mantine/core';
+import { Stack, Group, Text, Flex, Pagination, Center } from '@mantine/core';
 import { MessageCircleWarning } from 'lucide-react';
 import { Complaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
@@ -29,7 +29,7 @@ export default function Common_Complaints_List({
   });
 
   return (
-    <Stack pos={'relative'}>
+    <Stack pos={'relative'} gap='sm'>
       {loading ? (
         <Stack gap='xs'>
           {Array.from({ length: 8 }).map((_, index) => (
@@ -37,12 +37,18 @@ export default function Common_Complaints_List({
           ))}
         </Stack>
       ) : complaints.length === 0 ? (
-        <Group gap={10} w={'100%'} justify='center' mt={30}>
-          <MessageCircleWarning size={25} className='!text-primary' />
-          <Text fw={500} fz={24} ta='center' className='!text-primary'>
-            لا توجد شكاوي لعرضها
-          </Text>
-        </Group>
+        <Center
+          mt={30}
+          mih={200}
+          className='bg-gray-50 p-6 border-1 border-gray-200 rounded-md'
+        >
+          <Stack align='center' gap={6}>
+            <MessageCircleWarning size={40} className='text-primary' />
+            <Text fw={600} fz='lg' className='text-primary'>
+              لا توجد شكاوي لعرضها
+            </Text>
+          </Stack>
+        </Center>
       ) : (
         <Stack gap='xs'>
           {complaints.map((complaint) => (
@@ -55,8 +61,9 @@ export default function Common_Complaints_List({
           ))}
         </Stack>
       )}
+
       {!loading && total_pages > 1 && (
-        <Flex justify='center' mt='xl'>
+        <Flex justify='center' mt='md'>
           <Pagination
             value={query['complaints-page']}
             onChange={(value: number) => setQuery({ 'complaints-page': value })}

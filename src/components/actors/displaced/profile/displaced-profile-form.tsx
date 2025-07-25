@@ -19,7 +19,7 @@ import {
 } from '@mantine/core';
 import Image from 'next/image';
 import { MAN } from '@/assets/actor';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DisplacedProfileResponse } from '@/@types/actors/displaced/profile/displacedProfileResponse.type';
 import { getDisplacedProfile } from '@/actions/actors/displaced/profile/getDisplacedProfile';
 import {
@@ -65,21 +65,22 @@ import { cn } from '@/utils/cn';
 
 interface DisplacedProfileFormProps {
   displaced_Id?: number;
-  destination?: string;
+  destination?: ACTION_ADD_EDIT_DISPLAY;
 }
 
 export default function Displaced_Profile_Form({
   displaced_Id,
   destination,
 }: DisplacedProfileFormProps) {
+  const queryClient = useQueryClient();
+
   const { startUpload } = useUploadThing('mediaUploader');
   const [profileImage, setProfileImage] = useState<File | string | null>(
     MAN.src
   );
   const [uploading, setUploading] = useState(false);
 
-  const { isAuthenticated, isDisplaced, isDelegate, isManager, user } =
-    useAuth();
+  const { isDisplaced, isDelegate, isManager, isSecurity, user } = useAuth();
   const isOwner = isDisplaced && user?.id === displaced_Id;
 
   const router = useRouter();
@@ -98,6 +99,7 @@ export default function Displaced_Profile_Form({
   const isEditMode =
     (isManager || isDelegate || isOwner) &&
     query === ACTION_ADD_EDIT_DISPLAY.EDIT;
+
   const isDisplayMode =
     query === ACTION_ADD_EDIT_DISPLAY.DISPLAY &&
     destination !== ACTION_ADD_EDIT_DISPLAY.ADD;
@@ -154,10 +156,10 @@ export default function Displaced_Profile_Form({
     isLoading: isLoadingFetch,
     refetch,
   } = useQuery<DisplacedProfileResponse>({
-    queryKey: ['displacedProfile', displaced_Id],
+    queryKey: ['displaced-profile', displaced_Id],
     queryFn: () =>
       getDisplacedProfile({ displaced_Id: displaced_Id as number }),
-    enabled: isDisplayMode || isEditMode || !!displaced_Id,
+    enabled: (isDisplayMode || isEditMode) && !!displaced_Id,
   });
 
   useEffect(() => {
@@ -231,6 +233,9 @@ export default function Displaced_Profile_Form({
           medical_conditions: user.medical_conditions || [],
           additional_notes: user.additional_notes || '',
         });
+        form.clearErrors();
+        form.resetTouched();
+        form.resetDirty();
       } else {
         notifications.show({
           title: 'خطأ',
@@ -298,8 +303,13 @@ export default function Displaced_Profile_Form({
           medical_conditions: user.medical_conditions || [],
           additional_notes: user.additional_notes || '',
         });
+        form.clearErrors();
+        form.resetTouched();
+        form.resetDirty();
         setProfileImage(user.profile_image || MAN.src);
         refetch();
+
+        queryClient.invalidateQueries({ queryKey: ['security-profile'] });
       } else {
         throw new Error(data.error || 'فشل في تحديث الملف الشخصي للنازح');
       }
@@ -334,6 +344,8 @@ export default function Displaced_Profile_Form({
           position: 'top-left',
           withBorder: true,
         });
+        queryClient.invalidateQueries({ queryKey: ['displaceds'] });
+
         router.push(GENERAL_ACTOR_ROUTES.DISPLACEDS);
       } else {
         throw new Error(data.error || 'فشل في إضافة النازح الجديد');
@@ -379,45 +391,45 @@ export default function Displaced_Profile_Form({
   const handleSubmit = form.onSubmit(
     async (values: DisplacedProfileSchemaType) => {
       console.log('🚀 ~ values:', values);
-      // const avatarUrl =
-      //   profileImage instanceof File
-      //     ? await uploadImages(profileImage)
-      //     : (profileImage as string | null) ?? null;
+      const avatarUrl =
+        profileImage instanceof File
+          ? await uploadImages(profileImage)
+          : (profileImage as string | null) ?? null;
 
-      // const payload: DisplacedProfileSchemaType = {
-      //   ...values,
-      //   profile_image: avatarUrl,
-      // };
+      const payload: DisplacedProfileSchemaType = {
+        ...values,
+        profile_image: avatarUrl,
+      };
 
-      // const handleError = (error: unknown) => {
-      //   const errorMessage =
-      //     (error as Error)?.message || 'فشل في حفظ الملف الشخصي للنازح';
-      //   form.setErrors({ general: errorMessage });
-      //   notifications.show({
-      //     title: 'خطأ',
-      //     message: errorMessage,
-      //     color: 'red',
-      //     position: 'top-left',
-      //     withBorder: true,
-      //   });
-      // };
+      const handleError = (error: unknown) => {
+        const errorMessage =
+          (error as Error)?.message || 'فشل في حفظ الملف الشخصي للنازح';
+        form.setErrors({ general: errorMessage });
+        notifications.show({
+          title: 'خطأ',
+          message: errorMessage,
+          color: 'red',
+          position: 'top-left',
+          withBorder: true,
+        });
+      };
 
-      // try {
-      //   if (isAddMode) {
-      //     addDisplacedProfileMutation.mutate(
-      //       { payload },
-      //       { onError: handleError }
-      //     );
-      //   }
-      //   if (isEditMode) {
-      //     updateProfileMutation.mutate(
-      //       { displaced_Id: displaced_Id as number, payload },
-      //       { onError: handleError }
-      //     );
-      //   }
-      // } catch (error) {
-      //   handleError(error);
-      // }
+      try {
+        if (isAddMode) {
+          addDisplacedProfileMutation.mutate(
+            { payload },
+            { onError: handleError }
+          );
+        }
+        if (isEditMode) {
+          updateProfileMutation.mutate(
+            { displaced_Id: displaced_Id as number, payload },
+            { onError: handleError }
+          );
+        }
+      } catch (error) {
+        handleError(error);
+      }
     }
   );
 
@@ -1457,19 +1469,21 @@ export default function Displaced_Profile_Form({
               />
             </Stack>
           </Box>
+
           {(isEditMode || isAddMode) && (
-            <Group justify='center' w={'100%'}>
+            <Group justify='center' w={'100%'} mt={20}>
               <Button
-                mt={20}
                 type='submit'
+                variant='filled'
+                size='xs'
+                color='primary'
+                loading={isMutationLoading}
+                fw={500}
+                fz={16}
+                className='shadow-sm'
                 rightSection={
                   isEditMode ? <UserPen size={16} /> : <Save size={16} />
                 }
-                loading={isMutationLoading}
-                className='!bg-primary shadow-sm'
-                size='sm'
-                fw={500}
-                fz={16}
               >
                 {isAddMode ? 'إضافة' : 'حفظ التعديلات'}
               </Button>
