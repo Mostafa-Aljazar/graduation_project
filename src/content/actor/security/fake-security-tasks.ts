@@ -179,7 +179,6 @@ export const getFakeTasksResponse = ({
 
     const filteredTasks = type ? FAKE_TASKS.filter(task => task.type === type) : FAKE_TASKS;
 
-
     const start = (page - 1) * limit;
     const end = start + limit;
 

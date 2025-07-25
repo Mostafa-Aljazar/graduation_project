@@ -14,14 +14,15 @@ import {
   Text,
   ThemeIcon,
 } from '@mantine/core';
-import { parseAsStringEnum, useQueryStates } from 'nuqs';
+import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import { useState, useRef } from 'react';
 
 export default function Common_Complaints_Header_Tabs() {
   const [query, setQuery] = useQueryStates({
     'complaints-tab': parseAsStringEnum<COMPLAINTS_TABS>(
       Object.values(COMPLAINTS_TABS)
-    ).withDefault(COMPLAINTS_TABS.RECEIVED_COMPLAINTS),
+    ).withDefault(COMPLAINTS_TABS.SENT_COMPLAINTS),
+    'complaints-page': parseAsInteger.withDefault(1),
   });
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
@@ -63,7 +64,7 @@ export default function Common_Complaints_Header_Tabs() {
             fz={{ base: 14, md: 16 }}
             lh={1.25}
             className={cn(
-              ' !text-nowrap overflow-hidden !overflow-ellipsis',
+              '!overflow-ellipsis overflow-hidden !text-nowrap',
               query['complaints-tab'] === tabKey
                 ? '!text-primary !font-bold'
                 : '!font-medium !text-[#817C74]'
@@ -83,7 +84,10 @@ export default function Common_Complaints_Header_Tabs() {
         variant='unstyled'
         onChange={(value: string | null) => {
           if (value) {
-            setQuery({ 'complaints-tab': value as COMPLAINTS_TABS });
+            setQuery({
+              'complaints-tab': value as COMPLAINTS_TABS,
+              'complaints-page': 1,
+            });
           }
         }}
         w={'100%'}

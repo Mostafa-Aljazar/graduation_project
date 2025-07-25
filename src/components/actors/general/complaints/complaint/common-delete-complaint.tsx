@@ -49,7 +49,7 @@ export default function Common_Delete_Complaint({
           position: 'top-left',
           withBorder: true,
         });
-        queryClient.invalidateQueries({ queryKey: ['complaints'] });
+        queryClient.invalidateQueries({ queryKey: ['common-complaints'] });
         close();
       } else {
         throw new Error(data.error || 'فشل في الحذف');

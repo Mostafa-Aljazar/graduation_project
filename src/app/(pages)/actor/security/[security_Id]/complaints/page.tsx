@@ -12,7 +12,10 @@ export default async function Security_Complaints({
   return (
     <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
       <Common_Complaints_Header_Tabs />
-      <Common_Complaints_Content security_Id={Number(security_Id)} />
+      <Common_Complaints_Content
+        actor_Id={Number(security_Id)}
+        rank='SECURITY'
+      />
     </Stack>
   );
 }

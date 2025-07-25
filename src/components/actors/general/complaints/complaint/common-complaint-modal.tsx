@@ -55,13 +55,13 @@ export default function Common_Complaint_Modal({
   opened,
   close,
 }: CommonComplaintModalProps) {
+  const { user } = useAuth();
+
   const [query] = useQueryStates({
     'complaints-tab': parseAsStringEnum(
       Object.values(COMPLAINTS_TABS)
-    ).withDefault(COMPLAINTS_TABS.RECEIVED_COMPLAINTS),
+    ).withDefault(COMPLAINTS_TABS.SENT_COMPLAINTS),
   });
-
-  const { user } = useAuth();
 
   const form = useForm<complaintType>({
     initialValues: { reply: '' },
@@ -223,7 +223,8 @@ export default function Common_Complaint_Modal({
               <Calendar size={16} />
             </ThemeIcon>
             <Text size='sm' c='dimmed'>
-              {complaint.date} - {complaint.time}
+              {/* {complaint.date} - {complaint.time} */}
+              {complaint.date}
             </Text>
           </Group>
         </Group>

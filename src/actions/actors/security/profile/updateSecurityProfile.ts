@@ -67,19 +67,14 @@ export const updateSecurityProfile = async ({
         additional_notes: payload.additional_notes || "",
     };
 
-
     try {
-        const response = await AqsaAPI.put(`/securities/${security_Id}/profile`, apiPayload);
+        const response = await AqsaAPI.put<SecurityProfileResponse>(`/securities/${security_Id}/profile`, apiPayload);
 
         if (response.data?.user) {
-            return {
-                status: 200,
-                message: "تم تحديث الملف الشخصي للامن بنجاح",
-                user: response.data.user,
-            };
+            return response.data
         }
 
-        throw new Error("فشل في تحديث الملف الشخصي");
+        throw new Error("فشل في تحديث بيانات الملف الشخصي");
 
     } catch (error: any) {
         const errorMessage =

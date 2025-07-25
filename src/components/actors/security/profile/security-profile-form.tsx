@@ -13,7 +13,7 @@ import {
   ActionIcon,
   Group,
 } from '@mantine/core';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getSecurityProfile } from '@/actions/actors/security/profile/getSecurityProfile';
 import Image from 'next/image';
 import { MAN } from '@/assets/actor';
@@ -62,6 +62,8 @@ export default function Security_Profile_Form({
   security_Id,
   destination,
 }: SecurityPersonProps) {
+  const queryClient = useQueryClient();
+
   const { startUpload } = useUploadThing('mediaUploader');
   const [profileImage, setProfileImage] = useState<File | string | null>(
     MAN.src
@@ -116,7 +118,7 @@ export default function Security_Profile_Form({
     isLoading: isLoadingFetch,
     refetch,
   } = useQuery<SecurityProfileResponse>({
-    queryKey: ['securityProfile', security_Id],
+    queryKey: ['security-profile', security_Id],
     queryFn: () => getSecurityProfile({ security_Id: security_Id as number }),
     enabled: (isDisplayMode || isEditMode) && !!security_Id,
   });
@@ -215,6 +217,8 @@ export default function Security_Profile_Form({
         form.resetDirty();
         setProfileImage(security_user.profile_image || MAN.src);
         refetch();
+
+        queryClient.invalidateQueries({ queryKey: ['security-profile'] });
       } else {
         throw new Error(data.error || 'فشل في تحديث الملف الشخصي للأمن');
       }
@@ -249,6 +253,7 @@ export default function Security_Profile_Form({
           position: 'top-left',
           withBorder: true,
         });
+        queryClient.invalidateQueries({ queryKey: ['securities'] });
         router.push(GENERAL_ACTOR_ROUTES.SECURITIES);
       } else {
         throw new Error(data.error || 'فشل في إضافة الأمن الجديد');

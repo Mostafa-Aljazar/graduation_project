@@ -8,7 +8,6 @@ export const fakeComplaints: Complaint[] = [
     {
         id: 1,
         date: '2024-10-20',
-        time: '10:30',
         sender: {
             id: 1,
             name: 'محمد حسن',
@@ -28,7 +27,6 @@ export const fakeComplaints: Complaint[] = [
     {
         id: 2,
         date: '2024-10-20',
-        time: '11:00',
         sender: {
             id: 2,
             name: 'علي كمال',
@@ -48,7 +46,6 @@ export const fakeComplaints: Complaint[] = [
     {
         id: 3,
         date: '2024-10-19',
-        time: '09:00',
         sender: {
             id: 3,
             name: 'فاطمة ناصر',
@@ -68,7 +65,6 @@ export const fakeComplaints: Complaint[] = [
     {
         id: 4,
         date: '2024-10-18',
-        time: '14:15',
         sender: {
             id: 4,
             name: 'هالة خليل',
@@ -88,7 +84,6 @@ export const fakeComplaints: Complaint[] = [
     {
         id: 5,
         date: '2024-10-18',
-        time: '15:00',
         sender: {
             id: 5,
             name: 'سليم عماد',
@@ -108,7 +103,6 @@ export const fakeComplaints: Complaint[] = [
     {
         id: 6,
         date: '2024-10-17',
-        time: '08:45',
         sender: {
             id: 6,
             name: 'أحمد جهاد',
@@ -128,7 +122,6 @@ export const fakeComplaints: Complaint[] = [
     {
         id: 7,
         date: '2024-10-17',
-        time: '12:00',
         sender: {
             id: 7,
             name: 'عادل سمير',
@@ -148,7 +141,6 @@ export const fakeComplaints: Complaint[] = [
     {
         id: 8,
         date: '2024-10-16',
-        time: '10:30',
         sender: {
             id: 8,
             name: 'سماح نبيل',
@@ -168,7 +160,6 @@ export const fakeComplaints: Complaint[] = [
     {
         id: 9,
         date: '2024-10-15',
-        time: '16:00',
         sender: {
             id: 9,
             name: 'حسين نمر',
@@ -188,7 +179,6 @@ export const fakeComplaints: Complaint[] = [
     {
         id: 10,
         date: '2024-10-14',
-        time: '09:45',
         sender: {
             id: 10,
             name: 'ليلى جهاد',
@@ -214,7 +204,7 @@ export const fakeComplaintsResponse = ({
     status = COMPLAINTS_STATUS.ALL,
     date_range = [null, null],
     search = '',
-    type,
+    complaint_type,
     role,
     actor_Id,
 }: GetCommonComplaintsProps): ComplaintResponse => {

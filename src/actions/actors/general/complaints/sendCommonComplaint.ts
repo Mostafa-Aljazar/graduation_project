@@ -4,7 +4,6 @@ import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.t
 import { USER_RANK, USER_TYPE, UserRank, UserType } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
-
 export interface sendCommonComplaintProps {
     actor_Id: number;
     role: Exclude<
@@ -27,27 +26,21 @@ export const sendCommonComplaint = async ({
     content
 }: sendCommonComplaintProps): Promise<modalActionResponse> => {
 
-
-
-    // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: 200,
         message: `تم ارسال الشكوي بنجاح`,
-
     }
-    // Simulate API delay
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 2000);
+        }, 500);
     });
 
     /////////////////////////////////////////////////////////////
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
-
     try {
-        const response = await AqsaAPI.post("/complaints/send-complaint", {
+        const response = await AqsaAPI.post<modalActionResponse>("/complaints/send-complaint", {
             actor_Id,
             role,
             reception,
@@ -59,6 +52,7 @@ export const sendCommonComplaint = async ({
             status: 200,
             message: `تم ارسال الشكوي بنجاح`,
         };
+
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء ارسال الشكوي";

@@ -62,14 +62,10 @@ export const addNewSecurity = async ({
     };
 
     try {
-        const response = await AqsaAPI.post("/securities/add", apiPayload);
+        const response = await AqsaAPI.post<SecurityProfileResponse>("/securities/add", apiPayload);
 
         if (response.data?.user) {
-            return {
-                status: 201,
-                message: "تم إضافة الامن الجديد بنجاح",
-                user: response.data.user,
-            };
+            return response.data
         }
 
         throw new Error("فشل في إضافة الامن الجديد");

@@ -16,24 +16,23 @@ export const deleteCommonComplaint = async ({
     role,
 }: deleteCommonComplaintProps): Promise<modalActionResponse> => {
 
-
-    // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: 200,
         message: `تم حذف الشكوى بنجاح`,
 
     }
-    // Simulate API delay
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 1000);
+        }, 500);
     });
 
-    // Real implementation with filters
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.delete(`/complaints/${complaint_Id}`, {
+        const response = await AqsaAPI.delete<modalActionResponse>(`/complaints/${complaint_Id}`, {
             params: {
                 actor_Id,
                 role
@@ -44,6 +43,7 @@ export const deleteCommonComplaint = async ({
             status: 200,
             message: `تم حذف الشكوى بنجاح`,
         };
+
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء حذف الشكوى";

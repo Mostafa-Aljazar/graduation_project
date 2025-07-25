@@ -57,7 +57,7 @@ export default function Security_Tasks_Content({
   }
 
   return (
-    <Box dir='rtl' w='100%' p='md'>
+    <Box dir='rtl' w='100%' p='sm'>
       <Group justify='end'>
         <Button
           onClick={open}

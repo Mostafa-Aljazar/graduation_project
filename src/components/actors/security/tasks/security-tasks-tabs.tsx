@@ -14,7 +14,7 @@ import {
   Text,
   ThemeIcon,
 } from '@mantine/core';
-import { parseAsStringEnum, useQueryStates } from 'nuqs';
+import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import { useState, useRef } from 'react';
 
 export default function Security_Tasks_Header_Tabs() {
@@ -22,6 +22,7 @@ export default function Security_Tasks_Header_Tabs() {
     'tasks-tab': parseAsStringEnum<TASKS_TABS>(
       Object.values(TASKS_TABS)
     ).withDefault(TASKS_TABS.COMPLETED_TASKS),
+    'tasks-page': parseAsInteger.withDefault(1),
   });
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
@@ -88,7 +89,7 @@ export default function Security_Tasks_Header_Tabs() {
         variant='unstyled'
         onChange={(value: string | null) => {
           if (value) {
-            setQuery({ 'tasks-tab': value as TASKS_TABS });
+            setQuery({ 'tasks-tab': value as TASKS_TABS, 'tasks-page': 1 });
           }
         }}
         w={'100%'}
