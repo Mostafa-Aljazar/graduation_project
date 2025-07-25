@@ -1,4 +1,4 @@
-import { Gift, HandHeart, MessageCircleQuestion, MessageSquareWarning } from "lucide-react";
+import { CalendarClock, CheckCircle2, Gift, HandHeart, MessageCircleQuestion, MessageSquareWarning } from "lucide-react";
 
 
 
@@ -167,6 +167,24 @@ export const COMPLAINTS_STATUS_LABELS: Record<COMPLAINTS_STATUS, string> = {
 };
 
 /////////////////////////////////////////////////////////////////////////
+
+// // Define the enum for tasks tabs
+export enum TASKS_TABS {
+    COMPLETED_TASKS = 'COMPLETED_TASKS',
+    UPCOMING_TASKS = 'UPCOMING_TASKS',
+}
+
+// TASKS Tabs configuration
+export const GET_TASKS_TABS = {
+    [TASKS_TABS.COMPLETED_TASKS]: {
+        label: 'مهام منجزة',
+        icon: CheckCircle2,
+    },
+    [TASKS_TABS.UPCOMING_TASKS]: {
+        label: 'مهام قادمة',
+        icon: CalendarClock,
+    },
+} as const;
 
 
 

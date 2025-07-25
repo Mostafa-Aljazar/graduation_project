@@ -35,15 +35,15 @@ export const addNewSecurity = async ({
             additional_notes: payload.additional_notes || "",
         },
     };
-    // Simulate API delay
-    return await new Promise((resolve) => setTimeout(() => resolve(fakeData), 1000));
-
+    return await new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(fakeData);
+        }, 500);
+    });
 
     /////////////////////////////////////////////////////////////
-    // Real API call example:
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
-
-
     const apiPayload = {
         profile_image: payload.profile_image || "",
         name: payload.name,

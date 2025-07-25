@@ -21,19 +21,20 @@ export const getSecurityData = async ({
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 2000);
+        }, 500);
     });
 
     // Real API logic
     try {
-        const params: Record<string, any> = { page, limit };
-        if (search) params.search = search;
-
-        const response = await AqsaAPI.get("/securities", { params });
+        const response = await AqsaAPI.get<SecuritiesResponse>("/securities", {
+            params: {
+                page, limit, search
+            }
+        });
 
         if (response.data?.securities) {
             return {
-                status: "200",
+                status: 200,
                 message: "تم جلب بيانات أفراد الأمن بنجاح",
                 securities: response.data.securities,
                 pagination: response.data.pagination || {

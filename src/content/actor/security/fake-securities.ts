@@ -1,4 +1,5 @@
-import { SecuritiesResponse, Security, SecurityIDsResponse } from "@/@types/actors/general/security-data/securitiesDataResponse.types";
+import { SecuritiesResponse, Security, SecurityIDsResponse, SecurityNamesResponse } from "@/@types/actors/general/security-data/securitiesDataResponse.types";
+import { getSecurityDataProps } from "@/actions/actors/general/security-data/getSecurityData";
 
 export const fakeSecurities: Security[] = [
     {
@@ -203,12 +204,15 @@ export const fakeSecurities: Security[] = [
     }
 ];
 
-type PaginationParams = { page?: number; limit?: number };
+// interface PaginationParams {
+//     page?: number;
+//     limit?: number
+// };
 
-export const fakeSecuritiesResponse = ({ page = 1, limit = 10 }: PaginationParams): SecuritiesResponse => {
+export const fakeSecuritiesResponse = ({ page = 1, limit = 10, search }: getSecurityDataProps): SecuritiesResponse => {
     const paged = fakeSecurities.slice((page - 1) * limit, page * limit);
     return {
-        status: "200",
+        status: 200,
         message: "تم جلب بيانات أفراد الأمن بنجاح",
         securities: paged,
         error: undefined,
@@ -223,34 +227,30 @@ export const fakeSecuritiesResponse = ({ page = 1, limit = 10 }: PaginationParam
 
 export const fakeSecuritiesIDsResponse = (): SecurityIDsResponse => {
     return {
-        status: "200",
+        status: 200,
         message: "تم جلب معرفات أفراد الأمن بنجاح",
         security_Ids: fakeSecurities.map((s) => s.id),
         error: undefined
     };
 };
 
-export const fakeSecuritiesByIdsResponse = ({
-    ids = [],
-    page = 1,
-    limit = 7
-}: {
-    ids: number[];
-    page?: number;
-    limit?: number;
-}): SecuritiesResponse => {
-    const filtered = fakeSecurities.filter((s) => ids.includes(s.id));
-    const paged = filtered.slice((page - 1) * limit, page * limit);
+
+export const fakeSecuritiesNamesResponse = ({ ids }: { ids?: number[]; }): SecurityNamesResponse => {
+    const filtered = ids ? fakeSecurities.filter((s) => ids.includes(s.id)) : fakeSecurities;
     return {
-        status: "200",
-        message: "تم جلب بيانات أفراد الأمن بنجاح",
-        securities: paged,
-        error: undefined,
-        pagination: {
-            page,
-            limit,
-            total_items: filtered.length,
-            total_pages: Math.ceil(filtered.length / limit)
-        }
+        status: 200,
+        message: "تم جلب أسماء أفراد الأمن بنجاح",
+        security_names: filtered.map((s) => ({ id: s.id, name: s.name })),
+        error: undefined
     };
 };
+
+// export const fakeSecuritiesByIdsResponse = ({ ids }: { ids: number[]; }): SecuritiesResponse => {
+//     const filtered = fakeSecurities.filter((s) => ids.includes(s.id));
+//     return {
+//         status: 200,
+//         message: "تم جلب بيانات أفراد الأمن بنجاح",
+//         securities: filtered,
+ 
+//     };
+// };

@@ -14,39 +14,42 @@ export const deleteSecurityTask = async ({
     security_Id,
 }: deleteSecurityTaskProps): Promise<modalActionResponse> => {
 
-
-    // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
+        status: 200,
         message: `تم حذف المهمة بنجاح`,
 
     }
-    // Simulate API delay
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 2000);
+        }, 500);
     });
 
-    // Real implementation with filters
-
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.delete("/security/tasks", {
+        const response = await AqsaAPI.delete<modalActionResponse>("/securities/tasks", {
             params: {
                 task_Id,
                 security_Id,
             },
         });
 
-        return {
-            status: "200",
-            message: `تم حذف المهمة بنجاح`,
-        };
+        if (response.data.status == 200) {
+            return {
+                status: 200,
+                message: `تم حذف المهمة بنجاح`,
+            };
+        }
+
+        throw new Error("حدث خطأ أثناء حذف المهمة");
+
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء حذف المهمة";
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };

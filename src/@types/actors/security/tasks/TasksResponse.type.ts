@@ -1,4 +1,4 @@
-import { TASKS_TABS } from "@/content/actor/security/tasks";
+import { TASKS_TABS } from "../../common-types/index.type";
 
 
 export interface Task {
@@ -11,14 +11,14 @@ export interface Task {
 }
 
 export interface TasksResponse {
-    status: string;
+    status: number;
     message?: string;
     tasks: Task[];
     pagination: {
         page: number;
         limit: number;
-        totalItems: number;
-        totalPages: number;
+        total_items: number;
+        total_pages: number;
     };
     error?: string;
 }

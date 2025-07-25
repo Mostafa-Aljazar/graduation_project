@@ -2,25 +2,23 @@
 
 import { Stack, Group, Text, Flex, Pagination } from '@mantine/core';
 import { MessageCircleWarning } from 'lucide-react';
-import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
+import { parseAsInteger, useQueryStates } from 'nuqs';
 import { Task } from '@/@types/actors/security/tasks/TasksResponse.type';
-import Common_Complaint_Skeleton from '../../general/complaints/complaint/common-complaint-skeleton';
-import Security_Tasks_Card from './task/security-tasks-card';
+import Security_Tasks_Card from './task/security-task-card';
 import Security_Task_Skeleton from './task/security-task-skeleton';
 
 interface SecurityTasksListProps {
   tasks: Task[];
-  totalPages: number;
-  itemsPerPage: number;
+  total_pages: number;
+  limit: number;
   loading: boolean;
   security_Id: number;
 }
 
 export default function Security_Tasks_List({
   tasks,
-  totalPages,
-  itemsPerPage,
+  total_pages,
+  limit,
   loading,
   security_Id,
 }: SecurityTasksListProps) {
@@ -32,7 +30,7 @@ export default function Security_Tasks_List({
     <Stack pos={'relative'}>
       {loading ? (
         <Stack gap='xs'>
-          {Array.from({ length: itemsPerPage }).map((_, index) => (
+          {Array.from({ length: limit }).map((_, index) => (
             <Security_Task_Skeleton key={index} />
           ))}
         </Stack>
@@ -54,12 +52,12 @@ export default function Security_Tasks_List({
           ))}
         </Stack>
       )}
-      {!loading && totalPages > 1 && (
+      {!loading && total_pages > 1 && (
         <Flex justify='center' mt='xl'>
           <Pagination
             value={query['tasks-page']}
             onChange={(value: number) => setQuery({ 'tasks-page': value })}
-            total={totalPages}
+            total={total_pages}
             size='sm'
             radius='xl'
             withControls={false}

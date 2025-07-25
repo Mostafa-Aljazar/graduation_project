@@ -8,7 +8,7 @@ export interface Security {
 }
 
 export interface SecuritiesResponse {
-    status: string;
+    status: number;
     message?: string;
     securities: Security[];
     error?: string;
@@ -20,8 +20,20 @@ export interface SecuritiesResponse {
     };
 }
 
+
+export interface SecurityNamesResponse {
+    status: number;
+    message: string;
+    security_names: {
+        id: number;
+        name: string
+    }[];
+    error?: string;
+}
+
+
 export interface SecurityIDsResponse {
-    status: string;
+    status: number;
     message: string;
     security_Ids: number[];
     error?: string;

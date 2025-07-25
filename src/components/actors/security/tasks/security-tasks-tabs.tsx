@@ -1,6 +1,9 @@
 'use client';
 
-import { GET_TASKS_TABS, TASKS_TABS } from '@/content/actor/security/tasks';
+import {
+  GET_TASKS_TABS,
+  TASKS_TABS,
+} from '@/@types/actors/common-types/index.type';
 import { cn } from '@/utils/cn';
 import {
   Divider,
@@ -49,7 +52,7 @@ export default function Security_Tasks_Header_Tabs() {
             fz={{ base: 14, md: 16 }}
             lh={1.25}
             className={cn(
-              ' !text-nowrap overflow-hidden !overflow-ellipsis',
+              '!overflow-ellipsis overflow-hidden !text-nowrap',
               query['tasks-tab'] === tabKey
                 ? '!text-primary !font-bold'
                 : '!font-medium !text-[#817C74]'

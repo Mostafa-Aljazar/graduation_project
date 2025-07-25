@@ -18,7 +18,6 @@ import { DateTimePicker } from '@mantine/dates';
 import { useForm, zodResolver } from '@mantine/form';
 import { useEffect, useState } from 'react';
 import {
-  CalendarCheck,
   Send,
   X,
   ShieldAlert,
@@ -28,12 +27,15 @@ import {
   ClipboardList,
 } from 'lucide-react';
 import { z } from 'zod';
-import { TASKS_TABS } from '@/content/actor/security/tasks';
 import { addSecurityTask } from '@/actions/actors/security/tasks/addSecurityTask';
 import { updateSecurityTask } from '@/actions/actors/security/tasks/updateSecurityTask';
 import { notifications } from '@mantine/notifications';
 import { Task } from '@/@types/actors/security/tasks/TasksResponse.type';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { TASKS_TABS } from '@/@types/actors/common-types/index.type';
+import { getSecurityData } from '@/actions/actors/general/security-data/getSecurityData';
+import { getSecurityNames } from '@/actions/actors/general/security-data/getSecurityNames';
+import { SecurityNamesResponse } from '@/@types/actors/general/security-data/securitiesDataResponse.types';
 
 const createTaskSchema = z.object({
   title: z.string().min(3, 'العنوان قصير جدًا'),
@@ -87,19 +89,28 @@ export default function Security_Task_Form_Modal({
         type: taskToEdit.type,
       });
     }
-  }, [taskToEdit]);
+  }, [taskToEdit, opened]);
 
-  // TODO: get Security-Data
+  const {
+    data: securityNames,
+    isLoading,
+    error,
+  } = useQuery<SecurityNamesResponse>({
+    queryKey: ['security-names'],
+    queryFn: () => getSecurityNames({}),
+  });
+
   useEffect(() => {
-    setTimeout(() => {
-      setSecurityData([
-        { id: '1', name: 'أحمد علي' },
-        { id: '2', name: 'سعيد يوسف' },
-        { id: '3', name: 'خالد حسن' },
-        { id: '4', name: 'نور الدين' },
-      ]);
-    }, 300);
-  }, []);
+    if (securityNames?.security_names) {
+      const securityNamesMapped = securityNames.security_names.map(
+        (security) => ({
+          ...security,
+          id: security.id.toString(),
+        })
+      );
+      setSecurityData(securityNamesMapped);
+    }
+  }, [securityNames]);
 
   const taskMutation = useMutation({
     mutationFn: async (data: CreateTaskValues) => {
@@ -176,6 +187,7 @@ export default function Security_Task_Form_Modal({
       size='lg'
       pos='relative'
       withCloseButton
+      onClick={(e) => e.stopPropagation()} // ← Add this line
     >
       <LoadingOverlay
         visible={taskMutation.isPending}
@@ -183,7 +195,7 @@ export default function Security_Task_Form_Modal({
         overlayProps={{ radius: 'sm', blur: 0.3 }}
       />
 
-      <form onSubmit={form.onSubmit(handleSubmit)}>
+      <form onSubmit={form.onSubmit(handleSubmit)} data-click='action'>
         <Stack gap={20}>
           <TextInput
             label={labelWithIcon(FileText, 'عنوان المهمة')}
@@ -191,6 +203,9 @@ export default function Security_Task_Form_Modal({
             size='sm'
             radius='md'
             {...form.getInputProps('title')}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
           />
 
           <Textarea
@@ -201,6 +216,9 @@ export default function Security_Task_Form_Modal({
             autosize
             minRows={4}
             {...form.getInputProps('body')}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
           />
 
           <DateTimePicker
@@ -215,6 +233,9 @@ export default function Security_Task_Form_Modal({
               form.setFieldValue('dateTime', new Date(value))
             }
             error={form.errors.dateTime}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
           />
 
           <MultiSelect
@@ -226,6 +247,10 @@ export default function Security_Task_Form_Modal({
             radius='md'
             nothingFoundMessage='لا توجد نتائج'
             {...form.getInputProps('security_men')}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
+            disabled={isLoading}
           />
 
           <Select
@@ -238,6 +263,9 @@ export default function Security_Task_Form_Modal({
               { value: TASKS_TABS.COMPLETED_TASKS, label: 'مهمة مكتملة' },
             ]}
             {...form.getInputProps('type')}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
           />
         </Stack>
 

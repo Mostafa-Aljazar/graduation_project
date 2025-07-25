@@ -1,7 +1,7 @@
 "use server";
 
+import { TASKS_TABS } from "@/@types/actors/common-types/index.type";
 import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
-import { TASKS_TABS } from "@/content/actor/security/tasks";
 import { AqsaAPI } from "@/services";
 
 
@@ -23,27 +23,22 @@ export const addSecurityTask = async ({
     type,
 }: addSecurityTaskProps): Promise<modalActionResponse> => {
 
-
-
-    // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
+        status: 200,
         message: `تم اضافة المهمة بنجاح`,
 
     }
-    // Simulate API delay
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 2000);
+        }, 500);
     });
 
     /////////////////////////////////////////////////////////////
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
-
     try {
-        const response = await AqsaAPI.post('/security/tasks', {
+        const response = await AqsaAPI.post<modalActionResponse>('/securities/tasks/add', {
             security_Id,
             dateTime,
             title,
@@ -52,15 +47,20 @@ export const addSecurityTask = async ({
             type,
         });
 
-        return {
-            status: "200",
-            message: `تم اضافة المهمة بنجاح`,
-        };
+        if (response.data.status == 201) {
+            return {
+                status: 201,
+                message: `تم اضافة المهمة بنجاح`,
+            };
+        }
+
+        throw new Error("حدث خطأ أثناء اضافة المهمة");
+
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء اضافة المهمة";
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };

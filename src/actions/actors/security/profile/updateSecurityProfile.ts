@@ -38,11 +38,15 @@ export const updateSecurityProfile = async ({
         },
     };
 
-    // Simulate API delay
-    return await new Promise((resolve) => setTimeout(() => resolve(fakeData), 1000));
+    return await new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(fakeData);
+        }, 500);
+    });
+
 
     /////////////////////////////////////////////////////////////
-    // Real API call example:
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
 
     const apiPayload = {

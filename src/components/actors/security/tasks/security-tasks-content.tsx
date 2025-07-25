@@ -8,20 +8,17 @@ import {
   parseAsStringEnum,
   useQueryStates,
 } from 'nuqs';
-import { USER_TYPE } from '@/constants/userTypes';
-import { TASKS_TABS } from '@/content/actor/security/tasks';
 import { getSecurityTasks } from '@/actions/actors/security/tasks/getSecurityTasks';
 import { TasksResponse } from '@/@types/actors/security/tasks/TasksResponse.type';
 import Security_Tasks_List from './security-tasks-list';
-import Security_Add_Task from './security-task-form-modal';
+import { useDisclosure } from '@mantine/hooks';
+import Security_Task_Form_Modal from './security-task-form-modal';
+import { CalendarCheck } from 'lucide-react';
+import { TASKS_TABS } from '@/@types/actors/common-types/index.type';
 
 interface SecurityTasksContentProps {
   security_Id: number;
 }
-import { useDisclosure } from '@mantine/hooks';
-// ...
-import Security_Task_Form_Modal from './security-task-form-modal';
-import { CalendarCheck } from 'lucide-react';
 
 export default function Security_Tasks_Content({
   security_Id,
@@ -36,7 +33,7 @@ export default function Security_Tasks_Content({
 
   const [opened, { open, close }] = useDisclosure(false);
 
-  const itemsPerPage = 5;
+  const limit = 5;
 
   const {
     data: tasksData,
@@ -47,7 +44,7 @@ export default function Security_Tasks_Content({
     queryFn: () =>
       getSecurityTasks({
         page: query['tasks-page'],
-        limit: itemsPerPage,
+        limit: limit,
         type: query['tasks-tab'],
         security_Id,
       }),
@@ -79,8 +76,8 @@ export default function Security_Tasks_Content({
       ) : (
         <Security_Tasks_List
           tasks={tasksData?.tasks || []}
-          totalPages={tasksData?.pagination.totalPages || 1}
-          itemsPerPage={tasksData?.pagination.limit || 10}
+          total_pages={tasksData?.pagination.total_pages || 1}
+          limit={tasksData?.pagination.limit || 10}
           loading={isLoading}
           security_Id={security_Id}
         />
@@ -90,7 +87,7 @@ export default function Security_Tasks_Content({
         opened={opened}
         onClose={close}
         security_Id={security_Id}
-        taskToEdit={undefined} // إنشاء فقط
+        taskToEdit={undefined}
       />
     </Box>
   );

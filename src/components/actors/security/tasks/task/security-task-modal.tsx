@@ -10,22 +10,26 @@ import {
   Grid,
   Paper,
   Badge,
+  LoadingOverlay,
 } from '@mantine/core';
-import {
-  CalendarCheck,
-  ClipboardList,
-  Clock,
-  UserRoundCheck,
-  FileText,
-} from 'lucide-react';
+import { ClipboardList, Clock, UserRoundCheck, FileText } from 'lucide-react';
 import { Task } from '@/@types/actors/security/tasks/TasksResponse.type';
-import { TASKS_TABS } from '@/content/actor/security/tasks';
 import { format } from 'date-fns';
+import { TASKS_TABS } from '@/@types/actors/common-types/index.type';
+import { useQuery } from '@tanstack/react-query';
+import { SecurityNamesResponse } from '@/@types/actors/general/security-data/securitiesDataResponse.types';
+import { getSecurityNames } from '@/actions/actors/general/security-data/getSecurityNames';
+import { useEffect, useState } from 'react';
 
 interface SecurityTaskModalProps {
   opened: boolean;
   onClose: () => void;
   task: Task;
+}
+
+interface SecurityMan {
+  id: string;
+  name: string;
 }
 
 export default function Security_Task_Modal({
@@ -35,13 +39,35 @@ export default function Security_Task_Modal({
 }: SecurityTaskModalProps) {
   const isCompleted = task.type === TASKS_TABS.COMPLETED_TASKS;
 
-  // Format dateTime into readable strings
   const formattedDate = task.dateTime
     ? format(new Date(task.dateTime), 'yyyy-MM-dd')
     : '';
   const formattedTime = task.dateTime
     ? format(new Date(task.dateTime), 'HH:mm')
     : '';
+
+  const [securityData, setSecurityData] = useState<SecurityMan[]>([]);
+
+  const {
+    data: securityNames,
+    isLoading,
+    error,
+  } = useQuery<SecurityNamesResponse>({
+    queryKey: ['security-names-by-id', task.id],
+    queryFn: () => getSecurityNames({ ids: task.security_men }),
+  });
+
+  useEffect(() => {
+    if (securityNames?.security_names) {
+      const securityNamesMapped = securityNames.security_names.map(
+        (security) => ({
+          ...security,
+          id: security.id.toString(),
+        })
+      );
+      setSecurityData(securityNamesMapped);
+    }
+  }, [securityNames]);
 
   return (
     <Modal
@@ -57,7 +83,14 @@ export default function Security_Task_Modal({
       }
       classNames={{ title: '!w-full' }}
       centered
+      onClick={(e) => e.stopPropagation()}
     >
+      <LoadingOverlay
+        visible={isLoading}
+        zIndex={49}
+        overlayProps={{ radius: 'sm', blur: 0.3 }}
+      />
+
       <Stack gap='md'>
         <Group mb='xs'>
           <Badge
@@ -118,7 +151,7 @@ export default function Security_Task_Modal({
                     عناصر الأمن
                   </Text>
                   <Text size='sm'>
-                    {task.security_men.map((id) => `#${id}`).join(', ')}
+                    {securityData.map((item) => `# ${item.name}`).join(' ')}
                   </Text>
                 </Stack>
               </Group>

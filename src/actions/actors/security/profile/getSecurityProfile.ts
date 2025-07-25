@@ -16,17 +16,13 @@ export const getSecurityProfile = async ({ security_Id }: getSecurityProfileProp
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 1000);
+        }, 500);
     });
 
-    // Real implementation below, if needed
-
-
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-
-        /////////////////////////////////////////////////////////////
-        // FIXME: THIS IS THE REAL IMPLEMENTATION
-        /////////////////////////////////////////////////////////////
         const response = await AqsaAPI.get(`/securities/${security_Id}/profile`);
 
         if (response.data?.user) {
@@ -40,7 +36,7 @@ export const getSecurityProfile = async ({ security_Id }: getSecurityProfileProp
     } catch (error: any) {
         const errorMessage = error.response?.data?.error || error.message || "حدث خطأ أثناء تحميل الملف الشخصي";
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             user: {} as SecurityProfile,
             error: errorMessage,

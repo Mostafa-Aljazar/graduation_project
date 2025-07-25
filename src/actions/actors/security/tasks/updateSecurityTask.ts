@@ -1,7 +1,7 @@
 'use server';
 
+import { TASKS_TABS } from "@/@types/actors/common-types/index.type";
 import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
-import { TASKS_TABS } from "@/content/actor/security/tasks";
 import { AqsaAPI } from "@/services";
 
 export interface updateSecurityTaskProps {
@@ -23,25 +23,22 @@ export const updateSecurityTask = async ({
     security_men,
     type,
 }: updateSecurityTaskProps): Promise<modalActionResponse> => {
-    // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
+        status: 200,
         message: `تم تعديل المهمة بنجاح`,
     };
 
-    // Simulate API delay
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 1500);
+        }, 500);
     });
 
     /////////////////////////////////////////////////////////////
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
-
     try {
-        const response = await AqsaAPI.put(`/security/tasks/${task_Id}`, {
+        const response = await AqsaAPI.put<modalActionResponse>(`/securities/tasks/${task_Id}`, {
             security_Id,
             dateTime,
             title,
@@ -50,15 +47,20 @@ export const updateSecurityTask = async ({
             type,
         });
 
-        return {
-            status: "200",
-            message: `تم تعديل المهمة بنجاح`,
-        };
+        if (response.data.status == 200) {
+            return {
+                status: 200,
+                message: `تم تعديل المهمة بنجاح`,
+            };
+        }
+
+        throw new Error("حدث خطأ أثناء تعديل المهمة");
+
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء تعديل المهمة";
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };

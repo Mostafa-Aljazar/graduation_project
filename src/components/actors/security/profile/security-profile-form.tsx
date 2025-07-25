@@ -55,7 +55,7 @@ import Upload_Media from '../../common/upload-files/Upload_Media';
 
 interface SecurityPersonProps {
   security_Id?: number;
-  destination?: string;
+  destination?: ACTION_ADD_EDIT_DISPLAY;
 }
 
 export default function Security_Profile_Form({
@@ -83,9 +83,11 @@ export default function Security_Profile_Form({
   const isAddMode =
     (isManager || isSecurityOfficer) &&
     destination === ACTION_ADD_EDIT_DISPLAY.ADD;
+
   const isEditMode =
     (isManager || isSecurityOfficer || isOwner) &&
     query === ACTION_ADD_EDIT_DISPLAY.EDIT;
+
   const isDisplayMode =
     query === ACTION_ADD_EDIT_DISPLAY.DISPLAY &&
     destination !== ACTION_ADD_EDIT_DISPLAY.ADD;
@@ -625,29 +627,34 @@ export default function Security_Profile_Form({
             )}
           </SimpleGrid>
 
-          <Box className='bg-gray-50 shadow-md rounded-lg' p={16}>
-            <Textarea
-              label={
-                <Text
-                  fz={18}
-                  fw={600}
-                  mb={4}
-                  className='!text-primary !text-nowrap'
-                >
-                  ملاحظات إضافية :
-                </Text>
-              }
-              placeholder='ادخل ملاحظات إضافية...'
-              size='sm'
-              w='100%'
-              classNames={{
-                input:
-                  'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
-              }}
-              {...form.getInputProps('additional_notes')}
-              disabled={isDisplayMode}
-            />
-          </Box>
+          {isEditMode ||
+            isAddMode ||
+            (form.getValues().additional_notes &&
+              form.getValues().additional_notes !== '' && (
+                <Box className='bg-gray-50 shadow-md rounded-lg' p={16}>
+                  <Textarea
+                    label={
+                      <Text
+                        fz={18}
+                        fw={600}
+                        mb={4}
+                        className='!text-primary !text-nowrap'
+                      >
+                        ملاحظات إضافية :
+                      </Text>
+                    }
+                    placeholder='ادخل ملاحظات إضافية...'
+                    size='sm'
+                    w='100%'
+                    classNames={{
+                      input:
+                        'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
+                    }}
+                    {...form.getInputProps('additional_notes')}
+                    disabled={isDisplayMode}
+                  />
+                </Box>
+              ))}
 
           {(isEditMode || isAddMode) && (
             <Group justify='space-between' mt={20}>
