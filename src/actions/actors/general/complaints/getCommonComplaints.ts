@@ -31,34 +31,28 @@ export async function getCommonComplaints({
 
     const fakeResponse = fakeComplaintsResponse({ page, limit, status, date_range, search, complaint_type, role, actor_Id })
 
-    return new Promise((resolve) => setTimeout(() => resolve(fakeResponse), 1000));
+    return new Promise((resolve) => setTimeout(() => resolve(fakeResponse), 500));
 
-
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post('/complaints', {
-            actor_Id,
-            role,
-            page,
-            limit,
-            complaint_type,
-            status,
-            date_range,
-            search: search.trim(),
-        });
-
-
-        return {
-            status: 200,
-            message: 'تم جلب الشكاوى بنجاح',
-            complaints: response.data.complaints,
-            pagination: response.data.pagination || {
+        const response = await AqsaAPI.get<ComplaintResponse>('/complaints', {
+            params: {
+                actor_Id,
+                role,
                 page,
                 limit,
-                total_items: response.data.complaints.length,
-                total_pages: Math.ceil(response.data.complaints.length / limit),
-            },
-        };
+                complaint_type,
+                status,
+                date_range,
+                search: search.trim(),
+            }
+        });
 
+        if (response.data?.complaints) {
+            return response.data
+        }
 
         throw new Error("بيانات الشكاوى غير متوفرة");
 

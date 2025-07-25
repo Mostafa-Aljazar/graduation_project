@@ -1,17 +1,5 @@
-import React from 'react';
+import Displaced_Profile_Form from '@/components/actors/displaced/profile/displaced-profile-form';
 
 export default function Displaced_Add() {
-  return <div>Displaced_Add</div>;
+  return <Displaced_Profile_Form destination='ADD' />;
 }
-
-// import Displaced_Person from '@/components/actors/displaced/profile/displaced-profile';
-
-// export default async function Displaced_Profile({
-//   params,
-// }: {
-//   params: Promise<{ displaced_Id: string }>;
-// }) {
-//   const { displaced_Id } = await params;
-
-//   return <Displaced_Person displaced_Id={Number(displaced_Id)} />;
-// }

@@ -38,7 +38,7 @@ export default function Security_Delete_Task_Modal({
           position: 'top-left',
           withBorder: true,
         });
-        queryClient.invalidateQueries({ queryKey: ['complaints'] });
+        queryClient.invalidateQueries({ queryKey: ['security-tasks'] });
         close();
       } else {
         throw new Error(data.error || 'فشل في الحذف');

@@ -65,11 +65,11 @@ export default function Security_Task_Actions({
       fz={16}
       fw={500}
       className={cn(
-        '!text-dark !rounded-none hover:!bg-second-light',
+        'hover:!bg-second-light !rounded-none !text-dark',
         index + 1 !== ACTIONS.length && '!border-gray-100 !border-0 !border-b-1'
       )}
       onClick={(e) => {
-        e.stopPropagation(); // إضافة هذه السطر لمنع تصاعد الحدث
+        e.stopPropagation();
         item.action();
       }}
     >

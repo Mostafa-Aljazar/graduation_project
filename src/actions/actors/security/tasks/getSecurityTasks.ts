@@ -1,17 +1,15 @@
 'use server';
 
 import { Task, TasksResponse } from "@/@types/actors/security/tasks/TasksResponse.type";
-import { TASKS_TABS } from "@/content/actor/security/tasks";
-import { FAKE_TASKS } from "@/content/actor/security/fake-security-tasks";
+import { FAKE_TASKS, getFakeTasksResponse } from "@/content/actor/security/fake-security-tasks";
 import { AqsaAPI } from "@/services";
-import { USER_TYPE, UserType } from "@/constants/userTypes";
+import { TASKS_TABS } from "@/@types/actors/common-types/index.type";
 
 interface GetSecurityTasksProps {
     page?: number;
     limit?: number;
     type?: TASKS_TABS;
     security_Id: number;
-
 }
 
 export async function getSecurityTasks({
@@ -20,70 +18,42 @@ export async function getSecurityTasks({
     security_Id,
     type,
 }: GetSecurityTasksProps): Promise<TasksResponse> {
-    // Filter fake tasks based on type (tab)
-    let filteredTasks: Task[] = FAKE_TASKS;
 
-    if (type) {
-        filteredTasks = filteredTasks.filter(task => task.type === type);
-    }
-
-    const totalItems = filteredTasks.length;
-    const totalPages = Math.ceil(totalItems / limit);
-    const paginatedTasks = filteredTasks.slice((page - 1) * limit, page * limit);
-
-    return new Promise((resolve) =>
+    const fakeData: TasksResponse = getFakeTasksResponse({ limit, page, type });
+    return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve({
-                status: '200',
-                message: 'تم جلب المهام بنجاح',
-                tasks: paginatedTasks,
-                pagination: {
-                    page,
-                    limit,
-                    totalItems,
-                    totalPages,
-                },
-            });
-        }, 500)
-    );
+            resolve(fakeData);
+        }, 500);
+    });
 
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-
-        const params: Record<string, string | number> = {
-            page,
-            limit,
-            security_Id,
-        };
-
-        const { data } = await AqsaAPI.get('/security/tasks', { params });
-
-        if (!data?.complaints) {
-            throw new Error('بيانات المهام غير متوفرة');
-        }
-
-        const totalItems = data.pagination?.totalItems || data.complaints.length;
-        const totalPages = Math.ceil(totalItems / limit);
-
-        return {
-            status: '200',
-            message: 'تم جلب المهام بنجاح',
-            tasks: data.complaints,
-            pagination: {
+        const response = await AqsaAPI.get<TasksResponse>('/securities/tasks', {
+            params: {
                 page,
                 limit,
-                totalItems,
-                totalPages,
-            },
-        };
+                security_Id,
+                type
+            }
+        });
+
+        if (response.data?.tasks) {
+            return response.data
+        }
+
+        throw new Error('بيانات المهام غير متوفرة');
+
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || 'حدث خطأ أثناء جلب المهام';
 
         return {
-            status: error.response?.status?.toString() || '500',
+            status: error.response?.status || 500,
             message: errorMessage,
             tasks: [],
-            pagination: { page: 1, limit: 0, totalItems: 0, totalPages: 0 },
+            pagination: { page: 1, limit: 0, total_items: 0, total_pages: 0 },
             error: errorMessage,
         };
     }

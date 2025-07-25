@@ -14,13 +14,13 @@ import {
 import { useRouter } from 'next/navigation';
 import { ComponentType, useState } from 'react';
 import useAuth from '@/hooks/useAuth';
-import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
 import { SECURITY_ROUTES_fUNC } from '@/constants/routes';
 import { cn } from '@/utils/cn';
 import Delete_Security_Members_Modal from './modals/delete-security-members-modal';
 import Call_Security_Members_Modal from './modals/call-security-members-modal';
 import Meeting_Security_Members_Modal from './modals/meeting-security-members-modal';
 import Update_Security_Members_Modal from './modals/update-security-members-modal';
+import { ACTION_ADD_EDIT_DISPLAY } from '@/@types/actors/common-types/index.type';
 
 interface ActionItem {
   label: string;
@@ -106,11 +106,11 @@ export default function Security_Data_Table_Actions({
         ];
     }
 
-    if ((isDelegate || isDisplaced) && security_Id)
-      return [
-        singleViewAction,
-        { label: 'اجتماع', icon: Users, action: () => openModal('meeting') },
-      ];
+    // if ((isDelegate || isDisplaced) && security_Id)
+    //   return [
+    //     singleViewAction,
+    //     { label: 'اجتماع', icon: Users, action: () => openModal('meeting') },
+    //   ];
 
     return [];
   };
@@ -131,7 +131,7 @@ export default function Security_Data_Table_Actions({
       fz={16}
       fw={500}
       className={cn(
-        '!text-dark !rounded-none hover:!bg-second-light',
+        'hover:!bg-second-light !rounded-none !text-dark',
         index + 1 !== ACTIONS.length && '!border-gray-100 !border-0 !border-b-1'
       )}
       onClick={item.action}

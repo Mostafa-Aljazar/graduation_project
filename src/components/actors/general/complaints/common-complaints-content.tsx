@@ -32,9 +32,9 @@ export default function Common_Complaints_Content({
   const [query, setQuery] = useQueryStates({
     'complaints-tab': parseAsStringEnum<COMPLAINTS_TABS>(
       Object.values(COMPLAINTS_TABS)
-    ).withDefault(COMPLAINTS_TABS.RECEIVED_COMPLAINTS),
-    search: parseAsString.withDefault(''),
+    ).withDefault(COMPLAINTS_TABS.SENT_COMPLAINTS),
     'complaints-page': parseAsInteger.withDefault(1),
+    search: parseAsString.withDefault(''),
   });
 
   const [localFilters, setLocalFilters] =
@@ -43,7 +43,7 @@ export default function Common_Complaints_Content({
       date_range: [null, null],
     });
 
-  const itemsPerPage = 5;
+  const limit = 5;
   const role = rank;
 
   const {
@@ -55,13 +55,15 @@ export default function Common_Complaints_Content({
     queryFn: () =>
       getCommonComplaints({
         page: query['complaints-page'],
-        limit: itemsPerPage,
+        limit: limit,
         status: localFilters.status || COMPLAINTS_STATUS.ALL,
         date_range: localFilters.date_range,
         search: query.search,
         complaint_type:
           role == USER_TYPE.DISPLACED
             ? COMPLAINTS_TABS.SENT_COMPLAINTS
+            : role == USER_TYPE.MANAGER
+            ? COMPLAINTS_TABS.RECEIVED_COMPLAINTS
             : query['complaints-tab'],
         role,
         actor_Id: actor_Id!,
@@ -76,13 +78,14 @@ export default function Common_Complaints_Content({
   }
 
   return (
-    <Box dir='rtl' w='100%' p='md'>
+    <Box dir='rtl' w='100%' p='sm'>
       <Common_Complaints_Filters
         setLocalFilters={setLocalFilters}
         complaintsNum={complaintsData?.pagination.total_items ?? 0}
         actor_Id={actor_Id}
         role={role}
       />
+
       {error || complaintsData?.error ? (
         <Text c='red' mt='md'>
           {complaintsData?.error ||

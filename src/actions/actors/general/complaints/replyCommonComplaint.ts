@@ -18,27 +18,22 @@ export const replyCommonComplaint = async ({
     reply,
 }: replyCommonComplaintProps): Promise<modalActionResponse> => {
 
-
-
-    // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: 200,
         message: `تم ارسال الرد بنجاح`,
 
     }
-    // Simulate API delay
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 2000);
+        }, 500);
     });
 
     /////////////////////////////////////////////////////////////
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
-
     try {
-        const response = await AqsaAPI.post(`/complaints/${complaint_Id}/reply`, {
+        const response = await AqsaAPI.post<modalActionResponse>(`/complaints/${complaint_Id}/reply`, {
             actor_Id,
             role,
             reply,
@@ -48,6 +43,7 @@ export const replyCommonComplaint = async ({
             status: 200,
             message: `تم ارسال الرد بنجاح`,
         };
+
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء ارسال الرد";

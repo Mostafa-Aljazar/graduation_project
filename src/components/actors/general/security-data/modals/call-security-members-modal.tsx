@@ -3,7 +3,7 @@ import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.t
 import {
   sendCallRequest,
   sendCallRequestProps,
-} from '@/actions/actors/general/displaced/sendCallRequest';
+} from '@/actions/actors/general/displaceds/sendCallRequest';
 import {
   sendSecurityCallRequest,
   sendSecurityCallRequestProps,

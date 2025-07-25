@@ -3,7 +3,7 @@ import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.t
 import {
   sendCallRequest,
   sendCallRequestProps,
-} from '@/actions/actors/general/displaced/sendCallRequest';
+} from '@/actions/actors/general/displaceds/sendCallRequest';
 import { Button, Group, Modal, Stack, Text, Textarea } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useForm, zodResolver } from '@mantine/form';

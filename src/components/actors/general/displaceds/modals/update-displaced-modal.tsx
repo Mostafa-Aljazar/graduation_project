@@ -3,7 +3,7 @@ import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.t
 import {
   sendUpdateRequest,
   sendUpdateRequestProps,
-} from '@/actions/actors/general/displaced/sendUpdateRequest';
+} from '@/actions/actors/general/displaceds/sendUpdateRequest';
 import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';

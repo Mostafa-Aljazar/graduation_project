@@ -1,4 +1,4 @@
-import { Security_Person } from '@/components/actors/security/profile/security-profile';
+import Security_Profile_Form from '@/components/actors/security/profile/security-profile-form';
 
 export default async function Security_Profile({
   params,
@@ -7,5 +7,5 @@ export default async function Security_Profile({
 }) {
   const { security_Id } = await params;
 
-  return <Security_Person security_Id={Number(security_Id)} />;
+  return <Security_Profile_Form security_Id={Number(security_Id)} />;
 }

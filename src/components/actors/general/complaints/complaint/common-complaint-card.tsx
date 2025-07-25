@@ -43,7 +43,7 @@ export default function Common_Complaint_Card({
   const [query] = useQueryStates({
     'complaints-tab': parseAsStringEnum<COMPLAINTS_TABS>(
       Object.values(COMPLAINTS_TABS)
-    ).withDefault(COMPLAINTS_TABS.RECEIVED_COMPLAINTS),
+    ).withDefault(COMPLAINTS_TABS.SENT_COMPLAINTS),
   });
 
   const { user } = useAuth();
@@ -68,7 +68,7 @@ export default function Common_Complaint_Card({
           position: 'top-left',
           withBorder: true,
         });
-        queryClient.invalidateQueries({ queryKey: ['complaints'] });
+        queryClient.invalidateQueries({ queryKey: ['common-complaints'] });
       } else {
         throw new Error(data.error || 'فشل في تغيير حالة الشكوى');
       }
@@ -119,7 +119,7 @@ export default function Common_Complaint_Card({
         radius='lg'
         shadow='sm'
         className={cn(
-          '!border !border-gray-300 cursor-pointer transition-all hover:shadow-md',
+          'hover:shadow-md !border !border-gray-300 transition-all cursor-pointer',
           complaint.status === COMPLAINTS_STATUS.READ
             ? '!bg-gray-50'
             : '!bg-red-100'
@@ -144,7 +144,8 @@ export default function Common_Complaint_Card({
           <Stack flex={1} gap={4}>
             <Flex justify='space-between' wrap='wrap'>
               <Text size='xs' c='dimmed'>
-                {complaint.date} - {complaint.time}
+                {/* {complaint.date} - {complaint.time} */}
+                {complaint.date}
               </Text>
               <Text size='xs' c='dimmed'>
                 الحالة:{' '}

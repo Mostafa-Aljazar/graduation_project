@@ -1,9 +1,8 @@
 'use server';
 
-import { ISecurityIDsResponse } from "@/@types/actors/general/security-data/securitiesDataResponse.types";
+import { SecurityIDsResponse } from "@/@types/actors/general/security-data/securitiesDataResponse.types";
 import { fakeSecuritiesIDsResponse } from "@/content/actor/security/fake-securities";
 import { AqsaAPI } from "@/services";
-import { delegatesFilterValues } from "@/validation/actor/general/delegates-filter-form";
 
 export interface getSecuritiesIDsProps {
     search?: string;
@@ -11,30 +10,30 @@ export interface getSecuritiesIDsProps {
 
 export const getSecuritiesIds = async ({
     search,
-}: getSecuritiesIDsProps): Promise<ISecurityIDsResponse> => {
+}: getSecuritiesIDsProps): Promise<SecurityIDsResponse> => {
     // FIXME: remove this fake logic in production
-    const fakeData: ISecurityIDsResponse = fakeSecuritiesIDsResponse();
+    const fakeData: SecurityIDsResponse = fakeSecuritiesIDsResponse();
 
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 2000);
+        }, 1000);
     });
 
     // Real implementation
     try {
-        const params: Record<string, any> = {};
-
-
-        if (search) params.search = search;
+        const params = {
+            ...(search && { search }),
+        };
 
         const response = await AqsaAPI.get('/securities/ids', { params });
 
-        if (response.data?.securityIds) {
+
+        if (response.data?.security_Ids) {
             return {
                 status: '200',
                 message: 'تم جلب معرفات أفراد الأمن بنجاح',
-                securityIds: response.data.securityIds,
+                security_Ids: response.data.security_Ids,
             };
         }
 
@@ -46,9 +45,9 @@ export const getSecuritiesIds = async ({
             'حدث خطأ أثناء جلب معرفات أفراد الأمن';
 
         return {
-            status: error.response?.status?.toString() || '500',
+            status: error.response?.status || 500,
             message: errorMessage,
-            securityIds: [],
+            security_Ids: [],
             error: errorMessage,
         };
     }

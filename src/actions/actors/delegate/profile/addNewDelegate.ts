@@ -39,7 +39,7 @@ export const addNewDelegate = async ({ payload }: addNewDelegateProps): Promise<
         // FIXME: THIS IS THE REAL IMPLEMENTATION
         /////////////////////////////////////////////////////////////
 
-        const response = await AqsaAPI.post("/manager/delegates", payload); // Assuming a manager endpoint for adding delegates
+        const response = await AqsaAPI.post("/manager/delegates/add", payload); // Assuming a manager endpoint for adding delegates
 
         if (response.data?.user) {
             return {

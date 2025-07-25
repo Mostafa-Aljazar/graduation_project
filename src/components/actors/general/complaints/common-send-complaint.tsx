@@ -109,7 +109,6 @@ export default function Common_Send_Complaint() {
   });
 
   const handleSubmit = (values: commonSendComplaintFormValues) => {
-    // console.log('🚀 ~ handleSubmit ~ values:', values);
     if (!user?.id || !user?.role) return;
 
     sendCommonComplaintMutation.mutate({

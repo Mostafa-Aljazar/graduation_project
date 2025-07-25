@@ -5,7 +5,6 @@ import { COMPLAINTS_STATUS } from "../../common-types/index.type";
 export interface Complaint {
     id: number;
     date: string;
-    time: string;
     sender: { id: Number, name: string, image: string, role: UserType | UserRank };
     receiver: { id: Number, name: string, image: string, role: UserType | UserRank };
     title: string;

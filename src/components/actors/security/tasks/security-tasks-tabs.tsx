@@ -1,6 +1,9 @@
 'use client';
 
-import { GET_TASKS_TABS, TASKS_TABS } from '@/content/actor/security/tasks';
+import {
+  GET_TASKS_TABS,
+  TASKS_TABS,
+} from '@/@types/actors/common-types/index.type';
 import { cn } from '@/utils/cn';
 import {
   Divider,
@@ -11,7 +14,7 @@ import {
   Text,
   ThemeIcon,
 } from '@mantine/core';
-import { parseAsStringEnum, useQueryStates } from 'nuqs';
+import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import { useState, useRef } from 'react';
 
 export default function Security_Tasks_Header_Tabs() {
@@ -19,6 +22,7 @@ export default function Security_Tasks_Header_Tabs() {
     'tasks-tab': parseAsStringEnum<TASKS_TABS>(
       Object.values(TASKS_TABS)
     ).withDefault(TASKS_TABS.COMPLETED_TASKS),
+    'tasks-page': parseAsInteger.withDefault(1),
   });
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
@@ -49,7 +53,7 @@ export default function Security_Tasks_Header_Tabs() {
             fz={{ base: 14, md: 16 }}
             lh={1.25}
             className={cn(
-              ' !text-nowrap overflow-hidden !overflow-ellipsis',
+              '!overflow-ellipsis overflow-hidden !text-nowrap',
               query['tasks-tab'] === tabKey
                 ? '!text-primary !font-bold'
                 : '!font-medium !text-[#817C74]'
@@ -85,7 +89,7 @@ export default function Security_Tasks_Header_Tabs() {
         variant='unstyled'
         onChange={(value: string | null) => {
           if (value) {
-            setQuery({ 'tasks-tab': value as TASKS_TABS });
+            setQuery({ 'tasks-tab': value as TASKS_TABS, 'tasks-page': 1 });
           }
         }}
         w={'100%'}

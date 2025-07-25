@@ -3,7 +3,7 @@ import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.t
 import {
   sendMeetingRequest,
   sendMeetingRequestProps,
-} from '@/actions/actors/general/displaced/sendMeetingRequest';
+} from '@/actions/actors/general/displaceds/sendMeetingRequest';
 import { Button, Group, Modal, Stack, Text, Textarea } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useForm, zodResolver } from '@mantine/form';

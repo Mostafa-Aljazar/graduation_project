@@ -1,304 +1,256 @@
+import { SecuritiesResponse, Security, SecurityIDsResponse, SecurityNamesResponse } from "@/@types/actors/general/security-data/securitiesDataResponse.types";
+import { getSecurityDataProps } from "@/actions/actors/general/security-data/getSecurityData";
 
-import { ISecuritiesResponse, ISecurity, ISecurityIDsResponse } from "@/@types/actors/general/security-data/securitiesDataResponse.types";
-import { GENDER, MATERIAL_STATUS } from "@/content/actor/delegate/profile-form";
-
-
-export const fakeSecurities: ISecurity[] = [
+export const fakeSecurities: Security[] = [
     {
         id: 1,
         name: "محمد عادل",
-        gender: GENDER.MALE,
         identity: "405100001",
-        mobileNumber: "0599000001",
-        socialStatus: MATERIAL_STATUS.MARRIED,
+        mobile_number: "0599000001",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 2,
         name: "آية رامي",
-        gender: GENDER.FEMALE,
         identity: "405100002",
-        mobileNumber: "0599000002",
-        socialStatus: MATERIAL_STATUS.SINGLE,
+        mobile_number: "0599000002",
         job: "SECURITY_OFFICER",
         role: "SECURITY"
     },
     {
         id: 3,
         name: "أحمد نبيل",
-        gender: GENDER.MALE,
         identity: "405100003",
-        mobileNumber: "0599000003",
-        socialStatus: MATERIAL_STATUS.SINGLE,
+        mobile_number: "0599000003",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 4,
         name: "سارة عيسى",
-        gender: GENDER.FEMALE,
         identity: "405100004",
-        mobileNumber: "0599000004",
-        socialStatus: MATERIAL_STATUS.WIDOWED,
+        mobile_number: "0599000004",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 5,
         name: "جهاد عماد",
-        gender: GENDER.MALE,
         identity: "405100005",
-        mobileNumber: "0599000005",
-        socialStatus: MATERIAL_STATUS.MARRIED,
+        mobile_number: "0599000005",
         job: "SECURITY_OFFICER",
         role: "SECURITY"
     },
     {
         id: 6,
         name: "رهف حسين",
-        gender: GENDER.FEMALE,
         identity: "405100006",
-        mobileNumber: "0599000006",
-        socialStatus: MATERIAL_STATUS.MARRIED,
+        mobile_number: "0599000006",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 7,
         name: "باسل وائل",
-        gender: GENDER.MALE,
         identity: "405100007",
-        mobileNumber: "0599000007",
-        socialStatus: MATERIAL_STATUS.DIVORCED,
+        mobile_number: "0599000007",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 8,
         name: "هناء فايز",
-        gender: GENDER.FEMALE,
         identity: "405100008",
-        mobileNumber: "0599000008",
-        socialStatus: MATERIAL_STATUS.MARRIED,
+        mobile_number: "0599000008",
         job: "SECURITY_OFFICER",
         role: "SECURITY"
     },
     {
         id: 9,
         name: "رامي يوسف",
-        gender: GENDER.MALE,
         identity: "405100009",
-        mobileNumber: "0599000009",
-        socialStatus: MATERIAL_STATUS.SINGLE,
+        mobile_number: "0599000009",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 10,
         name: "إيمان سامي",
-        gender: GENDER.FEMALE,
         identity: "405100010",
-        mobileNumber: "0599000010",
-        socialStatus: MATERIAL_STATUS.DIVORCED,
+        mobile_number: "0599000010",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 11,
         name: "عبدالله صالح",
-        gender: GENDER.MALE,
         identity: "405100011",
-        mobileNumber: "0599000011",
-        socialStatus: MATERIAL_STATUS.MARRIED,
+        mobile_number: "0599000011",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 12,
         name: "منار خالد",
-        gender: GENDER.FEMALE,
         identity: "405100012",
-        mobileNumber: "0599000012",
-        socialStatus: MATERIAL_STATUS.SINGLE,
+        mobile_number: "0599000012",
         job: "SECURITY_OFFICER",
         role: "SECURITY"
     },
     {
         id: 13,
         name: "علي نضال",
-        gender: GENDER.MALE,
         identity: "405100013",
-        mobileNumber: "0599000013",
-        socialStatus: MATERIAL_STATUS.WIDOWED,
+        mobile_number: "0599000013",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 14,
         name: "نوران علاء",
-        gender: GENDER.FEMALE,
         identity: "405100014",
-        mobileNumber: "0599000014",
-        socialStatus: MATERIAL_STATUS.MARRIED,
+        mobile_number: "0599000014",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 15,
         name: "خالد منصور",
-        gender: GENDER.MALE,
         identity: "405100015",
-        mobileNumber: "0599000015",
-        socialStatus: MATERIAL_STATUS.SINGLE,
+        mobile_number: "0599000015",
         job: "SECURITY_OFFICER",
         role: "SECURITY"
     },
     {
         id: 16,
         name: "ليلى أحمد",
-        gender: GENDER.FEMALE,
         identity: "405100016",
-        mobileNumber: "0599000016",
-        socialStatus: MATERIAL_STATUS.WIDOWED,
+        mobile_number: "0599000016",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 17,
         name: "عصام فؤاد",
-        gender: GENDER.MALE,
         identity: "405100017",
-        mobileNumber: "0599000017",
-        socialStatus: MATERIAL_STATUS.MARRIED,
+        mobile_number: "0599000017",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 18,
         name: "ياسمين خالد",
-        gender: GENDER.FEMALE,
         identity: "405100018",
-        mobileNumber: "0599000018",
-        socialStatus: MATERIAL_STATUS.SINGLE,
+        mobile_number: "0599000018",
         job: "SECURITY_OFFICER",
         role: "SECURITY"
     },
     {
         id: 19,
         name: "محمود سامي",
-        gender: GENDER.MALE,
         identity: "405100019",
-        mobileNumber: "0599000019",
-        socialStatus: MATERIAL_STATUS.DIVORCED,
+        mobile_number: "0599000019",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 20,
         name: "دعاء ناصر",
-        gender: GENDER.FEMALE,
         identity: "405100020",
-        mobileNumber: "0599000020",
-        socialStatus: MATERIAL_STATUS.MARRIED,
+        mobile_number: "0599000020",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 21,
         name: "وائل نادر",
-        gender: GENDER.MALE,
         identity: "405100021",
-        mobileNumber: "0599000021",
-        socialStatus: MATERIAL_STATUS.SINGLE,
+        mobile_number: "0599000021",
         job: "SECURITY_OFFICER",
         role: "SECURITY"
     },
     {
         id: 22,
         name: "نورا حسن",
-        gender: GENDER.FEMALE,
         identity: "405100022",
-        mobileNumber: "0599000022",
-        socialStatus: MATERIAL_STATUS.WIDOWED,
+        mobile_number: "0599000022",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 23,
         name: "سامي عدنان",
-        gender: GENDER.MALE,
         identity: "405100023",
-        mobileNumber: "0599000023",
-        socialStatus: MATERIAL_STATUS.MARRIED,
+        mobile_number: "0599000023",
         job: "SECURITY",
         role: "SECURITY"
     },
     {
         id: 24,
         name: "أروى خليل",
-        gender: GENDER.FEMALE,
         identity: "405100024",
-        mobileNumber: "0599000024",
-        socialStatus: MATERIAL_STATUS.SINGLE,
+        mobile_number: "0599000024",
         job: "SECURITY_OFFICER",
         role: "SECURITY"
     },
     {
         id: 25,
         name: "زياد حسين",
-        gender: GENDER.MALE,
         identity: "405100025",
-        mobileNumber: "0599000025",
-        socialStatus: MATERIAL_STATUS.DIVORCED,
+        mobile_number: "0599000025",
         job: "SECURITY",
         role: "SECURITY"
-    },
+    }
 ];
 
+// interface PaginationParams {
+//     page?: number;
+//     limit?: number
+// };
 
-
-interface fakeSecuritiesProps {
-    page?: number;
-    limit?: number;
-}
-
-export const fakeSecuritiesResponse = ({ page = 1, limit = 10 }: fakeSecuritiesProps): ISecuritiesResponse => {
+export const fakeSecuritiesResponse = ({ page = 1, limit = 10, search }: getSecurityDataProps): SecuritiesResponse => {
+    const paged = fakeSecurities.slice((page - 1) * limit, page * limit);
     return {
-        status: "200",
+        status: 200,
         message: "تم جلب بيانات أفراد الأمن بنجاح",
-        securities: fakeSecurities.slice((page - 1) * limit, page * limit),
+        securities: paged,
         error: undefined,
         pagination: {
             page,
             limit,
-            totalItems: fakeSecurities.length,
-            totalPages: Math.ceil(fakeSecurities.length / limit),
-        },
+            total_items: fakeSecurities.length,
+            total_pages: Math.ceil(fakeSecurities.length / limit)
+        }
     };
 };
 
-export const fakeSecuritiesIDsResponse = (): ISecurityIDsResponse => {
+export const fakeSecuritiesIDsResponse = (): SecurityIDsResponse => {
     return {
-        status: "200",
+        status: 200,
         message: "تم جلب معرفات أفراد الأمن بنجاح",
-        securityIds: fakeSecurities.map((s) => s.id),
-        error: undefined,
+        security_Ids: fakeSecurities.map((s) => s.id),
+        error: undefined
     };
 };
 
-export const fakeSecuritiesByIdsResponse = ({ ids = [], page = 1, limit = 7 }: { ids: number[]; page?: number; limit?: number }): ISecuritiesResponse => {
-    const filtered = fakeSecurities.filter((s) => ids.includes(s.id));
+
+export const fakeSecuritiesNamesResponse = ({ ids }: { ids?: number[]; }): SecurityNamesResponse => {
+    const filtered = ids ? fakeSecurities.filter((s) => ids.includes(s.id)) : fakeSecurities;
     return {
-        status: "200",
-        message: "تم جلب بيانات أفراد الأمن بنجاح",
-        securities: filtered.slice((page - 1) * limit, page * limit),
-        error: undefined,
-        pagination: {
-            page,
-            limit,
-            totalItems: filtered.length,
-            totalPages: Math.ceil(filtered.length / limit),
-        },
+        status: 200,
+        message: "تم جلب أسماء أفراد الأمن بنجاح",
+        security_names: filtered.map((s) => ({ id: s.id, name: s.name })),
+        error: undefined
     };
 };
+
+// export const fakeSecuritiesByIdsResponse = ({ ids }: { ids: number[]; }): SecuritiesResponse => {
+//     const filtered = fakeSecurities.filter((s) => ids.includes(s.id));
+//     return {
+//         status: 200,
+//         message: "تم جلب بيانات أفراد الأمن بنجاح",
+//         securities: filtered,
+ 
+//     };
+// };

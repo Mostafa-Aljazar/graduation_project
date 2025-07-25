@@ -24,6 +24,7 @@ export const GENERAL_ACTOR_ROUTES = {
   DISPLACEDS: '/actor/displaceds',
   ADD_DISPLACEDS: '/actor/displaceds/add',
   SECURITIES: '/actor/security-data',
+  ADD_SECURITIES: '/actor/security/add',
   NOTIFICATIONS: '/actor/notifications',
 
 } as const;

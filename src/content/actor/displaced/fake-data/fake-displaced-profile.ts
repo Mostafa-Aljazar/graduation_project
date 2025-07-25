@@ -4,6 +4,7 @@ import { DisplacedProfile, DisplacedProfileResponse } from "@/@types/actors/disp
 
 export const fakeDisplacedProfile: DisplacedProfile = {
     id: 1,
+    email: "mostafa@gmail.com",
     name: 'سعيد يوسف',
     gender: GENDER.MALE,
     profile_image: 'https://example.com/image.jpg',
@@ -11,7 +12,7 @@ export const fakeDisplacedProfile: DisplacedProfile = {
     nationality: 'فلسطيني',
     original_address: 'غزة - الشجاعية',
     phone_number: "0599999999",
-    alternative_phone_number: "0599999999",
+    alternative_phone_number: "0597777777",
 
     wives: [
         {
@@ -30,7 +31,7 @@ export const fakeDisplacedProfile: DisplacedProfile = {
         },
     ],
 
-    socialStatus: {
+    social_status: {
         status: SOCIAL_STATUS.MARRIED,
         number_of_wives: 2,
         number_of_males: 4,
@@ -52,9 +53,9 @@ export const fakeDisplacedProfile: DisplacedProfile = {
         family_status_type: FAMILY_STATUS_TYPE.DIFFICULT,
         displacement_date: '2023-10-01',
         delegate_name: 'خالد عبد الله',
-        delegate_phone: '0599999999',
+        delegate_phone: '+970599999999',
         camp_manager: 'محمود ناصر',
-        camp_managerPhone: '0598888888',
+        camp_managerPhone: '+970598888888',
     },
 
     war_injuries: [
