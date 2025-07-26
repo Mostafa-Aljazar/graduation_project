@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { isValidPhoneNumber } from 'react-phone-number-input'
 import { GENDER, SOCIAL_STATUS } from '@/@types/actors/common-types/index.type'
 
-export const delegateProfileSchema = z.object({
+export const DelegateProfileSchema = z.object({
     profile_image: z.string().optional().nullable(),
 
     name: z
@@ -57,7 +57,7 @@ export const delegateProfileSchema = z.object({
     // number_of_families: z.number().int().min(0).optional(),
 })
 
-export type delegateProfileType = z.infer<typeof delegateProfileSchema>
+export type DelegateProfileType = z.infer<typeof DelegateProfileSchema>
 
 // export type delegateUpdatePayload = Omit<
 //     delegateProfileType,

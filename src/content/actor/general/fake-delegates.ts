@@ -1,4 +1,5 @@
-import { Delegate, DelegatesIDsResponse, DelegatesResponse, } from '@/@types/actors/general/delegates/delegatesResponse.type';
+import { Delegate, DelegatesIDsResponse, DelegatesNamesResponse, DelegatesResponse, } from '@/@types/actors/general/delegates/delegatesResponse.type';
+import { getDelegatesProps } from '@/actions/actors/general/delegates/getDelegates';
 
 
 export const fakeDelegates: Delegate[] = [
@@ -13,59 +14,50 @@ export const fakeDelegates: Delegate[] = [
     { id: 108, name: 'ياسر حمد بن عبدالله', identity: '960128162', displaced_number: 57, family_number: 23, mobile_number: '0595867463', tents_number: 11 },
 ];
 
-interface fakeDelegatesProps {
-    page?: number;
-    limit?: number;
-};
+export const fakeDelegatesResponse = ({ page = 1, limit = 10 }: getDelegatesProps): DelegatesResponse => {
 
-// Fake Delegates Data (9 Delegates)
-export const fakeDelegatesResponse = ({ page = 1, limit = 10 }: fakeDelegatesProps): DelegatesResponse => {
+    const delegatesData = fakeDelegates
+
+    if (!delegatesData) {
+        return {
+            status: 500,
+            message: 'حدث خطأ أثناء جلب بيانات المناديب',
+            error: 'حدث خطأ أثناء جلب بيانات المناديب',
+            delegates: [],
+            pagination: { page: 1, limit: 0, total_items: 0, total_pages: 0 },
+        };
+    }
+
     return {
-        status: '200',
+        status: 200,
         message: 'تم جلب بيانات المناديب بنجاح',
-        delegates: fakeDelegates.slice((page - 1) * limit, page * limit),
+        delegates: delegatesData.slice((page - 1) * limit, page * limit),
         error: undefined,
         pagination: {
             page,
             limit,
-            totalItems: fakeDelegates.length,
-            totalPages: Math.ceil(fakeDelegates.length / limit),
+            total_items: delegatesData.length,
+            total_pages: Math.ceil(delegatesData.length / limit),
         }
     }
+
 };
 
 export const fakeDelegatesIDsResponse = (): DelegatesIDsResponse => {
     return {
-        status: '200',
+        status: 200,
         message: 'تم جلب بيانات المناديب بنجاح',
-        delegatesIDs: fakeDelegates.map(delegate => delegate.id),
+        delegates_Ids: fakeDelegates.map(delegate => delegate.id),
         error: undefined,
     }
 };
 
-export const fakeDelegatesByIdsResponse = ({
-    ids = [],
-    page = 1,
-    limit = 7,
-}: {
-    ids: number[];
-    page?: number;
-    limit?: number;
-}): DelegatesResponse => {
-    const filteredDelegates = fakeDelegates.filter((delegate) =>
-        ids.includes(delegate.id)
-    );
-
+export const fakeDelegatesNamesResponse = ({ ids }: { ids?: number[]; }): DelegatesNamesResponse => {
+    const filtered = ids ? fakeDelegates.filter((s) => ids.includes(s.id)) : fakeDelegates;
     return {
-        status: '200',
-        message: 'تم جلب بيانات المناديب بنجاح',
-        delegates: filteredDelegates.slice((page - 1) * limit, page * limit),
-        error: undefined,
-        pagination: {
-            page,
-            limit,
-            totalItems: filteredDelegates.length,
-            totalPages: Math.ceil(filteredDelegates.length / limit),
-        },
+        status: 200,
+        message: "تم جلب أسماء المناديب بنجاح",
+        delegate_names: filtered.map((s) => ({ id: s.id, name: s.name })),
+        error: undefined
     };
 };

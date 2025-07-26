@@ -4,46 +4,46 @@ import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.t
 import { AqsaAPI } from "@/services";
 
 export interface sendMeetingDelegateRequestProps {
-    delegateIDs: Number[];
+    delegate_Ids: Number[];
     dateTime: Date;
     details: string;
 }
 
 export const sendMeetingDelegateRequest = async ({
-    delegateIDs,
+    delegate_Ids,
     dateTime,
     details,
 }: sendMeetingDelegateRequestProps): Promise<modalActionResponse> => {
-    // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
-        message: `تم ارسال طلب الاجتماع لـ ${delegateIDs.length} مندوب بنجاح`,
+        status: 200,
+        message: `تم ارسال طلب الاجتماع لـ ${delegate_Ids.length} مندوب بنجاح`,
 
     }
-    // Simulate API delay for fake data
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 2000);
+        }, 500);
     });
 
-    // Real implementation with filters
     try {
-        const response = await AqsaAPI.post("/delegates/meeting", {
-            delegateIDs,
+
+        const response = await AqsaAPI.post<modalActionResponse>("/delegates/meeting", {
+            delegate_Ids,
             dateTime,
             details,
         });
 
         return {
-            status: "200",
-            message: `تم ارسال طلب الاجتماع لـ ${delegateIDs.length} مندوب بنجاح`,
+            status: 200,
+            message: `تم ارسال طلب الاجتماع لـ ${delegate_Ids.length} مندوب بنجاح`,
         };
     } catch (error: any) {
+
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء ارسال طلب الاجتماع";
+
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };

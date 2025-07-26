@@ -1,9 +1,9 @@
 'use client';
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import {
-  sendMeetingDelegateRequest,
-  sendMeetingDelegateRequestProps,
-} from '@/actions/actors/general/delegates/sendMeetingDelegateRequest';
+  sendCallDelegatesRequest,
+  sendCallDelegatesRequestProps,
+} from '@/actions/actors/general/delegates/sendCallDelegatesRequest';
 import { Button, Group, Modal, Stack, Text, Textarea } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useForm, zodResolver } from '@mantine/form';
@@ -12,44 +12,44 @@ import { useMutation } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { z } from 'zod';
 
-interface MeetingModalProps {
-  delegateIDs: Number[];
+interface CallModalProps {
+  delegate_Ids: number[];
   opened: boolean;
   close: () => void;
 }
 
-const meetingSchema = z.object({
+const callSchema = z.object({
   dateTime: z.date().refine((date) => dayjs(date).isAfter(dayjs()), {
     message: 'الرجاء اختيار تاريخ ووقت في المستقبل',
   }),
   details: z.string().min(1, 'الرجاء إدخال تفاصيل الاستدعاء'),
 });
 
-export type meetingType = z.infer<typeof meetingSchema>;
+export type callType = z.infer<typeof callSchema>;
 
-export default function Meeting_Delegate_Modal({
-  delegateIDs,
+export default function Call_Delegate_Modal({
+  delegate_Ids,
   opened,
   close,
-}: MeetingModalProps) {
-  const form = useForm<meetingType>({
+}: CallModalProps) {
+  const form = useForm<callType>({
     initialValues: {
       dateTime: dayjs().add(1, 'hour').toDate(),
       details: '',
     },
-    validate: zodResolver(meetingSchema),
+    validate: zodResolver(callSchema),
   });
 
-  const meetingMutation = useMutation<
+  const callMutation = useMutation<
     modalActionResponse,
     unknown,
-    sendMeetingDelegateRequestProps
+    sendCallDelegatesRequestProps
   >({
-    mutationFn: sendMeetingDelegateRequest,
+    mutationFn: sendCallDelegatesRequest,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
-          title: 'تم الارسال',
+          title: 'تم الاستدعاء',
           message: data.message,
           color: 'grape',
           position: 'top-left',
@@ -58,11 +58,11 @@ export default function Meeting_Delegate_Modal({
         close();
         form.reset();
       } else {
-        throw new Error(data.error || 'فشل في ارسال طلب الاجتماع');
+        throw new Error(data.error || 'فشل في استدعاء المناديب');
       }
     },
     onError: (error: any) => {
-      const errorMessage = error?.message || 'فشل في ارسال طلب الاجتماع';
+      const errorMessage = error?.message || 'فشل في استدعاء المناديب';
       notifications.show({
         title: 'خطأ',
         message: errorMessage,
@@ -73,10 +73,9 @@ export default function Meeting_Delegate_Modal({
     },
   });
 
-  const handleSubmit = (values: meetingType) => {
-    console.log('🚀 ~ handleSubmit ~ values:', values);
-    meetingMutation.mutate({
-      delegateIDs,
+  const handleSubmit = (values: callType) => {
+    callMutation.mutate({
+      delegate_Ids,
       dateTime: values.dateTime,
       details: values.details,
     });
@@ -85,10 +84,10 @@ export default function Meeting_Delegate_Modal({
   return (
     <Modal
       opened={opened}
-      onClose={() => close()}
+      onClose={close}
       title={
-        <Text fz={20} fw={600} ta={'center'} className='!text-primary'>
-          تأكيد الاجتماع
+        <Text fz={18} fw={600} ta={'center'} className='!text-primary'>
+          إضافة تفاصيل الاستدعاء
         </Text>
       }
       classNames={{
@@ -101,29 +100,31 @@ export default function Meeting_Delegate_Modal({
           <DateTimePicker
             label={
               <Text fz={16} fw={500} className='!text-primary'>
-                موعد الاجتماع
+                تاريخ و وقت الاستدعاء
               </Text>
             }
-            placeholder='تاريخ و وقت الاجتماع'
+            placeholder='تاريخ و وقت الاستدعاء'
             timePickerProps={{
               withDropdown: true,
               popoverProps: { withinPortal: false },
               format: '12h',
             }}
-            // valueFormat=' MMM DD YYYY - hh:mm A '
-            // defaultValue={dayjs().format('MMM DD YYYY ')}
             valueFormat='DD/MM/YYYY - hh:mm A'
             value={form.values.dateTime}
             onChange={(value) =>
               form.setFieldValue('dateTime', new Date(value))
             }
             error={form.errors.dateTime}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
           />
+
           <Textarea
             size='sm'
             label={
               <Text fz={16} fw={500} className='!text-primary'>
-                تفاصيل الاجتماع
+                تفاصيل الاستدعاء
               </Text>
             }
             placeholder='أدخل التفاصيل'
@@ -131,22 +132,27 @@ export default function Meeting_Delegate_Modal({
             maxRows={6}
             autosize
             {...form.getInputProps('details')}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
           />
 
           <Group justify='flex-end'>
             <Button
+              size='sm'
               type='button'
               variant='outline'
               onClick={close}
               fw={600}
-              className='!shadow-md !border-primary !text-primary'
+              className='!border-primary !text-primary'
             >
               إلغاء
             </Button>
             <Button
+              size='sm'
               type='submit'
               className='!bg-primary !shadow-md'
-              loading={meetingMutation.isPending}
+              loading={callMutation.isPending}
             >
               تأكيد
             </Button>

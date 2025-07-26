@@ -137,12 +137,6 @@ export default function Displaceds_Table({
             <ListChecks size={18} />
           )}
         </ActionIcon>
-        {/* <Checkbox
-                  // checked={areAllPagesRowsSelected()}
-                  onChange={(e) =>
-                    handleSelectAllAcrossAllPages(e.currentTarget.checked)
-                  }
-                /> */}
       </Table.Th>
       <Table.Th px={5} ta='center'>
         الرقم
@@ -235,6 +229,127 @@ export default function Displaceds_Table({
     </Table.Tr>
   );
 
+  /*const rows = (DELEGATES_DATA?.delegates || []).map((element, index) => (
+      <Table.Tr
+        key={element.id}
+        bg={
+          isRowSelected(element.id) || areAllPagesRowsSelected()
+            ? 'var(--mantine-color-blue-light)'
+            : undefined
+        }
+      >
+        <Table.Td
+          px={5}
+          ta='center'
+          hidden={query.delegatesPortions === DELEGATE_PORTIONS.manual}
+        >
+          <Checkbox
+            aria-label='Select row'
+            checked={isRowSelected(element.id)}
+            onChange={(event) => {
+              inDelegates
+                ? handleRowSelectionInDelegates(
+                    element.id,
+                    event.currentTarget.checked
+                  )
+                : handleRowSelectionInAids(
+                    element.id,
+                    event.currentTarget.checked
+                  );
+            }}
+            disabled={inDisplayedAid}
+          />
+        </Table.Td>
+        <Table.Td px={5} ta='center' w='fit-content'>
+          {((query.delegate_page ??
+            (DELEGATES_DATA?.pagination?.page as number)) -
+            1) *
+            (DELEGATES_DATA?.pagination?.limit ?? 7) +
+            index +
+            1}
+        </Table.Td>
+        <Table.Td
+          px={5}
+          ta='center'
+          w='fit-content'
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {element.name}
+        </Table.Td>
+        <Table.Td
+          px={5}
+          ta='center'
+          w='fit-content'
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {element.identity}
+        </Table.Td>
+        <Table.Td
+          px={5}
+          ta='center'
+          w='fit-content'
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {element.displaced_number}
+        </Table.Td>
+        <Table.Td
+          px={5}
+          ta='center'
+          w='fit-content'
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {element.family_number}
+        </Table.Td>
+        <Table.Td
+          px={5}
+          ta='center'
+          w='fit-content'
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {element.tents_number}
+        </Table.Td>
+        <Table.Td
+          px={5}
+          ta='center'
+          w='fit-content'
+          style={{ whiteSpace: 'nowrap' }}
+        >
+          {element.mobile_number}
+        </Table.Td>
+        <Table.Td
+          px={5}
+          ta='center'
+          w='fit-content'
+          style={{ whiteSpace: 'nowrap' }}
+          hidden={!inDelegates}
+        >
+          <Delegates_Table_Actions delegate_Id={element.id} />
+        </Table.Td>
+        <Table.Td
+          ta='center'
+          px={5}
+          className='!flex !justify-center'
+          hidden={inDelegates}
+        >
+          <NumberInput
+            w={100}
+            placeholder='0'
+            size='sm'
+            min={0}
+            max={maxPortionInputValue(element)}
+            mx='auto'
+            classNames={{
+              input: 'placeholder:text-sm text-primary font-medium',
+            }}
+            className='!mx-auto'
+            allowDecimal={false}
+            value={portionInputValue(element)}
+            disabled={disabledPortionInputValue(element)}
+            onChange={(val) => handlePortionChange(element.id, Number(val))}
+          />
+        </Table.Td>
+      </Table.Tr>
+    )); */
   return (
     <>
       <Group

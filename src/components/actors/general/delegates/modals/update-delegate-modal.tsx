@@ -9,13 +9,13 @@ import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 
 interface UpdateModalProps {
-  delegateIDs: number[];
+  delegate_Ids: number[];
   opened: boolean;
   close: () => void;
 }
 
 export default function Update_Delegate_Modal({
-  delegateIDs,
+  delegate_Ids,
   opened,
   close,
 }: UpdateModalProps) {
@@ -26,7 +26,7 @@ export default function Update_Delegate_Modal({
   >({
     mutationFn: sendUpdateDelegatesRequest,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تم الارسال',
           message: data.message,
@@ -53,7 +53,7 @@ export default function Update_Delegate_Modal({
 
   const handleClick = () => {
     updateMutation.mutate({
-      delegateIDs,
+      delegate_Ids,
     });
   };
 
@@ -62,7 +62,7 @@ export default function Update_Delegate_Modal({
       opened={opened}
       onClose={close}
       title={
-        <Text fz={20} fw={600} ta={'center'} className='!text-primary'>
+        <Text fz={18} fw={600} ta={'center'} className='!text-primary'>
           تحديث البيانات
         </Text>
       }
@@ -77,17 +77,19 @@ export default function Update_Delegate_Modal({
         </Text>
         <Group justify='flex-end'>
           <Button
+            size='sm'
             type='button'
             variant='outline'
             onClick={close}
             fw={600}
-            className='!border-primary !text-primary'
+            className='!shadow-md !border-primary !text-primary'
           >
             إلغاء
           </Button>
           <Button
+            size='sm'
             type='button'
-            className='!bg-primary'
+            className='!bg-primary !shadow-md'
             loading={updateMutation.isPending}
             onClick={handleClick}
           >

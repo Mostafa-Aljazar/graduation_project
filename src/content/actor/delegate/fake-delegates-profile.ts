@@ -153,6 +153,7 @@ export const fakeDelegateProfileResponse = ({
 }: {
     delegate_Id: number;
 }): DelegateProfileResponse => {
+
     const delegateProfile = fakeDelegateProfiles.find(
         (profile) => profile.id === Number(delegate_Id)
     );

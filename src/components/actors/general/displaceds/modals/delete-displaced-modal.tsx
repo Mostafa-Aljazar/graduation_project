@@ -90,14 +90,14 @@ export default function Delete_Displaced_Modal({
             variant='outline'
             onClick={close}
             fw={600}
-            className='!border-primary !text-primary'
+            className='!shadow-md !border-primary !text-primary'
           >
             إلغاء
           </Button>
           <Button
             size='sm'
             type='button'
-            className='!bg-red-500'
+            className='!bg-red-500 !shadow-md'
             loading={deleteMutation.isPending}
             onClick={handleClick}
           >

@@ -17,8 +17,8 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { useForm, zodResolver } from '@mantine/form';
 import {
-  delegateProfileType,
-  delegateProfileSchema,
+  DelegateProfileSchema,
+  DelegateProfileType,
 } from '@/validation/actor/delegate/delegate-profile-schema';
 import '@mantine/core/styles.css';
 import { Camera, Save, UserPen, X } from 'lucide-react';
@@ -29,7 +29,7 @@ import { handleUploadMedia } from '@/utils/uploadthing/handleUploadMedia';
 import { notifications } from '@mantine/notifications';
 import Upload_Media from '@/components/actors/common/upload-files/Upload_Media';
 import Image from 'next/image';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   updateDelegateProfile,
   UpdateDelegateProfileProps,
@@ -52,23 +52,25 @@ import {
   SOCIAL_STATUS,
   SOCIAL_STATUS_LABELS,
 } from '@/@types/actors/common-types/index.type';
-import { cn } from '@/utils/cn';
 
 interface DelegateProfileFormProps {
   delegate_Id?: number;
+  destination?: ACTION_ADD_EDIT_DISPLAY;
 }
 
 export default function Delegate_Profile_Form({
   delegate_Id,
+  destination,
 }: DelegateProfileFormProps) {
+  const queryClient = useQueryClient();
+
   const { startUpload } = useUploadThing('mediaUploader');
   const [profileImage, setProfileImage] = useState<File | string | null>(
     MAN.src
   );
   const [uploading, setUploading] = useState(false);
-  const [saveChange, setSave] = useState(0);
 
-  const { isAuthenticated, isDelegate, isManager, user } = useAuth();
+  const { isDelegate, isManager, user } = useAuth();
   const isOwner = isDelegate && user?.id === delegate_Id;
 
   const router = useRouter();
@@ -80,12 +82,17 @@ export default function Delegate_Profile_Form({
     ).withDefault(ACTION_ADD_EDIT_DISPLAY.DISPLAY)
   );
 
-  const isAddMode = isManager && query === ACTION_ADD_EDIT_DISPLAY.ADD;
+  const isAddMode =
+    (isManager || isDelegate) && destination == ACTION_ADD_EDIT_DISPLAY.ADD;
+
   const isEditMode =
     (isManager || isOwner) && query === ACTION_ADD_EDIT_DISPLAY.EDIT;
-  const isDisplayMode = query === ACTION_ADD_EDIT_DISPLAY.DISPLAY;
 
-  const form = useForm<delegateProfileType>({
+  const isDisplayMode =
+    query === ACTION_ADD_EDIT_DISPLAY.DISPLAY &&
+    destination !== ACTION_ADD_EDIT_DISPLAY.ADD;
+
+  const form = useForm<DelegateProfileType>({
     mode: 'uncontrolled',
     initialValues: {
       name: '',
@@ -101,7 +108,7 @@ export default function Delegate_Profile_Form({
       // number_of_responsible_camps: 0,
       // number_of_families: 0,
     },
-    validate: zodResolver(delegateProfileSchema),
+    validate: zodResolver(DelegateProfileSchema),
     validateInputOnChange: true,
   });
 
@@ -110,9 +117,9 @@ export default function Delegate_Profile_Form({
     isLoading: isLoadingFetch,
     refetch,
   } = useQuery<DelegateProfileResponse>({
-    queryKey: ['delegateProfile', delegate_Id],
+    queryKey: ['delegate-profile', delegate_Id],
     queryFn: () => getDelegateProfile({ delegate_Id: delegate_Id as number }),
-    enabled: isDisplayMode || isEditMode || !!delegate_Id,
+    enabled: (isDisplayMode || isEditMode) && !!delegate_Id,
   });
 
   const applyData = () => {
@@ -160,6 +167,10 @@ export default function Delegate_Profile_Form({
           delegateProfileData.user.alternative_phone_number || ''
         );
       }
+
+      form.clearErrors();
+      form.resetTouched();
+      form.resetDirty();
     }
 
     if (
@@ -186,7 +197,7 @@ export default function Delegate_Profile_Form({
 
   useEffect(() => {
     applyData();
-  }, [delegateProfileData, isAddMode, saveChange]);
+  }, [delegateProfileData, isAddMode]);
 
   useEffect(() => {
     if (profileImage instanceof File) {
@@ -203,7 +214,6 @@ export default function Delegate_Profile_Form({
     mutationFn: updateDelegateProfile,
     onSuccess: (data) => {
       setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY);
-
       if (data.status === 200) {
         notifications.show({
           title: 'تم التحديث',
@@ -212,20 +222,28 @@ export default function Delegate_Profile_Form({
           position: 'top-left',
           withBorder: true,
         });
+        const user = data.user;
+
         form.setValues({
-          name: data.user.name,
-          nationality: data.user.nationality,
-          gender: data.user.gender,
-          social_status: data.user.social_status,
-          identity: data.user.identity,
-          email: data.user.email,
-          age: data.user.age as number,
-          education: data.user.education,
-          phone_number: data.user.phone_number,
-          alternative_phone_number: data.user.alternative_phone_number || '',
+          name: user.name,
+          nationality: user.nationality,
+          gender: user.gender,
+          social_status: user.social_status,
+          identity: user.identity,
+          email: user.email,
+          age: user.age as number,
+          education: user.education,
+          phone_number: user.phone_number,
+          alternative_phone_number: user.alternative_phone_number || '',
         });
-        setProfileImage(data.user.profile_image || MAN.src);
+
+        form.clearErrors();
+        form.resetTouched();
+        form.resetDirty();
+        setProfileImage(user.profile_image || MAN.src);
         refetch();
+
+        queryClient.invalidateQueries({ queryKey: ['delegate-profile'] });
       } else {
         throw new Error(data.error || 'فشل في تحديث الملف الشخصي للمندوب');
       }
@@ -261,6 +279,8 @@ export default function Delegate_Profile_Form({
           position: 'top-left',
           withBorder: true,
         });
+        queryClient.invalidateQueries({ queryKey: ['delegates'] });
+
         router.push(GENERAL_ACTOR_ROUTES.DELEGATES);
       } else {
         throw new Error(data.error || 'فشل في إضافة المندوب الجديد');
@@ -304,7 +324,7 @@ export default function Delegate_Profile_Form({
     }
   };
 
-  const handleSubmit = form.onSubmit(async (values: delegateProfileType) => {
+  const handleSubmit = form.onSubmit(async (values: DelegateProfileType) => {
     console.log('🚀 ~ handleSubmit ~ values:', values);
 
     const avatarUrl =
@@ -312,31 +332,14 @@ export default function Delegate_Profile_Form({
         ? await uploadImages(profileImage)
         : (profileImage as string | null);
 
-    const payload: delegateProfileType = {
-      name: values.name,
-      gender: values.gender,
-      identity: values.identity,
-      nationality: values.nationality,
-      social_status: values.social_status,
-      email: values.email,
-      age: values.age,
-      education: values.education,
-      phone_number: values.phone_number,
-      alternative_phone_number: values.alternative_phone_number,
-      profile_image: avatarUrl ?? null,
+    const payload: DelegateProfileType = {
+      ...values,
+      profile_image: avatarUrl,
     };
 
-    try {
-      if (isAddMode) {
-        addDelegateMutation.mutate({ payload });
-      } else if (isEditMode) {
-        updateProfileMutation.mutate({
-          delegate_Id: delegate_Id as number,
-          payload,
-        });
-      }
-    } catch (error: any) {
-      const errorMessage = error?.message || 'فشل في حفظ الملف الشخصي للمندوب';
+    const handleError = (error: unknown) => {
+      const errorMessage =
+        (error as Error)?.message || 'فشل في حفظ الملف الشخصي للمندوب';
       form.setErrors({ general: errorMessage });
       notifications.show({
         title: 'خطأ',
@@ -345,6 +348,20 @@ export default function Delegate_Profile_Form({
         position: 'top-left',
         withBorder: true,
       });
+    };
+
+    try {
+      if (isAddMode) {
+        addDelegateMutation.mutate({ payload }, { onError: handleError });
+      }
+      if (isEditMode) {
+        updateProfileMutation.mutate(
+          { delegate_Id: delegate_Id as number, payload },
+          { onError: handleError }
+        );
+      }
+    } catch (error) {
+      handleError(error);
     }
   });
 
@@ -742,43 +759,25 @@ export default function Delegate_Profile_Form({
             )}
           </SimpleGrid>
 
-          <Group hidden={isDisplayMode}>
-            <Button
-              w={100}
-              mt={20}
-              type='submit'
-              rightSection={
-                isEditMode ? <UserPen size={16} /> : <Save size={16} />
-              }
-              loading={isMutationLoading}
-              className='!bg-primary shadow-sm'
-              // py={10}
-              size='sm'
-              fw={500}
-              fz={16}
-            >
-              {isAddMode ? 'إضافة' : 'حفظ'}
-            </Button>
-            <Button
-              w={100}
-              mt={20}
-              rightSection={<X size={16} />}
-              className='!bg-red-500 shadow-sm'
-              size='sm'
-              fw={500}
-              fz={16}
-              onClick={() => {
-                // TODO: apply do not save data
-                // applyData();
-                // form.reset();
-                // router.push('');
-                // setSave((prev) => prev + 1);
-                // setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY);
-              }}
-            >
-              الغاء
-            </Button>
-          </Group>
+          {(isEditMode || isAddMode) && (
+            <Group justify='center' w={'100%'} mt={20}>
+              <Button
+                type='submit'
+                variant='filled'
+                size='xs'
+                color='primary'
+                loading={isMutationLoading}
+                fw={500}
+                fz={16}
+                className='shadow-sm'
+                rightSection={
+                  isEditMode ? <UserPen size={16} /> : <Save size={16} />
+                }
+              >
+                {isAddMode ? 'إضافة' : 'حفظ التعديلات'}
+              </Button>
+            </Group>
+          )}
         </form>
       </Stack>
     </Stack>

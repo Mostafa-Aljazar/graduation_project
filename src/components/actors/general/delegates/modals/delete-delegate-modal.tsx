@@ -9,13 +9,13 @@ import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 
 interface DeleteModalProps {
-  delegateIDs: Number[];
+  delegate_Ids: Number[];
   opened: boolean;
   close: () => void;
 }
 
 export default function Delete_Delegate_Modal({
-  delegateIDs,
+  delegate_Ids,
   opened,
   close,
 }: DeleteModalProps) {
@@ -26,7 +26,7 @@ export default function Delete_Delegate_Modal({
   >({
     mutationFn: deleteDelegates,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تمت العملية بنجاح',
           message: data.message,
@@ -53,7 +53,7 @@ export default function Delete_Delegate_Modal({
 
   const handleClick = () => {
     deleteMutation.mutate({
-      delegateIDs,
+      delegate_Ids,
     });
   };
 
@@ -62,7 +62,7 @@ export default function Delete_Delegate_Modal({
       opened={opened}
       onClose={() => close()}
       title={
-        <Text fz={20} fw={600} ta='center' className='!text-red-500'>
+        <Text fz={18} fw={600} ta='center' className='!text-red-500'>
           تأكيد الحذف
         </Text>
       }
@@ -72,12 +72,12 @@ export default function Delete_Delegate_Modal({
       centered
     >
       <Stack>
-        {delegateIDs?.length == 1 && (
+        {delegate_Ids.length == 1 && (
           <Text fz={16} fw={500}>
             هل أنت متأكد من حذف هذا المندوب هذا الإجراء لا يمكن التراجع عنه.
           </Text>
         )}
-        {delegateIDs?.length > 1 && (
+        {delegate_Ids.length > 1 && (
           <Text fz={16} fw={500}>
             هل أنت متأكد من حذف هؤلاء المناديب؟ هذا الإجراء لا يمكن التراجع عنه.
           </Text>
@@ -88,6 +88,7 @@ export default function Delete_Delegate_Modal({
         </Text>
         <Group justify='flex-end'>
           <Button
+            size='sm'
             type='button'
             variant='outline'
             onClick={close}
@@ -97,6 +98,7 @@ export default function Delete_Delegate_Modal({
             إلغاء
           </Button>
           <Button
+            size='sm'
             type='button'
             className='!bg-red-500 !shadow-md'
             loading={deleteMutation.isPending}

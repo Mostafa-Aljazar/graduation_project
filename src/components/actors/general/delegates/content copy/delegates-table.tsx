@@ -32,7 +32,7 @@ import {
   DelegatesResponse,
 } from '@/@types/actors/general/delegates/delegatesResponse.type';
 import { getDelegatesIDs } from '@/actions/actors/general/delegates/getDelegatesIDs';
-import Delegates_Table_Actions from '../Delegates_Table_Actions';
+import Delegates_Table_Actions from '../delegates-table-actions';
 import {
   Aid,
   SelectedDelegatePortion,
@@ -54,7 +54,7 @@ interface DelegatesTableProps {
   aid_data?: Aid;
 }
 
-export default function TEST_Delegates_Table({
+export default function Delegates_Table({
   destination,
   localFilters,
   setDelegatesNum,
@@ -211,7 +211,7 @@ export default function TEST_Delegates_Table({
         search: query.search,
         filters: localFilters,
       }),
-    enabled: inDelegates || inEditAid,
+    enabled: inDelegates || inEditAid || inAddAid,
     retry: 1,
   });
 

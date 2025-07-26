@@ -3,13 +3,13 @@
 import { DisplacedsResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
 import { fakeDisplacedResponse } from "@/content/actor/general/fake-displaced";
 import { AqsaAPI } from "@/services";
-import { displacedFilterValues } from "@/validation/actor/general/displaceds-filter-form";
+import { displacedsFilterValues } from "@/validation/actor/general/displaceds-filter-form";
 
 type Props = {
     page?: number;
     limit?: number;
     search?: string;
-    filters?: displacedFilterValues;
+    filters?: displacedsFilterValues;
 };
 
 export const getDisplaceds = async ({ page = 1, limit = 7, search = '', filters }: Props): Promise<DisplacedsResponse> => {
@@ -28,7 +28,7 @@ export const getDisplaceds = async ({ page = 1, limit = 7, search = '', filters 
             if (filters?.ages?.length) params.ages = filters?.ages?.join(",");
             if (filters?.chronic_disease) params.chronic_disease = filters?.chronic_disease;
             if (filters?.accommodation_type) params.accommodation_type = filters?.accommodation_type;
-            if (filters?.case_type) params.case_type = filters?.case_type;
+            if (filters?.family_status_type) params.family_status_type = filters?.family_status_type;
             if (filters?.delegate?.length) params.delegate = filters?.delegate?.join(",");
         }
 

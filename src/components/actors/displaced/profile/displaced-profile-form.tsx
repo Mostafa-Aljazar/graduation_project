@@ -94,8 +94,7 @@ export default function Displaced_Profile_Form({
 
   const isAddMode =
     (isManager || isDelegate) && destination == ACTION_ADD_EDIT_DISPLAY.ADD;
-  // const isAddMode =
-  //   (isManager || isDelegate) && query === ACTION_ADD_EDIT_DISPLAY.ADD;
+
   const isEditMode =
     (isManager || isDelegate || isOwner) &&
     query === ACTION_ADD_EDIT_DISPLAY.EDIT;

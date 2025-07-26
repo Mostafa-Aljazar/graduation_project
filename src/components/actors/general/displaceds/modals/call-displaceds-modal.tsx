@@ -74,7 +74,6 @@ export default function Call_Displaced_Modal({
   });
 
   const handleSubmit = (values: callType) => {
-    console.log('🚀 ~ handleSubmit ~ values:', values);
     callMutation.mutate({
       displacedIds,
       dateTime: values.dateTime,
@@ -116,6 +115,9 @@ export default function Call_Displaced_Modal({
               form.setFieldValue('dateTime', new Date(value))
             }
             error={form.errors.dateTime}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
           />
           <Textarea
             size='sm'
@@ -129,6 +131,9 @@ export default function Call_Displaced_Modal({
             maxRows={6}
             autosize
             {...form.getInputProps('details')}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
           />
           <Group justify='flex-end'>
             <Button
@@ -144,7 +149,7 @@ export default function Call_Displaced_Modal({
             <Button
               size='sm'
               type='submit'
-              className='!bg-primary'
+              className='!bg-primary !shadow-md'
               loading={callMutation.isPending}
             >
               تأكيد

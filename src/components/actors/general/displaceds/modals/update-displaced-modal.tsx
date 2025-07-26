@@ -82,14 +82,14 @@ export default function Update_Displaced_Modal({
             variant='outline'
             onClick={close}
             fw={600}
-            className='!border-primary !text-primary'
+            className='!shadow-md !border-primary !text-primary'
           >
             إلغاء
           </Button>
           <Button
             size='sm'
             type='button'
-            className='!bg-primary'
+            className='!bg-primary !shadow-md'
             loading={updateMutation.isPending}
             onClick={handleClick}
           >

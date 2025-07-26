@@ -16,22 +16,20 @@ import {
 import { useRouter } from 'next/navigation';
 import { ComponentType, useState } from 'react';
 import useAuth from '@/hooks/useAuth';
-import Call_Delegate_Modal from './modals/Call_Delegate_Modal';
-import Delete_Delegate_Modal from './modals/Delete_Delegate_Modal';
-import Update_Delegate_Modal from './modals/Update_Delegate_Modal';
-import Meeting_Delegate_Modal from './modals/Meeting_Delegate_Modal';
-import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
+import Call_Delegate_Modal from './modals/call-delegate-modal';
+import Delete_Delegate_Modal from './modals/delete-delegate-modal';
+import Update_Delegate_Modal from './modals/update-delegate-modal';
+import Meeting_Delegate_Modal from './modals/meeting-delegate-modal';
+import { ACTION_ADD_EDIT_DISPLAY } from '@/@types/actors/common-types/index.type';
 
-// Define the type for action items
 interface ActionItem {
   label: string;
   icon: ComponentType<{ size?: number | string }>;
   action: () => void;
 }
 
-interface Props {
+interface DelegatesTableActionsProps {
   delegate_Id?: number;
-  // many
   delegate_Ids?: number[];
   disabled?: boolean;
 }
@@ -40,8 +38,8 @@ export default function Delegates_Table_Actions({
   delegate_Id,
   delegate_Ids,
   disabled,
-}: Props) {
-  const { isDelegate, isManager, isSecurity, isSecurityOfficer } = useAuth();
+}: DelegatesTableActionsProps) {
+  const { isManager, isSecurity, isSecurityOfficer } = useAuth();
   const [openedPopover, setOpenedPopover] = useState(false);
   const [modalType, setModalType] = useState<
     'edit' | 'delete' | 'call' | 'update' | 'meeting' | null
@@ -49,86 +47,63 @@ export default function Delegates_Table_Actions({
 
   const router = useRouter();
 
-  // Handlers to open specific modals
   const openModal = (type: typeof modalType) => {
     setModalType(type);
-    setOpenedPopover(false); // Close the popover
+    setOpenedPopover(false);
   };
 
   const closeModal = () => setModalType(null);
 
-  // Define all possible actions
-  const Manager_General_ACTIONS: ActionItem[] = [
-    {
-      label: 'حذف',
-      icon: Trash,
-      action: () => openModal('delete'),
-    },
-    {
-      label: 'استدعاء',
-      icon: Speech,
-      action: () => openModal('call'),
-    },
-    {
-      label: 'تحديث بيانات',
-      icon: UserCog,
-      action: () => openModal('update'),
-    },
-    {
-      label: 'اجتماع',
-      icon: Users,
-      action: () => openModal('meeting'),
-    },
+  const buildRoute = (id: number, edit = false) => {
+    const base = DELEGATE_ROUTES_fUNC(id);
+    return edit
+      ? `${base.PROFILE}?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
+      : base.PROFILE;
+  };
+
+  const commonActions: ActionItem[] = [
+    { label: 'حذف', icon: Trash, action: () => openModal('delete') },
+    { label: 'استدعاء', icon: Speech, action: () => openModal('call') },
+    { label: 'تحديث بيانات', icon: UserCog, action: () => openModal('update') },
+    { label: 'اجتماع', icon: Users, action: () => openModal('meeting') },
   ];
 
-  const Manager_Single_ACTIONS: ActionItem[] = [
+  const viewEditActions: ActionItem[] = [
     {
       label: 'عرض',
       icon: Eye,
-      action: () =>
-        router.push(DELEGATE_ROUTES_fUNC(delegate_Id || -1).PROFILE),
+      action: () => router.push(buildRoute(delegate_Id || 0)),
     },
     {
       label: 'تعديل',
       icon: UserPen,
-      action: () =>
-        router.push(
-          DELEGATE_ROUTES_fUNC(delegate_Id || -1).PROFILE +
-            `?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
-        ),
+      action: () => router.push(buildRoute(delegate_Id || 0, true)),
     },
-    ...Manager_General_ACTIONS,
   ];
 
-  // for security & delegates
-  const Guest_ACTIONS: ActionItem[] = [
+  const securityActions: ActionItem[] = [
     {
       label: 'عرض',
       icon: Eye,
-      action: () =>
-        router.push(DELEGATE_ROUTES_fUNC(delegate_Id || -1).PROFILE),
+      action: () => router.push(buildRoute(delegate_Id || 0)),
     },
-    {
-      label: 'استدعاء',
-      icon: Speech,
-      action: () => openModal('call'),
-    },
+    { label: 'استدعاء', icon: Speech, action: () => openModal('call') },
   ];
 
-  // Filter actions based on user role
-  const ACTIONS: ActionItem[] =
-    isManager && delegate_Ids
-      ? Manager_General_ACTIONS
-      : isManager && delegate_Id
-      ? Manager_Single_ACTIONS
-      : isDelegate || isSecurity || isSecurityOfficer
-      ? Guest_ACTIONS
-      : [];
+  const getActions = (): ActionItem[] => {
+    if (isManager && delegate_Ids) return [...commonActions];
+    if (isManager && delegate_Id) return [...viewEditActions, ...commonActions];
+    if (isSecurity || isSecurityOfficer) return securityActions;
+    return [];
+  };
+
+  const ACTIONS = getActions();
+  const IDs = delegate_Ids || (delegate_Id ? [delegate_Id] : []);
 
   const Dropdown_Items = ACTIONS.map((item, index) => (
     <Button
-      justify='flex-start'
       key={item.label}
+      justify='flex-start'
       leftSection={
         <ThemeIcon variant='transparent' className='!text-dark'>
           <item.icon size={16} />
@@ -139,18 +114,14 @@ export default function Delegates_Table_Actions({
       fz={16}
       fw={500}
       className={cn(
-        '!text-dark !rounded-none hover:!bg-second-light',
+        'hover:!bg-second-light !rounded-none !text-dark',
         index + 1 !== ACTIONS.length && '!border-gray-100 !border-0 !border-b-1'
       )}
-      onClick={() => {
-        item.action();
-      }}
+      onClick={item.action}
     >
       {item.label}
     </Button>
   ));
-
-  const IDs = delegate_Ids || (delegate_Id ? [delegate_Id] : []);
 
   return (
     <>
@@ -175,8 +146,8 @@ export default function Delegates_Table_Actions({
               px={15}
               fz={16}
               fw={500}
-              c={'white'}
-              radius={'lg'}
+              c='white'
+              radius='md'
               className='!justify-end !items-end !self-end !bg-primary !shadow-lg'
               rightSection={<Hammer size={15} />}
               disabled={disabled}
@@ -194,7 +165,6 @@ export default function Delegates_Table_Actions({
             </ActionIcon>
           )}
         </Popover.Target>
-
         <Popover.Dropdown p={0} className='!bg-gray-200 !border-none'>
           <Stack justify='flex-start' gap={0}>
             {Dropdown_Items}
@@ -202,30 +172,28 @@ export default function Delegates_Table_Actions({
         </Popover.Dropdown>
       </Popover>
 
-      {/* Call Details Modal */}
+      {isManager && (
+        <Delete_Delegate_Modal
+          delegate_Ids={IDs}
+          opened={modalType === 'delete'}
+          close={closeModal}
+        />
+      )}
+
       <Call_Delegate_Modal
-        delegateIDs={IDs}
+        delegate_Ids={IDs}
         opened={modalType === 'call'}
         close={closeModal}
       />
 
-      {/* Delete Confirmation Modal */}
-      <Delete_Delegate_Modal
-        delegateIDs={IDs}
-        opened={modalType === 'delete'}
-        close={closeModal}
-      />
-
-      {/* Update Data Modal */}
       <Update_Delegate_Modal
-        delegateIDs={IDs}
+        delegate_Ids={IDs}
         opened={modalType === 'update'}
         close={closeModal}
       />
 
-      {/* Meeting Confirmation Modal */}
       <Meeting_Delegate_Modal
-        delegateIDs={IDs}
+        delegate_Ids={IDs}
         opened={modalType === 'meeting'}
         close={closeModal}
       />
