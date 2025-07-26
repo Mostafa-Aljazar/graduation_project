@@ -36,20 +36,16 @@ import {
 import useAuth from '@/hooks/useAuth';
 
 interface DisplacedsFiltersProps {
-  destination?: 'AID' | 'DISPLACEDS';
-
   setLocalFilters: React.Dispatch<React.SetStateAction<displacedsFilterValues>>;
   displacedNum: number;
 }
 
 export default function Displaceds_Filters({
-  destination,
   setLocalFilters,
   displacedNum,
-}: // actor_Id,
-// role,
-DisplacedsFiltersProps) {
-  const { user } = useAuth();
+}: DisplacedsFiltersProps) {
+  const { user, isDelegate } = useAuth();
+
   const initData: displacedsFilterValues = {
     wife_status: null,
     family_number: null,
@@ -57,7 +53,7 @@ DisplacedsFiltersProps) {
     chronic_disease: null,
     accommodation_type: null,
     family_status_type: null,
-    delegate: user?.id ? [user?.id.toString()] : [],
+    delegate: isDelegate && user?.id ? [user.id.toString()] : [],
   };
 
   const [searchInput, setSearchInput] = useState('');

@@ -9,13 +9,13 @@ import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 
 interface UpdateModalProps {
-  displacedIds: number[];
+  displaced_Ids: number[];
   opened: boolean;
   close: () => void;
 }
 
 export default function Update_Displaced_Modal({
-  displacedIds,
+  displaced_Ids,
   opened,
   close,
 }: UpdateModalProps) {
@@ -26,7 +26,7 @@ export default function Update_Displaced_Modal({
   >({
     mutationFn: sendUpdateRequest,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تم الارسال',
           message: data.message,
@@ -53,7 +53,7 @@ export default function Update_Displaced_Modal({
 
   const handleClick = () => {
     updateMutation.mutate({
-      displacedIds,
+      displaced_Ids,
     });
   };
 

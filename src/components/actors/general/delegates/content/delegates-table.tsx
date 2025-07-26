@@ -2,13 +2,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   ActionIcon,
+  Center,
   Checkbox,
   Group,
   Loader,
   LoadingOverlay,
   Pagination,
+  Stack,
   Table,
   Text,
+  ThemeIcon,
 } from '@mantine/core';
 import { parseAsInteger, useQueryStates } from 'nuqs';
 import { useQuery } from '@tanstack/react-query';
@@ -20,7 +23,7 @@ import {
 } from '@/@types/actors/general/delegates/delegatesResponse.type';
 import { getDelegatesIDs } from '@/actions/actors/general/delegates/getDelegatesIDs';
 import Delegates_Table_Actions from '../delegates-table-actions';
-import { ListChecks, ListX } from 'lucide-react';
+import { ListChecks, ListX, Users } from 'lucide-react';
 
 export default function Delegates_Table() {
   const [selectedDelegateIds, setSelectedDelegateIds] = useState<number[]>([]);
@@ -225,6 +228,23 @@ export default function Delegates_Table() {
     ));
   }, [delegatesData, selectedDelegateIds]);
 
+  const noDelegates = (
+    <Table.Tr>
+      <Table.Td colSpan={9}>
+        <Center w='100%' py={30}>
+          <Stack align='center' gap={8}>
+            <ThemeIcon variant='light' radius='xl' size={50} color='gray'>
+              <Users size={25} />
+            </ThemeIcon>
+            <Text ta='center' c='dimmed' fw={500} size='md'>
+              لا توجد بيانات للمناديب
+            </Text>
+          </Stack>
+        </Center>
+      </Table.Td>
+    </Table.Tr>
+  );
+
   return (
     <>
       <Group
@@ -251,29 +271,6 @@ export default function Delegates_Table() {
           <Delegates_Table_Actions delegate_Ids={selectedDelegateIds} />
         </Group>
       </Group>
-
-      {/* <Group
-        flex={1}
-        justify='space-between'
-        align='center'
-        wrap='nowrap'
-        hidden={selectedRows?.length === 0}
-      >
-        {(selectAllAcrossPages ||
-          selectedRows?.length === delegatesData?.pagination.totalItems) && (
-          <Text size='md' fw={500} style={{ whiteSpace: 'nowrap' }}>
-            تم تحديد جميع العناصر عبر جميع الصفحات
-            {isLoadingAll && ' (جاري تحميل البيانات...)'}
-            {allQueryError && ` (خطأ: ${allQueryError.message})`}
-          </Text>
-        )}
-        {selectedRows?.length !== delegatesData?.pagination.totalItems &&
-          (selectedRows?.length as number) > 0 && (
-            <Text size='md' fw={500}>
-              تم تحديد {selectedRows?.length} عنصر
-            </Text>
-          )}
-      </Group> */}
 
       <Table.ScrollContainer
         minWidth='100%'
@@ -302,6 +299,7 @@ export default function Delegates_Table() {
         >
           <Table.Thead>{columns}</Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
+          <Table.Tbody>{rows.length === 0 ? noDelegates : rows}</Table.Tbody>
         </Table>
       </Table.ScrollContainer>
 

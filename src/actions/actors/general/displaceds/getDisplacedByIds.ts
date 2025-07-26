@@ -1,10 +1,10 @@
 "use server";
 
 import { DisplacedsResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
-import { fakeDisplacedByIdsResponse } from "@/content/actor/general/fake-displaced";
+import { fakeDisplacedByIdsResponse } from "@/content/actor/displaced/fake-displaced";
 import { AqsaAPI } from "@/services";
 
-type Options = {
+export interface getDisplacedByIdsProps {
     ids: number[];
     page?: number;
     limit?: number;
@@ -14,42 +14,49 @@ export const getDisplacedByIds = async ({
     ids,
     page = 1,
     limit = 7,
-}: Options): Promise<DisplacedsResponse> => {
+}: getDisplacedByIdsProps): Promise<DisplacedsResponse> => {
+
+    const fakeResponse = fakeDisplacedByIdsResponse({ ids, page, limit })
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeDisplacedByIdsResponse({ ids, page, limit }));
-        }, 1000);
+            resolve(fakeResponse);
+        }, 500);
     });
 
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-        const params = { page, limit };
-        const response = await AqsaAPI.post("/displaced/by-ids", { ids }, { params });
-        const displaceds = response.data.displaceds || [];
+
+        const response = await AqsaAPI.get<DisplacedsResponse>("/displaced/by-ids",
+            {
+                params: {
+                    page, limit, ids
+                }
+            });
+
+        if (response.data?.displaceds) {
+            return response.data
+        }
+
+        throw new Error("بيانات النازحين غير متوفرة");
+
+    } catch (error: any) {
+
+        const errorMessage = error.response?.data?.error || error.message || "حدث خطأ أثناء جلب بيانات النازحين";
 
         return {
-            status: "200",
-            message: "تم جلب بيانات النازحين بنجاح",
-            displaceds,
-            pagination: {
-                page,
-                limit,
-                totalItems: displaceds.length,
-                totalPages: Math.ceil(displaceds.length / limit),
-            },
-        };
-    } catch (error: any) {
-        const errorMessage = error.response?.data?.error || error.message || "حدث خطأ أثناء جلب بيانات النازحين";
-        return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             displaceds: [],
             pagination: {
                 page: 1,
                 limit: 0,
-                totalItems: 0,
-                totalPages: 0,
+                total_items: 0,
+                total_pages: 0,
             },
             error: errorMessage,
         };
+
     }
 };

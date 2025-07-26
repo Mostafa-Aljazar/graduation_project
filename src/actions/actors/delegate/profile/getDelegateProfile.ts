@@ -12,7 +12,6 @@ export const getDelegateProfile = async ({
     delegate_Id,
 }: getDelegateProfileProps): Promise<DelegateProfileResponse> => {
 
-
     const fakeData = fakeDelegateProfileResponse({ delegate_Id });
 
     return await new Promise((resolve) => {
@@ -20,7 +19,6 @@ export const getDelegateProfile = async ({
             resolve(fakeData);
         }, 500);
     });
-
 
     /////////////////////////////////////////////////////////////
     // FIXME: THIS IS THE REAL IMPLEMENTATION

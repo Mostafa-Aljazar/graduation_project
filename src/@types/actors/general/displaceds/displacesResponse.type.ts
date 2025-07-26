@@ -1,23 +1,3 @@
-export interface DisplacedsIDsResponse {
-    status: string;
-    message?: string;
-    displacedsIDs: number[];
-    error?: string;
-}
-
-export interface DisplacedsResponse {
-    status: string;
-    message?: string;
-    displaceds: Displaced[];
-    error?: string;
-    pagination: {
-        page: number;
-        limit: number;
-        totalItems: number;
-        totalPages: number;
-    };
-}
-
 export interface Displaced {
     id: number;
     name: string;
@@ -31,4 +11,37 @@ export interface Displaced {
 export interface HisDelegate {
     id: number;
     name: string;
+}
+
+export interface DisplacedsResponse {
+    status: number;
+    message?: string;
+    displaceds: Displaced[];
+    error?: string;
+    pagination: {
+        page: number;
+        limit: number;
+        total_items: number;
+        total_pages: number;
+    };
+}
+
+
+export interface DisplacedsNamesResponse {
+    status: number;
+    message: string;
+    displaceds_names: {
+        id: number;
+        name: string
+    }[];
+    error?: string;
+}
+
+
+
+export interface DisplacedsIDsResponse {
+    status: number;
+    message?: string;
+    displaceds_Ids: number[];
+    error?: string;
 }

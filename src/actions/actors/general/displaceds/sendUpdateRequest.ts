@@ -4,43 +4,47 @@ import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.t
 import { AqsaAPI } from "@/services";
 
 export interface sendUpdateRequestProps {
-    displacedIds: number[];
+    displaced_Ids: number[];
 }
 
 export const sendUpdateRequest = async ({
-    displacedIds
+    displaced_Ids
 }: sendUpdateRequestProps): Promise<modalActionResponse> => {
-    // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
         status: 200,
-        message: `تم ارسال طلب تحديث لـ ${displacedIds.length} نازح بنجاح`,
+        message: `تم ارسال طلب تحديث لـ ${displaced_Ids.length} نازح بنجاح`,
 
     }
 
-    // Simulate API delay for fake data
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 2000);
+        }, 500);
     });
 
-    // Real implementation with filters
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post("/displaceds/update", {
-            displacedIds
+        const response = await AqsaAPI.post<modalActionResponse>("/displaceds/update", {
+            displaced_Ids
         });
 
         return {
             status: 200,
-            message: `تم ارسال طلب تحديث لـ ${displacedIds.length} نازح بنجاح`,
+            message: `تم ارسال طلب تحديث لـ ${displaced_Ids.length} نازح بنجاح`,
         };
+
     } catch (error: any) {
+
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء ارسال طلب تحديث البيانات";
+
         return {
             status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };
+
     }
 };

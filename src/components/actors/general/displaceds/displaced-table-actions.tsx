@@ -190,7 +190,7 @@ export default function Displaced_Table_Actions({
 
       {isManager && (
         <Change_Delegate_In_Displaced_Modal
-          displacedIds={IDs}
+          displaced_Ids={IDs}
           opened={modalType === 'change_delegate'}
           close={closeModal}
         />
@@ -198,21 +198,21 @@ export default function Displaced_Table_Actions({
 
       {(isDelegate || isManager) && (
         <Delete_Displaced_Modal
-          displacedIds={IDs}
+          displaced_Ids={IDs}
           opened={modalType === 'delete'}
           close={closeModal}
         />
       )}
 
       <Call_Displaced_Modal
-        displacedIds={IDs}
+        displaced_Ids={IDs}
         opened={modalType === 'call'}
         close={closeModal}
       />
 
       {(isDelegate || isManager) && (
         <Update_Displaced_Modal
-          displacedIds={IDs}
+          displaced_Ids={IDs}
           opened={modalType === 'update'}
           close={closeModal}
         />
@@ -220,7 +220,7 @@ export default function Displaced_Table_Actions({
 
       {(isDelegate || isManager) && (
         <Meeting_Displaced_Modal
-          displacedIDs={IDs}
+          displaced_Ids={IDs}
           opened={modalType === 'meeting'}
           close={closeModal}
         />

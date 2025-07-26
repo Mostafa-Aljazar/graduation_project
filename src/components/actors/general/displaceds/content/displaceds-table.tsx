@@ -73,7 +73,7 @@ export default function Displaceds_Table({
   } = useQuery<number[], Error>({
     queryKey: ['displaced_all', query.search, localFilters],
     queryFn: async () =>
-      (await getDisplacedsIDs({ filters: localFilters })).displacedsIDs,
+      (await getDisplacedsIDs({ filters: localFilters })).displaceds_Ids,
     enabled: selectAllAcrossPages,
     retry: 1,
     staleTime: 1000 * 60 * 5,
@@ -83,7 +83,7 @@ export default function Displaceds_Table({
   const error = allQueryError || queryError;
 
   useEffect(() => {
-    setDisplacedNum(displacedData?.pagination?.totalItems || 0);
+    setDisplacedNum(displacedData?.pagination?.total_items || 0);
   }, [displacedData, setDisplacedNum]);
 
   useEffect(() => {
@@ -93,9 +93,10 @@ export default function Displaceds_Table({
   }, [allDisplacedIDs, selectAllAcrossPages]);
 
   const isRowSelected = (id: number) => selectedDisplacedIds.includes(id);
+
   const areAllPagesRowsSelected = () =>
     selectedDisplacedIds.length ===
-    (displacedData?.pagination?.totalItems || 0);
+    (displacedData?.pagination?.total_items || 0);
 
   const handleRowSelection = (id: number, checked: boolean) => {
     if (checked) {
@@ -229,127 +230,6 @@ export default function Displaceds_Table({
     </Table.Tr>
   );
 
-  /*const rows = (DELEGATES_DATA?.delegates || []).map((element, index) => (
-      <Table.Tr
-        key={element.id}
-        bg={
-          isRowSelected(element.id) || areAllPagesRowsSelected()
-            ? 'var(--mantine-color-blue-light)'
-            : undefined
-        }
-      >
-        <Table.Td
-          px={5}
-          ta='center'
-          hidden={query.delegatesPortions === DELEGATE_PORTIONS.manual}
-        >
-          <Checkbox
-            aria-label='Select row'
-            checked={isRowSelected(element.id)}
-            onChange={(event) => {
-              inDelegates
-                ? handleRowSelectionInDelegates(
-                    element.id,
-                    event.currentTarget.checked
-                  )
-                : handleRowSelectionInAids(
-                    element.id,
-                    event.currentTarget.checked
-                  );
-            }}
-            disabled={inDisplayedAid}
-          />
-        </Table.Td>
-        <Table.Td px={5} ta='center' w='fit-content'>
-          {((query.delegate_page ??
-            (DELEGATES_DATA?.pagination?.page as number)) -
-            1) *
-            (DELEGATES_DATA?.pagination?.limit ?? 7) +
-            index +
-            1}
-        </Table.Td>
-        <Table.Td
-          px={5}
-          ta='center'
-          w='fit-content'
-          style={{ whiteSpace: 'nowrap' }}
-        >
-          {element.name}
-        </Table.Td>
-        <Table.Td
-          px={5}
-          ta='center'
-          w='fit-content'
-          style={{ whiteSpace: 'nowrap' }}
-        >
-          {element.identity}
-        </Table.Td>
-        <Table.Td
-          px={5}
-          ta='center'
-          w='fit-content'
-          style={{ whiteSpace: 'nowrap' }}
-        >
-          {element.displaced_number}
-        </Table.Td>
-        <Table.Td
-          px={5}
-          ta='center'
-          w='fit-content'
-          style={{ whiteSpace: 'nowrap' }}
-        >
-          {element.family_number}
-        </Table.Td>
-        <Table.Td
-          px={5}
-          ta='center'
-          w='fit-content'
-          style={{ whiteSpace: 'nowrap' }}
-        >
-          {element.tents_number}
-        </Table.Td>
-        <Table.Td
-          px={5}
-          ta='center'
-          w='fit-content'
-          style={{ whiteSpace: 'nowrap' }}
-        >
-          {element.mobile_number}
-        </Table.Td>
-        <Table.Td
-          px={5}
-          ta='center'
-          w='fit-content'
-          style={{ whiteSpace: 'nowrap' }}
-          hidden={!inDelegates}
-        >
-          <Delegates_Table_Actions delegate_Id={element.id} />
-        </Table.Td>
-        <Table.Td
-          ta='center'
-          px={5}
-          className='!flex !justify-center'
-          hidden={inDelegates}
-        >
-          <NumberInput
-            w={100}
-            placeholder='0'
-            size='sm'
-            min={0}
-            max={maxPortionInputValue(element)}
-            mx='auto'
-            classNames={{
-              input: 'placeholder:text-sm text-primary font-medium',
-            }}
-            className='!mx-auto'
-            allowDecimal={false}
-            value={portionInputValue(element)}
-            disabled={disabledPortionInputValue(element)}
-            onChange={(val) => handlePortionChange(element.id, Number(val))}
-          />
-        </Table.Td>
-      </Table.Tr>
-    )); */
   return (
     <>
       <Group
@@ -377,19 +257,13 @@ export default function Displaceds_Table({
         </Group>
       </Group>
 
-      <ScrollArea>
-        <Table
-          striped
-          highlightOnHover
-          withTableBorder
-          withColumnBorders
-          pos={'relative'}
-        >
-          <LoadingOverlay
-            visible={isLoading}
-            zIndex={49}
-            overlayProps={{ radius: 'sm', blur: 0.3 }}
-          />
+      <ScrollArea pos={'relative'}>
+        <LoadingOverlay
+          visible={isLoading}
+          zIndex={49}
+          overlayProps={{ radius: 'sm', blur: 0.3 }}
+        />
+        <Table striped highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead
             style={{
               position: 'sticky',
@@ -409,7 +283,7 @@ export default function Displaceds_Table({
         onChange={(page) =>
           setQuery((prev) => ({ ...prev, displaced_page: page }))
         }
-        total={displacedData?.pagination?.totalPages || 0}
+        total={displacedData?.pagination?.total_pages || 0}
         pt={30}
         size='sm'
         mx='auto'

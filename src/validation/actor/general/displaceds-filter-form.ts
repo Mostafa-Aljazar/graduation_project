@@ -1,9 +1,6 @@
 import { ACCOMMODATION_TYPE, AGES, FAMILY_STATUS_TYPE, CHRONIC_DISEASE, WIFE_STATUS } from '@/@types/actors/common-types/index.type';
 import { z } from 'zod';
 
-
-
-// Main Form Schema
 export const displacedsFilterSchema = z.object({
     wife_status: z.nativeEnum(WIFE_STATUS).nullable(),
     family_number: z.number().nullable(),

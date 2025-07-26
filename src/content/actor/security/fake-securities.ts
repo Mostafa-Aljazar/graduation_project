@@ -204,10 +204,6 @@ export const fakeSecurities: Security[] = [
     }
 ];
 
-// interface PaginationParams {
-//     page?: number;
-//     limit?: number
-// };
 
 export const fakeSecuritiesResponse = ({ page = 1, limit = 10, search }: getSecurityDataProps): SecuritiesResponse => {
     const paged = fakeSecurities.slice((page - 1) * limit, page * limit);

@@ -8,7 +8,6 @@ import { displacedsFilterValues } from '@/validation/actor/general/displaceds-fi
 import Displaceds_Table from './displaceds-table';
 import useAuth from '@/hooks/useAuth';
 import { USER_TYPE } from '@/constants/userTypes';
-import Common_Displaceds_Filters from '../../common-displaceds/common-displaceds-filters';
 import Displaceds_Filters from './displaceds-filters';
 import { useRouter } from 'next/navigation';
 import { GENERAL_ACTOR_ROUTES } from '@/constants/routes';
@@ -72,13 +71,8 @@ export default function Displaceds_List() {
 
       <Suspense fallback={<div>جارٍ التحميل...</div>}>
         <Displaceds_Table
-          // destination={destination}
           localFilters={localFilters}
           setDisplacedNum={setDisplacedNum}
-          // setSelectedRows={setSelectedDisplacedIds}
-          // selectedRows={selectedDisplacedIds}
-          // receivedDisplaced={receivedDisplaced}
-          // aid_id={aid_id}
         />
       </Suspense>
     </Stack>

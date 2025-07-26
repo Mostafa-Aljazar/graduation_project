@@ -23,12 +23,12 @@ const callSchema = z.object({
 export type callType = z.infer<typeof callSchema>;
 
 interface CallModalProps {
-  displacedIds: number[];
+  displaced_Ids: number[];
   opened: boolean;
   close: () => void;
 }
 export default function Call_Displaced_Modal({
-  displacedIds,
+  displaced_Ids,
   opened,
   close,
 }: CallModalProps) {
@@ -47,7 +47,7 @@ export default function Call_Displaced_Modal({
   >({
     mutationFn: sendCallRequest,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تم الاستدعاء',
           message: data.message,
@@ -75,7 +75,7 @@ export default function Call_Displaced_Modal({
 
   const handleSubmit = (values: callType) => {
     callMutation.mutate({
-      displacedIds,
+      displaced_Ids,
       dateTime: values.dateTime,
       details: values.details,
     });

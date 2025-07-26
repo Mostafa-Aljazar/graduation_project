@@ -20,13 +20,13 @@ const changeDelegateSchema = z.object({
 export type changeDelegateType = z.infer<typeof changeDelegateSchema>;
 
 interface ChangeDelegateModalProps {
-  displacedIds: number[];
+  displaced_Ids: number[];
   opened: boolean;
   close: () => void;
 }
 
 export default function Change_Delegate_In_Displaced_Modal({
-  displacedIds,
+  displaced_Ids,
   opened,
   close,
 }: ChangeDelegateModalProps) {
@@ -59,7 +59,7 @@ export default function Change_Delegate_In_Displaced_Modal({
   >({
     mutationFn: changeDelegate,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تم التغيير',
           message: data.message,
@@ -87,7 +87,7 @@ export default function Change_Delegate_In_Displaced_Modal({
 
   const handleSubmit = (values: changeDelegateType) => {
     changeMutation.mutate({
-      displacedIds,
+      displaced_Ids,
       delegateId: Number(values.delegateId),
     });
   };

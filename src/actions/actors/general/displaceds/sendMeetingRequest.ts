@@ -4,48 +4,51 @@ import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.t
 import { AqsaAPI } from "@/services";
 
 export interface sendMeetingRequestProps {
-    displacedIDs: number[];
+    displaced_Ids: number[];
     dateTime: Date;
     details: string;
 }
 
 export const sendMeetingRequest = async ({
-    displacedIDs,
+    displaced_Ids,
     dateTime,
     details,
 }: sendMeetingRequestProps): Promise<modalActionResponse> => {
-    // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
-        message: `تم ارسال طلب الاجتماع لـ ${displacedIDs.length} نازح بنجاح`,
+        status: 200,
+        message: `تم ارسال طلب الاجتماع لـ ${displaced_Ids.length} نازح بنجاح`,
 
     }
-    // Simulate API delay for fake data
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 2000);
+        }, 500);
     });
 
-    // Real implementation with filters
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post("/displaceds/meeting", {
-            displacedIDs,
+        const response = await AqsaAPI.post<modalActionResponse>("/displaceds/meeting", {
+            displaced_Ids,
             dateTime,
             details,
         });
 
         return {
-            status: "200",
-            message: `تم ارسال طلب الاجتماع لـ ${displacedIDs.length} نازح بنجاح`,
+            status: 200,
+            message: `تم ارسال طلب الاجتماع لـ ${displaced_Ids.length} نازح بنجاح`,
         };
     } catch (error: any) {
+
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء ارسال طلب الاجتماع";
+
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };
+
     }
 };

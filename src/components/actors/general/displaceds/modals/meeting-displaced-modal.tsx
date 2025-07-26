@@ -22,12 +22,12 @@ const meetingSchema = z.object({
 export type meetingType = z.infer<typeof meetingSchema>;
 
 interface MeetingModalProps {
-  displacedIDs: number[];
+  displaced_Ids: number[];
   opened: boolean;
   close: () => void;
 }
 export default function Meeting_Displaced_Modal({
-  displacedIDs,
+  displaced_Ids,
   opened,
   close,
 }: MeetingModalProps) {
@@ -46,7 +46,7 @@ export default function Meeting_Displaced_Modal({
   >({
     mutationFn: sendMeetingRequest,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تم الارسال',
           message: data.message,
@@ -75,7 +75,7 @@ export default function Meeting_Displaced_Modal({
   const handleSubmit = (values: meetingType) => {
     console.log('🚀 ~ handleSubmit ~ values:', values);
     meetingMutation.mutate({
-      displacedIDs,
+      displaced_Ids,
       dateTime: values.dateTime,
       details: values.details,
     });

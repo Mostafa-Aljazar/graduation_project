@@ -1,7 +1,6 @@
-import { Displaced, DisplacedsIDsResponse, DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
-import { displacedFilterValues } from '@/validation/actor/general/displaceds-filter-form';
+import { Displaced, DisplacedsIDsResponse, DisplacedsNamesResponse, DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
+import { getDisplacedsProps } from '@/actions/actors/general/displaceds/getDisplaceds';
 
-// Fake Displaced Data
 export const fakeDisplaced: Displaced[] = [
     { id: 1, name: 'أحمد سمير بن محمد', identity: '960128163', tent: 'A001', family_number: 5, mobile_number: '0595867464', delegate: { id: 101, name: 'محمد صالح بن عبد' } },
     { id: 2, name: 'نورا جمال بنت عمر', identity: '960128164', tent: 'A002', family_number: 3, mobile_number: '0595867465', delegate: { id: 101, name: 'محمد صالح بن عبد' } },
@@ -27,134 +26,44 @@ export const fakeDisplaced: Displaced[] = [
     { id: 22, name: 'خالد مراد بن عبدالله', identity: '960128184', tent: 'K702', family_number: 6, mobile_number: '0595867485', delegate: { id: 106, name: 'عمر زياد بن محمود' } },
 ];
 
-interface FakeDisplacedProps {
-    page?: number;
-    limit?: number;
-    search?: string;
-    filters?: displacedFilterValues;
-};
-
 export const fakeDisplacedResponse = ({
     page = 1,
     limit = 10,
     search = '',
     filters,
-}: FakeDisplacedProps): DisplacedsResponse => {
+}: getDisplacedsProps): DisplacedsResponse => {
     let filteredDisplaceds = fakeDisplaced;
 
-    if (search) {
-        filteredDisplaceds = filteredDisplaceds.filter(
-            (displaced) =>
-                displaced.name.toLowerCase().includes(search.toLowerCase()) ||
-                displaced.identity.toLowerCase().includes(search.toLowerCase()) ||
-                displaced.tent.toLowerCase().includes(search.toLowerCase()) ||
-                displaced.mobile_number.includes(search) ||
-                displaced.delegate.name.toLowerCase().includes(search.toLowerCase())
-        );
-    }
-
-    if (filters) {
-        if (filters.family_number !== undefined) {
-            filteredDisplaceds = filteredDisplaceds.filter(
-                (displaced) => displaced.family_number === filters.family_number
-            );
-        }
-        // if (filters.wife_status) {
-        //     filteredDisplaceds = filteredDisplaceds.filter(
-        //         (displaced) => displaced.id % 2 === 0 // Placeholder
-        //     );
-        // }
-        // if (filters.ages?.length) {
-        //     filteredDisplaceds = filteredDisplaceds.filter(
-        //         (displaced) => displaced.family_number > 2 // Placeholder
-        //     );
-        // }
-        // if (filters.chronic_disease) {
-        //     filteredDisplaceds = filteredDisplaceds.filter(
-        //         (displaced) => displaced.id % 2 === 0 // Placeholder
-        //     );
-        // }
-        // if (filters.accommodation_type) {
-        //     filteredDisplaceds = filteredDisplaceds.filter(
-        //         (displaced) => displaced.tent.startsWith('TENT') // Placeholder
-        //     );
-        // }
-        if (filters.delegate?.length) {
-            filteredDisplaceds = filteredDisplaceds.filter(
-                (displaced) => filters.delegate?.includes(displaced.delegate.id.toString())
-            );
-        }
-    }
-
     return {
-        status: '200',
+        status: 200,
         message: 'تم جلب بيانات النازحين بنجاح',
-        displaceds: fakeDisplaced.slice((page - 1) * limit, page * limit),
+        displaceds: filteredDisplaceds.slice((page - 1) * limit, page * limit),
         error: undefined,
         pagination: {
             page,
             limit,
-            totalItems: fakeDisplaced.length,
-            totalPages: Math.ceil(fakeDisplaced.length / limit),
+            total_items: filteredDisplaceds.length,
+            total_pages: Math.ceil(filteredDisplaceds.length / limit),
         },
     };
 };
 
-export const fakeDisplacedIDsResponse = ({
-    search = '',
-    filters,
-}: FakeDisplacedProps): DisplacedsIDsResponse => {
-    let filteredDisplaceds = fakeDisplaced;
-
-    if (search) {
-        filteredDisplaceds = filteredDisplaceds.filter(
-            (displaced) =>
-                displaced.name.toLowerCase().includes(search.toLowerCase()) ||
-                displaced.identity.toLowerCase().includes(search.toLowerCase()) ||
-                displaced.tent.toLowerCase().includes(search.toLowerCase()) ||
-                displaced.mobile_number.includes(search.toLowerCase()) ||
-                displaced.delegate.name.toLowerCase().includes(search.toLowerCase())
-        );
-    }
-
-    if (filters) {
-        if (filters.family_number !== undefined) {
-            filteredDisplaceds = filteredDisplaceds.filter(
-                (displaced) => displaced.family_number === filters.family_number
-            );
-        }
-        // if (filters.wife_status) {
-        //     filteredDisplaceds = filteredDisplaceds.filter(
-        //         (displaced) => displaced.id % 2 === 0 // Placeholder
-        //     );
-        // }
-        // if (filters.ages?.length) {
-        //     filteredDisplaceds = filteredDisplaceds.filter(
-        //         (displaced) => displaced.family_number > 2 // Placeholder
-        //     );
-        // }
-        // if (filters.chronic_disease) {
-        //     filteredDisplaceds = filteredDisplaceds.filter(
-        //         (displaced) => displaced.id % 2 === 0 // Placeholder
-        //     );
-        // }
-        // if (filters.accommodation_type) {
-        //     filteredDisplaceds = filteredDisplaceds.filter(
-        //         (displaced) => displaced.tent.startsWith('TENT') // Placeholder
-        //     );
-        // }
-        if (filters.delegate?.length) {
-            filteredDisplaceds = filteredDisplaceds.filter(
-                (displaced) => filters.delegate?.includes(displaced.delegate.id.toString())
-            );
-        }
-    }
-
+export const fakeDisplacedIDsResponse = (): DisplacedsIDsResponse => {
     return {
-        status: '200',
+        status: 200,
         message: 'تم جلب بيانات النازحين بنجاح',
-        displacedsIDs: fakeDisplaced.map((displaced) => displaced.id),
+        displaceds_Ids: fakeDisplaced.map((displaced) => displaced.id),
         error: undefined,
+    };
+};
+
+export const fakeDisplacedsNamesResponse = ({ ids }: { ids?: number[]; }): DisplacedsNamesResponse => {
+    const filtered = ids ? fakeDisplaced.filter((s) => ids.includes(s.id)) : fakeDisplaced;
+    return {
+        status: 200,
+        message: "تم جلب أسماء النازحين بنجاح",
+        displaceds_names: filtered.map((s) => ({ id: s.id, name: s.name })),
+        error: undefined
     };
 };
 
@@ -172,15 +81,15 @@ export const fakeDisplacedByIdsResponse = ({
     );
 
     return {
-        status: '200',
+        status: 200,
         message: 'تم جلب بيانات النازحين بنجاح',
         displaceds: filteredDisplaceds.slice((page - 1) * limit, page * limit),
         error: undefined,
         pagination: {
             page,
             limit,
-            totalItems: filteredDisplaceds.length,
-            totalPages: Math.ceil(filteredDisplaceds.length / limit),
+            total_items: filteredDisplaceds.length,
+            total_pages: Math.ceil(filteredDisplaceds.length / limit),
         },
     };
 };
