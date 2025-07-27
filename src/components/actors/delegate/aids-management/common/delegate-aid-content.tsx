@@ -4,10 +4,7 @@ import { Stack, Divider } from '@mantine/core';
 import Delegate_Aid_Info from './delegate-aid-info';
 import Delegate_Aid_Delivery_Displaced from '../aid/delivery-displaceds/delegate-aid-delivery-displaceds';
 import { DESTINATION_AID } from './delegate-aid-page';
-import {
-  DISTRIBUTION_MECHANISM,
-  TYPE_GROUP_AIDS,
-} from '@/content/actor/manager/aids-management';
+
 import Delegate_Aid_Add_Displaceds from '../add/aid-add-displaceds/aid-add-displaceds';
 
 interface DelegateAidContentProps {

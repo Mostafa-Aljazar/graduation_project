@@ -5,38 +5,49 @@ import { AqsaAPI } from "@/services";
 
 export interface deleteAidProps {
     aid_Id: number;
+    manager_Id: number;
 }
 
 export const deleteAid = async ({
     aid_Id,
+    manager_Id
 }: deleteAidProps): Promise<modalActionResponse> => {
-    // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
+        status: 200,
         message: `تم حذف المساعدة بنجاح`,
 
     }
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 2000);
+        }, 500);
     });
 
-    // Real implementation with filters
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.delete(`/manager/aids/${aid_Id}`);
+        const response = await AqsaAPI.delete<modalActionResponse>(`/aids`, {
+            params: {
+                aid_Id, manager_Id
+            }
+        });
 
         return {
-            status: "200",
+            status: 200,
             message: `تم حذف المساعدة بنجاح`,
         };
+
     } catch (error: any) {
+
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء حذف المساعدة";
+
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };
+
     }
 };

@@ -9,9 +9,13 @@ import { useState } from 'react';
 import useAuth from '@/hooks/useAuth';
 import { useDisclosure } from '@mantine/hooks';
 import Common_Aid_Delete_Modal from './common-aid-delete-modal';
-import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
-import { DISTRIBUTION_MECHANISM } from '@/content/actor/manager/aids-management';
+import { USER_RANK, USER_TYPE, UserRank } from '@/constants/userTypes';
+import {
+  ACTION_ADD_EDIT_DISPLAY,
+  DISTRIBUTION_MECHANISM,
+  TYPE_GROUP_AIDS,
+} from '@/@types/actors/common-types/index.type';
+import { parseAsStringEnum, useQueryStates } from 'nuqs';
 
 interface ActionItem {
   label: string;
@@ -24,8 +28,8 @@ interface CommonAidActionProps {
   aid_distribution_mechanism: DISTRIBUTION_MECHANISM;
   actor_Id: number;
   role: Exclude<
-    (typeof USER_TYPE)[UserType],
-    | typeof USER_TYPE.SECURITY_OFFICER
+    (typeof USER_RANK)[UserRank],
+    | typeof USER_RANK.SECURITY_OFFICER
     | typeof USER_TYPE.DISPLACED
     | typeof USER_TYPE.SECURITY
   >;
@@ -37,12 +41,18 @@ export default function Common_Aid_Action({
   actor_Id,
   role,
 }: CommonAidActionProps) {
-  const { user, isManager, isDelegate } = useAuth();
-  const router = useRouter();
+  const [query] = useQueryStates({
+    'aids-tab': parseAsStringEnum<TYPE_GROUP_AIDS>(
+      Object.values(TYPE_GROUP_AIDS)
+    ).withDefault(TYPE_GROUP_AIDS.ONGOING_AIDS),
+  });
+
+  const { user, isManager, isDelegate, isSecurityOfficer } = useAuth();
   const [openedPopover, setOpenedPopover] = useState(false);
   const [openedDelete, { open: openDelete, close: closeDelete }] =
     useDisclosure(false);
 
+  const router = useRouter();
   const isOwner = actor_Id === user?.id;
 
   const routeFunc =
@@ -50,62 +60,87 @@ export default function Common_Aid_Action({
       ? MANAGER_ROUTES_fUNC(actor_Id, aid_Id)
       : DELEGATE_ROUTES_fUNC(actor_Id, aid_Id);
 
-  const baseActions: ActionItem[] = [
-    {
-      label: 'عرض',
-      icon: Eye,
-      action: () => router.push(routeFunc.AID),
-    },
-  ];
-
-  const editableActions: ActionItem[] = [
-    {
-      label: 'تعديل',
-      icon: UserPen,
-      action: () =>
-        router.push(`${routeFunc.AID}?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`),
-    },
-  ];
-
-  const addDisplacedsActions: ActionItem[] = [
-    {
-      label: 'إضافة نازحين',
-      icon: UserPlus,
-      action: () =>
-        router.push(DELEGATE_ROUTES_fUNC(actor_Id, aid_Id).ADD_AID_DISPLACEDS),
-    },
-  ];
-
-  const deletableActions: ActionItem[] = [
-    {
-      label: 'حذف',
-      icon: Trash,
-      action: openDelete,
-    },
-  ];
-
   const ACTIONS: ActionItem[] = (() => {
-    if (role === USER_TYPE.MANAGER && isManager && isOwner)
-      return [...baseActions, ...editableActions, ...deletableActions];
+    // Manager owns this aid → can view, edit, delete
+    if (role === USER_TYPE.MANAGER && isManager && isOwner) {
+      if (query['aids-tab'] === TYPE_GROUP_AIDS.COMING_AIDS) {
+        return [
+          {
+            label: 'عرض',
+            icon: Eye,
+            action: () => router.push(routeFunc.AID),
+          },
+          {
+            label: 'تعديل',
+            icon: UserPen,
+            action: () =>
+              router.push(
+                `${routeFunc.AID}?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
+              ),
+          },
+          { label: 'حذف', icon: Trash, action: openDelete },
+        ];
+      } else {
+        return [
+          {
+            label: 'عرض',
+            icon: Eye,
+            action: () => router.push(routeFunc.AID),
+          },
+          { label: 'حذف', icon: Trash, action: openDelete },
+        ];
+      }
+    }
 
-    if (role === USER_TYPE.MANAGER && isManager && !isOwner) return baseActions;
+    if (role === USER_TYPE.MANAGER && isManager && !isOwner) {
+      return [
+        { label: 'عرض', icon: Eye, action: () => router.push(routeFunc.AID) },
+      ];
+    }
 
-    if (
-      role === USER_TYPE.DELEGATE &&
-      isDelegate &&
-      isOwner &&
-      aid_distribution_mechanism == DISTRIBUTION_MECHANISM.delegates_lists
-    )
-      return [...baseActions, ...addDisplacedsActions];
+    if (role === USER_TYPE.DELEGATE && isDelegate && isOwner) {
+      if (
+        aid_distribution_mechanism === DISTRIBUTION_MECHANISM.delegates_lists &&
+        query['aids-tab'] === TYPE_GROUP_AIDS.COMING_AIDS
+      ) {
+        return [
+          {
+            label: 'عرض',
+            icon: Eye,
+            action: () => router.push(routeFunc.AID),
+          },
+          {
+            label: 'إضافة نازحين',
+            icon: UserPlus,
+            action: () =>
+              router.push(
+                DELEGATE_ROUTES_fUNC(actor_Id, aid_Id).ADD_AID_DISPLACEDS
+              ),
+          },
+        ];
+      } else {
+        return [
+          {
+            label: 'عرض',
+            icon: Eye,
+            action: () => router.push(routeFunc.AID),
+          },
+        ];
+      }
+    }
 
-    return baseActions;
+    return [
+      {
+        label: 'عرض',
+        icon: Eye,
+        action: () => router.push(DELEGATE_ROUTES_fUNC(actor_Id, aid_Id).AID),
+      },
+    ];
   })();
 
   return (
     <>
       <Popover
-        // width={130}
-
         opened={openedPopover}
         onChange={setOpenedPopover}
         position='left-start'
@@ -118,7 +153,6 @@ export default function Common_Aid_Action({
       >
         <Popover.Target>
           <ActionIcon
-            data-click='popover'
             bg='transparent'
             mt={5}
             onClick={(e) => {
@@ -147,7 +181,7 @@ export default function Common_Aid_Action({
                 fz={16}
                 fw={500}
                 className={cn(
-                  '!text-dark !rounded-none',
+                  '!rounded-none !text-dark',
                   index + 1 !== ACTIONS.length &&
                     '!border-gray-100 !border-0 !border-b-1'
                 )}
@@ -166,6 +200,7 @@ export default function Common_Aid_Action({
 
       <Common_Aid_Delete_Modal
         aid_Id={aid_Id}
+        actor_Id={actor_Id}
         opened={openedDelete}
         close={closeDelete}
       />

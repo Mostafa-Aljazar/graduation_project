@@ -1,9 +1,7 @@
-import { TYPE_AIDS } from "@/content/actor/manager/aids-management";
+import { TYPE_AIDS } from "@/@types/actors/common-types/index.type";
 import { z } from "zod";
 
-// Define validation schema using TYPE_AIDS keys
 export const aidsManagementFilterFormSchema = z.object({
-    // type: z.enum(Object.keys(TYPE_AIDS) as [string, ...string[]]).nullable(),
     type: z.nativeEnum(TYPE_AIDS).nullable(),
     date_range: z
         .tuple([z.string().nullable(), z.string().nullable()])
@@ -28,11 +26,11 @@ export const aidsManagementFilterFormSchema = z.object({
                 if (from !== null && to !== null) {
                     return to >= from;
                 }
-                return true; // If either is null, no validation needed
+                return true;
             },
             {
                 message: 'يجب أن يكون الحد الأقصى أكبر من أو يساوي الحد الأدنى',
-                path: ['recipients_range.1'], // Apply error to the "to" field
+                path: ['recipients_range.1'],
             }
         ),
 });

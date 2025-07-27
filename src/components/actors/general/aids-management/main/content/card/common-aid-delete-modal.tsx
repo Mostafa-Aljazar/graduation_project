@@ -1,28 +1,29 @@
 'use client';
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import {
-  deleteDisplaced,
-  deleteDisplacedsProps,
-} from '@/actions/actors/general/displaceds/deleteDisplaced';
-import {
   deleteAid,
   deleteAidProps,
 } from '@/actions/actors/general/aids-management/deleteAid';
+import useAuth from '@/hooks/useAuth';
 import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 
 interface CommonAidDeleteModalProps {
   aid_Id: number;
+  actor_Id: number;
   opened: boolean;
   close: () => void;
 }
 
 export default function Common_Aid_Delete_Modal({
   aid_Id,
+  actor_Id,
   opened,
   close,
 }: CommonAidDeleteModalProps) {
+  const { user, isManager } = useAuth();
+
   const deleteMutation = useMutation<
     modalActionResponse,
     unknown,
@@ -30,7 +31,7 @@ export default function Common_Aid_Delete_Modal({
   >({
     mutationFn: deleteAid,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تمت العملية بنجاح',
           message: data.message,
@@ -56,9 +57,12 @@ export default function Common_Aid_Delete_Modal({
   });
 
   const handleClick = () => {
-    deleteMutation.mutate({
-      aid_Id,
-    });
+    if (isManager && actor_Id == user?.id) {
+      deleteMutation.mutate({
+        aid_Id,
+        manager_Id: user?.id as number,
+      });
+    }
   };
 
   return (
@@ -66,7 +70,7 @@ export default function Common_Aid_Delete_Modal({
       opened={opened}
       onClose={() => close()}
       title={
-        <Text fz={20} fw={600} ta={'center'} className='!text-red-500'>
+        <Text fz={18} fw={600} ta='center' className='!text-red-500'>
           تأكيد الحذف
         </Text>
       }
@@ -82,18 +86,19 @@ export default function Common_Aid_Delete_Modal({
 
         <Group justify='flex-end'>
           <Button
+            size='sm'
             type='button'
             variant='outline'
             onClick={close}
-            fw={500}
-            className='!border-primary !text-primary'
+            fw={600}
+            className='!shadow-md !border-primary !text-primary'
           >
             إلغاء
           </Button>
           <Button
+            size='sm'
             type='button'
-            fw={500}
-            className='!bg-red-500'
+            className='!bg-red-500 !shadow-md'
             loading={deleteMutation.isPending}
             onClick={handleClick}
           >

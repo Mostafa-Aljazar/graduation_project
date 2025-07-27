@@ -1,6 +1,5 @@
 import { Aid, AidsResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import { TYPE_AIDS, QUANTITY_AVAILABILITY, DISTRIBUTION_METHOD, DISTRIBUTION_MECHANISM, DELEGATE_PORTIONS, TYPE_GROUP_AIDS } from '@/content/actor/manager/aids-management';
-
+import { TYPE_AIDS, QUANTITY_AVAILABILITY, DISTRIBUTION_METHOD, DISTRIBUTION_MECHANISM, DELEGATE_PORTIONS, TYPE_GROUP_AIDS } from '@/@types/actors/common-types/index.type';
 
 export const fakeAids: Aid[] = [
     {
@@ -1012,30 +1011,27 @@ export function getFakeAidsResponse({
     limit: number,
     aid_status?: TYPE_GROUP_AIDS
 }): AidsResponse {
-    // Filter aids by aid_status if provided
     const filteredAids = aid_status
         ? fakeAids.filter(aid => aid.aid_status === aid_status)
         : fakeAids;
 
-    const totalItems = filteredAids.length;
-    const totalPages = Math.ceil(totalItems / limit);
+    const total_items = filteredAids.length;
+    const total_pages = Math.ceil(total_items / limit);
 
-    // Calculate start and end index for pagination
     const start = (page - 1) * limit;
     const end = start + limit;
 
-    // Slice paginated data
     const paginatedAids = filteredAids.slice(start, end);
 
     return {
-        status: '200',
+        status: 200,
         message: 'تم جلب المساعدات بنجاح',
         aids: paginatedAids,
         pagination: {
             page,
             limit,
-            total_items: totalItems,
-            total_pages: totalPages,
+            total_items,
+            total_pages,
         },
     };
 }

@@ -14,13 +14,16 @@ import {
 import { DatePickerInput } from '@mantine/dates';
 import { useForm, zodResolver } from '@mantine/form';
 import { Calendar, ListFilter, Package, RotateCcw, Users } from 'lucide-react';
-import { TYPE_AIDS } from '@/content/actor/manager/aids-management';
 import {
   aidsManagementFilterFormSchema,
   aidsManagementFilterFormType,
 } from '@/validation/actor/manager/aids-management/aids-management-filters-schema';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { Dispatch, SetStateAction, useState } from 'react';
+import {
+  TYPE_AIDS,
+  TYPE_AIDS_LABELS,
+} from '@/@types/actors/common-types/index.type';
 
 interface CommonAidsManagementFiltersProps {
   setLocalFilters: Dispatch<SetStateAction<aidsManagementFilterFormType>>;
@@ -31,6 +34,11 @@ export default function Common_Aids_Management_Filters({
   setLocalFilters,
   aidsNum,
 }: CommonAidsManagementFiltersProps) {
+  const [activePage, setActivePage] = useQueryState(
+    'aids-page',
+    parseAsInteger.withDefault(1)
+  );
+
   const initData: aidsManagementFilterFormType = {
     type: null,
     date_range: [null, null],
@@ -42,11 +50,6 @@ export default function Common_Aids_Management_Filters({
     validate: zodResolver(aidsManagementFilterFormSchema),
   });
 
-  const [activePage, setActivePage] = useQueryState(
-    'aids-page',
-    parseAsInteger.withDefault(1)
-  );
-
   const [resetKey, setResetKey] = useState(0);
 
   const handleReset = () => {
@@ -56,7 +59,6 @@ export default function Common_Aids_Management_Filters({
     setActivePage(1);
   };
 
-  // Apply filters
   const handleApplyFilters = (values: aidsManagementFilterFormType) => {
     setLocalFilters({
       type: values.type as TYPE_AIDS | null,
@@ -105,19 +107,10 @@ export default function Common_Aids_Management_Filters({
               </Text>
             }
             placeholder='نوع المساعدة'
-            // data={Object.entries(TYPE_AIDS).map(([key, value]) => ({
-            //   value: key,
-            //   label: value,
-            // }))}
-            data={[
-              { label: 'مساعدة ماليّة', value: TYPE_AIDS.FINANCIAL_AID },
-              { label: 'مساعدة غذائية', value: TYPE_AIDS.FOOD_AID },
-              { label: 'مساعدة صحية', value: TYPE_AIDS.MEDICAL_AID },
-              { label: 'مساعدة تنظيفة', value: TYPE_AIDS.CLEANING_AID },
-              { label: 'مساعدة ملابس', value: TYPE_AIDS.CLOTHING_AIDS },
-              { label: 'مساعدة تعليمية', value: TYPE_AIDS.EDUCATIONAL_AID },
-              { label: 'مساعدات أخرى', value: TYPE_AIDS.OTHER_AID },
-            ]}
+            data={Object.entries(TYPE_AIDS).map(([key, value]) => ({
+              value: value,
+              label: TYPE_AIDS_LABELS[value],
+            }))}
             size='sm'
             leftSection={<Package size={15} />}
             key={`type-${resetKey}`}

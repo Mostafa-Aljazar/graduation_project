@@ -3,7 +3,7 @@
 import {
   GET_AIDS_MANAGEMENT_TABS,
   TYPE_GROUP_AIDS,
-} from '@/content/actor/manager/aids-management';
+} from '@/@types/actors/common-types/index.type';
 import { cn } from '@/utils/cn';
 import {
   Divider,
@@ -59,7 +59,7 @@ export default function Common_Aids_Management_Header_Tabs() {
             fz={{ base: 14, md: 16 }}
             lh={1.25}
             className={cn(
-              ' !text-nowrap overflow-hidden !overflow-ellipsis',
+              '!overflow-ellipsis overflow-hidden !text-nowrap',
               query['aids-tab'] === tabKey
                 ? '!text-primary !font-bold'
                 : '!font-medium !text-[#817C74]'

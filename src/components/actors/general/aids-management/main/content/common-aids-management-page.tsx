@@ -7,14 +7,20 @@ import { useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth';
 import { Package, SquarePlus } from 'lucide-react';
 import Common_Aids_Management_Content from './common-aids-management-content';
+import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 
-function Aids_Management_Header({ visibleAdd }: { visibleAdd: boolean }) {
+function Aids_Management_Header({
+  visibleAdd,
+  actor_Id,
+}: {
+  visibleAdd: boolean;
+  actor_Id: number;
+}) {
   const route = useRouter();
-
-  const { user } = useAuth();
   const handelAdd = () => {
-    // route.push(MANAGER_ROUTES_fUNC(user?.id as number).ADD_AID);
+    route.push(MANAGER_ROUTES_fUNC(actor_Id).ADD_AID);
   };
+
   return (
     <Group justify='space-between' wrap='nowrap' w={'100%'}>
       <Group gap={10} wrap='nowrap' justify='center' align='center'>
@@ -58,6 +64,7 @@ export default function Common_Aids_Management_Page({
     <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
       <Aids_Management_Header
         visibleAdd={role == USER_TYPE.MANAGER && actor_Id == user?.id}
+        actor_Id={user?.id as number}
       />
 
       <Common_Aids_Management_Header_Tabs />

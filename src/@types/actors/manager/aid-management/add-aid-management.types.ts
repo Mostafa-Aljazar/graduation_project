@@ -3,11 +3,8 @@ import {
     DISTRIBUTION_MECHANISM,
     DISTRIBUTION_METHOD,
     QUANTITY_AVAILABILITY,
-    TYPE_AIDS,
-    TYPE_GROUP_AIDS,
-} from '@/content/actor/manager/aids-management';
-
-// category_range_type
+    TYPE_AIDS, TYPE_GROUP_AIDS
+} from '../../common-types/index.type';
 export interface CategoryRangeType {
     id: string;
     label: string;
@@ -22,7 +19,6 @@ export interface SelectedDelegatePortion {
     portion: number;
 }
 
-// add_aid_form_values
 export interface AddAidFormValues {
     aid_name: string;
     aid_type: TYPE_AIDS;
@@ -41,7 +37,6 @@ export interface AddAidFormValues {
     aid_accessories: string;
 }
 
-// aid
 export interface Aid extends AddAidFormValues {
     id: number;
     selected_displaced_ids: number[];
@@ -55,9 +50,8 @@ export interface Aid extends AddAidFormValues {
     aid_status: TYPE_GROUP_AIDS;
 }
 
-// aid_response
 export interface AidResponse {
-    status: string;
+    status: number;
     message?: string;
     aid: Aid;
     error?: string;
@@ -65,7 +59,7 @@ export interface AidResponse {
 
 // aids_response
 export interface AidsResponse {
-    status: string;
+    status: number;
     message?: string;
     aids: Aid[];
     error?: string;

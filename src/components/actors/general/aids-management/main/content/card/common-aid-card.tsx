@@ -1,10 +1,5 @@
 'use client';
 
-import {
-  GET_AIDS_TYPE_ICONS,
-  TYPE_AIDS,
-  TYPE_GROUP_AIDS,
-} from '@/content/actor/manager/aids-management';
 import { cn } from '@/utils/cn';
 import { Card, Center, Flex, Group, Stack, Text } from '@mantine/core';
 import { Package, UsersRound } from 'lucide-react';
@@ -12,16 +7,26 @@ import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.t
 import { useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth';
 import { parseAsStringEnum, useQueryStates } from 'nuqs';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
+import {
+  USER_RANK,
+  USER_TYPE,
+  UserRank,
+  UserType,
+} from '@/constants/userTypes';
 import Common_Aid_Action from './common-aid-action';
 import { DELEGATE_ROUTES_fUNC, MANAGER_ROUTES_fUNC } from '@/constants/routes';
+import {
+  GET_AIDS_TYPE_ICONS,
+  TYPE_AIDS,
+  TYPE_GROUP_AIDS,
+} from '@/@types/actors/common-types/index.type';
 
 interface CommonAidCardProps {
   aid: Aid;
   actor_Id: number;
   role: Exclude<
-    (typeof USER_TYPE)[UserType],
-    | typeof USER_TYPE.SECURITY_OFFICER
+    (typeof USER_RANK)[UserRank],
+    | typeof USER_RANK.SECURITY_OFFICER
     | typeof USER_TYPE.DISPLACED
     | typeof USER_TYPE.SECURITY
   >;
@@ -44,7 +49,7 @@ export default function Common_Aid_Card({
   });
 
   const router = useRouter();
-  const { user, isManager, isDelegate } = useAuth();
+  const { user, isManager, isDelegate, isSecurityOfficer } = useAuth();
   const isOwner = actor_Id === user?.id;
 
   const handleClick = (e: React.MouseEvent) => {
@@ -61,13 +66,12 @@ export default function Common_Aid_Card({
       router.push(`${MANAGER_ROUTES_fUNC(actor_Id, aid.id).AID}`);
     }
 
-    if (role === USER_TYPE.DELEGATE && (isManager || (isDelegate && isOwner))) {
+    if (
+      role === USER_TYPE.DELEGATE &&
+      (isManager || isSecurityOfficer || (isDelegate && isOwner))
+    ) {
       router.push(`${DELEGATE_ROUTES_fUNC(actor_Id, aid.id).AID}`);
     }
-
-    // if (role === USER_TYPE.DELEGATE && (isManager || (isDelegate && isOwner))) {
-    //   router.push(`${DELEGATE_ROUTES_fUNC(actor_Id, aid.id).AID}`);
-    // }
   };
 
   return (
@@ -76,7 +80,7 @@ export default function Common_Aid_Card({
       key={aid.id}
       p='xs'
       className={cn(
-        'border-1 border-gray-200 rounded-lg !bg-green-100 hover:cursor-pointer !shadow-md',
+        '!bg-green-100 !shadow-md border-1 border-gray-200 rounded-lg hover:cursor-pointer',
         aid.is_completed && '!bg-red-100'
       )}
       onClick={handleClick}
@@ -117,9 +121,9 @@ export default function Common_Aid_Card({
             {query['aids-tab'] !== TYPE_GROUP_AIDS.PREVIOUS_AIDS && (
               <Common_Aid_Action
                 aid_Id={aid.id}
-                aid_distribution_mechanism={aid.distribution_mechanism}
-                role={role}
                 actor_Id={actor_Id}
+                role={role}
+                aid_distribution_mechanism={aid.distribution_mechanism}
               />
             )}
           </Group>

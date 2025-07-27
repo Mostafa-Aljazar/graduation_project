@@ -3,7 +3,12 @@ import { Stack, Group, Text, Flex, Pagination } from '@mantine/core';
 import { Package } from 'lucide-react';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
+import {
+  USER_RANK,
+  USER_TYPE,
+  UserRank,
+  UserType,
+} from '@/constants/userTypes';
 import Common_Aid_Card from './common-aid-card';
 import Common_Aid_Card_Skeleton from './common-aid-card-skeleton';
 
@@ -11,11 +16,10 @@ interface CommonAidsListProps {
   data: Aid[];
   total_pages: number;
   isLoading: boolean;
-  // delegate_Id?: number;
   actor_Id: number;
   role: Exclude<
-    (typeof USER_TYPE)[UserType],
-    | typeof USER_TYPE.SECURITY_OFFICER
+    (typeof USER_RANK)[UserRank],
+    | typeof USER_RANK.SECURITY_OFFICER
     | typeof USER_TYPE.DISPLACED
     | typeof USER_TYPE.SECURITY
   >;
@@ -27,9 +31,7 @@ export default function Common_Aids_List({
   isLoading,
   actor_Id,
   role,
-}: // delegate_Id,
-CommonAidsListProps) {
-  console.log('🚀 ~ data:', data);
+}: CommonAidsListProps) {
   const [activePage, setActivePage] = useQueryState(
     'aids-page',
     parseAsInteger.withDefault(1)
@@ -62,6 +64,7 @@ CommonAidsListProps) {
           ))}
         </Stack>
       )}
+
       {!isLoading && total_pages > 1 && (
         <Flex justify='center' mt='xl'>
           <Pagination
