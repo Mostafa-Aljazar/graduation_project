@@ -24,14 +24,14 @@ type Props = {
   displaced_Id?: number;
   opened: boolean;
   close: () => void;
-  aid_id: number;
+  aid_Id: number;
 };
 
 export default function Receive_Modal({
   displaced_Id,
   opened,
   close,
-  aid_id,
+  aid_Id,
 }: Props) {
   const { user } = useAuth();
 
@@ -87,11 +87,11 @@ export default function Receive_Modal({
     }
 
     receiveMutation.mutate({
-      aid_id,
+      aid_Id,
       receiveCode: values.otp,
-      displaced_id: displaced_Id,
+      displaced_Id: displaced_Id,
       role: user.role,
-      employee_id: user.id,
+      employee_Id: user.id,
     });
 
     form.reset();

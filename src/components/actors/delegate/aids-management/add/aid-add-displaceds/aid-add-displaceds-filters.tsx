@@ -28,7 +28,7 @@ import {
   WIFE_STATUS,
   WIFE_STATUS_LABELS,
 } from '@/@types/actors/common-types/index.type';
-import { fakeDelegates } from '@/content/actor/general/fake-delegates';
+import { fakeDelegates } from '@/content/actor/delegate/fake-delegates';
 import {
   displacedFilterSchema,
   displacedFilterValues,

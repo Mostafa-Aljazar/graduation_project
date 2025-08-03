@@ -39,7 +39,7 @@ export interface DisplacedsNamesResponse {
 
 
 
-export interface DisplacedsIDsResponse {
+export interface DisplacedsIdsResponse {
     status: number;
     message?: string;
     displaceds_Ids: number[];

@@ -6,16 +6,28 @@ import { LoadingOverlay, Stack } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import Add_Aid_Page from '../add/page/add-aid-page';
+import { USER_RANK, UserRank } from '@/constants/userTypes';
 // import Add_Aid_Page from '@/components/actors/manager/aids-management/add/page/add-aid-page';
 
 export interface AidProps {
-  aid_id: number;
+  aid_Id: number;
+  actor_Id: number;
+  role: Exclude<
+    (typeof USER_RANK)[UserRank],
+    | typeof USER_RANK.SECURITY_OFFICER
+    | typeof USER_RANK.DISPLACED
+    | typeof USER_RANK.SECURITY
+  >;
 }
 
-export default function Aid_Page({ aid_id }: AidProps) {
-  const { data, isLoading, error } = useQuery<AidResponse, Error>({
-    queryKey: ['aid', aid_id],
-    queryFn: () => getAid({ id: aid_id }),
+export default function Aid_Page({ aid_Id, actor_Id, role }: AidProps) {
+  const {
+    data: aid_Data,
+    isLoading,
+    error,
+  } = useQuery<AidResponse, Error>({
+    queryKey: ['aid', aid_Id],
+    queryFn: () => getAid({ aid_Id, actor_Id, role }),
   });
 
   if (isLoading)
@@ -29,13 +41,12 @@ export default function Aid_Page({ aid_id }: AidProps) {
       </Stack>
     );
   if (error) return <Stack>Error: {error.message}</Stack>;
-  if (!data) return <div>No data found</div>;
+  if (!aid_Data) return <div>No data found</div>;
 
   return (
     <Stack pos={'relative'}>
-      Add_Aid_Page
-      {/* <Add_Aid_Page aid_id={aid_id} />; */}
-      <Add_Aid_Page initialData={data as AidResponse} aid_id={aid_id} />;
+      Aid_Page
+      <Add_Aid_Page initial_Data={aid_Data as AidResponse} aid_Id={aid_Id} />;
     </Stack>
   );
 }

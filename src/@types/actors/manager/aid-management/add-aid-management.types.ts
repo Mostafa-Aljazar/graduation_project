@@ -3,8 +3,14 @@ import {
     DISTRIBUTION_MECHANISM,
     DISTRIBUTION_METHOD,
     QUANTITY_AVAILABILITY,
-    TYPE_AIDS, TYPE_GROUP_AIDS
+    TYPE_AIDS,
+    TYPE_GROUP_AIDS
 } from '../../common-types/index.type';
+
+//////////////////////////////////////////////////////
+// CATEGORY RANGE
+//////////////////////////////////////////////////////
+
 export interface CategoryRangeType {
     id: string;
     label: string;
@@ -14,12 +20,20 @@ export interface CategoryRangeType {
     portion?: number;
 }
 
+//////////////////////////////////////////////////////
+// DELEGATE PORTIONS
+//////////////////////////////////////////////////////
+
 export interface SelectedDelegatePortion {
-    delegate_id: number;
+    delegate_Id: number;
     portion: number;
 }
 
-export interface AddAidFormValues {
+//////////////////////////////////////////////////////
+// BASE AID FORM TYPES
+//////////////////////////////////////////////////////
+
+export interface BaseAidForm {
     aid_name: string;
     aid_type: TYPE_AIDS;
     aid_content: string;
@@ -28,27 +42,54 @@ export interface AddAidFormValues {
     security_required: boolean;
     quantity_availability: QUANTITY_AVAILABILITY;
     existing_quantity: number;
-    single_portion: number;
-    distribution_method: DISTRIBUTION_METHOD;
+    displaced_single_portion?: number;
     selected_categories: CategoryRangeType[];
-    distribution_mechanism: DISTRIBUTION_MECHANISM;
-    delegates_portions: DELEGATE_PORTIONS;
-    delegate_single_portion: number;
-    aid_accessories: string;
+    distribution_method: DISTRIBUTION_METHOD;
+    additional_notes: string;
 }
 
-export interface Aid extends AddAidFormValues {
+//////////////////////////////////////////////////////
+// CONDITIONAL TYPES (Discriminated Unions)
+//////////////////////////////////////////////////////
+
+export interface DelegateAidForm extends BaseAidForm {
+    distribution_mechanism: DISTRIBUTION_MECHANISM.DELEGATES_LISTS;
+    delegates_portions: DELEGATE_PORTIONS;
+    delegate_single_portion?: number;
+}
+
+export interface DirectAidForm extends BaseAidForm {
+    distribution_mechanism: DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES;
+}
+
+export type AddAidFormValues = DelegateAidForm | DirectAidForm;
+
+//////////////////////////////////////////////////////
+// FINAL AID ENTITY
+//////////////////////////////////////////////////////
+
+export type Aid = AddAidFormValues & {
     id: number;
-    selected_displaced_ids: number[];
-    selected_delegates_portions: SelectedDelegatePortion[];
-    received_displaced: {
-        displaced_id: number;
-        received_time: Date;
-    }[];
+    selected_displaced_Ids: number[];
+    selected_delegates_portions?: SelectedDelegatePortion[];
+    received_displaceds: ReceivedDisplaceds[];
     security_men?: number[];
     is_completed: boolean;
     aid_status: TYPE_GROUP_AIDS;
+};
+
+//////////////////////////////////////////////////////
+// HELPER TYPE FOR RECEIVED ITEMS
+//////////////////////////////////////////////////////
+
+export interface ReceivedDisplaceds {
+    displaced_Id: number;
+    received_time: Date;
 }
+
+//////////////////////////////////////////////////////
+// API RESPONSE TYPES
+//////////////////////////////////////////////////////
 
 export interface AidResponse {
     status: number;
@@ -57,7 +98,6 @@ export interface AidResponse {
     error?: string;
 }
 
-// aids_response
 export interface AidsResponse {
     status: number;
     message?: string;

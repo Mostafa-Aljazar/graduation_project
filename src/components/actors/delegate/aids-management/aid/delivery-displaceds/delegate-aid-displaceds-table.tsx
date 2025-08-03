@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { cn } from '@/utils/cn';
 import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
 import { getDisplacedByIds } from '@/actions/actors/general/displaceds/getDisplacedByIds';
-import Receive_Aid from '@/components/actors/manager/aids-management/add/displaced/receive-aid/receive-aid';
+import Receive_Aid from '@/components/actors/manager/aids-management/add/displaceds/receive-aid/receive-aid';
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { USER_TYPE, UserType } from '@/constants/userTypes';
 
@@ -23,7 +23,7 @@ interface AidDisplacedsTableProps {
   >;
 }
 
-export default function Aid_Displaceds_Table({
+export default function delegate_Aid_Displaceds_Table({
   setDisplacedNum,
   aid_Data,
   actor_Id,

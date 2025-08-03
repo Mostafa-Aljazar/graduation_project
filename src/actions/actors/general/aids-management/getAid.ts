@@ -2,59 +2,58 @@
 'use server';
 
 import { Aid, AidResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
-import { fakeAids } from '@/content/actor/general/fake-aids';
+import { USER_RANK, USER_TYPE, UserRank } from '@/constants/userTypes';
+import { getFakeAidResponse } from '@/content/actor/general/fake-aids';
 import { AqsaAPI } from '@/services';
 
-type Props = {
-    id: number;
+export interface getAidProps {
+    aid_Id: number;
     actor_Id: number;
     role: Exclude<
-        (typeof USER_TYPE)[UserType],
-        | typeof USER_TYPE.SECURITY_OFFICER
+        (typeof USER_RANK)[UserRank],
+        | typeof USER_RANK.SECURITY_OFFICER
         | typeof USER_TYPE.DISPLACED
         | typeof USER_TYPE.SECURITY
     >;
 };
 
-export const getAid = async ({ id, actor_Id,
-    role }: Props): Promise<AidResponse> => {
+export const getAid = async ({ aid_Id, actor_Id, role }: getAidProps): Promise<AidResponse> => {
 
-    const aid = fakeAids.filter(aid => aid.id == id)
-
+    const fakeResponse: AidResponse = getFakeAidResponse({ aid_Id, actor_Id, role });
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve({
-                status: '200',
-                message: 'تم جلب بيانات المساعدة بنجاح',
-                aid: aid[0],
-            });
-        }, 1000);
+            resolve(fakeResponse);
+        }, 500);
     });
 
-    // Real implementation below, if needed
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.get(`/aids/${id}`, {
+        const response = await AqsaAPI.get<AidResponse>(`/aids/${aid_Id}`, {
             params: {
                 actor_Id, role
             },
         });
 
-        return {
-            status: '200',
-            message: 'تم جلب بيانات المساعدة بنجاح',
-            aid: response.data.aid,
-        };
+        if (response.data?.aid) {
+            return response.data
+        }
+
+        throw new Error('بيانات المساعدة غير متوفرة');
 
     } catch (error: any) {
+
         const errorMessage =
             error.response?.data?.error || error.message || 'حدث خطأ أثناء جلب بيانات المساعدة';
+
         return {
-            status: error.response?.status?.toString() || '500',
+            status: error.response?.status || 500,
             message: errorMessage,
             aid: {} as Aid,
             error: errorMessage,
         };
+
     }
 };
 

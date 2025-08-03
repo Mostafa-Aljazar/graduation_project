@@ -1,4 +1,4 @@
-import Aid_Page from '@/components/actors/manager/aids-management/aid/Aid';
+import Aid_Page from '@/components/actors/manager/aids-management/aid/aid-page';
 
 export default async function Manager_Aid({
   params,
@@ -7,6 +7,11 @@ export default async function Manager_Aid({
 }) {
   const { manager_Id, aid_Id } = await params;
 
-  return <div> console.log("🚀 ~ manager_Id:", {manager_Id})</div>;
-  return <Aid_Page aid_id={parseInt(aid_Id)} />;
+  return (
+    <Aid_Page
+      aid_Id={parseInt(aid_Id)}
+      actor_Id={parseInt(manager_Id)}
+      role='MANAGER'
+    />
+  );
 }

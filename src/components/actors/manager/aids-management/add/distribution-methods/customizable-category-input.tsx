@@ -2,7 +2,6 @@
 'use client';
 
 import { CategoryRangeType } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import { DEFAULT_CATEGORIES } from '@/content/actor/manager/aids-management';
 import { cn } from '@/utils/cn';
 import {
   ActionIcon,
@@ -18,6 +17,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { Settings, Users } from 'lucide-react';
 import { useState } from 'react';
 import { Category_Management_Modal } from './category-management-modal';
+import { DEFAULT_CATEGORIES } from '@/@types/actors/common-types/index.type';
 
 interface CustomizableCategoryInputProps {
   value?: CategoryRangeType[];

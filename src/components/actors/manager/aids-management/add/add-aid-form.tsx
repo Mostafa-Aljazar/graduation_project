@@ -31,12 +31,14 @@ import { useForm, zodResolver } from '@mantine/form';
 import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import {
   addAidFormSchema,
-  addAidFormValues,
+  AddAidFormValues,
 } from '@/validation/actor/manager/aids-management/add-aid-form-schema';
 import {
   Aid,
   CategoryRangeType,
 } from '@/@types/actors/manager/aid-management/add-aid-management.types';
+import CustomizableCategoryInput from './distribution-methods/customizable-category-input';
+import PortionsManagementModal from './distribution-methods/portions-management-modal';
 import {
   DELEGATE_PORTIONS,
   DISTRIBUTION_MECHANISM,
@@ -45,12 +47,10 @@ import {
   QUANTITY_AVAILABILITY,
   TYPE_AIDS,
   TYPE_AIDS_LABELS,
-} from '@/content/actor/manager/aids-management';
-import CustomizableCategoryInput from './distribution-methods/customizable-category-input';
-import PortionsManagementModal from './distribution-methods/portions-management-modal';
+} from '@/@types/actors/common-types/index.type';
 
 interface AddFormProps {
-  onSubmit: (values: addAidFormValues) => void;
+  onSubmit: (values: AddAidFormValues) => void;
   initialData?: Aid;
   isDisabled?: boolean;
 }
@@ -62,65 +62,76 @@ export default function Add_Aid_Form({
 }: AddFormProps) {
   const [query, setQuery] = useQueryStates({
     existingQuantity: parseAsInteger.withDefault(
-      initialData?.existingQuantity || 0
+      initialData?.existing_quantity || 0
     ),
     distributionMechanism: parseAsStringEnum<DISTRIBUTION_MECHANISM>(
       Object.values(DISTRIBUTION_MECHANISM)
     ).withDefault(
-      initialData?.distributionMechanism ||
-        DISTRIBUTION_MECHANISM.delegates_lists
+      initialData?.distribution_mechanism ||
+        DISTRIBUTION_MECHANISM.DELEGATES_LISTS
     ),
     delegatesPortions: parseAsStringEnum<DELEGATE_PORTIONS>(
       Object.values(DELEGATE_PORTIONS)
-    ).withDefault(initialData?.delegatesPortions || DELEGATE_PORTIONS.equal),
+    ).withDefault(
+      initialData?.distribution_mechanism ===
+        DISTRIBUTION_MECHANISM.DELEGATES_LISTS
+        ? initialData?.delegates_portions
+        : DELEGATE_PORTIONS.EQUAL
+    ),
     quantityAvailability: parseAsStringEnum<QUANTITY_AVAILABILITY>(
       Object.values(QUANTITY_AVAILABILITY)
     ).withDefault(
-      initialData?.quantityAvailability || QUANTITY_AVAILABILITY.limited
+      initialData?.quantity_availability || QUANTITY_AVAILABILITY.LIMITED
     ),
     distributionMethod: parseAsStringEnum<DISTRIBUTION_METHOD>(
       Object.values(DISTRIBUTION_METHOD)
-    ).withDefault(initialData?.distributionMethod || DISTRIBUTION_METHOD.equal),
+    ).withDefault(
+      initialData?.distribution_method || DISTRIBUTION_METHOD.EQUAL
+    ),
     delegateSinglePortion: parseAsInteger.withDefault(
-      initialData?.delegateSinglePortion || 0
+      initialData?.distribution_mechanism ===
+        DISTRIBUTION_MECHANISM.DELEGATES_LISTS
+        ? (initialData?.delegate_single_portion as number)
+        : 0
     ),
   });
 
   useEffect(() => {
-    form.setFieldValue('existingQuantity', query.existingQuantity);
+    form.setFieldValue('existing_quantity', query.existingQuantity);
   }, [query.existingQuantity]);
 
   const [categoryPortions, setCategoryPortions] = useState<
     Record<string, number>
   >(
-    (initialData?.selectedCategories &&
-      initialData.selectedCategories.reduce(
+    (initialData?.selected_categories &&
+      initialData.selected_categories.reduce(
         (acc, cat) => ({ ...acc, [cat.id]: cat.portion || 1 }),
         {}
       )) ||
       {}
   );
 
-  const form = useForm<addAidFormValues>({
+  const form = useForm<AddAidFormValues>({
     initialValues: initialData || {
-      aidName: '',
-      aidType: '' as TYPE_AIDS,
-      aidContent: '',
-      deliveryDate: new Date('2025-06-15T00:00:00'),
-      deliveryLocation: '',
-      securityRequired: false,
-      quantityAvailability: query.quantityAvailability,
-      existingQuantity: query.existingQuantity || 1,
-      singlePortion: 1,
-      distributionMethod: query.distributionMethod,
-      selectedCategories: [],
-      distributionMechanism: query.distributionMechanism,
-      delegatesPortions: query.delegatesPortions,
-      delegateSinglePortion: query.delegateSinglePortion || 1,
-      aidAccessories: '',
+      aid_name: '',
+      aid_type: '' as TYPE_AIDS,
+      aid_content: '',
+      delivery_date: new Date('2025-06-15T00:00:00'),
+      delivery_location: '',
+      security_required: false,
+      quantity_availability: query.quantityAvailability,
+      existing_quantity: query.existingQuantity || 1,
+      displaced_single_portion: 1,
+      distribution_method: query.distributionMethod,
+      selected_categories: [],
+      distribution_mechanism: query.distributionMechanism,
+      delegates_portions: query.delegatesPortions,
+      delegate_single_portion: query.delegateSinglePortion || 1,
+      additional_notes: '',
     },
     validate: zodResolver(addAidFormSchema),
   });
+  // console.log('🚀 ~ Add_Aid_Form ~ form.errors:', form.errors);
 
   const handlePortionChange = useCallback(
     (categoryId: string, portion: number) => {
@@ -129,10 +140,10 @@ export default function Add_Aid_Form({
         ...prev,
         [categoryId]: portion,
       }));
-      const updatedCategories = form.values.selectedCategories.map((cat) =>
+      const updatedCategories = form.values.selected_categories.map((cat) =>
         cat.id === categoryId ? { ...cat, portion } : cat
       );
-      form.setFieldValue('selectedCategories', updatedCategories);
+      form.setFieldValue('selected_categories', updatedCategories);
     },
     [form, isDisabled]
   );
@@ -144,26 +155,26 @@ export default function Add_Aid_Form({
 
   const synchronizePortions = (cats: CategoryRangeType[]) => {
     if (
-      form.values.distributionMethod === DISTRIBUTION_METHOD.equal &&
+      form.values.distribution_method === DISTRIBUTION_METHOD.EQUAL &&
       cats.length > 0 &&
       !isDisabled
     ) {
       const updatedCategories = cats.map((cat) => ({
         ...cat,
-        portion: form.values.singlePortion,
+        portion: form.values.displaced_single_portion,
       }));
 
       const hasChanges = updatedCategories.some(
         (cat, index) =>
-          cat.portion !== (form.values.selectedCategories[index]?.portion ?? 1)
+          cat.portion !== (form.values.selected_categories[index]?.portion ?? 1)
       );
 
       if (hasChanges) {
-        form.setFieldValue('selectedCategories', updatedCategories);
+        form.setFieldValue('selected_categories', updatedCategories);
         updatedCategories.forEach((cat) => {
           setCategoryPortions((prev) => ({
             ...prev,
-            [cat.id]: form.values.singlePortion,
+            [cat.id]: form.values.displaced_single_portion as number,
           }));
         });
       }
@@ -171,16 +182,19 @@ export default function Add_Aid_Form({
   };
 
   useEffect(() => {
-    synchronizePortions(form.values.selectedCategories);
-  }, [form.values.distributionMethod, form.values.singlePortion]);
+    synchronizePortions(form.values.selected_categories);
+  }, [form.values.distribution_method, form.values.displaced_single_portion]);
 
   const calculateTotalAid = () => {
-    if (form.values.selectedCategories.length === 0) return null;
+    if (form.values.selected_categories.length === 0) return null;
 
-    if (form.values.distributionMethod === DISTRIBUTION_METHOD.equal) {
-      return form.values.singlePortion * form.values.selectedCategories.length;
+    if (form.values.distribution_method === DISTRIBUTION_METHOD.EQUAL) {
+      return (
+        (form.values.displaced_single_portion as number) *
+        form.values.selected_categories.length
+      );
     } else {
-      return form.values.selectedCategories.reduce(
+      return form.values.selected_categories.reduce(
         (total, category) =>
           total + (categoryPortions[category.id] ?? category.portion ?? 1),
         0
@@ -188,7 +202,8 @@ export default function Add_Aid_Form({
     }
   };
 
-  const handleSubmit = (values: addAidFormValues) => {
+  const handleSubmit = (values: AddAidFormValues) => {
+    console.log('🚀 ~ handleSubmit ~ values:', values);
     if (isDisabled) return;
     onSubmit(values);
   };
@@ -210,7 +225,7 @@ export default function Add_Aid_Form({
           size='sm'
           leftSection={<Tag size={16} />}
           disabled={isDisabled}
-          {...form.getInputProps('aidName')}
+          {...form.getInputProps('aid_name')}
         />
 
         <Select
@@ -232,7 +247,7 @@ export default function Add_Aid_Form({
           clearable
           leftSection={<Package size={16} />}
           disabled={isDisabled}
-          {...form.getInputProps('aidType')}
+          {...form.getInputProps('aid_type')}
           renderOption={({ option, checked }) => {
             const Icon = GET_AIDS_TYPE_ICONS[option.value as TYPE_AIDS];
             return (
@@ -258,7 +273,7 @@ export default function Add_Aid_Form({
           size='sm'
           leftSection={<TableOfContents size={16} />}
           disabled={isDisabled}
-          {...form.getInputProps('aidContent')}
+          {...form.getInputProps('aid_content')}
         />
         <DateTimePicker
           label={
@@ -272,9 +287,9 @@ export default function Add_Aid_Form({
           classNames={{
             input: 'placeholder:!text-sm !text-primary !font-normal',
           }}
-          value={form.values.deliveryDate}
+          value={form.values.delivery_date}
           onChange={(date) =>
-            !isDisabled && form.setFieldValue('deliveryDate', new Date(date))
+            !isDisabled && form.setFieldValue('delivery_date', new Date(date))
           }
           leftSection={<Calendar size={16} />}
           error={form.errors.deliveryDate}
@@ -295,7 +310,7 @@ export default function Add_Aid_Form({
           }}
           leftSection={<MapPin size={16} />}
           disabled={isDisabled}
-          {...form.getInputProps('deliveryLocation')}
+          {...form.getInputProps('delivery_location')}
         />
         <Stack gap='xs'>
           <Group gap={5}>
@@ -306,10 +321,10 @@ export default function Add_Aid_Form({
           </Group>
           <Radio.Group
             w='100%'
-            value={form.values.securityRequired?.toString()}
+            value={form.values.security_required?.toString()}
             onChange={(value) =>
               !isDisabled &&
-              form.setFieldValue('securityRequired', value === 'true')
+              form.setFieldValue('security_required', value === 'true')
             }
           >
             <Group
@@ -339,9 +354,9 @@ export default function Add_Aid_Form({
                 disabled={isDisabled}
               />
             </Group>
-            {form.errors.securityRequired && (
+            {form.errors.security_required && (
               <Text c='red' size='xs'>
-                {form.errors.securityRequired}
+                {form.errors.security_required}
               </Text>
             )}
           </Radio.Group>
@@ -355,11 +370,11 @@ export default function Add_Aid_Form({
           </Group>
           <Radio.Group
             w='100%'
-            value={form.values.quantityAvailability}
+            value={form.values.quantity_availability}
             onChange={(value) => {
               if (!isDisabled) {
                 form.setFieldValue(
-                  'quantityAvailability',
+                  'quantity_availability',
                   value as QUANTITY_AVAILABILITY
                 );
                 setQuery({
@@ -375,7 +390,7 @@ export default function Add_Aid_Form({
               align='center'
             >
               <Radio
-                value={QUANTITY_AVAILABILITY.limited}
+                value={QUANTITY_AVAILABILITY.LIMITED}
                 label={
                   <Text fz={15} fw={500}>
                     محدود
@@ -385,7 +400,7 @@ export default function Add_Aid_Form({
                 disabled={isDisabled}
               />
               <Radio
-                value={QUANTITY_AVAILABILITY.unlimited}
+                value={QUANTITY_AVAILABILITY.UNLIMITED}
                 label={
                   <Text fz={15} fw={500}>
                     غير محدود
@@ -395,9 +410,9 @@ export default function Add_Aid_Form({
                 disabled={isDisabled}
               />
             </Group>
-            {form.errors.quantityAvailability && (
+            {form.errors.quantity_availability && (
               <Text c='red' size='xs'>
-                {form.errors.quantityAvailability}
+                {form.errors.quantity_availability}
               </Text>
             )}
           </Radio.Group>
@@ -416,10 +431,10 @@ export default function Add_Aid_Form({
             input: 'placeholder:!text-sm !text-primary !font-normal',
           }}
           leftSection={<Boxes size={16} />}
-          value={form.values.existingQuantity}
+          value={form.values.existing_quantity}
           onChange={(value) => {
             if (!isDisabled) {
-              form.setFieldValue('existingQuantity', Number(value));
+              form.setFieldValue('existing_quantity', Number(value));
               setQuery({ existingQuantity: value as number });
             }
           }}
@@ -440,7 +455,7 @@ export default function Add_Aid_Form({
           }}
           leftSection={<Divide size={16} />}
           disabled={isDisabled}
-          {...form.getInputProps('singlePortion')}
+          {...form.getInputProps('displaced_single_portion')}
           allowDecimal={false}
         />
         <Stack gap='xs'>
@@ -452,11 +467,11 @@ export default function Add_Aid_Form({
           </Group>
           <Radio.Group
             w='100%'
-            value={form.values.distributionMethod}
+            value={form.values.distribution_method}
             onChange={(value) =>
               !isDisabled &&
               form.setFieldValue(
-                'distributionMethod',
+                'distribution_method',
                 value as DISTRIBUTION_METHOD
               )
             }
@@ -469,7 +484,7 @@ export default function Add_Aid_Form({
               align='center'
             >
               <Radio
-                value={DISTRIBUTION_METHOD.equal}
+                value={DISTRIBUTION_METHOD.EQUAL}
                 label={
                   <Text fz={15} fw={500}>
                     بالتساوي
@@ -479,7 +494,7 @@ export default function Add_Aid_Form({
                 disabled={isDisabled}
               />
               <Radio
-                value={DISTRIBUTION_METHOD.family_number}
+                value={DISTRIBUTION_METHOD.FAMILY_NUMBER}
                 label={
                   <Text fz={15} fw={500} className='!text-nowrap'>
                     حسب عدد الأفراد
@@ -489,53 +504,53 @@ export default function Add_Aid_Form({
                 disabled={isDisabled}
               />
             </Group>
-            {form.errors.distributionMethod && (
+            {form.errors.distribution_method && (
               <Text c='red' size='xs'>
-                {form.errors.distributionMethod}
+                {form.errors.distribution_method}
               </Text>
             )}
           </Radio.Group>
         </Stack>
-        {form.values.distributionMethod === DISTRIBUTION_METHOD.equal && (
+        {form.values.distribution_method === DISTRIBUTION_METHOD.EQUAL && (
           <Stack gap={0} style={{ gridColumn: '1 / -1' }}>
             <CustomizableCategoryInput
-              value={form.values.selectedCategories}
+              value={form.values.selected_categories}
               onChange={(value) => {
                 if (!isDisabled) {
-                  form.setFieldValue('selectedCategories', value);
+                  form.setFieldValue('selected_categories', value);
                   synchronizePortions(value);
                 }
               }}
               label='فئات عدد أفراد العائلة:'
               placeholder='اختر فئة أو أكثر من فئات عدد الأفراد'
-              singlePortion={form.values.singlePortion}
+              singlePortion={form.values.displaced_single_portion as number}
               onPortionChange={handlePortionChange}
               onCategoryAdd={handleCategoryAdd}
               isDisabled={isDisabled}
             />
-            {form.errors.selectedCategories && (
+            {form.errors.selected_categories && (
               <Text c='red' size='xs'>
-                {form.errors.selectedCategories}
+                {form.errors.selected_categories}
               </Text>
             )}
           </Stack>
         )}
-        {form.values.distributionMethod ===
-          DISTRIBUTION_METHOD.family_number && (
+        {form.values.distribution_method ===
+          DISTRIBUTION_METHOD.FAMILY_NUMBER && (
           <Stack gap={0} style={{ gridColumn: '1 / -1' }}>
             <PortionsManagementModal
-              selectedCategories={form.values.selectedCategories}
+              selectedCategories={form.values.selected_categories}
               onCategoriesChange={(value) =>
-                !isDisabled && form.setFieldValue('selectedCategories', value)
+                !isDisabled && form.setFieldValue('selected_categories', value)
               }
               onPortionChange={handlePortionChange}
               categoryPortions={categoryPortions}
               onCategoryAdd={handleCategoryAdd}
               isDisabled={isDisabled}
             />
-            {form.errors.selectedCategories && (
+            {form.errors.selected_categories && (
               <Text c='red' size='xs'>
-                {form.errors.selectedCategories}
+                {form.errors.selected_categories}
               </Text>
             )}
           </Stack>
@@ -549,11 +564,11 @@ export default function Add_Aid_Form({
           </Group>
           <Radio.Group
             w='100%'
-            value={form.values.distributionMechanism}
+            value={form.values.distribution_mechanism}
             onChange={(value) => {
               if (!isDisabled) {
                 form.setFieldValue(
-                  'distributionMechanism',
+                  'distribution_mechanism',
                   value as DISTRIBUTION_MECHANISM
                 );
                 setQuery({
@@ -571,7 +586,7 @@ export default function Add_Aid_Form({
               align='center'
             >
               <Radio
-                value={DISTRIBUTION_MECHANISM.delegates_lists}
+                value={DISTRIBUTION_MECHANISM.DELEGATES_LISTS}
                 label={
                   <Text fz={16} fw={500} className='text-nowrap'>
                     بناءً على كشوفات المناديب
@@ -581,7 +596,7 @@ export default function Add_Aid_Form({
                 disabled={isDisabled}
               />
               <Radio
-                value={DISTRIBUTION_MECHANISM.displaced_families}
+                value={DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES}
                 label={
                   <Text fz={16} fw={500} className='text-nowrap'>
                     بناءً على العائلات النازحة
@@ -591,15 +606,15 @@ export default function Add_Aid_Form({
                 disabled={isDisabled}
               />
             </Flex>
-            {form.errors.distributionMechanism && (
+            {form.errors.distribution_mechanism && (
               <Text c='red' size='xs'>
-                {form.errors.distributionMechanism}
+                {form.errors.distribution_mechanism}
               </Text>
             )}
           </Radio.Group>
         </Stack>
-        {form.values.distributionMechanism ===
-          DISTRIBUTION_MECHANISM.delegates_lists && (
+        {form.values.distribution_mechanism ===
+          DISTRIBUTION_MECHANISM.DELEGATES_LISTS && (
           <>
             <Stack gap='xs'>
               <Group gap={5}>
@@ -610,11 +625,11 @@ export default function Add_Aid_Form({
               </Group>
               <Radio.Group
                 w='100%'
-                value={form.values.delegatesPortions}
+                value={form.values.delegates_portions}
                 onChange={(value) => {
                   if (!isDisabled) {
                     form.setFieldValue(
-                      'delegatesPortions',
+                      'delegates_portions',
                       value as DELEGATE_PORTIONS
                     );
                     setQuery({ delegatesPortions: value as DELEGATE_PORTIONS });
@@ -629,7 +644,7 @@ export default function Add_Aid_Form({
                   align='center'
                 >
                   <Radio
-                    value={DELEGATE_PORTIONS.equal}
+                    value={DELEGATE_PORTIONS.EQUAL}
                     label={
                       <Text fw={500} size='sm'>
                         بالتساوي
@@ -639,7 +654,7 @@ export default function Add_Aid_Form({
                     disabled={isDisabled}
                   />
                   <Radio
-                    value={DELEGATE_PORTIONS.manual}
+                    value={DELEGATE_PORTIONS.MANUAL}
                     label={
                       <Text fw={500} size='sm'>
                         تحديد يدوي
@@ -651,12 +666,12 @@ export default function Add_Aid_Form({
                 </Group>
                 {form.errors.delegatesPortions && (
                   <Text c='red' size='xs'>
-                    {form.errors.delegatesPortions}
+                    {form.errors.delegates_portions}
                   </Text>
                 )}
               </Radio.Group>
             </Stack>
-            {form.values.delegatesPortions === DELEGATE_PORTIONS.equal && (
+            {form.values.delegates_portions === DELEGATE_PORTIONS.EQUAL && (
               <NumberInput
                 label={
                   <Text fz={16} fw={500}>
@@ -673,12 +688,12 @@ export default function Add_Aid_Form({
                 }}
                 leftSection={<Divide size={16} />}
                 disabled={isDisabled}
-                {...form.getInputProps('delegateSinglePortion')}
-                value={form.values.delegateSinglePortion as number}
+                {...form.getInputProps('delegate_single_portion')}
+                value={form.values.delegate_single_portion as number}
                 onChange={(value) => {
                   if (!isDisabled) {
                     form.setFieldValue(
-                      'delegateSinglePortion',
+                      'delegate_single_portion',
                       value as number
                     );
                     setQuery({ delegateSinglePortion: value as number });
@@ -693,9 +708,8 @@ export default function Add_Aid_Form({
         align='flex-start'
         mt={20}
         gap={0}
-        hidden={isDisabled && !(initialData?.aidAccessories as string)}
+        hidden={isDisabled && !(initialData?.additional_notes as string)}
       >
-        fvc
         <Text fz={16} fw={500}>
           الملحقات :
         </Text>
@@ -711,7 +725,7 @@ export default function Add_Aid_Form({
           maxRows={6}
           autosize
           disabled={isDisabled}
-          {...form.getInputProps('aidAccessories')}
+          {...form.getInputProps('additional_notes')}
         />
       </Stack>
     </form>

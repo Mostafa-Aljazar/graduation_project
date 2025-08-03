@@ -6,30 +6,28 @@ import { AqsaAPI } from "@/services";
 
 export interface receiveDisplacedAidProps {
     receiveCode: string;
-    aid_id: string | number;
-    displaced_id: number;
+    aid_Id: string | number;
+    displaced_Id: number;
     role: UserType;
-    employee_id: number
+    employee_Id: number
 }
 
 export const receiveDisplacedAid = async ({
     receiveCode,
-    aid_id,
-    displaced_id,
+    aid_Id,
+    displaced_Id,
     role,
-    employee_id,
+    employee_Id,
 }: receiveDisplacedAidProps): Promise<modalActionResponse> => {
-    // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
+        status: 200,
         message: `تم تسليم المساعدة بنجاح`,
     };
 
-    // Simulate API delay
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 2000);
+        }, 500);
     });
 
     /////////////////////////////////////////////////////////////
@@ -37,24 +35,29 @@ export const receiveDisplacedAid = async ({
     /////////////////////////////////////////////////////////////
 
     try {
-        const response = await AqsaAPI.post("/manager/aids/receive-aid", {
+        const response = await AqsaAPI.post<modalActionResponse>(`/aids/${aid_Id}/receive-aid`, {
             receiveCode,
-            aid_id,
-            displaced_id,
+            aid_Id,
+            displaced_Id,
             role,
-            employee_id,
+            employee_Id,
         });
 
-        return {
-            status: "200",
-            message: `تم تسليم المساعدة بنجاح`,
-        };
+        if (response.data.status == 200) {
+            return {
+                status: 200,
+                message: `تم تسليم المساعدة بنجاح`,
+            };
+        }
+
+        throw new Error("حدث خطأ أثناء تسليم المساعدة");
+
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء تسليم المساعدة";
 
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };

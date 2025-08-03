@@ -123,8 +123,8 @@ export const CHRONIC_DISEASE_LABELS: Record<CHRONIC_DISEASE, string> = {
 /////////////////////////////////////////////////////////////////////////
 
 // FIXME: reverse it
-export enum DESTINATION_DISPLACED {
-    DISPLACEDS = 'DISPLACEDS',
+export enum DESTINATION_AID {
+    // DISPLACEDS = 'DISPLACEDS',
     DISPLAY_AIDS = 'DISPLAY_AIDS',
     EDIT_AIDS = 'EDIT_AIDS',
     ADD_AIDS = 'ADD_AIDS',
@@ -279,23 +279,21 @@ export const DEFAULT_CATEGORIES: CategoryRangeType[] = [
 ];
 
 export enum DISTRIBUTION_MECHANISM {
-    delegates_lists = "delegates_lists",
-    displaced_families = "displaced_families"
+    DELEGATES_LISTS = "DELEGATES_LISTS",
+    DISPLACED_FAMILIES = "DISPLACED_FAMILIES"
 }
 
 export enum DELEGATE_PORTIONS {
-    equal = 'equal',
-    manual = 'manual'
+    EQUAL = 'EQUAL',
+    MANUAL = 'MANUAL'
 }
 
 export enum QUANTITY_AVAILABILITY {
-    limited = 'limited',
-    unlimited = 'unlimited'
+    LIMITED = 'LIMITED',
+    UNLIMITED = 'UNLIMITED'
 }
 
 export enum DISTRIBUTION_METHOD {
-    equal = 'equal',
-    family_number = 'family_number'
+    EQUAL = 'EQUAL',
+    FAMILY_NUMBER = 'FAMILY_NUMBER'
 }
-
-

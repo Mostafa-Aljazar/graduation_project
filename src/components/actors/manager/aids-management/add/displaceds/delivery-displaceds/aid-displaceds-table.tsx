@@ -16,26 +16,46 @@ import {
 } from '@mantine/core';
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { displacedsFilterValues } from '@/validation/actor/general/displaceds-filter-form';
 import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
 import { getDisplaceds } from '@/actions/actors/general/displaceds/getDisplaceds';
-import { getDisplacedsIDs } from '@/actions/actors/general/displaceds/getDisplacedsIds';
 import Displaced_Table_Actions from '@/components/actors/general/displaceds/displaced-table-actions';
 import { ListChecks, ListX, Users } from 'lucide-react';
+import { ReceivedDisplaceds } from '@/@types/actors/manager/aid-management/add-aid-management.types';
+import { getDisplacedByIds } from '@/actions/actors/general/displaceds/getDisplacedByIds';
+import Receive_Aid from '../receive-aid/receive-aid';
+import { DESTINATION_AID } from '@/@types/actors/common-types/index.type';
+import { getDisplacedsIds } from '@/actions/actors/general/displaceds/getDisplacedsIds';
 
-interface DisplacedsTableProps {
+interface AidDisplacedsTableProps {
   localFilters: displacedsFilterValues;
   setDisplacedNum: React.Dispatch<React.SetStateAction<number>>;
+  aid_Id?: number;
+  destination: DESTINATION_AID;
+  setSelectedDisplacedIds: Dispatch<SetStateAction<number[]>>;
+  selectedDisplacedIds: number[];
+  receivedDisplaceds: ReceivedDisplaceds[];
+  setReceivedDisplaceds: Dispatch<SetStateAction<ReceivedDisplaceds[]>>;
 }
 
-export default function Displaceds_Table({
+export default function Aid_Displaceds_Table({
   localFilters,
   setDisplacedNum,
-}: DisplacedsTableProps) {
-  const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<number[]>(
-    []
-  );
+  destination,
+  setSelectedDisplacedIds,
+  selectedDisplacedIds,
+  setReceivedDisplaceds,
+  receivedDisplaceds,
+  aid_Id,
+}: AidDisplacedsTableProps) {
+  console.log('🚀 ~ receivedDisplaceds:', receivedDisplaceds);
+  console.log('🚀 ~ selectedDisplacedIds:', selectedDisplacedIds);
+  console.log('🚀 ~ destination:', destination);
+
+  const receivedDisplacedIds =
+    receivedDisplaceds?.map((res) => res.displaced_Id) || [];
+
   const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
 
   const [query, setQuery] = useQueryStates(
@@ -47,15 +67,15 @@ export default function Displaceds_Table({
   );
 
   const currentPage = query.displaced_page || 1;
-  const limit = 7;
+  const limit = 10;
   const offset = (currentPage - 1) * limit;
 
   const {
-    data: displacedData,
+    data: addDisplacedData,
     isLoading: isLoadingRegular,
     error: queryError,
   } = useQuery<DisplacedsResponse, Error>({
-    queryKey: ['displaceds', query, localFilters],
+    queryKey: ['add_displaceds', query, localFilters],
     queryFn: () =>
       getDisplaceds({
         page: currentPage,
@@ -67,36 +87,66 @@ export default function Displaceds_Table({
   });
 
   const {
+    data: specificDisplacedDataById,
+    isLoading: isLoadingDisplacedIds,
+    error: queryErrorDisplacedIds,
+  } = useQuery<DisplacedsResponse, Error>({
+    queryKey: ['displaceds_by_Ids', query, localFilters],
+    queryFn: () =>
+      getDisplacedByIds({
+        Ids: selectedDisplacedIds,
+        page: currentPage,
+        limit,
+      }),
+    retry: 1,
+  });
+
+  const {
     data: allDisplacedIDs,
     isLoading: isLoadingAll,
     error: allQueryError,
   } = useQuery<number[], Error>({
-    queryKey: ['displaced_all', query.search, localFilters],
+    queryKey: ['displaceds_all', query.search, localFilters],
     queryFn: async () =>
-      (await getDisplacedsIDs({ filters: localFilters })).displaceds_Ids,
+      (await getDisplacedsIds({ filters: localFilters })).displaceds_Ids,
     enabled: selectAllAcrossPages,
     retry: 1,
     staleTime: 1000 * 60 * 5,
   });
 
-  const isLoading = isLoadingAll || isLoadingRegular;
-  const error = allQueryError || queryError;
+  const displacedData =
+    destination == DESTINATION_AID.ADD_AIDS ||
+    destination == DESTINATION_AID.EDIT_AIDS
+      ? addDisplacedData
+      : specificDisplacedDataById;
+  console.log('🚀 ~ displacedData:', displacedData?.displaceds);
+
+  const isLoading = isLoadingAll || isLoadingRegular || isLoadingDisplacedIds;
+  const error = allQueryError || queryError || queryErrorDisplacedIds;
 
   useEffect(() => {
-    setDisplacedNum(displacedData?.pagination?.total_items || 0);
-  }, [displacedData, setDisplacedNum]);
+    if (displacedData) {
+      setDisplacedNum(displacedData?.pagination?.total_items);
+    }
+  }, [displacedData, destination, setDisplacedNum]);
 
+  // FIXME: get all in all scenarios
   useEffect(() => {
-    if (allDisplacedIDs && selectAllAcrossPages) {
+    if (
+      destination !== DESTINATION_AID.DISPLAY_AIDS &&
+      allDisplacedIDs &&
+      selectAllAcrossPages
+    ) {
       setSelectedDisplacedIds(allDisplacedIDs);
     }
   }, [allDisplacedIDs, selectAllAcrossPages]);
 
   const isRowSelected = (id: number) => selectedDisplacedIds.includes(id);
 
+  // FIXME: in add, edit, display aid
   const areAllPagesRowsSelected = () =>
     selectedDisplacedIds.length ===
-    (displacedData?.pagination?.total_items || 0);
+    (addDisplacedData?.pagination?.total_items || 0);
 
   const handleRowSelection = (id: number, checked: boolean) => {
     if (checked) {
@@ -121,50 +171,65 @@ export default function Displaceds_Table({
     }
   };
 
-  const columns = (
-    <Table.Tr>
-      <Table.Th px={5} ta='center' style={{ width: 40 }}>
-        <ActionIcon
-          variant='light'
-          aria-label='Select all rows across all pages'
-          disabled={!displacedData?.displaceds?.length}
-          onClick={() =>
-            handleSelectAllAcrossAllPages(!areAllPagesRowsSelected())
-          }
+  const isRowReceived = (id: number) =>
+    receivedDisplacedIds?.includes(id) || false;
+
+  // const columns = (
+  const columns = useMemo(() => {
+    return (
+      <Table.Tr>
+        <Table.Th
+          px={5}
+          ta='center'
+          style={{ width: 40 }}
+          hidden={destination == DESTINATION_AID.DISPLAY_AIDS}
         >
-          {areAllPagesRowsSelected() ? (
-            <ListX size={18} />
-          ) : (
-            <ListChecks size={18} />
-          )}
-        </ActionIcon>
-      </Table.Th>
-      <Table.Th px={5} ta='center'>
-        الرقم
-      </Table.Th>
-      <Table.Th px={5} ta='center' style={{ whiteSpace: 'nowrap' }}>
-        اسم النازح
-      </Table.Th>
-      <Table.Th px={5} ta='right'>
-        رقم الهوية
-      </Table.Th>
-      <Table.Th px={5} ta='center'>
-        رقم الخيمة
-      </Table.Th>
-      <Table.Th px={5} ta='center'>
-        عدد الأفراد
-      </Table.Th>
-      <Table.Th px={5} ta='center'>
-        رقم الجوال
-      </Table.Th>
-      <Table.Th px={5} ta='center' style={{ whiteSpace: 'nowrap' }}>
-        اسم المندوب
-      </Table.Th>
-      <Table.Th px={5} ta='center'>
-        الإجراءات
-      </Table.Th>
-    </Table.Tr>
-  );
+          <ActionIcon
+            variant='light'
+            aria-label='Select all rows across all pages'
+            // disabled={!addDisplacedData?.displaceds?.length}
+            onClick={() =>
+              handleSelectAllAcrossAllPages(!areAllPagesRowsSelected())
+            }
+          >
+            {areAllPagesRowsSelected() ? (
+              <ListX size={18} />
+            ) : (
+              <ListChecks size={18} />
+            )}
+          </ActionIcon>
+        </Table.Th>
+        <Table.Th px={5} ta='center'>
+          الرقم
+        </Table.Th>
+        <Table.Th px={5} ta='center' style={{ whiteSpace: 'nowrap' }}>
+          اسم النازح
+        </Table.Th>
+        <Table.Th px={5} ta='right'>
+          رقم الهوية
+        </Table.Th>
+        <Table.Th px={5} ta='center'>
+          رقم الخيمة
+        </Table.Th>
+        <Table.Th px={5} ta='center'>
+          عدد الأفراد
+        </Table.Th>
+        <Table.Th px={5} ta='center'>
+          رقم الجوال
+        </Table.Th>
+        <Table.Th px={5} ta='center' style={{ whiteSpace: 'nowrap' }}>
+          اسم المندوب
+        </Table.Th>
+        <Table.Th
+          px={5}
+          ta='center'
+          hidden={destination !== DESTINATION_AID.DISPLAY_AIDS}
+        >
+          حالة التسليم
+        </Table.Th>
+      </Table.Tr>
+    );
+  }, [destination]);
 
   const rows = useMemo(() => {
     return (displacedData?.displaceds || []).map((element, index) => (
@@ -176,7 +241,11 @@ export default function Displaceds_Table({
             : undefined
         }
       >
-        <Table.Td px={5} ta='center'>
+        <Table.Td
+          px={5}
+          ta='center'
+          hidden={destination == DESTINATION_AID.DISPLAY_AIDS}
+        >
           <Checkbox
             aria-label='Select row'
             checked={isRowSelected(element.id)}
@@ -206,12 +275,24 @@ export default function Displaceds_Table({
         <Table.Td px={5} ta='center' style={{ whiteSpace: 'nowrap' }}>
           {element.delegate.name}
         </Table.Td>
-        <Table.Td px={5} ta='center'>
-          <Displaced_Table_Actions displaced_Id={element.id} />
+        <Table.Td
+          px={5}
+          ta='center'
+          w='fit-content'
+          hidden={destination !== DESTINATION_AID.DISPLAY_AIDS}
+        >
+          {isRowReceived(element.id) ? (
+            'تم'
+          ) : (
+            <Receive_Aid
+              displaced_Id={element.id as number}
+              aid_Id={aid_Id as number}
+            />
+          )}
         </Table.Td>
       </Table.Tr>
     ));
-  }, [displacedData, selectedDisplacedIds]);
+  }, [displacedData, selectedDisplacedIds, destination]);
 
   const noDisplaceds = (
     <Table.Tr>
@@ -233,28 +314,24 @@ export default function Displaceds_Table({
   return (
     <>
       <Group
-        justify='space-between'
-        align='center'
+        flex={1}
         wrap='nowrap'
-        hidden={selectedDisplacedIds.length === 0}
+        hidden={
+          destination == DESTINATION_AID.DISPLAY_AIDS ||
+          selectedDisplacedIds.length === 0
+        }
       >
-        <Group flex={1}>
-          {selectAllAcrossPages ? (
-            <Text size='md' fw={500} style={{ whiteSpace: 'nowrap' }}>
-              تم تحديد جميع العناصر عبر جميع الصفحات
-              {isLoadingAll && <Loader size='xs' ml={5} />}
-              {allQueryError && ` (خطأ: ${allQueryError.message})`}
-            </Text>
-          ) : (
-            <Text size='md' fw={500}>
-              تم تحديد {selectedDisplacedIds.length} عنصر
-            </Text>
-          )}
-        </Group>
-
-        <Group justify='flex-end' flex={1}>
-          <Displaced_Table_Actions displaced_Ids={selectedDisplacedIds} />
-        </Group>
+        {selectAllAcrossPages ? (
+          <Text size='md' fw={500} style={{ whiteSpace: 'nowrap' }}>
+            تم تحديد جميع العناصر عبر جميع الصفحات
+            {isLoadingAll && <Loader size='xs' ml={5} />}
+            {allQueryError && ` (خطأ: ${allQueryError.message})`}
+          </Text>
+        ) : (
+          <Text size='md' fw={500}>
+            تم تحديد {selectedDisplacedIds.length} عنصر
+          </Text>
+        )}
       </Group>
 
       <ScrollArea pos={'relative'}>

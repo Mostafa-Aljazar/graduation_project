@@ -1,4 +1,4 @@
-import { Displaced, DisplacedsIDsResponse, DisplacedsNamesResponse, DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
+import { Displaced, DisplacedsIdsResponse, DisplacedsNamesResponse, DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
 import { getDisplacedsProps } from '@/actions/actors/general/displaceds/getDisplaceds';
 
 export const fakeDisplaced: Displaced[] = [
@@ -48,7 +48,7 @@ export const fakeDisplacedResponse = ({
     };
 };
 
-export const fakeDisplacedIDsResponse = (): DisplacedsIDsResponse => {
+export const fakeDisplacedIdsResponse = (): DisplacedsIdsResponse => {
     return {
         status: 200,
         message: 'تم جلب بيانات النازحين بنجاح',

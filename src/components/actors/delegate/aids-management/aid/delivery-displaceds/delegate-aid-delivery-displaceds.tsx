@@ -3,7 +3,7 @@ import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.t
 import { USER_TYPE, UserType } from '@/constants/userTypes';
 import { Stack } from '@mantine/core';
 import { useState } from 'react';
-import Aid_Displaceds_Table from './aid-displaceds-table';
+import Aid_Displaceds_Table from './delegate-aid-displaceds-table';
 import { DESTINATION_AID } from '../../common/delegate-aid-page';
 import Aid_Delivery_Displaceds_Filters from '@/components/actors/delegate/aids-management/aid/delivery-displaceds/aid-delivery-displaceds-filters';
 

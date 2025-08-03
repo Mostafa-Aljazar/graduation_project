@@ -6,13 +6,13 @@ import Receive_Modal from './receive_modal';
 
 type Props = {
   displaced_Id: number;
-  aid_id: number;
+  aid_Id: number;
   disabled?: boolean;
 };
 
 export default function Receive_Aid({
   displaced_Id,
-  aid_id,
+  aid_Id,
   disabled = false,
 }: Props) {
   const [opened, { open, close }] = useDisclosure(false);
@@ -35,7 +35,7 @@ export default function Receive_Aid({
         close={close}
         opened={opened}
         displaced_Id={displaced_Id}
-        aid_id={aid_id}
+        aid_Id={aid_Id}
       />
     </>
   );

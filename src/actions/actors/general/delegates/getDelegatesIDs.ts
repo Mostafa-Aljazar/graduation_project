@@ -1,11 +1,11 @@
 "use server";
 
-import { DelegatesIDsResponse } from "@/@types/actors/general/delegates/delegatesResponse.type";
-import { fakeDelegatesIDsResponse } from "@/content/actor/general/fake-delegates";
+import { DelegatesIdsResponse } from "@/@types/actors/general/delegates/delegatesResponse.type";
+import { fakeDelegatesIdsResponse } from "@/content/actor/delegate/fake-delegates";
 import { AqsaAPI } from "@/services";
 
-export const getDelegatesIDs = async (): Promise<DelegatesIDsResponse> => {
-    const fakeData: DelegatesIDsResponse = fakeDelegatesIDsResponse()
+export const getDelegatesIds = async (): Promise<DelegatesIdsResponse> => {
+    const fakeData: DelegatesIdsResponse = fakeDelegatesIdsResponse()
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
@@ -17,7 +17,7 @@ export const getDelegatesIDs = async (): Promise<DelegatesIDsResponse> => {
     /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.get<DelegatesIDsResponse>("/delegates/ids");
+        const response = await AqsaAPI.get<DelegatesIdsResponse>("/delegates/ids");
 
         if (response.data?.delegates_Ids) {
             return response.data

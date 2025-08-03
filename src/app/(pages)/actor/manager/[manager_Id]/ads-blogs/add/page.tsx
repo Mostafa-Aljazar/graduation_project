@@ -47,7 +47,7 @@ import { useRouter } from 'next/navigation';
 import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import useAuth from '@/hooks/useAuth';
 import { z } from 'zod';
-import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
+import { ACTION_ADD_EDIT_DISPLAY } from '@/@types/actors/common-types/index.type';
 
 // Define the Zod schema for FormData
 const formSchema = z.object({
@@ -212,13 +212,13 @@ export default function Page() {
         throw new Error('نوع الإرسال غير معرف');
       } catch (error) {
         return {
-          status: '400',
+          status: 400,
           error: error instanceof Error ? error.message : 'فشل التحديث',
         } as modalActionResponse;
       }
     },
     onSuccess: (data) => {
-      if (data.status === '200') {
+      if (data.status === 200) {
         notifications.show({
           title: 'نجاح',
           message:
@@ -281,13 +281,13 @@ export default function Page() {
         throw new Error('نوع الإرسال لم يتم تنفيذه بعد');
       } catch (error) {
         return {
-          status: '400',
+          status: 400,
           error: error instanceof Error ? error.message : 'فشل الإضافة',
         } as modalActionResponse;
       }
     },
     onSuccess: (data) => {
-      if (data.status === '200') {
+      if (data.status === 200) {
         notifications.show({
           title: 'نجاح',
           message: data.message || 'تم إرسال المحتوى بنجاح',

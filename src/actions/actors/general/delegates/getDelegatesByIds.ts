@@ -1,56 +1,64 @@
 "use server";
 
 import { DelegatesResponse } from "@/@types/actors/general/delegates/delegatesResponse.type";
-import { DisplacedsResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
-import { fakeDelegatesByIdsResponse } from "@/content/actor/general/fake-delegates";
+import { fakeDelegatesByIdsResponse } from "@/content/actor/delegate/fake-delegates";
 import { AqsaAPI } from "@/services";
 
-type Options = {
-    ids: number[];
+
+export interface getDelegatesByIdsProps {
+    Ids: number[];
     page?: number;
     limit?: number;
 };
 
 export const getDelegatesByIds = async ({
-    ids,
+    Ids,
     page = 1,
     limit = 7,
-}: Options): Promise<DelegatesResponse> => {
+}: getDelegatesByIdsProps): Promise<DelegatesResponse> => {
+
+    const fakeResponse = fakeDelegatesByIdsResponse({ Ids, page, limit })
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeDelegatesByIdsResponse({ ids, page, limit }));
-        }, 1000);
+            resolve(fakeResponse);
+        }, 500);
     });
 
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-        const params = { page, limit };
-        const response = await AqsaAPI.post("/delegates/by-ids", { ids }, { params });
-        const delegates = response.data.delegates || [];
+
+        const response = await AqsaAPI.get<DelegatesResponse>("/delegates/by-ids",
+            {
+                params: {
+                    page, limit, Ids
+                }
+            });
+
+        if (response.data?.delegates) {
+            return response.data
+        }
+
+        throw new Error("بيانات المناديب غير متوفرة");
+
+
+    } catch (error: any) {
+
+        const errorMessage = error.response?.data?.error || error.message || "حدث خطأ أثناء جلب بيانات المناديب";
 
         return {
-            status: "200",
-            message: "تم جلب بيانات المناديب بنجاح",
-            delegates,
-            pagination: {
-                page,
-                limit,
-                totalItems: delegates.length,
-                totalPages: Math.ceil(delegates.length / limit),
-            },
-        };
-    } catch (error: any) {
-        const errorMessage = error.response?.data?.error || error.message || "حدث خطأ أثناء جلب بيانات المناديب";
-        return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             delegates: [],
             pagination: {
                 page: 1,
                 limit: 0,
-                totalItems: 0,
-                totalPages: 0,
+                total_items: 0,
+                total_pages: 0,
             },
             error: errorMessage,
         };
+
     }
 };

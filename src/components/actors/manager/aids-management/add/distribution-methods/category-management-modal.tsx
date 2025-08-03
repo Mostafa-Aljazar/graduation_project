@@ -2,7 +2,6 @@
 'use client';
 
 import { CategoryRangeType } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import { DEFAULT_CATEGORIES } from '@/content/actor/manager/aids-management';
 import { cn } from '@/utils/cn';
 import {
   ActionIcon,
@@ -220,7 +219,7 @@ export function Category_Management_Modal({
                       : `${category.min}+`}
                   </Badge>
                   <Text size='sm'>{category.label}</Text>
-                  {category.isDefault && (
+                  {category.is_default && (
                     <Badge size='xs' color='gray'>
                       افتراضي
                     </Badge>
@@ -238,7 +237,7 @@ export function Category_Management_Modal({
                   >
                     <Edit size={14} />
                   </ActionIcon>
-                  {!category.isDefault && (
+                  {!category.is_default && (
                     <ActionIcon
                       variant='light'
                       color='red'

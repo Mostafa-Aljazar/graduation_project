@@ -31,7 +31,7 @@ export interface DelegatesNamesResponse {
     error?: string;
 }
 
-export interface DelegatesIDsResponse {
+export interface DelegatesIdsResponse {
     status: number;
     message?: string;
     delegates_Ids: number[];

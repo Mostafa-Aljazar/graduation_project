@@ -5,18 +5,18 @@ import { fakeDisplacedByIdsResponse } from "@/content/actor/displaced/fake-displ
 import { AqsaAPI } from "@/services";
 
 export interface getDisplacedByIdsProps {
-    ids: number[];
+    Ids: number[];
     page?: number;
     limit?: number;
 };
 
 export const getDisplacedByIds = async ({
-    ids,
+    Ids,
     page = 1,
     limit = 7,
 }: getDisplacedByIdsProps): Promise<DisplacedsResponse> => {
 
-    const fakeResponse = fakeDisplacedByIdsResponse({ ids, page, limit })
+    const fakeResponse = fakeDisplacedByIdsResponse({ ids: Ids, page, limit })
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeResponse);
@@ -31,7 +31,7 @@ export const getDisplacedByIds = async ({
         const response = await AqsaAPI.get<DisplacedsResponse>("/displaced/by-ids",
             {
                 params: {
-                    page, limit, ids
+                    page, limit, Ids
                 }
             });
 

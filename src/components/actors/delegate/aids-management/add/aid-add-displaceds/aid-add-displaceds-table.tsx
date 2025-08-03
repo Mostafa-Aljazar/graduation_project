@@ -20,14 +20,14 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { cn } from '@/utils/cn';
-import { DESTINATION_DISPLACED } from '@/content/actor/displaced/filter';
+import { DESTINATION_AID } from '@/content/actor/displaced/filter';
 import { displacedFilterValues } from '@/validation/actor/general/displaceds-filter-form';
 import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
 import { getDisplaceds } from '@/actions/actors/general/displaceds/getDisplaceds';
-import { getDisplacedsIDs } from '@/actions/actors/general/displaceds/getDisplacedsIDs';
+import { getDisplacedsIDs } from '@/actions/actors/general/displaceds/getDisplacedsIds';
 import { getDisplacedByIds } from '@/actions/actors/general/displaceds/getDisplacedByIds';
 import Displaced_Table_Actions from '@/components/actors/general/displaceds/displaced-table-actions';
-import Receive_Aid from '@/components/actors/manager/aids-management/add/displaced/receive-aid/receive-aid';
+import Receive_Aid from '@/components/actors/manager/aids-management/add/displaceds/receive-aid/receive-aid';
 import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { USER_TYPE, UserType } from '@/constants/userTypes';

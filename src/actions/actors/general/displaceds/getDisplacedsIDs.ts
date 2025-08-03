@@ -1,7 +1,7 @@
 "use server";
 
-import { DisplacedsIDsResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
-import { fakeDisplacedIDsResponse } from "@/content/actor/displaced/fake-displaced";
+import { DisplacedsIdsResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
+import { fakeDisplacedIdsResponse } from "@/content/actor/displaced/fake-displaced";
 import { AqsaAPI } from "@/services";
 import { displacedsFilterValues } from "@/validation/actor/general/displaceds-filter-form";
 
@@ -9,9 +9,9 @@ export interface getDisplacedsIDsProps {
     filters: displacedsFilterValues;
 };
 
-export const getDisplacedsIDs = async ({ filters }: getDisplacedsIDsProps): Promise<DisplacedsIDsResponse> => {
+export const getDisplacedsIds = async ({ filters }: getDisplacedsIDsProps): Promise<DisplacedsIdsResponse> => {
 
-    const fakeResponse = fakeDisplacedIDsResponse()
+    const fakeResponse = fakeDisplacedIdsResponse()
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeResponse);
@@ -23,7 +23,7 @@ export const getDisplacedsIDs = async ({ filters }: getDisplacedsIDsProps): Prom
     /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.get<DisplacedsIDsResponse>("/displaced/ids", {
+        const response = await AqsaAPI.get<DisplacedsIdsResponse>("/displaced/ids", {
             params: {
                 filters
             }

@@ -100,7 +100,7 @@ export default function Common_Aid_Action({
 
     if (role === USER_TYPE.DELEGATE && isDelegate && isOwner) {
       if (
-        aid_distribution_mechanism === DISTRIBUTION_MECHANISM.delegates_lists &&
+        aid_distribution_mechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS &&
         query['aids-tab'] === TYPE_GROUP_AIDS.COMING_AIDS
       ) {
         return [

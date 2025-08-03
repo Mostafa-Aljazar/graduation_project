@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import {
+  Box,
   Button,
   Divider,
   Group,
@@ -10,7 +11,7 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import { CheckSquare, Pin, SquarePlus } from 'lucide-react';
+import { CheckSquare, Pin, SquarePen, SquarePlus } from 'lucide-react';
 import { notifications } from '@mantine/notifications';
 import {
   parseAsInteger,
@@ -18,29 +19,29 @@ import {
   useQueryState,
   useQueryStates,
 } from 'nuqs';
-
 import Delegates_List from '@/components/actors/general/delegates/content/delegates-list';
-import {
-  DELEGATE_PORTIONS,
-  DISTRIBUTION_MECHANISM,
-  QUANTITY_AVAILABILITY,
-} from '@/content/actor/manager/aids-management';
-import { addAidFormValues } from '@/validation/actor/manager/aids-management/add-aid-form-schema';
+import { AddAidFormValues } from '@/validation/actor/manager/aids-management/add-aid-form-schema';
 import Add_Aid_Form from '@/components/actors/manager/aids-management/add/add-aid-form';
 import {
   Aid,
   AidResponse,
+  ReceivedDisplaceds,
   SelectedDelegatePortion,
 } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { addAid } from '@/actions/actors/general/aids-management/addAid';
 import { updateAid } from '@/actions/actors/general/aids-management/updateAid';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
-import Displaceds_List from '@/components/actors/general/displaceds/content/displaceds-list';
-import { DESTINATION_DISPLACED } from '@/content/actor/displaced/filter';
-import { DESTINATION_DELEGATES } from '@/content/actor/delegate/filter';
-import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
-import { getAid } from '@/actions/actors/general/aids-management/getAid';
+import {
+  ACTION_ADD_EDIT_DISPLAY,
+  DELEGATE_PORTIONS,
+  DESTINATION_AID,
+  DISTRIBUTION_MECHANISM,
+  QUANTITY_AVAILABILITY,
+  TYPE_GROUP_AIDS,
+} from '@/@types/actors/common-types/index.type';
+import Aid_Displaceds_List from '../displaceds/delivery-displaceds/aid-displaceds-list';
+import Aid_Delegates_List from '../delegates/aid-delegates-list';
 
 function Add_Aid_Header({
   mode,
@@ -59,8 +60,8 @@ function Add_Aid_Header({
   return (
     <Group gap={10} justify='space-between' w='100%'>
       <Group gap={10}>
-        <SquarePlus size={20} className='text-primary' />
-        <Text fw={600} fz={{ base: 18, md: 22 }} className='text-primary'>
+        <Pin size={16} className='text-primary' />
+        <Text fw={600} fz={18} className='text-primary'>
           {mode} المساعدة
         </Text>
       </Group>
@@ -73,7 +74,7 @@ function Add_Aid_Header({
           c='white'
           radius='lg'
           className='!bg-primary'
-          rightSection={<Pin size={16} />}
+          rightSection={<SquarePen size={14} />}
           hidden={action === ACTION_ADD_EDIT_DISPLAY.EDIT}
           onClick={() => setAction(ACTION_ADD_EDIT_DISPLAY.EDIT)}
         >
@@ -85,35 +86,39 @@ function Add_Aid_Header({
 }
 
 interface AddAidPageProps {
-  aid_id?: number;
-  initialData?: AidResponse;
+  aid_Id?: number;
+  initial_Data?: AidResponse;
 }
 
-export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
-  const { user } = useAuth();
-  const router = useRouter();
-
-  // قيم افتراضية للاستعلامات لتعريف useQueryStates
-  const distributionMechanismDefault =
-    initialData?.aid?.distributionMechanism ??
-    DISTRIBUTION_MECHANISM.delegates_lists;
+export default function Add_Aid_Page({
+  aid_Id,
+  initial_Data,
+}: AddAidPageProps) {
+  const distributionMechanismDefault = initial_Data?.aid
+    .distribution_mechanism as DISTRIBUTION_MECHANISM;
 
   const delegatesPortionsDefault =
-    initialData?.aid?.delegatesPortions ?? DELEGATE_PORTIONS.equal;
+    initial_Data?.aid.distribution_mechanism ===
+    DISTRIBUTION_MECHANISM.DELEGATES_LISTS
+      ? initial_Data.aid.delegates_portions
+      : DELEGATE_PORTIONS.EQUAL;
 
   const quantityAvailabilityDefault =
-    initialData?.aid?.quantityAvailability ?? QUANTITY_AVAILABILITY.limited;
+    initial_Data?.aid?.quantity_availability ?? QUANTITY_AVAILABILITY.LIMITED;
 
-  const existingQuantityDefault = initialData?.aid?.existingQuantity ?? 0;
+  const existingQuantityDefault = initial_Data?.aid.existing_quantity ?? 0;
 
   const delegateSinglePortionDefault =
-    initialData?.aid?.delegateSinglePortion ?? 0;
+    initial_Data?.aid.distribution_mechanism ===
+    DISTRIBUTION_MECHANISM.DELEGATES_LISTS
+      ? (initial_Data?.aid?.delegate_single_portion as number)
+      : 0;
 
-  const [query] = useQueryStates(
+  const [query, setQuery] = useQueryStates(
     {
       action: parseAsStringEnum(
         Object.values(ACTION_ADD_EDIT_DISPLAY)
-      ).withDefault(ACTION_ADD_EDIT_DISPLAY.ADD),
+      ).withDefault(ACTION_ADD_EDIT_DISPLAY.DISPLAY),
 
       distributionMechanism: parseAsStringEnum(
         Object.values(DISTRIBUTION_MECHANISM)
@@ -136,40 +141,63 @@ export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
     { shallow: true }
   );
 
-  // تفعيل تعطيل الفورم في حالة العرض فقط
+  // Disable form in view mode
   const isDisabled =
-    !!initialData && query.action !== ACTION_ADD_EDIT_DISPLAY.EDIT;
+    !!initial_Data && query.action !== ACTION_ADD_EDIT_DISPLAY.EDIT;
 
-  // تحديد وضعية الهيدر
+  // Header mode
   const headerMode =
-    !!initialData && query.action !== ACTION_ADD_EDIT_DISPLAY.EDIT
+    !!initial_Data && query.action !== ACTION_ADD_EDIT_DISPLAY.EDIT
       ? 'عرض'
-      : !!initialData && query.action === ACTION_ADD_EDIT_DISPLAY.EDIT
+      : !!initial_Data && query.action === ACTION_ADD_EDIT_DISPLAY.EDIT
       ? 'تعديل'
       : 'إضافة';
 
+  const [receivedDisplaceds, setReceivedDisplaceds] = useState<
+    ReceivedDisplaceds[]
+  >(initial_Data?.aid?.received_displaceds || []);
+
   const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<number[]>(
-    initialData?.aid?.selectedDisplacedIds || []
+    initial_Data?.aid?.selected_displaced_Ids || []
   );
 
   const [selectedDelegatesPortions, setSelectedDelegatesPortions] = useState<
     SelectedDelegatePortion[]
-  >(initialData?.aid?.selectedDelegatesPortions || []);
+  >(initial_Data?.aid?.selected_delegates_portions || []);
 
-  const receivedDisplaced = initialData?.aid?.receivedDisplaced || [];
+  const receivedDisplaced = initial_Data?.aid?.received_displaceds || [];
 
-  const isDisplaced = !!initialData
-    ? initialData.aid.distributionMechanism ===
-      DISTRIBUTION_MECHANISM.displaced_families
-    : query.distributionMechanism === DISTRIBUTION_MECHANISM.displaced_families;
+  // Check if aid is going directly to displaced families
+  /*
+   const isDisplaced =
+     !!initial_Data &&
+     initial_Data?.aid.distribution_mechanism ===
+       DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES &&
+     query.action == ACTION_ADD_EDIT_DISPLAY.DISPLAY
+       ? true
+       : !!initial_Data &&
+         query.action == ACTION_ADD_EDIT_DISPLAY.EDIT &&
+         query.distributionMechanism ===
+           DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES
+       ? true
+       : query.action == ACTION_ADD_EDIT_DISPLAY.ADD &&
+         query.distributionMechanism ===
+           DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES
+       ? true
+       : false;
+ */
+  const isDisplaced =
+    query.distributionMechanism === DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES;
 
-  const { mutate, isPending, isError, error } = useMutation({
+  const actionAidMutation = useMutation({
+    // const { mutate, isPending, isError, error } = useMutation({
     mutationFn: (payload: Aid) =>
-      query.action === ACTION_ADD_EDIT_DISPLAY.EDIT && initialData?.aid.id
-        ? updateAid({ ...payload, id: initialData?.aid.id || -1 })
+      query.action === ACTION_ADD_EDIT_DISPLAY.EDIT && initial_Data?.aid.id
+        ? updateAid({ ...payload, id: initial_Data?.aid.id })
         : addAid(payload),
     onSuccess: (response) => {
-      if (response.status === '200') {
+      if (response.status === 200) {
+        setQuery({ action: ACTION_ADD_EDIT_DISPLAY.DISPLAY });
         notifications.show({
           title:
             query.action === ACTION_ADD_EDIT_DISPLAY.EDIT
@@ -179,8 +207,6 @@ export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
           color: 'green',
           position: 'top-left',
         });
-        // يمكن إعادة التوجيه هنا إذا أردت
-        // router.replace(MANAGER_ROUTES_fUNC(user?.id as number).AIDS_MANAGEMENT);
       } else {
         notifications.show({
           title: 'خطأ',
@@ -200,7 +226,68 @@ export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
     },
   });
 
-  const handleSubmit = (values: addAidFormValues) => {
+  const isCompleted = (values: AddAidFormValues) => {
+    const isAdd = query.action === ACTION_ADD_EDIT_DISPLAY.ADD;
+    const isEdit = query.action === ACTION_ADD_EDIT_DISPLAY.EDIT;
+
+    // --- ADD MODE RULES ---
+    if (isAdd) {
+      // Security required? Mark incomplete
+      if (values.security_required) return false;
+
+      // Delegates scenario - need at least one delegate
+      if (
+        values.distribution_mechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS
+      ) {
+        if (selectedDelegatesPortions.length === 0) return false;
+      }
+
+      // Displaced scenario - need at least one displaced person
+      if (
+        values.distribution_mechanism ===
+        DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES
+      ) {
+        if (selectedDisplacedIds.length === 0) return false;
+      }
+
+      return true;
+    }
+
+    // --- EDIT MODE RULES ---
+    if (isEdit) {
+      // Security required but no security men assigned yet
+      if (
+        values.security_required &&
+        (!initial_Data?.aid.security_men ||
+          initial_Data.aid.security_men.length === 0)
+      ) {
+        return false;
+      }
+
+      // Delegates scenario - still need at least one delegate
+      if (
+        values.distribution_mechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS
+      ) {
+        if (selectedDelegatesPortions.length === 0) return false;
+      }
+
+      // Displaced scenario - still need at least one displaced person
+      if (
+        values.distribution_mechanism ===
+        DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES
+      ) {
+        if (selectedDisplacedIds.length === 0) return false;
+      }
+
+      return true;
+    }
+
+    // Default (should never hit)
+    return false;
+  };
+
+  const handleSubmit = (values: AddAidFormValues) => {
+    console.log('🚀 ~ handleSubmit ~ values:', values);
     if (isDisabled) return;
 
     if (isDisplaced && selectedDisplacedIds.length === 0) {
@@ -223,79 +310,140 @@ export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
       return;
     }
 
-    const isCompleted =
-      query.action === ACTION_ADD_EDIT_DISPLAY.ADD
-        ? values.distributionMechanism ===
-            DISTRIBUTION_MECHANISM.delegates_lists || values.securityRequired
-        : false; // ضبط حسب الحاجة من الباك اند
+    /*const isCompleted =
+      query.action === ACTION_ADD_EDIT_DISPLAY.ADD &&
+      (values.distribution_mechanism ===
+        DISTRIBUTION_MECHANISM.DELEGATES_LISTS ||
+        values.security_required)
+        ? false
+        : query.action === ACTION_ADD_EDIT_DISPLAY.ADD &&
+          values.distribution_mechanism ===
+            DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES &&
+          selectedDisplacedIds.length === 0
+        ? false
+        : query.action === ACTION_ADD_EDIT_DISPLAY.ADD &&
+          values.distribution_mechanism ===
+            DISTRIBUTION_MECHANISM.DELEGATES_LISTS &&
+          selectedDelegatesPortions.length === 0
+        ? false
+        : query.action === ACTION_ADD_EDIT_DISPLAY.EDIT &&
+          values.security_required &&
+          (initial_Data?.aid.security_men?.length as number) == 0
+        ? false
+        : query.action === ACTION_ADD_EDIT_DISPLAY.EDIT &&
+          values.distribution_mechanism ===
+            DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES &&
+          selectedDisplacedIds.length === 0
+        ? false
+        : query.action === ACTION_ADD_EDIT_DISPLAY.EDIT &&
+          values.distribution_mechanism ===
+            DISTRIBUTION_MECHANISM.DELEGATES_LISTS &&
+          selectedDelegatesPortions.length === 0
+        ? false
+        : true;
+ */
+
+    const selectedDisplacedValues =
+      query.action === ACTION_ADD_EDIT_DISPLAY.ADD &&
+      values.distribution_mechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS
+        ? []
+        : selectedDisplacedIds;
 
     const payload: Aid = {
-      id: !!initialData ? (aid_id as number) : -1,
+      id: initial_Data ? initial_Data.aid.id : -1,
       ...values,
-      selectedDisplacedIds,
-      selectedDelegatesPortions,
-      receivedDisplaced,
-      isCompleted,
+      additional_notes: values.additional_notes ?? '',
+      selected_displaced_Ids: selectedDisplacedValues,
+      selected_delegates_portions: selectedDelegatesPortions,
+      received_displaceds: receivedDisplaced,
+      is_completed: isCompleted(values),
+      aid_status: initial_Data?.aid?.aid_status ?? TYPE_GROUP_AIDS.ONGOING_AIDS,
     };
+    console.log('🚀 ~ handleSubmit ~ payload:', payload);
 
-    mutate(payload);
+    /* const payload: Aid = {
+      id: initial_Data ? initial_Data.aid.id : -1,
+      distribution_mechanism: values.distribution_mechanism,
+      aid_name: values.aid_name,
+      aid_type: values.aid_type,
+      aid_content: values.aid_content,
+      quantity_availability: values.quantity_availability,
+      existing_quantity: values.existing_quantity,
+      delegate_single_portion: values.delegate_single_portion,
+      security_required: values.security_required,
+      security_men: values.security_men,
+      delivery_date: values.deliveryDate,
+      notes: values.notes,
+      selected_displaced_Ids: selectedDisplacedIds,
+      selected_delegates_portions: selectedDelegatesPortions,
+      received_displaceds: receivedDisplaced,
+      is_completed: isCompleted(values),
+      aid_status: initial_Data?.aid?.aid_status ?? TYPE_GROUP_AIDS.ONGOING_AIDS,
+      ...(values.distribution_mechanism ===
+        DISTRIBUTION_MECHANISM.DELEGATES_LISTS && {
+        delegates_portions: values.delegates_portions,
+      }),
+    }; */
+
+    actionAidMutation.mutate(payload);
   };
 
   return (
     <Stack p={10} w='100%' pos='relative'>
       <LoadingOverlay
-        visible={isPending}
+        visible={actionAidMutation.isPending}
         zIndex={49}
         overlayProps={{ radius: 'sm', blur: 0.3 }}
       />
+
       <Add_Aid_Header
         mode={headerMode}
         showEditButton={
-          !!initialData && query.action !== ACTION_ADD_EDIT_DISPLAY.EDIT
+          !!initial_Data && query.action !== ACTION_ADD_EDIT_DISPLAY.EDIT
         }
       />
 
       <Add_Aid_Form
         onSubmit={handleSubmit}
-        initialData={initialData?.aid}
+        initialData={initial_Data?.aid}
         isDisabled={isDisabled}
       />
 
       <Divider h={1} bg='#DFDEDC' w='100%' flex={1} />
 
-      {isDisplaced ? (
-        <Displaceds_List
+      {isDisplaced && (
+        <Aid_Displaceds_List
           destination={
-            !!initialData && query.action === ACTION_ADD_EDIT_DISPLAY.EDIT
-              ? DESTINATION_DISPLACED.EDIT_AIDS
-              : !!initialData
-              ? DESTINATION_DISPLACED.DISPLAY_AIDS
-              : DESTINATION_DISPLACED.ADD_AIDS
+            !!initial_Data && query.action === ACTION_ADD_EDIT_DISPLAY.EDIT
+              ? DESTINATION_AID.EDIT_AIDS
+              : !!initial_Data &&
+                query.action === ACTION_ADD_EDIT_DISPLAY.DISPLAY
+              ? DESTINATION_AID.DISPLAY_AIDS
+              : DESTINATION_AID.ADD_AIDS
           }
-          title='توزيع المساعدات'
           setSelectedDisplacedIds={setSelectedDisplacedIds}
           selectedDisplacedIds={selectedDisplacedIds}
-          receivedDisplaced={initialData?.aid?.receivedDisplaced || []}
-          aid_id={aid_id || -1}
+          receivedDisplaceds={receivedDisplaceds}
+          setReceivedDisplaceds={setReceivedDisplaceds}
+          aid_Id={aid_Id}
         />
-      ) : (
-        <Stack gap={20}>
-          <Delegates_List
-            destination={
-              !!initialData && query.action === ACTION_ADD_EDIT_DISPLAY.EDIT
-                ? DESTINATION_DELEGATES.EDIT_AIDS
-                : !!initialData
-                ? DESTINATION_DELEGATES.DISPLAY_AIDS
-                : DESTINATION_DELEGATES.ADD_AIDS
-            }
-            title='توزيع المساعدات على المناديب'
-            aid_id={aid_id ?? -1}
-            selectedDelegatesPortions={selectedDelegatesPortions}
-            setSelectedDelegatesPortions={setSelectedDelegatesPortions}
-            aid_data={initialData?.aid}
-          />
-          <Divider h={1} bg='#DFDEDC' w='100%' flex={1} />
-        </Stack>
+      )}
+
+      {!isDisplaced && (
+        <Aid_Delegates_List
+          destination={
+            !!initial_Data && query.action === ACTION_ADD_EDIT_DISPLAY.EDIT
+              ? DESTINATION_AID.EDIT_AIDS
+              : !!initial_Data &&
+                query.action === ACTION_ADD_EDIT_DISPLAY.DISPLAY
+              ? DESTINATION_AID.DISPLAY_AIDS
+              : DESTINATION_AID.ADD_AIDS
+          }
+          selectedDelegatesPortions={selectedDelegatesPortions}
+          setSelectedDelegatesPortions={setSelectedDelegatesPortions}
+          aid_Id={aid_Id ?? -1}
+          aid_data={initial_Data?.aid}
+        />
       )}
 
       {!isDisabled && (
@@ -312,17 +460,17 @@ export default function Add_Aid_Page({ aid_id, initialData }: AddAidPageProps) {
             radius='lg'
             className='!bg-primary !shadow-lg'
             rightSection={<CheckSquare size={18} />}
-            loading={isPending}
-            disabled={isPending}
+            loading={actionAidMutation.isPending}
+            disabled={actionAidMutation.isPending}
           >
             {query.action === ACTION_ADD_EDIT_DISPLAY.EDIT ? 'تعديل' : 'إضافة'}
           </Button>
         </Group>
       )}
 
-      {isError && (
+      {actionAidMutation.isError && (
         <Text c='red' ta='center'>
-          {error?.message || 'حدث خطأ أثناء معالجة المساعدة'}
+          {actionAidMutation.error?.message || 'حدث خطأ أثناء معالجة المساعدة'}
         </Text>
       )}
     </Stack>

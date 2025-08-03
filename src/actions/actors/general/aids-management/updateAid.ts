@@ -7,36 +7,40 @@ import { AqsaAPI } from "@/services";
 
 export const updateAid = async (payload: Aid): Promise<modalActionResponse> => {
 
-    const fakeData: modalActionResponse = {
-        status: "200",
+    const fakeResponse: modalActionResponse = {
+        status: 200,
         message: "تم تعديل المساعدة بنجاح",
     }
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
-        }, 2000);
+            resolve(fakeResponse);
+        }, 500);
     });
 
-
-
-
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.put(`/manager/aids/update/${payload.id}`, payload);
+
+        const response = await AqsaAPI.put<modalActionResponse>(`/aids/${payload.id}/update`, payload);
+
         if (response.data) {
             return {
-                status: "200",
+                status: 200,
                 message: "تم تعديل المساعدة بنجاح",
             };
         }
 
         return {
-            status: "500",
+            status: 500,
             message: "حدث خطأ أثناء تعديل المساعدة",
             error: "حدث خطأ أثناء تعديل المساعدة",
         };
+
+
     } catch (error: any) {
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: error.response?.data?.error || "حدث خطأ أثناء تعديل المساعدة",
             error: error.response?.data?.error || "حدث خطأ أثناء تعديل المساعدة",
         };

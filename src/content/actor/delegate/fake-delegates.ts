@@ -1,5 +1,6 @@
-import { Delegate, DelegatesIDsResponse, DelegatesNamesResponse, DelegatesResponse, } from '@/@types/actors/general/delegates/delegatesResponse.type';
+import { Delegate, DelegatesIdsResponse, DelegatesNamesResponse, DelegatesResponse, } from '@/@types/actors/general/delegates/delegatesResponse.type';
 import { getDelegatesProps } from '@/actions/actors/general/delegates/getDelegates';
+import { getDelegatesByIdsProps } from '@/actions/actors/general/delegates/getDelegatesByIds';
 
 
 export const fakeDelegates: Delegate[] = [
@@ -43,7 +44,7 @@ export const fakeDelegatesResponse = ({ page = 1, limit = 10 }: getDelegatesProp
 
 };
 
-export const fakeDelegatesIDsResponse = (): DelegatesIDsResponse => {
+export const fakeDelegatesIdsResponse = (): DelegatesIdsResponse => {
     return {
         status: 200,
         message: 'تم جلب بيانات المناديب بنجاح',
@@ -59,5 +60,29 @@ export const fakeDelegatesNamesResponse = ({ ids }: { ids?: number[]; }): Delega
         message: "تم جلب أسماء المناديب بنجاح",
         delegate_names: filtered.map((s) => ({ id: s.id, name: s.name })),
         error: undefined
+    };
+};
+
+
+export const fakeDelegatesByIdsResponse = ({
+    Ids = [],
+    page = 1,
+    limit = 7,
+}: getDelegatesByIdsProps): DelegatesResponse => {
+    const filteredDelegates = fakeDelegates.filter((delegate) =>
+        Ids.includes(delegate.id)
+    );
+
+    return {
+        status: 200,
+        message: 'تم جلب بيانات المناديب بنجاح',
+        delegates: filteredDelegates.slice((page - 1) * limit, page * limit),
+        error: undefined,
+        pagination: {
+            page,
+            limit,
+            total_items: filteredDelegates.length,
+            total_pages: Math.ceil(filteredDelegates.length / limit),
+        },
     };
 };

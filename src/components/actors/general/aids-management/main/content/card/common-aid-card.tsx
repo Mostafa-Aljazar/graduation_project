@@ -132,7 +132,7 @@ export default function Common_Aid_Card({
             <Group gap={5}>
               <UsersRound size={15} className='!text-primary' />
               <Text fz={14} className='!text-dark'>
-                عدد المستفيدين: {aid.selected_displaced_ids.length}
+                عدد المستفيدين: {aid.selected_displaced_Ids.length}
               </Text>
             </Group>
 
@@ -140,15 +140,15 @@ export default function Common_Aid_Card({
               <Group gap={5}>
                 <UsersRound size={15} className='!text-primary' />
                 <Text fz={14} className='!text-dark'>
-                  عدد المستلمين: {aid.received_displaced.length}
+                  عدد المستلمين: {aid.received_displaceds.length}
                 </Text>
               </Group>
             )}
           </Group>
 
-          {aid.aid_accessories && (
+          {aid.additional_notes && (
             <Text fz={14} c='dimmed'>
-              {aid.aid_accessories}
+              {aid.additional_notes}
             </Text>
           )}
         </Stack>
