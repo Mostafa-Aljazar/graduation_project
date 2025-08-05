@@ -8,7 +8,10 @@ import {
     Package,
     History,
     Activity,
-    CalendarCheck, CalendarClock, CheckCircle2, Gift, HandHeart, MessageCircleQuestion, MessageSquareWarning
+    CalendarCheck, CalendarClock, CheckCircle2, Gift, HandHeart, MessageCircleQuestion, MessageSquareWarning,
+    MicVocal,
+    Newspaper,
+    BookOpenCheck
 } from "lucide-react";
 import { CategoryRangeType } from "../manager/aid-management/add-aid-management.types";
 
@@ -201,6 +204,13 @@ export const GET_TASKS_TABS = {
 
 /////////////////////////////////////////////////////////////////////////
 
+
+export enum TYPE_GROUP_AIDS {
+    PREVIOUS_AIDS = 'PREVIOUS_AIDS',
+    ONGOING_AIDS = 'ONGOING_AIDS',
+    COMING_AIDS = 'COMING_AIDS',
+}
+
 export const GET_AIDS_MANAGEMENT_TABS = {
     PREVIOUS_AIDS: { label: 'السابقة', icon: History },
     ONGOING_AIDS: { label: 'الجارية', icon: Activity },
@@ -237,11 +247,6 @@ export const GET_AIDS_TYPE_ICONS = {
     [TYPE_AIDS.OTHER_AID]: Package,
 } as const;
 
-export enum TYPE_GROUP_AIDS {
-    PREVIOUS_AIDS = 'PREVIOUS_AIDS',
-    ONGOING_AIDS = 'ONGOING_AIDS',
-    COMING_AIDS = 'COMING_AIDS',
-}
 
 export const DEFAULT_CATEGORIES: CategoryRangeType[] = [
     {
@@ -297,3 +302,38 @@ export enum DISTRIBUTION_METHOD {
     EQUAL = 'EQUAL',
     FAMILY_NUMBER = 'FAMILY_NUMBER'
 }
+
+/////////////////////////////////////////////////////////////////////////
+
+export enum TYPE_WRITTEN_CONTENT {
+    ADS = 'ADS',
+    BLOG = 'BLOG',
+    SUCCESS_STORIES = 'SUCCESS_STORIES',
+}
+
+export const GET_WRITTEN_CONTENT_TABS = {
+    ADS: { label: 'الإعلانات', icon: MicVocal },
+    BLOG: { label: 'المدونة', icon: Newspaper },
+    SUCCESS_STORIES: { label: 'قصص النجاح', icon: BookOpenCheck },
+} as const;
+
+// export const TYPE_WRITTEN_CONTENT_LABELS: Record<TYPE_WRITTEN_CONTENT, string> = {
+//     [TYPE_WRITTEN_CONTENT.ADS]: 'الإعلانات',
+//     [TYPE_WRITTEN_CONTENT.BLOG]: 'المدونة',
+//     [TYPE_WRITTEN_CONTENT.SUCCESS_STORIES]: 'قصص النجاح',
+// };
+
+
+// export const GET_WRITTEN_CONTENT_ICONS = {
+//     [TYPE_WRITTEN_CONTENT.ADS]: MicVocal,
+//     [TYPE_WRITTEN_CONTENT.BLOG]: Newspaper,
+//     [TYPE_WRITTEN_CONTENT.SUCCESS_STORIES]: BookOpenCheck,
+
+// } as const;
+
+
+export const ADS_HEADER_TITLE = 'الإعلانات :';
+export const BLOG_HEADER_TITLE = 'مدونتنا :';
+export const SUCCESS_STORIES_HEADER_TITLE = 'قصص النجاح:';
+
+

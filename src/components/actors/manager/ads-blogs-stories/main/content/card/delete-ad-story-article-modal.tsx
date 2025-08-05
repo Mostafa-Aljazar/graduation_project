@@ -1,36 +1,40 @@
 'use client';
+
+import { TYPE_WRITTEN_CONTENT } from '@/@types/actors/common-types/index.type';
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import {
-  deleteDisplaced,
-  deleteDisplacedsProps,
-} from '@/actions/actors/general/displaceds/deleteDisplaced';
-import {
-  deleteAid,
-  deleteAidProps,
-} from '@/actions/actors/general/aids-management/deleteAid';
+  deleteAdBlogStory,
+  deleteAdBlogStoryProps,
+} from '@/actions/actors/manager/blog-stories-ads/deleteAdBlogStory';
 import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-interface AidDeleteModalProps {
-  aid_ID: number;
+interface DeleteAdBlogStoryModalProps {
+  id: number;
+  type: TYPE_WRITTEN_CONTENT;
   opened: boolean;
   close: () => void;
+  manager_Id: number;
 }
 
-export default function Aid_Delete_Modal({
-  aid_ID,
+export default function Delete_Ad_Article_Story_Modal({
+  id,
+  type,
   opened,
   close,
-}: AidDeleteModalProps) {
+  manager_Id,
+}: DeleteAdBlogStoryModalProps) {
+  const queryClient = useQueryClient();
+
   const deleteMutation = useMutation<
     modalActionResponse,
     unknown,
-    deleteAidProps
+    deleteAdBlogStoryProps
   >({
-    mutationFn: deleteAid,
+    mutationFn: deleteAdBlogStory,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تمت العملية بنجاح',
           message: data.message,
@@ -39,6 +43,7 @@ export default function Aid_Delete_Modal({
           withBorder: true,
         });
         close();
+        queryClient.invalidateQueries({ queryKey: ['Ads_Blogs_Stories'] });
       } else {
         throw new Error(data.error || 'فشل في الحذف');
       }
@@ -57,8 +62,9 @@ export default function Aid_Delete_Modal({
 
   const handleClick = () => {
     deleteMutation.mutate({
-      aid_Id: aid_ID,
-      manager_Id: 0, //FIXME::
+      content_Id: id,
+      manager_Id: manager_Id,
+      type: type,
     });
   };
 
@@ -67,7 +73,7 @@ export default function Aid_Delete_Modal({
       opened={opened}
       onClose={() => close()}
       title={
-        <Text fz={20} fw={600} ta={'center'} className='!text-red-500'>
+        <Text fz={18} fw={600} ta='center' className='!text-red-500'>
           تأكيد الحذف
         </Text>
       }
@@ -78,23 +84,24 @@ export default function Aid_Delete_Modal({
     >
       <Stack>
         <Text fz={16} fw={500}>
-          هل أنت متأكد من حذف هذه المساعدة؟ هذا الإجراء لا يمكن التراجع عنه.
+          هل أنت متأكد من حذف هذا المحتوى ؟ هذا الإجراء لا يمكن التراجع عنه.
         </Text>
 
         <Group justify='flex-end'>
           <Button
+            size='sm'
             type='button'
             variant='outline'
             onClick={close}
-            fw={500}
-            className='!border-primary !text-primary'
+            fw={600}
+            className='!shadow-md !border-primary !text-primary'
           >
             إلغاء
           </Button>
           <Button
+            size='sm'
             type='button'
-            fw={500}
-            className='!bg-red-500'
+            className='!bg-red-500 !shadow-md'
             loading={deleteMutation.isPending}
             onClick={handleClick}
           >

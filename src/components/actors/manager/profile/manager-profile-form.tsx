@@ -36,7 +36,6 @@ import {
 } from '@/actions/actors/manager/profile/updateManagerProfile';
 import { getManagerProfile } from '@/actions/actors/manager/profile/getManagerProfile';
 import { ManagerProfileResponse } from '@/@types/actors/manager/profile/managerProfileResponse.type';
-import { toFormData } from '@/utils/objectToFormData';
 import useAuth from '@/hooks/useAuth';
 import { MAN } from '@/assets/actor';
 import {

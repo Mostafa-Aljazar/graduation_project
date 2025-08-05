@@ -1,7 +1,6 @@
-import { DISPLACED_RECEIVED_AIDS_TABS } from "@/@types/actors/common-types/index.type";
+import { DISPLACED_RECEIVED_AIDS_TABS, TYPE_AIDS } from "@/@types/actors/common-types/index.type";
 import { DisplacedReceivedAid, DisplacedReceivedAidsResponse } from "@/@types/actors/displaced/received-aids/displacedReceivedAidsResponse.type";
 import { GetDisplacedReceivedAidsProps } from "@/actions/actors/displaced/received-aids/getDisplacedReceivedAids";
-import { TYPE_AIDS } from "@/content/actor/manager/aids-management";
 
 export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
     {

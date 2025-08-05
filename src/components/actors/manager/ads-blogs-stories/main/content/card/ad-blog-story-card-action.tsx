@@ -1,36 +1,37 @@
 'use client';
 
-import { DELEGATE_ROUTES_fUNC, MANAGER_ROUTES_fUNC } from '@/constants/routes';
-import { cn } from '@/utils/cn';
-import {
-  ActionIcon,
-  Button,
-  Group,
-  Popover,
-  Stack,
-  ThemeIcon,
-} from '@mantine/core';
-import { EllipsisVertical, Eye, Trash, Trash2, UserPen } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import useAuth from '@/hooks/useAuth';
+import { ActionIcon, Button, Popover, Stack, ThemeIcon } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import Aid_Delete_Modal from './aid-delete-modal';
-import { ACTION_ADD_EDIT_DISPLAY } from '@/@types/actors/common-types/index.type';
+import { Edit, Eye, Trash } from 'lucide-react';
+import { EllipsisVertical } from 'lucide-react';
+import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
+import { cn } from '@/utils/cn';
+import Delete_Ad_Article_Story_Modal from './delete-ad-story-article-modal';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  ACTION_ADD_EDIT_DISPLAY,
+  TYPE_WRITTEN_CONTENT,
+} from '@/@types/actors/common-types/index.type';
+import { USER_RANK, UserRank } from '@/constants/userTypes';
 
-// Define the type for action items
 interface ActionItem {
   label: string;
   icon: React.ComponentType<{ size?: number | string }>;
   action: () => void;
 }
 
-interface AidActionProps {
-  aid_ID: number;
+interface AdBlogStoryActionCardProps {
+  written_content_Id: number;
+  type: TYPE_WRITTEN_CONTENT;
+  manager_Id: number;
 }
 
-export default function Aid_Action({ aid_ID }: AidActionProps) {
-  const { user, isDelegate, isManager } = useAuth();
+export default function Ad_Blog_Story_Card_Action({
+  written_content_Id,
+  type = TYPE_WRITTEN_CONTENT.ADS,
+  manager_Id,
+}: AdBlogStoryActionCardProps) {
   const [openedPopover, setOpenedPopover] = useState(false);
 
   const [openedDelete, { open: openDelete, close: closeDelete }] =
@@ -38,22 +39,28 @@ export default function Aid_Action({ aid_ID }: AidActionProps) {
 
   const router = useRouter();
 
-  const manager_ACTIONS: ActionItem[] = [
+  const ACTIONS: ActionItem[] = [
     {
       label: 'عرض',
       icon: Eye,
       action: () =>
         router.push(
-          MANAGER_ROUTES_fUNC({ manager_Id: user?.id ?? 0, aid_Id: aid_ID }).AID
+          MANAGER_ROUTES_fUNC({
+            manager_Id: manager_Id,
+            written_content_Id: written_content_Id,
+          }).AD_BLOG_STORY + `?written-tab=${type}`
         ),
     },
     {
       label: 'تعديل',
-      icon: UserPen,
+      icon: Edit,
       action: () =>
         router.push(
-          MANAGER_ROUTES_fUNC({ manager_Id: user?.id ?? 0, aid_Id: aid_ID })
-            .AID + `?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
+          MANAGER_ROUTES_fUNC({
+            manager_Id: manager_Id,
+            written_content_Id: written_content_Id,
+          }).ADD_ADS_BLOGS_STORIES +
+            `?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}&id=${written_content_Id}&written-tab=${type}`
         ),
     },
     {
@@ -62,33 +69,6 @@ export default function Aid_Action({ aid_ID }: AidActionProps) {
       action: () => openDelete(),
     },
   ];
-
-  const delegate_ACTIONS: ActionItem[] = [
-    {
-      label: 'عرض',
-      icon: Eye,
-      action: () =>
-        router.push(
-          DELEGATE_ROUTES_fUNC({ delegate_Id: user?.id ?? 0, aid_Id: aid_ID })
-            .AID
-        ),
-    },
-    {
-      label: 'تعديل',
-      icon: UserPen,
-      action: () =>
-        router.push(
-          DELEGATE_ROUTES_fUNC({ delegate_Id: user?.id ?? 0, aid_Id: aid_ID })
-            .AID + '?action=EDIT'
-        ),
-    },
-  ];
-
-  const ACTIONS: ActionItem[] = isManager
-    ? manager_ACTIONS
-    : isDelegate
-    ? delegate_ACTIONS
-    : [];
 
   const Dropdown_Items = ACTIONS.map((item, index) => (
     <Button
@@ -141,7 +121,7 @@ export default function Aid_Action({ aid_ID }: AidActionProps) {
               setOpenedPopover((o) => !o);
             }}
           >
-            <EllipsisVertical size={20} className='mx-auto text-primary' />
+            <EllipsisVertical size={16} className='mx-auto text-primary' />
           </ActionIcon>
         </Popover.Target>
 
@@ -152,10 +132,12 @@ export default function Aid_Action({ aid_ID }: AidActionProps) {
         </Popover.Dropdown>
       </Popover>
 
-      <Aid_Delete_Modal
-        aid_ID={aid_ID}
-        opened={openedDelete}
+      <Delete_Ad_Article_Story_Modal
+        id={written_content_Id}
         close={closeDelete}
+        opened={openedDelete}
+        type={type}
+        manager_Id={manager_Id}
       />
     </>
   );

@@ -1,4 +1,5 @@
 import Common_Complaints_Content from '@/components/actors/general/complaints/common-complaints-content';
+import { USER_RANK } from '@/constants/userTypes';
 import { Stack } from '@mantine/core';
 
 export default async function Manager_Complaints({
@@ -11,7 +12,10 @@ export default async function Manager_Complaints({
   return (
     <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
       {/* <Common_Complaints_Header_Tabs /> */}
-      <Common_Complaints_Content manager_Id={Number(manager_Id)} />
+      <Common_Complaints_Content
+        actor_Id={Number(manager_Id)}
+        rank={USER_RANK.MANAGER}
+      />
     </Stack>
   );
 }

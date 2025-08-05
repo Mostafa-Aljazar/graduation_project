@@ -18,7 +18,7 @@ function Aids_Management_Header({
 }) {
   const route = useRouter();
   const handelAdd = () => {
-    route.push(MANAGER_ROUTES_fUNC(actor_Id).ADD_AID);
+    route.push(MANAGER_ROUTES_fUNC({ manager_Id: actor_Id }).ADD_AID);
   };
 
   return (

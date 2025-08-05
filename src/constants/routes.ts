@@ -1,3 +1,4 @@
+import Ads_Blogs_Stories from "@/app/(pages)/actor/manager/[manager_Id]/ads-blogs-stories/page";
 
 export const LANDING_ROUTES = {
   HOME: '/',
@@ -30,8 +31,11 @@ export const GENERAL_ACTOR_ROUTES = {
 } as const;
 
 export const DISPLACED_ROUTES_fUNC = (
-  displaced_Id: number
-) => {
+  {
+    displaced_Id
+  }: {
+    displaced_Id: number
+  }) => {
   return {
     PROFILE: `/actor/displaceds/${displaced_Id}/profile`,
     COMPLAINTS: `/actor/displaceds/${displaced_Id}/complaints`,
@@ -40,8 +44,12 @@ export const DISPLACED_ROUTES_fUNC = (
 };
 
 export const DELEGATE_ROUTES_fUNC = (
-  delegate_Id: number,
-  aid_Id?: number
+  {
+    delegate_Id, aid_Id
+  }: {
+    delegate_Id: number,
+    aid_Id?: number
+  }
 ) => {
   return {
     PROFILE: `/actor/delegates/${delegate_Id}/profile`,
@@ -57,8 +65,15 @@ export const DELEGATE_ROUTES_fUNC = (
 
 
 export const MANAGER_ROUTES_fUNC = (
-  manager_Id: number,
-  aid_Id?: number
+  {
+    manager_Id,
+    aid_Id,
+    written_content_Id
+  }: {
+    manager_Id: number,
+    aid_Id?: number,
+    written_content_Id?: number
+  }
 ) => {
   return {
 
@@ -67,8 +82,9 @@ export const MANAGER_ROUTES_fUNC = (
     COMPLAINTS: `/actor/manager/${manager_Id}/complaints`,
 
     // ADS_BLOGS
-    ADS_BLOGS: `/actor/manager/${manager_Id}/ads-blogs`,
-    ADD_ADS_BLOGS: `/actor/manager/${manager_Id}/ads-blogs/add`,
+    ADS_BLOGS_STORIES: `/actor/manager/${manager_Id}/ads-blogs-stories`,
+    AD_BLOG_STORY: `/actor/manager/${manager_Id}/ads-blogs-stories/${written_content_Id}`,
+    ADD_ADS_BLOGS_STORIES: `/actor/manager/${manager_Id}/ads-blogs-stories/add`,
 
 
     // AIDS_MANAGEMENT
@@ -80,8 +96,9 @@ export const MANAGER_ROUTES_fUNC = (
 };
 
 export const SECURITY_ROUTES_fUNC = (
-  security_Id: number,
-) => {
+  { security_Id }: {
+    security_Id: number,
+  }) => {
   return {
     PROFILE: `/actor/security/${security_Id}/profile`,
     COMPLAINTS: `/actor/security/${security_Id}/complaints`,
