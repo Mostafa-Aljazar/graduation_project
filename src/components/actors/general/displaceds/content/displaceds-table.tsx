@@ -20,9 +20,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { displacedsFilterValues } from '@/validation/actor/general/displaceds-filter-form';
 import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
 import { getDisplaceds } from '@/actions/actors/general/displaceds/getDisplaceds';
-import { getDisplacedsIDs } from '@/actions/actors/general/displaceds/getDisplacedsIds';
 import Displaced_Table_Actions from '@/components/actors/general/displaceds/displaced-table-actions';
 import { ListChecks, ListX, Users } from 'lucide-react';
+import { getDisplacedsIds } from '@/actions/actors/general/displaceds/getDisplacedsIds';
 
 interface DisplacedsTableProps {
   localFilters: displacedsFilterValues;
@@ -73,7 +73,7 @@ export default function Displaceds_Table({
   } = useQuery<number[], Error>({
     queryKey: ['displaced_all', query.search, localFilters],
     queryFn: async () =>
-      (await getDisplacedsIDs({ filters: localFilters })).displaceds_Ids,
+      (await getDisplacedsIds({ filters: localFilters })).displaceds_Ids,
     enabled: selectAllAcrossPages,
     retry: 1,
     staleTime: 1000 * 60 * 5,

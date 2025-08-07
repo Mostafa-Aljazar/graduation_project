@@ -20,19 +20,19 @@ import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 
-type Props = {
+interface CommonReceiveDisplacedAidModalProps {
   displaced_Id?: number;
   opened: boolean;
   close: () => void;
   aid_Id: number;
-};
+}
 
-export default function Receive_Modal({
+export default function Common_Receive_Displaced_Aid_Modal({
   displaced_Id,
   opened,
   close,
   aid_Id,
-}: Props) {
+}: CommonReceiveDisplacedAidModalProps) {
   const { user } = useAuth();
 
   const form = useForm<otpType>({
@@ -48,7 +48,7 @@ export default function Receive_Modal({
   >({
     mutationFn: receiveDisplacedAid,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تم تسليم المساعدة بنجاح',
           message: data.message,
@@ -88,7 +88,7 @@ export default function Receive_Modal({
 
     receiveMutation.mutate({
       aid_Id,
-      receiveCode: values.otp,
+      receive_code: values.otp,
       displaced_Id: displaced_Id,
       role: user.role,
       employee_Id: user.id,

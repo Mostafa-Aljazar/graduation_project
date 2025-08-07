@@ -1,17 +1,16 @@
 "use server";
 
 import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
-import { USER_TYPE, UserType } from "@/constants/userTypes";
+import { USER_RANK, USER_TYPE, UserRank, UserType } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
 export interface addAidDisplacedsProps {
     aid_Id: number;
     displaceds_Ids: number[];
-
     actor_Id: number;
     role: Exclude<
-        (typeof USER_TYPE)[UserType],
-        typeof USER_TYPE.SECURITY_OFFICER | typeof USER_TYPE.SECURITY | typeof USER_TYPE.DISPLACED
+        (typeof USER_RANK)[UserRank],
+        typeof USER_RANK.SECURITY_OFFICER | typeof USER_TYPE.SECURITY | typeof USER_TYPE.DISPLACED
     >;
 
 }
@@ -23,48 +22,48 @@ export const addAidDisplaceds = async ({
     role,
 }: addAidDisplacedsProps): Promise<modalActionResponse> => {
 
-
-
-    // FIXME: Remove this fake data logic in production
     const fakeData: modalActionResponse = {
-        status: "200",
-        message: `تم إضافة النازحين للمساعدة بنجاح`,
+        status: 200,
+        message: 'تم إضافة النازحين للمساعدة بنجاح',
 
     }
-    // Simulate API delay
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 2000);
+        }, 500);
     });
 
     /////////////////////////////////////////////////////////////
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
-
-
-
-
-
     try {
-        const response = await AqsaAPI.get(`/aids/${aid_Id}/add-displaceds`, {
-            params: {
-                aid_Id,
-                displaceds_Ids,
-                actor_Id,
-                role,
-            },
+
+        const response = await AqsaAPI.post<modalActionResponse>(`/aids/${aid_Id}/add-displaceds`, {
+            aid_Id,
+            displaceds_Ids,
+            actor_Id,
+            role,
         });
 
+        if (response.data) {
+            return {
+                status: 200,
+                message: 'تم إضافة النازحين للمساعدة بنجاح',
+            };
+        }
+
         return {
-            status: "200",
-            message: `تم إضافة النازحين للمساعدة بنجاح`,
+            status: 500,
+            message: "حدث خطأ أثناء إضافة النازحين للمساعدة",
+            error: "حدث خطأ أثناء إضافة النازحين للمساعدة",
         };
+
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء إضافة النازحين للمساعدة";
+
         return {
-            status: error.response?.status?.toString() || "500",
+            status: error.response?.status || 500,
             message: errorMessage,
             error: errorMessage,
         };

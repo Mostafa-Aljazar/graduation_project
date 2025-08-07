@@ -24,7 +24,7 @@ import Displaced_Table_Actions from '@/components/actors/general/displaceds/disp
 import { ListChecks, ListX, Users } from 'lucide-react';
 import { ReceivedDisplaceds } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { getDisplacedByIds } from '@/actions/actors/general/displaceds/getDisplacedByIds';
-import Receive_Aid from '../receive-aid/receive-aid';
+import Receive_Aid from '../common-receive-displaced-aid/receive-aid';
 import { DESTINATION_AID } from '@/@types/actors/common-types/index.type';
 import { getDisplacedsIds } from '@/actions/actors/general/displaceds/getDisplacedsIds';
 
@@ -102,7 +102,7 @@ export default function Aid_Displaceds_Table({
   });
 
   const {
-    data: allDisplacedIDs,
+    data: allDisplacedIds,
     isLoading: isLoadingAll,
     error: allQueryError,
   } = useQuery<number[], Error>({
@@ -134,19 +134,19 @@ export default function Aid_Displaceds_Table({
   useEffect(() => {
     if (
       destination !== DESTINATION_AID.DISPLAY_AIDS &&
-      allDisplacedIDs &&
+      allDisplacedIds &&
       selectAllAcrossPages
     ) {
-      setSelectedDisplacedIds(allDisplacedIDs);
+      setSelectedDisplacedIds(allDisplacedIds);
     }
-  }, [allDisplacedIDs, selectAllAcrossPages]);
+  }, [allDisplacedIds, selectAllAcrossPages]);
 
   const isRowSelected = (id: number) => selectedDisplacedIds.includes(id);
 
   // FIXME: in add, edit, display aid
   const areAllPagesRowsSelected = () =>
     selectedDisplacedIds.length ===
-    (addDisplacedData?.pagination?.total_items || 0);
+    (displacedData?.pagination?.total_items || 0);
 
   const handleRowSelection = (id: number, checked: boolean) => {
     if (checked) {
@@ -164,7 +164,7 @@ export default function Aid_Displaceds_Table({
   const handleSelectAllAcrossAllPages = (checked: boolean) => {
     if (checked) {
       setSelectAllAcrossPages(true);
-      setSelectedDisplacedIds(allDisplacedIDs || []);
+      setSelectedDisplacedIds(allDisplacedIds || []);
     } else {
       setSelectAllAcrossPages(false);
       setSelectedDisplacedIds([]);

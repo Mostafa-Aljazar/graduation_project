@@ -1,88 +1,79 @@
 'use client';
 
-import { AidResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
+import {
+  Aid,
+  AidResponse,
+} from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { getAid } from '@/actions/actors/general/aids-management/getAid';
 import {
+  Box,
   Center,
   Loader,
   LoadingOverlay,
   Paper,
   Stack,
   Text,
+  ThemeIcon,
 } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { USER_TYPE } from '@/constants/userTypes';
 import Delegate_Aid_Content from './delegate-aid-content';
 import useAuth from '@/hooks/useAuth';
-
-export enum DESTINATION_AID {
-  AID = 'AID',
-  ADD_AID = 'ADD_AID',
-}
+import { MessageCircleWarning } from 'lucide-react';
+import { DELEGATE_DESTINATION_AID } from '@/@types/actors/common-types/index.type';
 
 export interface DelegateAidPageProps {
-  aid_id: number;
-  actor_Id: number;
-  destination: DESTINATION_AID;
+  aid_Id: number;
+  delegate_Id: number;
+  destination: DELEGATE_DESTINATION_AID;
 }
 
 export default function Delegate_Aid_Page({
-  aid_id,
-  actor_Id,
+  aid_Id,
+  delegate_Id,
   destination,
 }: DelegateAidPageProps) {
-  const { isManager, isDelegate } = useAuth();
-
-  const role = isDelegate ? USER_TYPE.DELEGATE : USER_TYPE.MANAGER;
-
-  const { data, isLoading, error } = useQuery<AidResponse, Error>({
-    queryKey: ['aid', aid_id],
-    queryFn: () => getAid({ id: aid_id, actor_Id, role: role }),
+  const {
+    data: aidData,
+    isLoading,
+    error,
+  } = useQuery<AidResponse, Error>({
+    queryKey: ['delegate_aid', aid_Id],
+    queryFn: () =>
+      getAid({ aid_Id: aid_Id, actor_Id: delegate_Id, role: 'DELEGATE' }),
   });
 
-  if (isLoading) {
-    return (
-      <Stack pos='relative' h={400} align='center' justify='center'>
-        <LoadingOverlay
-          visible
-          zIndex={10}
-          overlayProps={{ radius: 'sm', blur: 1 }}
-        />
-        <Center>
-          <Loader color='blue' size='md' />
-        </Center>
-      </Stack>
-    );
-  }
-
-  if (error) {
-    return (
-      <Paper shadow='sm' p='md' bg='red.1'>
-        <Text c='red' fw={600}>
-          خطأ في تحميل بيانات المساعدة: {error.message}
-        </Text>
-      </Paper>
-    );
-  }
-
-  if (!data) {
-    return (
-      <Paper shadow='sm' p='md' bg='gray.1'>
-        <Text c='dimmed' fw={500}>
-          لم يتم العثور على بيانات للمساعدة المطلوبة.
-        </Text>
-      </Paper>
-    );
-  }
-
+  const hasError = Boolean(error) || Boolean(aidData?.error);
   return (
-    <Stack w='100%' p='sm'>
-      <Delegate_Aid_Content
-        aid_Data={data.aid}
-        actor_Id={actor_Id}
-        role={role}
-        destination={destination}
-      />
+    <Stack w={'100%'} p={20}>
+      {hasError ? (
+        <Paper
+          p='md'
+          withBorder
+          m='md'
+          className='!bg-red-100 rounded-md text-center'
+        >
+          <Box>
+            <Center mb='sm'>
+              <ThemeIcon color='red' variant='light' size='lg'>
+                <MessageCircleWarning />
+              </ThemeIcon>
+            </Center>
+            <Text c='red' fw={600}>
+              {aidData?.error ||
+                error?.message ||
+                'حدث خطأ أثناء جلب بيانات المساعدة'}
+            </Text>
+          </Box>
+        </Paper>
+      ) : (
+        <Delegate_Aid_Content
+          delegate_Id={delegate_Id}
+          isLoading={isLoading}
+          aid_Data={aidData?.aid as Aid}
+          destination={destination}
+        />
+      )}
     </Stack>
   );
 }

@@ -59,7 +59,7 @@ export default function Displaced_Table_Actions({
   const closeModal = () => setModalType(null);
 
   const buildRoute = (id: number, edit = false) => {
-    const base = DISPLACED_ROUTES_fUNC(id);
+    const base = DISPLACED_ROUTES_fUNC({ displaced_Id: id });
     return edit
       ? `${base.PROFILE}?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
       : base.PROFILE;

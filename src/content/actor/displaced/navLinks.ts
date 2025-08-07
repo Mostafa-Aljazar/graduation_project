@@ -4,7 +4,7 @@ import { BellRing, Newspaper, Handshake, User, MessageCircleWarning } from 'luci
 //what appear to displaced 
 export const displaced_NavLinks = (displaced_Id: number) => {
 
-    const displacedRoutes = DISPLACED_ROUTES_fUNC(displaced_Id as number);
+    const displacedRoutes = DISPLACED_ROUTES_fUNC({ displaced_Id });
 
     return [
         { label: 'الملف الشخصي', href: displacedRoutes.PROFILE, icon: User },
@@ -18,7 +18,7 @@ export const displaced_NavLinks = (displaced_Id: number) => {
 //what appear when manger or delegate or security open displaced pages
 export const guest_Displaced_NavLinks = (displaced_Id: number) => {
 
-    const displacedRoutes = DISPLACED_ROUTES_fUNC(displaced_Id);
+    const displacedRoutes = DISPLACED_ROUTES_fUNC({ displaced_Id });
 
     return [
         { label: 'الملف الشخصي', href: displacedRoutes.PROFILE, icon: User },

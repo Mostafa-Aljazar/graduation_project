@@ -1,5 +1,12 @@
 'use client';
 
+import {
+  DELEGATE_PORTIONS,
+  DISTRIBUTION_MECHANISM,
+  DISTRIBUTION_METHOD,
+  QUANTITY_AVAILABILITY,
+  TYPE_AIDS_LABELS,
+} from '@/@types/actors/common-types/index.type';
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import {
   Stack,
@@ -18,16 +25,12 @@ import {
   Gauge,
   Users,
   Divide,
-  CheckSquare,
   TableOfContents,
   Tag,
   ListCheck,
+  Shield,
+  Boxes,
 } from 'lucide-react';
-import {
-  DISTRIBUTION_MECHANISM,
-  TYPE_AIDS_LABELS,
-  DISTRIBUTION_METHOD,
-} from '@/content/actor/manager/aids-management';
 
 const formatDate = (date: Date | null) =>
   date
@@ -40,7 +43,7 @@ const formatDate = (date: Date | null) =>
       })
     : 'غير محدد';
 
-const DetailItem = ({
+const Detail_Item = ({
   label,
   value,
   icon,
@@ -101,80 +104,87 @@ export default function Delegate_Aid_Info({ aid_Data }: DelegateAidInfoProps) {
           p={20}
           className='!bg-[#f1f1f1]/30 !rounded-md'
         >
-          <DetailItem
+          <Detail_Item
             label='اسم المساعدة:'
             value={aid_Data.aid_name}
             icon={<Tag size={14} />}
           />
-          <DetailItem
+          <Detail_Item
             label='النوع:'
             value={TYPE_AIDS_LABELS[aid_Data.aid_type]}
             icon={<Package size={16} />}
           />
+
+          <Box className='md:col-span-2'>
+            <Detail_Item
+              label='المحتوى:'
+              value={aid_Data.aid_content}
+              // value={
+              //   'Dolore reprehenderit minim deserunt sunt Lorem laboris exercitation nisi qui ad. Eiusmod sint incididunt tempor incididunt dolore nostrud laboris do consequat ullamco. Enim labore esse in do. Ullamco anim veniam nisi voluptate labore mollit tempor deserunt irure. Fugiat laboris ad occaecat non fugiat proident nulla ipsum elit.'
+              // }
+              icon={<TableOfContents size={14} />}
+            />
+          </Box>
         </SimpleGrid>
-        <Box p={20} className='!bg-[#f1f1f1]/30 !rounded-md'>
-          <DetailItem
-            label='المحتوى:'
-            value={aid_Data.aid_content}
-            icon={<TableOfContents size={14} />}
-          />
-        </Box>
+
         <SimpleGrid
           cols={{ base: 1, md: 2 }}
           p={20}
           className='!bg-[#f1f1f1]/30 !rounded-md'
         >
-          <DetailItem
+          <Detail_Item
             label='موعد التسليم :'
             value={formatDate(aid_Data.delivery_date)}
             icon={<Calendar size={16} />}
           />
-          <DetailItem
+          <Detail_Item
             label='مكان التسليم :'
             value={aid_Data.delivery_location}
             icon={<MapPin size={16} />}
           />
         </SimpleGrid>
-        {/* <DetailItem
-          label='يلزم تأمين المساعدة :'
-          value={aid_Data.securityRequired ? 'نعم' : 'لا'}
-          icon={<Shield size={16} />}
-        /> */}
-        {/* <SimpleGrid
-          cols={{ base: 1, md: 2 }}
-          p={20}
-          className='!bg-[#f1f1f1]/30 !rounded-md'
-        >
-          <DetailItem
-            label='كمية المساعدات المتوفرة :'
-            value={
-              aid_Data.quantityAvailability === QUANTITY_AVAILABILITY.limited
-                ? 'كمية محدودة'
-                : 'كمية غير محدودة'
-            }
-            icon={<Gauge size={16} />}
-          />
-          <DetailItem
-            label='كمية المساعدات الحالية :'
-            value={`${aid_Data.existingQuantity} وحدة`}
-            icon={<Boxes size={16} />}
-          />
-        </SimpleGrid> */}
+
         <SimpleGrid
           cols={{ base: 1, md: 2 }}
           p={20}
           className='!bg-[#f1f1f1]/30 !rounded-md'
         >
-          <DetailItem
-            label='حصة العائلة :'
-            value={aid_Data.single_portion}
+          <Detail_Item
+            label='كمية المساعدات المتوفرة :'
+            value={
+              aid_Data.quantity_availability === QUANTITY_AVAILABILITY.LIMITED
+                ? 'كمية محدودة'
+                : 'كمية غير محدودة'
+            }
+            icon={<Gauge size={16} />}
+          />
+          <Detail_Item
+            label='كمية المساعدات الحالية :'
+            value={`${aid_Data.existing_quantity} وحدة`}
+            icon={<Boxes size={16} />}
+          />
+
+          <Detail_Item
+            label='يلزم تأمين المساعدة :'
+            value={aid_Data.security_required ? 'نعم' : 'لا'}
+            icon={<Shield size={16} />}
+          />
+        </SimpleGrid>
+        <SimpleGrid
+          cols={{ base: 1, md: 2 }}
+          p={20}
+          className='!bg-[#f1f1f1]/30 !rounded-md'
+        >
+          <Detail_Item
+            label='حصة العائلة الواحدة :'
+            value={aid_Data.displaced_single_portion}
             icon={<Divide size={16} />}
           />
 
-          <DetailItem
+          <Detail_Item
             label='طريقة التوزيع:'
             value={
-              aid_Data.distribution_method == DISTRIBUTION_METHOD.equal
+              aid_Data.distribution_method == DISTRIBUTION_METHOD.EQUAL
                 ? ' التوزيع بالتساوي على العائلات'
                 : 'التوزيع حسب عدد أفراد العائلة'
             }
@@ -189,7 +199,7 @@ export default function Delegate_Aid_Info({ aid_Data }: DelegateAidInfoProps) {
                 <ThemeIcon size={25} radius='xl' color='primary'>
                   <Users size={16} />
                 </ThemeIcon>
-                <Text fw={600} fz={16} className='text-gray-800'>
+                <Text fw={500} fz={16} className='text-gray-800'>
                   فئات العائلات:
                 </Text>
               </Group>
@@ -198,7 +208,7 @@ export default function Delegate_Aid_Info({ aid_Data }: DelegateAidInfoProps) {
                 {aid_Data.selected_categories.map((cat) => (
                   <Box
                     key={cat.id}
-                    className='bg-white shadow-sm p-4 border border-gray-100 rounded-lg'
+                    className='bg-white p-4 border border-gray-100 rounded-lg'
                   >
                     <SimpleGrid cols={{ base: 1, sm: 3 }} spacing='lg'>
                       <Group gap='xs'>
@@ -236,11 +246,11 @@ export default function Delegate_Aid_Info({ aid_Data }: DelegateAidInfoProps) {
         )}
 
         <Box p={20} className='!bg-[#f1f1f1]/30 !rounded-md'>
-          <DetailItem
+          <Detail_Item
             label='آلية التوزيع:'
             value={
               aid_Data.distribution_mechanism ==
-              DISTRIBUTION_MECHANISM.delegates_lists
+              DISTRIBUTION_MECHANISM.DELEGATES_LISTS
                 ? 'حسب كشوفات المناديب'
                 : 'حسب كشوفات النازحين'
             }
@@ -248,8 +258,8 @@ export default function Delegate_Aid_Info({ aid_Data }: DelegateAidInfoProps) {
           />
         </Box>
 
-        {/* {aid_Data.distributionMechanism ===
-          DISTRIBUTION_MECHANISM.delegates_lists && (
+        {aid_Data.distribution_mechanism ===
+          DISTRIBUTION_MECHANISM.DELEGATES_LISTS && (
           <SimpleGrid
             cols={{ base: 1, md: 2 }}
             p={20}
@@ -257,15 +267,15 @@ export default function Delegate_Aid_Info({ aid_Data }: DelegateAidInfoProps) {
           >
             <Box
               className={
-                aid_Data.delegatesPortions === DELEGATE_PORTIONS.manual
+                aid_Data.delegates_portions === DELEGATE_PORTIONS.MANUAL
                   ? 'md:col-span-2'
                   : ''
               }
             >
-              <DetailItem
+              <Detail_Item
                 label='حصص المناديب:'
                 value={
-                  aid_Data.delegatesPortions === DELEGATE_PORTIONS.equal
+                  aid_Data.delegates_portions === DELEGATE_PORTIONS.EQUAL
                     ? 'حصص متساوية'
                     : 'حصص مختلفة'
                 }
@@ -273,21 +283,21 @@ export default function Delegate_Aid_Info({ aid_Data }: DelegateAidInfoProps) {
               />
             </Box>
 
-            {aid_Data.delegatesPortions === DELEGATE_PORTIONS.equal && (
-              <DetailItem
+            {aid_Data.delegates_portions === DELEGATE_PORTIONS.EQUAL && (
+              <Detail_Item
                 label='حصة كل مندوب:'
-                value={aid_Data.delegateSinglePortion}
+                value={aid_Data.delegate_single_portion as number}
                 icon={<Divide size={16} />}
               />
             )}
           </SimpleGrid>
-        )} */}
+        )}
 
-        {aid_Data.aid_accessories && (
+        {aid_Data.additional_notes && (
           <Box p={20} className='!bg-[#f1f1f1]/30 !rounded-md'>
-            <DetailItem
+            <Detail_Item
               label='الملحقات:'
-              value={aid_Data.aid_accessories}
+              value={aid_Data.additional_notes}
               icon={<ListCheck size={16} />}
             />
           </Box>
@@ -295,81 +305,4 @@ export default function Delegate_Aid_Info({ aid_Data }: DelegateAidInfoProps) {
       </Stack>
     </Stack>
   );
-}
-
-{
-  /* {aid_Data.distributionMechanism ===
-          DISTRIBUTION_MECHANISM.delegates_lists && (
-          <Stack gap='sm'>
-            
-
-            {isAid(aid_Data) &&
-              aid_Data.selectedDelegatesPortions.length > 0 && (
-                <Stack gap='sm'>
-                  <Text fw={600} fz={16} className='text-gray-800'>
-                    تفاصيل المناديب:
-                  </Text>
-                  <List
-                    spacing='xs'
-                    size='sm'
-                    icon={
-                      <ThemeIcon size={16} radius='xl' color='primary'>
-                        <Users size={12} />
-                      </ThemeIcon>
-                    }
-                  >
-                    {aid_Data.selectedDelegatesPortions.map((p) => (
-                      <List.Item key={p.delegate_id}>
-                        مندوب {p.delegate_id}: {p.portion}
-                      </List.Item>
-                    ))}
-                  </List>
-                </Stack>
-              )}
-          </Stack>
-        )} 
-
-        {isAid(aid_Data) && aid_Data.selectedDisplacedIds.length > 0 && (
-          <Stack gap='sm'>
-            <Text fw={600} fz={16} className='text-gray-800'>
-              النازحين المحددين:
-            </Text>
-            <List
-              spacing='xs'
-              size='sm'
-              icon={
-                <ThemeIcon size={16} radius='xl' color='primary'>
-                  <Users size={12} />
-                </ThemeIcon>
-              }
-            >
-              {aid_Data.selectedDisplacedIds.map((id) => (
-                <List.Item key={id}>نازح {id}</List.Item>
-              ))}
-            </List>
-          </Stack>
-        )}
-        {isAid(aid_Data) && aid_Data.receivedDisplaced.length > 0 && (
-          <Stack gap='sm'>
-            <Text fw={600} fz={16} className='text-gray-800'>
-              النازحين المستلمين:
-            </Text>
-            <List
-              spacing='xs'
-              size='sm'
-              icon={
-                <ThemeIcon size={16} radius='xl' color='green'>
-                  <CheckSquare size={12} />
-                </ThemeIcon>
-              }
-            >
-              {aid_Data.receivedDisplaced.map((d) => (
-                <List.Item key={d.displaced_ID}>
-                  نازح {d.displaced_ID} - استلم في: {formatDate(d.receivedTime)}
-                </List.Item>
-              ))}
-            </List>
-          </Stack>
-        )}
-          */
 }

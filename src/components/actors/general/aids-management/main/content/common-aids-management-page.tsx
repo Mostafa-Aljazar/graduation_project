@@ -64,7 +64,7 @@ export default function Common_Aids_Management_Page({
     <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
       <Aids_Management_Header
         visibleAdd={role == USER_TYPE.MANAGER && actor_Id == user?.id}
-        actor_Id={user?.id as number}
+        actor_Id={actor_Id as number}
       />
 
       <Common_Aids_Management_Header_Tabs />

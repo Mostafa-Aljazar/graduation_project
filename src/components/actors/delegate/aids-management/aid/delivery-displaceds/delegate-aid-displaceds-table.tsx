@@ -7,30 +7,22 @@ import { useEffect } from 'react';
 import { cn } from '@/utils/cn';
 import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
 import { getDisplacedByIds } from '@/actions/actors/general/displaceds/getDisplacedByIds';
-import Receive_Aid from '@/components/actors/manager/aids-management/add/displaceds/receive-aid/receive-aid';
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
+import Common_Receive_Displaced_Aid from '@/components/actors/manager/aids-management/add/displaceds/common-receive-displaceds-aid/common-receive-displaceds-aid';
 
 interface AidDisplacedsTableProps {
   setDisplacedNum: React.Dispatch<React.SetStateAction<number>>;
   aid_Data: Aid;
-  actor_Id: number;
-  role: Exclude<
-    (typeof USER_TYPE)[UserType],
-    | typeof USER_TYPE.DISPLACED
-    | typeof USER_TYPE.SECURITY
-    | typeof USER_TYPE.SECURITY_OFFICER
-  >;
+  delegate_Id: number;
 }
 
-export default function delegate_Aid_Displaceds_Table({
+export default function delegate_aid_Displacedss_Table({
   setDisplacedNum,
   aid_Data,
-  actor_Id,
-  role,
+  delegate_Id,
 }: AidDisplacedsTableProps) {
   const receivedDisplacedIds =
-    aid_Data.received_displaced?.map((res) => res.displaced_id) || [];
+    aid_Data.received_displaceds?.map((res) => res.displaced_Id) || [];
 
   const [query, setQuery] = useQueryStates(
     {
@@ -40,31 +32,27 @@ export default function delegate_Aid_Displaceds_Table({
     { shallow: true }
   );
 
-  const handlePageChange = (page: number) => {
-    setQuery((prev) => ({ ...prev, displaced_page: page }));
-  };
-
   const {
-    data: aid_Displaced,
+    data: aid_Displaceds,
     isLoading: isLoadingAidDisplaced,
     error: selectedQueryError,
   } = useQuery<DisplacedsResponse, Error>({
-    queryKey: ['aid_Displaced', receivedDisplacedIds, query.displaced_page],
+    queryKey: ['aid_Displaceds', receivedDisplacedIds, query],
     queryFn: () =>
       getDisplacedByIds({
-        ids: aid_Data.selected_displaced_ids || [],
+        Ids: aid_Data.selected_displaced_Ids,
         page: query.displaced_page,
         limit: 7,
       }),
     retry: 1,
   });
 
-  const DISPLACED_DATA = aid_Displaced;
+  const DISPLACED_DATA = aid_Displaceds;
   const isLoading = isLoadingAidDisplaced;
   const error = selectedQueryError;
 
   useEffect(() => {
-    setDisplacedNum(DISPLACED_DATA?.pagination?.totalItems || 0);
+    setDisplacedNum(DISPLACED_DATA?.pagination?.total_items || 0);
   }, [DISPLACED_DATA, setDisplacedNum]);
 
   const isRowReceived = (id: number) =>
@@ -173,10 +161,9 @@ export default function delegate_Aid_Displaceds_Table({
         {isRowReceived(element.id) ? (
           'تم'
         ) : (
-          <Receive_Aid
+          <Common_Receive_Displaced_Aid
             displaced_Id={element.id as number}
-            aid_id={aid_Data.id as number}
-            // disabled={inEditAid}
+            aid_Id={aid_Data.id as number}
           />
         )}
       </Table.Td>
@@ -221,8 +208,10 @@ export default function delegate_Aid_Displaceds_Table({
       </Table.ScrollContainer>
       <Pagination
         value={query.displaced_page}
-        onChange={handlePageChange}
-        total={DISPLACED_DATA?.pagination?.totalPages || 0}
+        onChange={(value) =>
+          setQuery((prev) => ({ ...prev, displaced_page: value }))
+        }
+        total={DISPLACED_DATA?.pagination?.total_pages || 0}
         pt={30}
         size='sm'
         mx='auto'

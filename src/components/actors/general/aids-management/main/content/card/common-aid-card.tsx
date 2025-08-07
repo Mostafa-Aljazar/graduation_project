@@ -63,14 +63,18 @@ export default function Common_Aid_Card({
     if (!clickedOnCard) return;
 
     if (role === USER_TYPE.MANAGER && isManager) {
-      router.push(`${MANAGER_ROUTES_fUNC(actor_Id, aid.id).AID}`);
+      router.push(
+        `${MANAGER_ROUTES_fUNC({ manager_Id: actor_Id, aid_Id: aid.id }).AID}`
+      );
     }
 
     if (
       role === USER_TYPE.DELEGATE &&
       (isManager || isSecurityOfficer || (isDelegate && isOwner))
     ) {
-      router.push(`${DELEGATE_ROUTES_fUNC(actor_Id, aid.id).AID}`);
+      router.push(
+        `${DELEGATE_ROUTES_fUNC({ delegate_Id: actor_Id, aid_Id: aid.id }).AID}`
+      );
     }
   };
 

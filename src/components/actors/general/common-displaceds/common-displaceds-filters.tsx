@@ -34,21 +34,24 @@ import {
   displacedsFilterValues,
 } from '@/validation/actor/general/displaceds-filter-form';
 import useAuth from '@/hooks/useAuth';
+import { USER_RANK, UserRank } from '@/constants/userTypes';
 
 interface CommonDisplacedsFiltersProps {
   destination?: 'AID' | 'DISPLACEDS';
 
   setLocalFilters: React.Dispatch<React.SetStateAction<displacedsFilterValues>>;
   displacedNum: number;
+  actor_Id: number;
+  role: UserRank;
 }
 
 export default function Common_Displaceds_Filters({
   destination,
   setLocalFilters,
   displacedNum,
-}: // actor_Id,
-// role,
-CommonDisplacedsFiltersProps) {
+  actor_Id,
+  role,
+}: CommonDisplacedsFiltersProps) {
   const { user } = useAuth();
   const initData: displacedsFilterValues = {
     wife_status: null,
@@ -57,7 +60,8 @@ CommonDisplacedsFiltersProps) {
     chronic_disease: null,
     accommodation_type: null,
     family_status_type: null,
-    delegate: user?.id ? [user?.id.toString()] : [],
+    delegate:
+      role == USER_RANK.DELEGATE && actor_Id ? [actor_Id.toString()] : [],
   };
 
   const [searchInput, setSearchInput] = useState('');
@@ -280,7 +284,7 @@ CommonDisplacedsFiltersProps) {
               value: item.id.toString(),
               label: item.name,
             }))}
-            // disabled={destination == 'AID' && role == 'DELEGATE'}
+            disabled={destination == 'AID' && role == 'DELEGATE'}
             size='sm'
             key={`delegate-${resetKey}`}
             {...form.getInputProps('delegate')}

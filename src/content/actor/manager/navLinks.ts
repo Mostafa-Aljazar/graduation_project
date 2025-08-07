@@ -6,7 +6,7 @@ import { ShieldUser, Database, Newspaper, Handshake, User, Users, FileChartLine,
 //what appear to manager 
 export const managerNavLinks = (manager_Id: number) => {
 
-    const managerRoutes = MANAGER_ROUTES_fUNC({ manager_Id: manager_Id });
+    const managerRoutes = MANAGER_ROUTES_fUNC({ manager_Id });
 
     return [
         { label: 'الملف الشخصي', href: managerRoutes.PROFILE, icon: User },
@@ -35,7 +35,7 @@ export const managerNavLinks = (manager_Id: number) => {
 
 //what appear when any user open manager pages
 export const guestManagerNavLinks = (manager_Id: number) => {
-    const managerRoutes = MANAGER_ROUTES_fUNC({ manager_Id: manager_Id });
+    const managerRoutes = MANAGER_ROUTES_fUNC({ manager_Id });
 
     return [
         { label: 'الملف الشخصي', href: managerRoutes.PROFILE, icon: User },

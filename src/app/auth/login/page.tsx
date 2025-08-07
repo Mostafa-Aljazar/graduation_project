@@ -57,13 +57,21 @@ export default function Login() {
 
         // TODO: change route to user profile
         if (data.user.role === USER_TYPE.DISPLACED) {
-          router.push(DISPLACED_ROUTES_fUNC(data.user.id).PROFILE);
+          router.push(
+            DISPLACED_ROUTES_fUNC({ displaced_Id: data.user.id }).PROFILE
+          );
         } else if (data.user.role === USER_TYPE.MANAGER) {
-          router.push(MANAGER_ROUTES_fUNC(data.user.id).PROFILE);
+          router.push(
+            MANAGER_ROUTES_fUNC({ manager_Id: data.user.id }).PROFILE
+          );
         } else if (data.user.role === USER_TYPE.DELEGATE) {
-          router.push(DELEGATE_ROUTES_fUNC(data.user.id).PROFILE);
+          router.push(
+            DELEGATE_ROUTES_fUNC({ delegate_Id: data.user.id }).PROFILE
+          );
         } else if (data.user.role === USER_TYPE.SECURITY) {
-          router.push(SECURITY_ROUTES_fUNC(data.user.id).PROFILE);
+          router.push(
+            SECURITY_ROUTES_fUNC({ security_Id: data.user.id }).PROFILE
+          );
         }
         return;
       } else {

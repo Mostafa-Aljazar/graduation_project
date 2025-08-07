@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  ActionIcon,
   Button,
   Checkbox,
   Group,
@@ -10,59 +11,49 @@ import {
   Table,
   Text,
 } from '@mantine/core';
-
-import {
-  parseAsInteger,
-  parseAsString,
-  parseAsStringEnum,
-  useQueryStates,
-} from 'nuqs';
+import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { cn } from '@/utils/cn';
-import { DESTINATION_AID } from '@/content/actor/displaced/filter';
-import { displacedFilterValues } from '@/validation/actor/general/displaceds-filter-form';
 import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
 import { getDisplaceds } from '@/actions/actors/general/displaceds/getDisplaceds';
-import { getDisplacedsIDs } from '@/actions/actors/general/displaceds/getDisplacedsIds';
-import { getDisplacedByIds } from '@/actions/actors/general/displaceds/getDisplacedByIds';
-import Displaced_Table_Actions from '@/components/actors/general/displaceds/displaced-table-actions';
-import Receive_Aid from '@/components/actors/manager/aids-management/add/displaceds/receive-aid/receive-aid';
-import { ACTION_ADD_EDIT_DISPLAY } from '@/constants';
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
-import { UserPen } from 'lucide-react';
 import {
   addAidDisplaceds,
   addAidDisplacedsProps,
 } from '@/actions/actors/general/aids-management/addAidDisplaceds';
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import { notifications } from '@mantine/notifications';
+import { displacedsFilterValues } from '@/validation/actor/general/displaceds-filter-form';
+import { getDisplacedsIds } from '@/actions/actors/general/displaceds/getDisplacedsIds';
+import { ListChecks, ListX, UserPen } from 'lucide-react';
+import { getDisplacedByIds } from '@/actions/actors/general/displaceds/getDisplacedByIds';
 
 interface DisplacedsTableProps {
   setDisplacedNum: React.Dispatch<React.SetStateAction<number>>;
-  localFilters: displacedFilterValues;
+  localFilters: displacedsFilterValues;
   aid_Data: Aid;
-  actor_Id: number;
-  role: Exclude<
-    (typeof USER_TYPE)[UserType],
-    | typeof USER_TYPE.DISPLACED
-    | typeof USER_TYPE.SECURITY
-    | typeof USER_TYPE.SECURITY_OFFICER
-  >;
+  delegate_Id: number;
 }
 
-export default function Aid_Ad_Displaceds_Table({
+export default function Aid_Add_Displaceds_Table({
   localFilters,
   setDisplacedNum,
   aid_Data,
-  actor_Id,
-  role,
+  delegate_Id,
 }: DisplacedsTableProps) {
-  const receivedDisplacedIDs =
-    aid_Data.received_displaced.map((res) => res.displaced_id) || [];
+  const limitSelectedDisplaced =
+    aid_Data?.selected_delegates_portions?.find(
+      (item) => item.delegate_Id == delegate_Id
+    )?.portion || 0;
 
-  const [selectedRows, setSelectedRows] = useState<number[]>([]);
+  // const selectedDisplacedIds =
+  //   aid_Data.selected_displaced_Ids.map((res) => res) || [];
+
+  const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<number[]>(
+    aid_Data.selected_displaced_Ids
+  );
+  const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
 
   const [query, setQuery] = useQueryStates(
     {
@@ -72,99 +63,139 @@ export default function Aid_Ad_Displaceds_Table({
     { shallow: true }
   );
 
-  const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
-
-  const handlePageChange = (page: number) => {
-    setQuery((prev) => ({ ...prev, displaced_page: page }));
-  };
+  const currentPage = query.displaced_page || 1;
+  const limit = 10;
+  const offset = (currentPage - 1) * limit;
 
   const {
-    data: displacedData,
+    data: addDisplacedData,
     isLoading: isLoadingRegular,
     error: queryError,
   } = useQuery<DisplacedsResponse, Error>({
-    queryKey: ['displaced', query, localFilters],
+    queryKey: ['add_displaceds_to_aids', query, localFilters],
     queryFn: () =>
       getDisplaceds({
         page: query.displaced_page,
         limit: 7,
         search: query.search,
-        filters: localFilters,
+        filters: { ...localFilters, delegate: [delegate_Id.toString()] },
       }),
     retry: 1,
   });
 
+  // const {
+  //   data: specificaddDisplacedDataById,
+  //   isLoading: isLoadingDisplacedIds,
+  //   error: queryErrorDisplacedIds,
+  // } = useQuery<DisplacedsResponse, Error>({
+  //   queryKey: ['displaceds_by_Ids', query, localFilters],
+  //   queryFn: () =>
+  //     getDisplacedByIds({
+  //       Ids: selectedDisplacedIds,
+  //       page: currentPage,
+  //       limit,
+  //     }),
+  //   retry: 1,
+  // });
+
   const {
-    data: allDisplacedIDs,
+    data: allDisplacedIds,
     isLoading: isLoadingAll,
     error: allQueryError,
   } = useQuery<number[], Error>({
-    queryKey: ['displaced_all', query.search, localFilters],
+    queryKey: ['displaceds_all', query.search, localFilters],
     queryFn: async () => {
-      const response = await getDisplacedsIDs({
+      const response = await getDisplacedsIds({
         filters: localFilters,
       });
-      return response.displacedsIDs;
+      return response.displaceds_Ids;
     },
     enabled: selectAllAcrossPages,
     retry: 1,
   });
-  console.log('🚀 ~ allDisplacedIDs:', allDisplacedIDs);
 
-  const DISPLACED_DATA = displacedData;
+  const displacedData = addDisplacedData;
 
-  const isLoading = isLoadingRegular;
-  const error = queryError;
-
-  useEffect(() => {
-    if (setDisplacedNum) {
-      setDisplacedNum(DISPLACED_DATA?.pagination?.totalItems || 0);
-    }
-  }, [DISPLACED_DATA, setDisplacedNum]);
+  const isLoading = isLoadingAll || isLoadingRegular;
+  const error = allQueryError || queryError;
 
   useEffect(() => {
-    if (allDisplacedIDs && selectAllAcrossPages) {
-      setSelectedRows(allDisplacedIDs);
+    if (displacedData) {
+      setDisplacedNum(displacedData?.pagination?.total_items || 0);
     }
-  }, [allDisplacedIDs, selectAllAcrossPages, setSelectedRows]);
+  }, [displacedData, setDisplacedNum]);
 
-  const isRowSelected = (id: number) => selectedRows?.includes(id) || false;
+  useEffect(() => {
+    if (allDisplacedIds && selectAllAcrossPages) {
+      setSelectedDisplacedIds(allDisplacedIds);
+    }
+  }, [allDisplacedIds, selectAllAcrossPages, setSelectedDisplacedIds]);
+
+  const isRowSelected = (id: number) => selectedDisplacedIds.includes(id);
 
   const areAllPagesRowsSelected = () =>
-    selectedRows?.length ===
-    (DISPLACED_DATA?.pagination?.totalItems || allDisplacedIDs?.length || 0);
+    selectedDisplacedIds.length ===
+    (displacedData?.pagination?.total_items || 0);
 
   const handleRowSelection = (id: number, checked: boolean) => {
     if (checked) {
-      setSelectedRows((prev) => [...prev.filter((rowId) => rowId !== id), id]);
-      if (areAllPagesRowsSelected()) setSelectAllAcrossPages(true);
+      if (limitSelectedDisplaced > selectedDisplacedIds.length) {
+        setSelectedDisplacedIds((prev) => [
+          ...prev.filter((rowId) => rowId !== id),
+          id,
+        ]);
+        if (areAllPagesRowsSelected()) setSelectAllAcrossPages(true);
+      } else {
+        notifications.show({
+          title: 'بلغت الحد الأقصى',
+          message: `لا يمكن إضافة أكثر من ${limitSelectedDisplaced} نازح`,
+          color: 'red',
+          position: 'top-left',
+          withBorder: true,
+        });
+      }
     } else {
-      setSelectedRows((prev) => prev.filter((rowId) => rowId !== id));
+      setSelectedDisplacedIds((prev) => prev.filter((rowId) => rowId !== id));
       setSelectAllAcrossPages(false);
     }
   };
 
   const handleSelectAllAcrossAllPages = (checked: boolean) => {
     if (checked) {
-      setSelectAllAcrossPages(true);
-      setSelectedRows(allDisplacedIDs || []);
+      if (limitSelectedDisplaced > (allDisplacedIds?.length as number)) {
+        setSelectAllAcrossPages(true);
+        setSelectedDisplacedIds(allDisplacedIds || []);
+      } else {
+        notifications.show({
+          title: 'بلغت الحد الأقصى',
+          message: `لا يمكن إضافة أكثر من ${limitSelectedDisplaced} نازح`,
+          color: 'red',
+          position: 'top-left',
+          withBorder: true,
+        });
+      }
     } else {
       setSelectAllAcrossPages(false);
-      setSelectedRows([]);
+      setSelectedDisplacedIds([]);
     }
   };
 
   const headers = (
     <Table.Tr>
-      <Table.Th px={5} ta='center' w='fit-content'>
-        <Checkbox
+      <Table.Th px={5} ta='center' style={{ width: 40 }}>
+        <ActionIcon
+          variant='light'
           aria-label='Select all rows across all pages'
-          checked={areAllPagesRowsSelected()}
-          onChange={(e) =>
-            handleSelectAllAcrossAllPages(e.currentTarget.checked)
+          onClick={() =>
+            handleSelectAllAcrossAllPages(!areAllPagesRowsSelected())
           }
-          disabled={!DISPLACED_DATA?.displaceds?.length}
-        />
+        >
+          {areAllPagesRowsSelected() ? (
+            <ListX size={18} />
+          ) : (
+            <ListChecks size={18} />
+          )}
+        </ActionIcon>
       </Table.Th>
       <Table.Th px={5} ta='center' w='fit-content'>
         الرقم
@@ -210,7 +241,7 @@ export default function Aid_Ad_Displaceds_Table({
     </Table.Tr>
   );
 
-  const rows = (DISPLACED_DATA?.displaceds || []).map((element, index) => (
+  const rows = (displacedData?.displaceds || []).map((element, index) => (
     <Table.Tr
       key={element.id}
       bg={
@@ -230,9 +261,9 @@ export default function Aid_Ad_Displaceds_Table({
       </Table.Td>
       <Table.Td px={5} ta='center' w='fit-content'>
         {((query.displaced_page ??
-          (DISPLACED_DATA?.pagination?.page as number)) -
+          (displacedData?.pagination?.page as number)) -
           1) *
-          (DISPLACED_DATA?.pagination?.limit || 7) +
+          (displacedData?.pagination?.limit || 7) +
           index +
           1}
       </Table.Td>
@@ -274,7 +305,7 @@ export default function Aid_Ad_Displaceds_Table({
   >({
     mutationFn: addAidDisplaceds,
     onSuccess: (data) => {
-      if (Number(data.status) == 200) {
+      if (data.status == 200) {
         notifications.show({
           title: data.message,
           message: `تم إضافة النازحين للمساعدة بنجاح`,
@@ -289,7 +320,6 @@ export default function Aid_Ad_Displaceds_Table({
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.error || error?.message;
-      // setError(errorMessage);
       notifications.show({
         title: 'خطأ',
         message: errorMessage,
@@ -301,12 +331,11 @@ export default function Aid_Ad_Displaceds_Table({
   });
 
   const handleOnClick = () => {
-    // TODO: handel calculate displaceds Portions
     addAidDisplacedsMutation.mutate({
       aid_Id: aid_Data.id,
-      actor_Id,
-      role,
-      displaceds_Ids: selectedRows,
+      actor_Id: delegate_Id,
+      role: 'DELEGATE',
+      displaceds_Ids: selectedDisplacedIds,
     });
   };
 
@@ -317,14 +346,15 @@ export default function Aid_Ad_Displaceds_Table({
         justify='space-between'
         align='center'
         wrap='nowrap'
-        hidden={!selectedRows?.length || false}
+        hidden={!selectedDisplacedIds?.length || false}
       >
-        {selectedRows?.length === 0 ? (
+        {selectedDisplacedIds?.length === 0 ? (
           <Text size='md' fw={500} c='dimmed'>
             لم يتم تحديد أي عنصر
           </Text>
         ) : selectAllAcrossPages ||
-          selectedRows?.length === DISPLACED_DATA?.pagination?.totalItems ? (
+          selectedDisplacedIds?.length ===
+            displacedData?.pagination?.total_items ? (
           <Text size='md' fw={500} style={{ whiteSpace: 'nowrap' }}>
             تم تحديد جميع العناصر عبر جميع الصفحات
             {isLoadingAll && ' (جاري تحميل البيانات...)'}
@@ -332,7 +362,7 @@ export default function Aid_Ad_Displaceds_Table({
           </Text>
         ) : (
           <Text size='md' fw={500}>
-            تم تحديد {selectedRows.length} عنصر
+            تم تحديد {selectedDisplacedIds.length} عنصر
           </Text>
         )}
       </Group>
@@ -353,8 +383,8 @@ export default function Aid_Ad_Displaceds_Table({
           </Text>
         )}
         {!isLoading &&
-          (!DISPLACED_DATA?.displaceds ||
-            DISPLACED_DATA.displaceds.length === 0) && (
+          (!displacedData?.displaceds ||
+            displacedData.displaceds.length === 0) && (
             <Text fw={500} size='sm' ta='center' c='dimmed'>
               لا توجد بيانات للنازحين
             </Text>
@@ -372,8 +402,10 @@ export default function Aid_Ad_Displaceds_Table({
       </Table.ScrollContainer>
       <Pagination
         value={query.displaced_page}
-        onChange={handlePageChange}
-        total={DISPLACED_DATA?.pagination?.totalPages || 0}
+        onChange={(page) =>
+          setQuery((prev) => ({ ...prev, displaced_page: page }))
+        }
+        total={displacedData?.pagination?.total_pages || 0}
         pt={30}
         size='sm'
         mx='auto'

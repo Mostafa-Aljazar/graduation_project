@@ -5,15 +5,15 @@ import { UserType } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
 export interface receiveDisplacedAidProps {
-    receiveCode: string;
-    aid_Id: string | number;
+    receive_code: string;
+    aid_Id: number;
     displaced_Id: number;
     role: UserType;
     employee_Id: number
 }
 
 export const receiveDisplacedAid = async ({
-    receiveCode,
+    receive_code,
     aid_Id,
     displaced_Id,
     role,
@@ -33,10 +33,9 @@ export const receiveDisplacedAid = async ({
     /////////////////////////////////////////////////////////////
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
-
     try {
         const response = await AqsaAPI.post<modalActionResponse>(`/aids/${aid_Id}/receive-aid`, {
-            receiveCode,
+            receive_code,
             aid_Id,
             displaced_Id,
             role,

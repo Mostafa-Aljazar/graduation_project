@@ -336,4 +336,10 @@ export const ADS_HEADER_TITLE = 'الإعلانات :';
 export const BLOG_HEADER_TITLE = 'مدونتنا :';
 export const SUCCESS_STORIES_HEADER_TITLE = 'قصص النجاح:';
 
+/////////////////////////////////////////////////////////////////////////
+
+export enum DELEGATE_DESTINATION_AID {
+    DELIVERY_AID = 'DELIVERY_AID',
+    ADD_DISPLACEDS_AID = 'ADD_DISPLACEDS_AID',
+}
 

@@ -1,37 +1,35 @@
 'use client';
 import { Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import React from 'react';
-import Receive_Modal from './receive_modal';
+import Common_Receive_Displaced_Aid_Modal from './common-receive_displaced-aid-modal';
 
-type Props = {
+interface CommonReceiveDisplacedAidProps {
   displaced_Id: number;
   aid_Id: number;
   disabled?: boolean;
-};
+}
 
-export default function Receive_Aid({
+export default function Common_Receive_Displaced_Aid({
   displaced_Id,
   aid_Id,
   disabled = false,
-}: Props) {
+}: CommonReceiveDisplacedAidProps) {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <>
       <Button
-        type='button'
-        variant='light'
         size='xs'
-        className='!bg-primary disabled:!bg-primary/75 shadow-xl !text-white'
+        type='submit'
+        className='!bg-primary !shadow-md'
         onClick={open}
-        fw={500}
-        fz={16}
+        fw={300}
+        fz={14}
         disabled={disabled}
       >
         تسليم
       </Button>
-      <Receive_Modal
+      <Common_Receive_Displaced_Aid_Modal
         close={close}
         opened={opened}
         displaced_Id={displaced_Id}

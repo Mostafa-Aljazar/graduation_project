@@ -57,8 +57,8 @@ export default function Common_Aid_Action({
 
   const routeFunc =
     role === USER_TYPE.MANAGER
-      ? MANAGER_ROUTES_fUNC(actor_Id, aid_Id)
-      : DELEGATE_ROUTES_fUNC(actor_Id, aid_Id);
+      ? MANAGER_ROUTES_fUNC({ manager_Id: actor_Id, aid_Id })
+      : DELEGATE_ROUTES_fUNC({ delegate_Id: actor_Id, aid_Id });
 
   const ACTIONS: ActionItem[] = (() => {
     // Manager owns this aid → can view, edit, delete
@@ -114,7 +114,8 @@ export default function Common_Aid_Action({
             icon: UserPlus,
             action: () =>
               router.push(
-                DELEGATE_ROUTES_fUNC(actor_Id, aid_Id).ADD_AID_DISPLACEDS
+                DELEGATE_ROUTES_fUNC({ delegate_Id: actor_Id, aid_Id })
+                  .ADD_AID_DISPLACEDS
               ),
           },
         ];
@@ -133,7 +134,10 @@ export default function Common_Aid_Action({
       {
         label: 'عرض',
         icon: Eye,
-        action: () => router.push(DELEGATE_ROUTES_fUNC(actor_Id, aid_Id).AID),
+        action: () =>
+          router.push(
+            DELEGATE_ROUTES_fUNC({ delegate_Id: actor_Id, aid_Id }).AID
+          ),
       },
     ];
   })();

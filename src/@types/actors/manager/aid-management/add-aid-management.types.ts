@@ -42,7 +42,7 @@ export interface BaseAidForm {
     security_required: boolean;
     quantity_availability: QUANTITY_AVAILABILITY;
     existing_quantity: number;
-    displaced_single_portion?: number;
+    displaced_single_portion: number;
     selected_categories: CategoryRangeType[];
     distribution_method: DISTRIBUTION_METHOD;
     additional_notes: string;

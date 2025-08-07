@@ -1,8 +1,8 @@
 'use client';
 
 import {
-  SearchFormValues,
-  searchSchema,
+  SearchDisplacedFormValues,
+  searchDisplacedSchema,
 } from '@/validation/actor/general/displaceds/search-displaced-form';
 import { Button, Flex, Group, Stack, Text, TextInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
@@ -24,11 +24,11 @@ export default function Aid_Delivery_Displaceds_Filters({
     parseAsString.withDefault('')
   );
 
-  const form = useForm<SearchFormValues>({
+  const form = useForm<SearchDisplacedFormValues>({
     initialValues: {
       search: '',
     },
-    validate: zodResolver(searchSchema),
+    validate: zodResolver(searchDisplacedSchema),
   });
 
   useEffect(() => {

@@ -5,7 +5,7 @@ import { BellRing, Newspaper, Speech, Handshake, User, Users, FileChartLine, Mes
 //what appear to delegate 
 export const delegate_NavLinks = (delegate_Id: number) => {
 
-    const delegateRoutes = DELEGATE_ROUTES_fUNC(delegate_Id);
+    const delegateRoutes = DELEGATE_ROUTES_fUNC({ delegate_Id });
 
     return [
         { label: 'الملف الشخصي', href: delegateRoutes.PROFILE, icon: User },
@@ -32,7 +32,7 @@ export const delegate_NavLinks = (delegate_Id: number) => {
 
 //what appear when manger or security officer open Delegate pages
 export const guest_Delegate_NavLinks = (delegate_Id: number) => {
-    const delegateRoutes = DELEGATE_ROUTES_fUNC(delegate_Id);
+    const delegateRoutes = DELEGATE_ROUTES_fUNC({ delegate_Id });
 
     return [
         { label: 'الملف الشخصي', href: delegateRoutes.PROFILE, icon: User },
@@ -48,7 +48,7 @@ export const guest_Delegate_NavLinks = (delegate_Id: number) => {
 
 //what appear when displaced open Delegate pages
 export const displaced_As_Guest_Delegate_NavLinks = (delegate_Id: number) => {
-    const delegateRoutes = DELEGATE_ROUTES_fUNC(delegate_Id);
+    const delegateRoutes = DELEGATE_ROUTES_fUNC({ delegate_Id });
 
     return [
         { label: 'الملف الشخصي', href: delegateRoutes.PROFILE, icon: User },
@@ -59,7 +59,7 @@ export const displaced_As_Guest_Delegate_NavLinks = (delegate_Id: number) => {
 
 //what appear when another delegate open Delegate pages as guest
 export const security_OR_delegate_As_Guest_Delegate_NavLinks = (delegate_Id: number) => {
-    const delegateRoutes = DELEGATE_ROUTES_fUNC(delegate_Id);
+    const delegateRoutes = DELEGATE_ROUTES_fUNC({ delegate_Id });
 
     return [
         { label: 'الملف الشخصي', href: delegateRoutes.PROFILE, icon: User },

@@ -30,8 +30,8 @@ import {
 } from '@/@types/actors/common-types/index.type';
 import { fakeDelegates } from '@/content/actor/delegate/fake-delegates';
 import {
-  displacedFilterSchema,
-  displacedFilterValues,
+  displacedsFilterSchema,
+  displacedsFilterValues,
 } from '@/validation/actor/general/displaceds-filter-form';
 import {
   USER_RANK,
@@ -42,7 +42,7 @@ import {
 import { cn } from '@/utils/cn';
 
 interface CommonDisplacedFiltersProps {
-  setLocalFilters: React.Dispatch<React.SetStateAction<displacedFilterValues>>;
+  setLocalFilters: React.Dispatch<React.SetStateAction<displacedsFilterValues>>;
   displacedNum: number;
 
   actor_Id: number;
@@ -58,13 +58,13 @@ export default function Aid_Add_Displaceds_Filters({
   actor_Id,
   role,
 }: CommonDisplacedFiltersProps) {
-  const initData: displacedFilterValues = {
+  const initData: displacedsFilterValues = {
     wife_status: null,
     family_number: null,
     ages: [],
     chronic_disease: null,
     accommodation_type: null,
-    case_type: null,
+    family_status_type: null,
     delegate: [actor_Id.toString()],
   };
 
@@ -75,9 +75,9 @@ export default function Aid_Add_Displaceds_Filters({
     parseAsString.withDefault('')
   );
 
-  const form = useForm<displacedFilterValues>({
+  const form = useForm<displacedsFilterValues>({
     initialValues: initData,
-    validate: zodResolver(displacedFilterSchema),
+    validate: zodResolver(displacedsFilterSchema),
   });
 
   const handleApplyFilters = () => {

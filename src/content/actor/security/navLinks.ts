@@ -4,7 +4,7 @@ import { ListTodo, User, Users, ShieldUser, Database, BellRing, Speech, Newspape
 //what appear to security 
 export const security_NavLinks = (security_Id: number) => {
 
-    const securityRoutes = SECURITY_ROUTES_fUNC(security_Id);
+    const securityRoutes = SECURITY_ROUTES_fUNC({ security_Id });
 
     return [
         { label: 'الملف الشخصي', href: securityRoutes.PROFILE, icon: User },
@@ -32,7 +32,7 @@ export const security_NavLinks = (security_Id: number) => {
 
 //what appear when manger or security officer open security page
 export const manager_OR_Security_Guest_Security_NavLinks = (security_Id: number) => {
-    const securityRoutes = SECURITY_ROUTES_fUNC(security_Id);
+    const securityRoutes = SECURITY_ROUTES_fUNC({ security_Id });
 
     return [
         { label: 'الملف الشخصي', href: securityRoutes.PROFILE, icon: User },
@@ -42,7 +42,7 @@ export const manager_OR_Security_Guest_Security_NavLinks = (security_Id: number)
 
 //what appear when anu user open security page
 export const guest_Security_NavLinks = (security_Id: number) => {
-    const securityRoutes = SECURITY_ROUTES_fUNC(security_Id);
+    const securityRoutes = SECURITY_ROUTES_fUNC({ security_Id });
 
     return [
         { label: 'الملف الشخصي', href: securityRoutes.PROFILE, icon: User },

@@ -353,6 +353,7 @@ export default function Add_Aid_Page({
       id: initial_Data ? initial_Data.aid.id : -1,
       ...values,
       additional_notes: values.additional_notes ?? '',
+      displaced_single_portion: values.displaced_single_portion as number,
       selected_displaced_Ids: selectedDisplacedValues,
       selected_delegates_portions: selectedDelegatesPortions,
       received_displaceds: receivedDisplaced,
