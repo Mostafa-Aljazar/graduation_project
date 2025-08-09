@@ -1,4 +1,5 @@
-import Aid_Page from '@/components/actors/manager/aids-management/aid/aid-page';
+import { MANAGER_DESTINATION_AID } from '@/@types/actors/common-types/index.type';
+import Manager_Aid_Page from '@/components/actors/manager/aids-management/aid/manager-aid-page';
 
 export default async function Manager_Aid({
   params,
@@ -8,10 +9,10 @@ export default async function Manager_Aid({
   const { manager_Id, aid_Id } = await params;
 
   return (
-    <Aid_Page
+    <Manager_Aid_Page
       aid_Id={parseInt(aid_Id)}
-      actor_Id={parseInt(manager_Id)}
-      role='MANAGER'
+      manager_Id={parseInt(manager_Id)}
+      destination={MANAGER_DESTINATION_AID.AID}
     />
   );
 }

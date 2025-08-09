@@ -7,7 +7,7 @@ import {
   DISTRIBUTION_MECHANISM,
   TYPE_GROUP_AIDS,
 } from '@/@types/actors/common-types/index.type';
-import Delegate_Aid_Delivery_Displaceds from '../aid/delivery-displaceds/delegate-aid-delivery-displaceds';
+import Delegate_Aid_Delivery_Displaceds from '../../../general/aids-management/aid/delivery-displaceds/common-aid-delivery-displaceds';
 
 interface DelegateAidContentProps {
   isLoading: boolean;

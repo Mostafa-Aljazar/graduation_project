@@ -343,3 +343,10 @@ export enum DELEGATE_DESTINATION_AID {
     ADD_DISPLACEDS_AID = 'ADD_DISPLACEDS_AID',
 }
 
+
+/////////////////////////////////////////////////////////////////////////
+
+export enum MANAGER_DESTINATION_AID {
+    AID = 'AID',
+    ADD_AID = 'ADD_AID',
+}

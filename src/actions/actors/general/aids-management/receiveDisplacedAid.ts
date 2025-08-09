@@ -1,15 +1,18 @@
 "use server";
 
 import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
-import { UserType } from "@/constants/userTypes";
+import { USER_TYPE, UserType } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
 export interface receiveDisplacedAidProps {
     receive_code: string;
     aid_Id: number;
     displaced_Id: number;
-    role: UserType;
-    employee_Id: number
+    actor_Id: number;
+    role: Exclude<
+        (typeof USER_TYPE)[UserType],
+        typeof USER_TYPE.DISPLACED | typeof USER_TYPE.SECURITY
+    >;
 }
 
 export const receiveDisplacedAid = async ({
@@ -17,7 +20,7 @@ export const receiveDisplacedAid = async ({
     aid_Id,
     displaced_Id,
     role,
-    employee_Id,
+    actor_Id,
 }: receiveDisplacedAidProps): Promise<modalActionResponse> => {
     const fakeData: modalActionResponse = {
         status: 200,
@@ -39,7 +42,7 @@ export const receiveDisplacedAid = async ({
             aid_Id,
             displaced_Id,
             role,
-            employee_Id,
+            actor_Id,
         });
 
         if (response.data.status == 200) {

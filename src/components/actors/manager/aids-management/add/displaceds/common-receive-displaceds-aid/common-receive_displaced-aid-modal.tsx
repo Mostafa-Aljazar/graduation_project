@@ -90,8 +90,8 @@ export default function Common_Receive_Displaced_Aid_Modal({
       aid_Id,
       receive_code: values.otp,
       displaced_Id: displaced_Id,
-      role: user.role,
-      employee_Id: user.id,
+      role: user.role as 'DELEGATE' | 'MANAGER',
+      actor_Id: user.id,
     });
 
     form.reset();

@@ -10,15 +10,13 @@ import { Search, Users } from 'lucide-react';
 import { parseAsString, useQueryState } from 'nuqs';
 import { useEffect } from 'react';
 
-// validation/actor/general/search-form.ts
-
-interface AidDeliveryDisplacedsFiltersProps {
+interface CommonAidDeliveryDisplacedsFiltersProps {
   displacedNum: number;
 }
 
-export default function Aid_Delivery_Displaceds_Filters({
+export default function Common_Aid_Delivery_Displaceds_Filters({
   displacedNum,
-}: AidDeliveryDisplacedsFiltersProps) {
+}: CommonAidDeliveryDisplacedsFiltersProps) {
   const [search, setSearch] = useQueryState(
     'search',
     parseAsString.withDefault('')
@@ -44,13 +42,6 @@ export default function Aid_Delivery_Displaceds_Filters({
 
   return (
     <Stack w='100%' mb={20} gap={20}>
-      <Group justify='start' align='center' gap={10} py={10}>
-        <Users size={22} className='text-primary' />
-        <Text fw={600} fz={22} className='!text-primary'>
-          كشف النازحين
-        </Text>
-      </Group>
-
       <Flex
         direction={{ base: 'column', md: 'row' }}
         gap={{ base: 10, md: 0 }}

@@ -9,18 +9,17 @@ import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displaces
 import { getDisplacedByIds } from '@/actions/actors/general/displaceds/getDisplacedByIds';
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import Common_Receive_Displaced_Aid from '@/components/actors/manager/aids-management/add/displaceds/common-receive-displaceds-aid/common-receive-displaceds-aid';
+import { USER_TYPE, UserType } from '@/constants/userTypes';
 
-interface AidDisplacedsTableProps {
+interface CommonAidDisplacedsTableProps {
   setDisplacedNum: React.Dispatch<React.SetStateAction<number>>;
   aid_Data: Aid;
-  delegate_Id: number;
 }
 
-export default function delegate_aid_Displacedss_Table({
+export default function Common_Aid_Displaceds_Table({
   setDisplacedNum,
   aid_Data,
-  delegate_Id,
-}: AidDisplacedsTableProps) {
+}: CommonAidDisplacedsTableProps) {
   const receivedDisplacedIds =
     aid_Data.received_displaceds?.map((res) => res.displaced_Id) || [];
 
