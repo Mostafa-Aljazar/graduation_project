@@ -339,8 +339,8 @@ export const SUCCESS_STORIES_HEADER_TITLE = 'قصص النجاح:';
 /////////////////////////////////////////////////////////////////////////
 
 export enum DELEGATE_DESTINATION_AID {
-    DELIVERY_AID = 'DELIVERY_AID',
     ADD_DISPLACEDS_AID = 'ADD_DISPLACEDS_AID',
+    DELIVERY_AID = 'DELIVERY_AID',
 }
 
 

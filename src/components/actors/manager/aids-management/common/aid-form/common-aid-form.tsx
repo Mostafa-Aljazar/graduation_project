@@ -31,7 +31,7 @@ import { useForm, zodResolver } from '@mantine/form';
 import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import {
   addAidFormSchema,
-  AddAidFormValues,
+  AddAidFormValuesType,
 } from '@/validation/actor/manager/aids-management/add-aid-form-schema';
 import {
   Aid,
@@ -46,11 +46,11 @@ import {
   TYPE_AIDS,
   TYPE_AIDS_LABELS,
 } from '@/@types/actors/common-types/index.type';
-import CustomizableCategoryInput from '../../add/distribution-methods/customizable-category-input';
-import PortionsManagementModal from '../../add/distribution-methods/portions-management-modal';
+import CustomizableCategoryInput from './distribution-methods/customizable-category-input';
+import PortionsManagementModal from './distribution-methods/portions-management-modal';
 
 interface AddFormProps {
-  onSubmit?: (values: AddAidFormValues) => void;
+  onSubmit?: (values: AddAidFormValuesType) => void;
   initialData?: Aid;
   isDisabled?: boolean;
 }
@@ -111,7 +111,7 @@ export default function Common_Aid_Form({
       {}
   );
 
-  const form = useForm<AddAidFormValues>({
+  const form = useForm<AddAidFormValuesType>({
     initialValues: initialData || {
       aid_name: '',
       aid_type: '' as TYPE_AIDS,
@@ -201,7 +201,7 @@ export default function Common_Aid_Form({
     }
   };
 
-  const handleSubmit = (values: AddAidFormValues) => {
+  const handleSubmit = (values: AddAidFormValuesType) => {
     console.log('🚀 ~ handleSubmit ~ values:', values);
     if (isDisabled) return;
     if (onSubmit) onSubmit(values);

@@ -12,7 +12,6 @@ export interface addAidDisplacedsProps {
         (typeof USER_RANK)[UserRank],
         typeof USER_RANK.SECURITY_OFFICER | typeof USER_TYPE.SECURITY | typeof USER_TYPE.DISPLACED
     >;
-
 }
 
 export const addAidDisplaceds = async ({

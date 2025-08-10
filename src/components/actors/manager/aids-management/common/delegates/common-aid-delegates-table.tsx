@@ -141,7 +141,7 @@ export default function Common_Aid_Delegates_Table({
     isLoading: isLoadingRegular,
     error: queryError,
   } = useQuery<DelegatesResponse>({
-    queryKey: ['add_delegates', query, destination],
+    queryKey: ['add_delegates', query.delegate_page, destination],
     queryFn: () => getDelegates({ page: currentPage, limit }),
     retry: 1,
     enabled: destination !== DESTINATION_AID.DISPLAY_AIDS,
@@ -157,7 +157,7 @@ export default function Common_Aid_Delegates_Table({
     isLoading: isLoadingDelegatesIds,
     error: queryErrorDelegatesIds,
   } = useQuery<DelegatesResponse>({
-    queryKey: ['delegates_by_Ids', selectedDelegatesIds, destination],
+    queryKey: ['delegates_by_Ids', destination],
     queryFn: () =>
       getDelegatesByIds({
         Ids: selectedDelegatesIds,
@@ -165,9 +165,7 @@ export default function Common_Aid_Delegates_Table({
         limit,
       }),
     retry: 1,
-    enabled:
-      destination !== DESTINATION_AID.ADD_AIDS &&
-      selectedDelegatesIds.length > 0,
+    enabled: destination == DESTINATION_AID.DISPLAY_AIDS,
   });
 
   const {
@@ -564,12 +562,13 @@ export default function Common_Aid_Delegates_Table({
           >
             {columns}
           </Table.Thead>
+
           <Table.Tbody>{rows.length === 0 ? noDelegates : rows}</Table.Tbody>
         </Table>
       </ScrollArea>
 
       {(delegatesData?.pagination?.total_pages as number) > 1 && (
-        <Flex justify='center' mt='md'>
+        <Flex justify='center'>
           <Pagination
             value={query.delegate_page}
             onChange={(page) =>

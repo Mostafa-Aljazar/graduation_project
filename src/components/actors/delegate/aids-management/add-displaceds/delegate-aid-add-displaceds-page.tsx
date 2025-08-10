@@ -5,34 +5,20 @@ import {
   AidResponse,
 } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { getAid } from '@/actions/actors/general/aids-management/getAid';
-import {
-  Box,
-  Center,
-  Loader,
-  LoadingOverlay,
-  Paper,
-  Stack,
-  Text,
-  ThemeIcon,
-} from '@mantine/core';
+import { Box, Center, Paper, Stack, Text, ThemeIcon } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
-import { USER_TYPE } from '@/constants/userTypes';
-import Delegate_Aid_Content from './delegate-aid-content';
-import useAuth from '@/hooks/useAuth';
 import { MessageCircleWarning } from 'lucide-react';
-import { DELEGATE_DESTINATION_AID } from '@/@types/actors/common-types/index.type';
+import Delegate_Aid_Add_Displaceds_Content from './delegate-aid-add-displaceds-content';
 
-export interface DelegateAidPageProps {
+export interface DelegateAidAddDisplacedsPageProps {
   aid_Id: number;
   delegate_Id: number;
-  destination: DELEGATE_DESTINATION_AID;
 }
 
-export default function Delegate_Aid_Page({
+export default function Delegate_Aid_Add_Displaceds_Page({
   aid_Id,
   delegate_Id,
-  destination,
-}: DelegateAidPageProps) {
+}: DelegateAidAddDisplacedsPageProps) {
   const {
     data: aidData,
     isLoading,
@@ -68,11 +54,10 @@ export default function Delegate_Aid_Page({
           </Box>
         </Paper>
       ) : (
-        <Delegate_Aid_Content
+        <Delegate_Aid_Add_Displaceds_Content
           delegate_Id={delegate_Id}
           isLoading={isLoading}
           aid_Data={aidData?.aid as Aid}
-          destination={destination}
         />
       )}
     </Stack>

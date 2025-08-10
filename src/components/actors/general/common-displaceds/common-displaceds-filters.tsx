@@ -31,7 +31,7 @@ import {
 import { fakeDelegates } from '@/content/actor/delegate/fake-delegates';
 import {
   displacedsFilterSchema,
-  displacedsFilterValues,
+  displacedsFilterValuesType,
 } from '@/validation/actor/general/displaceds-filter-form';
 import useAuth from '@/hooks/useAuth';
 import { USER_RANK, UserRank } from '@/constants/userTypes';
@@ -39,7 +39,9 @@ import { USER_RANK, UserRank } from '@/constants/userTypes';
 interface CommonDisplacedsFiltersProps {
   destination?: 'AID' | 'DISPLACEDS';
 
-  setLocalFilters: React.Dispatch<React.SetStateAction<displacedsFilterValues>>;
+  setLocalFilters: React.Dispatch<
+    React.SetStateAction<displacedsFilterValuesType>
+  >;
   displacedNum: number;
   actor_Id: number;
   role: UserRank;
@@ -53,7 +55,7 @@ export default function Common_Displaceds_Filters({
   role,
 }: CommonDisplacedsFiltersProps) {
   const { user } = useAuth();
-  const initData: displacedsFilterValues = {
+  const initData: displacedsFilterValuesType = {
     wife_status: null,
     family_number: null,
     ages: [],
@@ -71,7 +73,7 @@ export default function Common_Displaceds_Filters({
     parseAsString.withDefault('')
   );
 
-  const form = useForm<displacedsFilterValues>({
+  const form = useForm<displacedsFilterValuesType>({
     initialValues: initData,
     validate: zodResolver(displacedsFilterSchema),
   });

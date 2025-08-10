@@ -14,21 +14,29 @@ import {
   Badge,
 } from '@mantine/core';
 import {
-  DELEGATE_DESTINATION_AID,
   DESTINATION_AID,
   DISTRIBUTION_MECHANISM,
   MANAGER_DESTINATION_AID,
-  TYPE_GROUP_AIDS,
 } from '@/@types/actors/common-types/index.type';
-import { Package, Pin, SquarePen } from 'lucide-react';
-import Add_Aid_Form from '../add/add-aid-form';
+import { Package, SquarePen } from 'lucide-react';
 import Common_Aid_Form from '../common/aid-form/common-aid-form';
-import Delegate_Aid_Delivery_Displaceds from '@/components/actors/general/aids-management/aid/delivery-displaceds/common-aid-delivery-displaceds';
 import Common_Aid_Delegates_List from '../common/delegates/common-aid-delegates-list';
 import { useEffect, useState } from 'react';
 import Common_Aid_Delivery_Displaceds from '@/components/actors/general/aids-management/aid/delivery-displaceds/common-aid-delivery-displaceds';
+import { useRouter } from 'next/navigation';
+import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 
-function Aid_Header({ is_completed = false }: { is_completed: boolean }) {
+function Aid_Header({
+  is_completed = false,
+  manager_Id,
+  aid_Id,
+}: {
+  is_completed: boolean;
+  manager_Id: number;
+  aid_Id: number;
+}) {
+  const router = useRouter();
+
   return (
     <Group gap={10} justify='space-between' w='100%'>
       <Group align='center' gap={5}>
@@ -56,7 +64,14 @@ function Aid_Header({ is_completed = false }: { is_completed: boolean }) {
         radius='md'
         className='!bg-primary'
         rightSection={<SquarePen size={14} />}
-        // onClick={() => setAction(ACTION_ADD_EDIT_DISPLAY.EDIT)}
+        onClick={() =>
+          router.push(
+            `${
+              MANAGER_ROUTES_fUNC({ manager_Id: manager_Id, aid_Id: aid_Id })
+                .ADD_AID
+            }?aid_Id=${aid_Id}`
+          )
+        }
       >
         تعديل المساعدة
       </Button>
@@ -68,12 +83,10 @@ interface ManagerAidContentProps {
   isLoading: boolean;
   aid_Data: Aid;
   manager_Id: number;
-  destination: MANAGER_DESTINATION_AID;
 }
 
 export default function Manager_Aid_Content({
   aid_Data,
-  destination,
   manager_Id,
   isLoading,
 }: ManagerAidContentProps) {
@@ -95,7 +108,11 @@ export default function Manager_Aid_Content({
         overlayProps={{ radius: 'sm', blur: 0.3 }}
       />
 
-      <Aid_Header is_completed={aid_Data?.is_completed} />
+      <Aid_Header
+        is_completed={aid_Data?.is_completed}
+        manager_Id={manager_Id}
+        aid_Id={aid_Data?.id}
+      />
       {aid_Data && <Common_Aid_Form initialData={aid_Data} isDisabled={true} />}
 
       <Divider h={1} bg='#DFDEDC' w='100%' flex={1} />

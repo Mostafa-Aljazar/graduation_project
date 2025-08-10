@@ -8,8 +8,7 @@ import { cn } from '@/utils/cn';
 import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
 import { getDisplacedByIds } from '@/actions/actors/general/displaceds/getDisplacedByIds';
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import Common_Receive_Displaced_Aid from '@/components/actors/manager/aids-management/add/displaceds/common-receive-displaceds-aid/common-receive-displaceds-aid';
-import { USER_TYPE, UserType } from '@/constants/userTypes';
+import Common_Receive_Displaced_Aid from '../receive-displaceds-aid/common-receive-displaceds-aid';
 
 interface CommonAidDisplacedsTableProps {
   setDisplacedNum: React.Dispatch<React.SetStateAction<number>>;

@@ -69,7 +69,10 @@ export const fakeAids: Aid[] = [
             { delegate_Id: 103, portion: 10 },
             { delegate_Id: 104, portion: 10 },
         ],
-        received_displaceds: [],
+        received_displaceds: [
+            { displaced_Id: 3, received_time: new Date('2025-08-15T10:00:00') },
+            { displaced_Id: 6, received_time: new Date('2025-08-15T10:30:00') },
+        ],
         security_men: [103, 104],
         is_completed: false,
         aid_status: TYPE_GROUP_AIDS.COMING_AIDS,

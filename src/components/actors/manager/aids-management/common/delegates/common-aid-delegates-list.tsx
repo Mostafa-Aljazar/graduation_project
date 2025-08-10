@@ -1,3 +1,4 @@
+'use client';
 import { Group, Stack, Text } from '@mantine/core';
 import { Database } from 'lucide-react';
 import { Dispatch, SetStateAction, Suspense } from 'react';
@@ -55,15 +56,15 @@ export default function Common_Aid_Delegates_List({
     <Stack p={10} pos='relative' w='100%'>
       <Aid_Delegates_List_Header destination={destination} />
 
-      <Suspense fallback={<div>جارٍ التحميل...</div>}>
-        <Common_Aid_Delegates_Table
-          destination={destination}
-          selectedDelegatesPortions={selectedDelegatesPortions}
-          setSelectedDelegatesPortions={setSelectedDelegatesPortions}
-          aid_Data={aid_Data as Aid}
-          aid_Id={aid_Id}
-        />
-      </Suspense>
+      {/* <Suspense fallback={<div>جارٍ التحميل...</div>}> */}
+      <Common_Aid_Delegates_Table
+        destination={destination}
+        selectedDelegatesPortions={selectedDelegatesPortions}
+        setSelectedDelegatesPortions={setSelectedDelegatesPortions}
+        aid_Data={aid_Data as Aid}
+        aid_Id={aid_Id}
+      />
+      {/* </Suspense> */}
     </Stack>
   );
 }

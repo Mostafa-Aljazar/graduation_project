@@ -8,24 +8,25 @@ import { getAid } from '@/actions/actors/general/aids-management/getAid';
 import { Box, Center, Paper, Stack, Text, ThemeIcon } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { MessageCircleWarning } from 'lucide-react';
-import Manager_Aid_Content from './manager-aid-content';
+import Delegate_Aid_Content from './delegate-aid-content';
 
-export interface ManagerAidPageProps {
+export interface DelegateAidPageProps {
   aid_Id: number;
-  manager_Id: number;
+  delegate_Id: number;
 }
 
-export default function Manager_Aid_Page({
-  manager_Id,
+export default function Delegate_Aid_Page({
   aid_Id,
-}: ManagerAidPageProps) {
+  delegate_Id,
+}: DelegateAidPageProps) {
   const {
     data: aidData,
     isLoading,
     error,
   } = useQuery<AidResponse, Error>({
-    queryKey: ['manager_aid', aid_Id],
-    queryFn: () => getAid({ aid_Id, actor_Id: manager_Id, role: 'MANAGER' }),
+    queryKey: ['delegate_aid', aid_Id],
+    queryFn: () =>
+      getAid({ aid_Id: aid_Id, actor_Id: delegate_Id, role: 'DELEGATE' }),
   });
 
   const hasError = Boolean(error) || Boolean(aidData?.error);
@@ -53,8 +54,8 @@ export default function Manager_Aid_Page({
           </Box>
         </Paper>
       ) : (
-        <Manager_Aid_Content
-          manager_Id={manager_Id}
+        <Delegate_Aid_Content
+          delegate_Id={delegate_Id}
           isLoading={isLoading}
           aid_Data={aidData?.aid as Aid}
         />

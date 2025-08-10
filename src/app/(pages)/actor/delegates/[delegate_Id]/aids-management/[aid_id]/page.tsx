@@ -1,5 +1,4 @@
-import { DELEGATE_DESTINATION_AID } from '@/@types/actors/common-types/index.type';
-import Delegate_Aid_Page from '@/components/actors/delegate/aids-management/common/delegate-aid-page';
+import Delegate_Aid_Page from '@/components/actors/delegate/aids-management/add-displaceds/delegate-aid-add-displaceds-page';
 
 export default async function Delegate_Aid({
   params,
@@ -12,7 +11,6 @@ export default async function Delegate_Aid({
     <Delegate_Aid_Page
       aid_Id={parseInt(aid_Id)}
       delegate_Id={parseInt(delegate_Id)}
-      destination={DELEGATE_DESTINATION_AID.DELIVERY_AID}
     />
   );
 }

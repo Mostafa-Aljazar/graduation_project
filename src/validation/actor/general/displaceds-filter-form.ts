@@ -11,5 +11,5 @@ export const displacedsFilterSchema = z.object({
     delegate: z.array(z.string()).nullable(),
 });
 
-export type displacedsFilterValues = z.infer<typeof displacedsFilterSchema>;
+export type displacedsFilterValuesType = z.infer<typeof displacedsFilterSchema>;
 

@@ -87,4 +87,4 @@ export const addAidFormSchema = z.discriminatedUnion('distribution_mechanism', [
 // TYPE INFERENCE
 //////////////////////////////////////////////////////
 
-export type AddAidFormValues = z.infer<typeof addAidFormSchema>;
+export type AddAidFormValuesType = z.infer<typeof addAidFormSchema>;

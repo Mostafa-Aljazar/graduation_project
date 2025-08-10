@@ -13,7 +13,7 @@ import {
 } from '@mantine/core';
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { cn } from '@/utils/cn';
 import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
 import { getDisplaceds } from '@/actions/actors/general/displaceds/getDisplaceds';
@@ -24,35 +24,42 @@ import {
 } from '@/actions/actors/general/aids-management/addAidDisplaceds';
 import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
 import { notifications } from '@mantine/notifications';
-import { displacedsFilterValues } from '@/validation/actor/general/displaceds-filter-form';
+import { displacedsFilterValuesType } from '@/validation/actor/general/displaceds-filter-form';
 import { getDisplacedsIds } from '@/actions/actors/general/displaceds/getDisplacedsIds';
 import { ListChecks, ListX, UserPen } from 'lucide-react';
-import { getDisplacedByIds } from '@/actions/actors/general/displaceds/getDisplacedByIds';
 
 interface DisplacedsTableProps {
   setDisplacedNum: React.Dispatch<React.SetStateAction<number>>;
-  localFilters: displacedsFilterValues;
-  aid_Data: Aid;
-  delegate_Id: number;
+  localFilters: displacedsFilterValuesType;
+  aid_Data?: Aid;
+  actor_Id: number;
+  role: 'MANAGER' | 'DELEGATE';
+  selectedDisplacedIds: number[];
+  setSelectedDisplacedIds: Dispatch<SetStateAction<number[]>>;
 }
 
 export default function Aid_Add_Displaceds_Table({
   localFilters,
   setDisplacedNum,
   aid_Data,
-  delegate_Id,
+  actor_Id,
+  role,
+  selectedDisplacedIds,
+  setSelectedDisplacedIds,
 }: DisplacedsTableProps) {
   const limitSelectedDisplaced =
-    aid_Data?.selected_delegates_portions?.find(
-      (item) => item.delegate_Id == delegate_Id
-    )?.portion || 0;
+    role == 'DELEGATE'
+      ? (aid_Data?.selected_delegates_portions?.find(
+          (item) => item.delegate_Id == actor_Id
+        )?.portion as number)
+      : -1;
 
   // const selectedDisplacedIds =
   //   aid_Data.selected_displaced_Ids.map((res) => res) || [];
 
-  const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<number[]>(
-    aid_Data.selected_displaced_Ids
-  );
+  // const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<number[]>(
+  //   aid_Data.selected_displaced_Ids
+  // );
   const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
 
   const [query, setQuery] = useQueryStates(
@@ -78,25 +85,13 @@ export default function Aid_Add_Displaceds_Table({
         page: query.displaced_page,
         limit: 7,
         search: query.search,
-        filters: { ...localFilters, delegate: [delegate_Id.toString()] },
+        filters: {
+          ...localFilters,
+          delegate: role == 'DELEGATE' ? [actor_Id.toString()] : [],
+        },
       }),
     retry: 1,
   });
-
-  // const {
-  //   data: specificaddDisplacedDataById,
-  //   isLoading: isLoadingDisplacedIds,
-  //   error: queryErrorDisplacedIds,
-  // } = useQuery<DisplacedsResponse, Error>({
-  //   queryKey: ['displaceds_by_Ids', query, localFilters],
-  //   queryFn: () =>
-  //     getDisplacedByIds({
-  //       Ids: selectedDisplacedIds,
-  //       page: currentPage,
-  //       limit,
-  //     }),
-  //   retry: 1,
-  // });
 
   const {
     data: allDisplacedIds,
@@ -139,20 +134,28 @@ export default function Aid_Add_Displaceds_Table({
 
   const handleRowSelection = (id: number, checked: boolean) => {
     if (checked) {
-      if (limitSelectedDisplaced > selectedDisplacedIds.length) {
+      if (role == 'DELEGATE') {
+        if (limitSelectedDisplaced > selectedDisplacedIds.length) {
+          setSelectedDisplacedIds((prev) => [
+            ...prev.filter((rowId) => rowId !== id),
+            id,
+          ]);
+          if (areAllPagesRowsSelected()) setSelectAllAcrossPages(true);
+        } else {
+          notifications.show({
+            title: 'بلغت الحد الأقصى',
+            message: `لا يمكن إضافة أكثر من ${limitSelectedDisplaced} نازح`,
+            color: 'red',
+            position: 'top-left',
+            withBorder: true,
+          });
+        }
+      } else {
         setSelectedDisplacedIds((prev) => [
           ...prev.filter((rowId) => rowId !== id),
           id,
         ]);
         if (areAllPagesRowsSelected()) setSelectAllAcrossPages(true);
-      } else {
-        notifications.show({
-          title: 'بلغت الحد الأقصى',
-          message: `لا يمكن إضافة أكثر من ${limitSelectedDisplaced} نازح`,
-          color: 'red',
-          position: 'top-left',
-          withBorder: true,
-        });
       }
     } else {
       setSelectedDisplacedIds((prev) => prev.filter((rowId) => rowId !== id));
@@ -162,17 +165,22 @@ export default function Aid_Add_Displaceds_Table({
 
   const handleSelectAllAcrossAllPages = (checked: boolean) => {
     if (checked) {
-      if (limitSelectedDisplaced > (allDisplacedIds?.length as number)) {
+      if (role == 'DELEGATE') {
+        if (limitSelectedDisplaced > (allDisplacedIds?.length as number)) {
+          setSelectAllAcrossPages(true);
+          setSelectedDisplacedIds(allDisplacedIds || []);
+        } else {
+          notifications.show({
+            title: 'بلغت الحد الأقصى',
+            message: `لا يمكن إضافة أكثر من ${limitSelectedDisplaced} نازح`,
+            color: 'red',
+            position: 'top-left',
+            withBorder: true,
+          });
+        }
+      } else {
         setSelectAllAcrossPages(true);
         setSelectedDisplacedIds(allDisplacedIds || []);
-      } else {
-        notifications.show({
-          title: 'بلغت الحد الأقصى',
-          message: `لا يمكن إضافة أكثر من ${limitSelectedDisplaced} نازح`,
-          color: 'red',
-          position: 'top-left',
-          withBorder: true,
-        });
       }
     } else {
       setSelectAllAcrossPages(false);
@@ -298,46 +306,46 @@ export default function Aid_Add_Displaceds_Table({
     </Table.Tr>
   ));
 
-  const addAidDisplacedsMutation = useMutation<
-    modalActionResponse,
-    Error,
-    addAidDisplacedsProps
-  >({
-    mutationFn: addAidDisplaceds,
-    onSuccess: (data) => {
-      if (data.status == 200) {
-        notifications.show({
-          title: data.message,
-          message: `تم إضافة النازحين للمساعدة بنجاح`,
-          color: 'grape',
-          position: 'top-left',
-          withBorder: true,
-          loading: true,
-        });
-      } else {
-        throw new Error(data.error || 'حدث خطأ أثناء إضافة النازحين للمساعدة');
-      }
-    },
-    onError: (error: any) => {
-      const errorMessage = error?.response?.data?.error || error?.message;
-      notifications.show({
-        title: 'خطأ',
-        message: errorMessage,
-        color: 'red',
-        position: 'top-left',
-        withBorder: true,
-      });
-    },
-  });
+  // const addAidDisplacedsMutation = useMutation<
+  //   modalActionResponse,
+  //   Error,
+  //   addAidDisplacedsProps
+  // >({
+  //   mutationFn: addAidDisplaceds,
+  //   onSuccess: (data) => {
+  //     if (data.status == 200) {
+  //       notifications.show({
+  //         title: data.message,
+  //         message: `تم إضافة النازحين للمساعدة بنجاح`,
+  //         color: 'grape',
+  //         position: 'top-left',
+  //         withBorder: true,
+  //         loading: true,
+  //       });
+  //     } else {
+  //       throw new Error(data.error || 'حدث خطأ أثناء إضافة النازحين للمساعدة');
+  //     }
+  //   },
+  //   onError: (error: any) => {
+  //     const errorMessage = error?.response?.data?.error || error?.message;
+  //     notifications.show({
+  //       title: 'خطأ',
+  //       message: errorMessage,
+  //       color: 'red',
+  //       position: 'top-left',
+  //       withBorder: true,
+  //     });
+  //   },
+  // });
 
-  const handleOnClick = () => {
-    addAidDisplacedsMutation.mutate({
-      aid_Id: aid_Data.id,
-      actor_Id: delegate_Id,
-      role: 'DELEGATE',
-      displaceds_Ids: selectedDisplacedIds,
-    });
-  };
+  // const handleOnClick = () => {
+  //   addAidDisplacedsMutation.mutate({
+  //     aid_Id: aid_Data?.id as number,
+  //     actor_Id,
+  //     role,
+  //     displaceds_Ids: selectedDisplacedIds,
+  //   });
+  // };
 
   return (
     <Stack>
@@ -416,7 +424,7 @@ export default function Aid_Add_Displaceds_Table({
           control: '!rounded-full',
         }}
       />
-      <Button
+      {/* <Button
         size='sm'
         fz={16}
         fw={500}
@@ -429,7 +437,7 @@ export default function Aid_Add_Displaceds_Table({
         loading={addAidDisplacedsMutation.isPending}
       >
         إضافة
-      </Button>
+      </Button> */}
     </Stack>
   );
 }
