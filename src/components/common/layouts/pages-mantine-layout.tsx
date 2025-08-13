@@ -1,9 +1,10 @@
 'use client';
+
 import { AppShell } from '@mantine/core';
 import { useDisclosure, useHeadroom } from '@mantine/hooks';
-import Header from '../Header/Header';
-import Footer from '../Footer/Footer';
 import { ReactNode } from 'react';
+import Header from '../Header/header';
+import Footer from '../Footer/footer';
 
 export default function Pages_Mantine_Layout({
   children,

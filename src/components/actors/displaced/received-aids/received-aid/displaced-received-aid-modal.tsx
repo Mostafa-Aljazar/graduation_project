@@ -22,14 +22,13 @@ import {
   Package,
 } from 'lucide-react';
 import { DisplacedReceivedAid } from '@/@types/actors/displaced/received-aids/displacedReceivedAidsResponse.type';
-import { DISPLACED_RECEIVED_AIDS_TABS } from '@/@types/actors/common-types/index.type';
-import { USER_TYPE } from '@/constants/userTypes';
 import {
+  DISPLACED_RECEIVED_AIDS_TABS,
   GET_AIDS_TYPE_ICONS,
   TYPE_AIDS,
   TYPE_AIDS_LABELS,
-} from '@/content/actor/manager/aids-management';
-import React from 'react';
+} from '@/@types/actors/common-types/index.type';
+import { USER_TYPE } from '@/constants/userTypes';
 
 const getAidTypeIcon = (type: TYPE_AIDS) => {
   const IconComponent = GET_AIDS_TYPE_ICONS[type] || Package;
@@ -110,7 +109,7 @@ export default function Displaced_Received_Aid_Modal({
                   </Text>
                   <Group>
                     <Text size='sm'>
-                      {TYPE_AIDS_LABELS[receivedAid.aid_type]}
+                      {TYPE_AIDS_LABELS[receivedAid.aid_type as TYPE_AIDS]}
                     </Text>
                   </Group>
                 </Stack>

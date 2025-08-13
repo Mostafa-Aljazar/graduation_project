@@ -1,15 +1,15 @@
 'use client';
-import { AppShell, Burger, Button, Flex, Group } from '@mantine/core';
+import { AppShell, Burger, Button, Flex, Group, Paper } from '@mantine/core';
 import Image from 'next/image';
-import Header_Links from './Header_Links';
+import Header_Links from './header-links';
 import Link from 'next/link';
 import { AUTH_ROUTES, LANDING_ROUTES } from '@/constants/routes';
-import Header_Drawer from './Header_Drawer';
+import Header_Drawer from './header-drawer';
 import { usePathname } from 'next/navigation';
-import { logout } from '@/utils/auth/logout';
 import useAuth from '@/hooks/useAuth';
 import { LOGO } from '@/assets/common';
-import { LogIn, LogOut } from 'lucide-react';
+import { LogIn } from 'lucide-react';
+import Header_Avatar from './header-avatar';
 
 type Props = {
   opened: boolean;
@@ -22,54 +22,48 @@ export default function Header({ opened, toggle }: Props) {
   const { isAuthenticated } = useAuth();
 
   return (
-    <AppShell.Header
-      zIndex={50}
-      withBorder={false}
-      className='!bg-second-light'
-    >
-      <Flex justify='space-between' align='center' h='100%' px='md'>
-        <Group h='100%' px='md'>
+    <AppShell.Header zIndex={50} withBorder={false} className='!bg-second-light shadow-sm'>
+      <Flex justify='space-between' align='center' h='100%' px='lg'>
+        <Group gap='md'>
           <Burger opened={opened} onClick={toggle} hiddenFrom='lg' size='sm' />
-          <Link href={LANDING_ROUTES.HOME}>
+          <Link href={LANDING_ROUTES.HOME} className='flex items-center'>
             <Image
               src={LOGO}
               alt='Logo'
-              width={70}
-              height={70}
-              className='rounded-xl'
+              width={60}
+              height={60}
+              className='hover:opacity-90 rounded-lg transition-opacity'
               priority
             />
           </Link>
         </Group>
 
         {!isActor && (
-          <Group h='100%' px='md' gap={25} visibleFrom='lg'>
+          <Group gap={32} visibleFrom='lg'>
             <Header_Links />
           </Group>
         )}
 
-        {isAuthenticated ? (
-          <Button
-            variant='outline'
-            h={32}
-            fw={600}
-            onClick={logout}
-            rightSection={<LogOut size={18} />}
-          >
-            خروج
-          </Button>
-        ) : (
-          <Link href={AUTH_ROUTES.LOGIN}>
-            <Button
-              variant='outline'
-              h={32}
-              fw={600}
-              rightSection={<LogIn size={18} />}
-            >
-              دخول
-            </Button>
-          </Link>
-        )}
+        <Group gap='sm'>
+          {isAuthenticated ? (
+            <Header_Avatar />
+          ) : (
+            <Link href={AUTH_ROUTES.LOGIN}>
+              <Button
+                size='sm'
+                variant='outline'
+                // px='md'
+                fz={14}
+                fw={500}
+                radius='md'
+                rightSection={<LogIn size={18} />}
+                // className='hover:!bg-primary text-primary hover:!text-white transition-colors duration-150'
+              >
+                دخول
+              </Button>
+            </Link>
+          )}
+        </Group>
       </Flex>
 
       <Header_Drawer opened={opened} toggle={toggle} />

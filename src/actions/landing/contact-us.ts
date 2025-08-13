@@ -1,40 +1,28 @@
 import { AQSA_CAMP_EMAIL } from "@/constants/services";
 import { sendEmail } from "@/utils/send-mail";
 
-// export const sendEmailFun = async () => {
-//     const send = await sendEmail({
-//         to: '233651@ppu.edu.ps',
-//         subject: 'Hello',
-//         text: 'Hello from my app!',
-//         html: '<h1>Hello from my app!</h1>',
-//     });
-//     console.log('🚀 ~ sendEmailFun ~ send:', send);
-// };
-
-
-export type sendEmailProps = {
-    message: string;
-    firstName: string;
-    lastName: string;
+export interface sendEmailProps {
+    name: string;
     email: string;
-    address: string;
+    phone_number: string;
+    message: string;
 }
 
 export const sendEmailFun = async ({
-    firstName, lastName, email, address, message
+    name, email, phone_number, message
 }: sendEmailProps) => {
 
     const htmlContent = `
       <h1>Contact Form Submission</h1>
-      <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+      <p><strong>Name:</strong> ${name}</p>
       <p><strong>Email:</strong> ${email}</p>
-      <p><strong>Address:</strong> ${address}</p>
+      <p><strong>Phone Number:</strong> ${phone_number}</p>
       <p><strong>Message:</strong> ${message}</p>
     `;
     return await sendEmail({
         to: AQSA_CAMP_EMAIL,
-        subject: `New Message from ${firstName} ${lastName}`,
-        text: `Name: ${firstName} ${lastName}\nEmail: ${email}\nAddress: ${address}\nMessage: ${message}`,
+        subject: `New Message from ${name}`,
+        text: `Name: ${name}\nEmail: ${email}\nPhone Number: ${phone_number}\nMessage: ${message}`,
         html: htmlContent,
     });
 };

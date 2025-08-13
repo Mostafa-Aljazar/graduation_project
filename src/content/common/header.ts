@@ -7,11 +7,6 @@ export const NAVBAR_LINKS = [
         link: LANDING_ROUTES.HOME,
     },
     {
-        key: 'ABOUT_US',
-        label: 'من نحن',
-        link: LANDING_ROUTES.ABOUT_US,
-    },
-    {
         key: 'OUR_SERVICES',
         label: 'خدماتنا',
         link: LANDING_ROUTES.OUR_SERVICES,

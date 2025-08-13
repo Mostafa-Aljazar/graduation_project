@@ -1,18 +1,12 @@
-import React from 'react';
 import { Box, Stack, Text, Divider, Flex } from '@mantine/core';
-import {
-  FOOTER_COPYRIGHT,
-  FOOTER_DESC,
-  FOOTER_TITLE,
-} from '@/content/common/footer';
-import Footer_ContactInfo from './Footer_ContactInfo';
-import Footer_Form from './Footer_Form';
+import { FOOTER_COPYRIGHT, FOOTER_DESC, FOOTER_TITLE } from '@/content/common/footer';
+import Footer_Form from './footer-form';
+import Footer_Contact_Info from './footer-contact-info';
 
 export default function Footer() {
   return (
     <Box
       component='footer'
-      bg='#12100DEB'
       c='white'
       pos='relative'
       pt={20}
@@ -21,10 +15,9 @@ export default function Footer() {
       w='100%'
       px={{ base: 20, lg: '5%' }}
       ta='right'
-      className='!bg-second-light'
       id='contact-us'
     >
-      <Text fw={700} fz={24} mb={8} className='!text-primary'>
+      <Text fw={600} fz={22} mb={8} className='!text-primary'>
         {FOOTER_TITLE}
       </Text>
 
@@ -36,18 +29,19 @@ export default function Footer() {
         gap={{ base: 20, md: '5%' }}
       >
         <Stack justify='space-between' w={{ base: '100%', lg: '80%' }} h='100%'>
-          <Text c='dark' fz={16} fw={500} mb={16}>
+          <Text c='dark' fz={15} fw={500} mb={16}>
             {FOOTER_DESC}
           </Text>
-          <Footer_ContactInfo className='!hidden md:!block' />
+          <Footer_Contact_Info className='!hidden md:!block' />
         </Stack>
 
         <Footer_Form />
       </Flex>
 
-      <Footer_ContactInfo className='md:!hidden !block !px-3 !pt-7' />
+      <Footer_Contact_Info className='md:!hidden !block !px-3 !pt-7' />
 
-      <Divider my={8} color='gray' mt={20} />
+      <Divider w={'100%'} my={20} className='flex-shrink-0 !bg-gray-300' />
+
       <Text fz='sm' c={'gray'} ta={'right'}>
         {FOOTER_COPYRIGHT}
       </Text>

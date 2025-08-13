@@ -1,53 +1,32 @@
 'use client';
 import CountUp from 'react-countup';
 import {
-  Statistics_Data,
-  Statistics_TITLE,
-  Statistics_MESSAGE,
-} from '@/content/landing/home';
-import { Group, Stack, Text, SimpleGrid, ThemeIcon, Flex } from '@mantine/core';
+  HOME_STATISTICS_MESSAGE,
+  HOME_STATISTICS_DATA,
+  HOME_STATISTICS_TITLE,
+} from '@/content/landing';
+import { Group, Stack, Text, SimpleGrid, ThemeIcon, Flex, Box } from '@mantine/core';
 
 export default function Statistics() {
   return (
-    <Stack
-      bg={'#F7F2DB'}
-      align='center'
-      px={{ base: '5%', xl: '10%' }}
-      py={30}
-      gap={20}
-    >
-      <Text
-        fw={600}
-        c={'primary.8'}
-        fz={{ base: 20, md: 25 }}
-        ta={{ base: 'center', md: 'start' }}
-        w={'100%'}
-      >
-        {Statistics_TITLE}
+    <Stack bg={'#F7F2DB'} align='center' px={{ base: '5%', xl: '10%' }} py={30} gap={20}>
+      <Text fw={600} c={'primary.8'} fz={{ base: 20, md: 25 }} ta={'center'} w={'100%'}>
+        {HOME_STATISTICS_TITLE}
       </Text>
-      <Flex
-        direction={{ base: 'column-reverse', md: 'row' }}
-        w={'100%'}
-        justify='space-between'
-      >
+      <Flex direction={{ base: 'column-reverse', md: 'row' }} w={'100%'} justify='space-between'>
         <Stack justify='center' gap='lg'>
-          <Text
-            fz={{ base: 16, md: 20 }}
-            fw={500}
-            c={'dark'}
-            ta={{ base: 'center', md: 'start' }}
-          >
-            {Statistics_MESSAGE}
+          <Text fz={{ base: 16, md: 20 }} fw={500} c={'dark'} ta='center'>
+            {HOME_STATISTICS_MESSAGE}
           </Text>
 
-          <SimpleGrid cols={2} spacing='lg' w={'100%'}>
-            {Statistics_Data.map((stat, index) => (
+          <SimpleGrid cols={2} spacing='lg' w={'100%'} mx={'auto'}>
+            {HOME_STATISTICS_DATA.map((stat, index) => (
               <Group
                 key={index}
                 gap='sm'
                 wrap='nowrap'
                 align='center'
-                className='!justify-cenater md:!justify-start'
+                className='!justify-center p-5'
               >
                 <ThemeIcon variant='transparent' className='!text-primary'>
                   <stat.icon size={30} />
@@ -61,9 +40,7 @@ export default function Statistics() {
                       // redraw={true}
                       enableScrollSpy
                       formattingFn={(val) =>
-                        val >= 1000
-                          ? `+${(val / 1000).toFixed(1)} K`
-                          : `+${val}`
+                        val >= 1000 ? `+${(val / 1000).toFixed(1)} K` : `+${val}`
                       }
                     >
                       {({ countUpRef }) => <span ref={countUpRef} />}

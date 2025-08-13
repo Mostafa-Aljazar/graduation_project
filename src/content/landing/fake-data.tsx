@@ -1,12 +1,7 @@
 import { TYPE_WRITTEN_CONTENT } from '@/@types/actors/common-types/index.type';
 import { AdBlogStory } from '@/@types/actors/manager/ads-blogs-stories/adsBlogsStoriesResponse.type';
-import {
-  HOME_HERO_SLIDER_1,
-  HOME_HERO_SLIDER_2,
-  HOME_HERO_SLIDER_3,
-} from '@/assets/landing/home';
+import { HOME_HERO_SLIDER_1, HOME_HERO_SLIDER_2, HOME_HERO_SLIDER_3 } from '@/assets/landing/home';
 
-// Expanded Fake Stories with More Details
 export const FAKE_STORIES: AdBlogStory[] = [
   {
     id: 1,
@@ -15,8 +10,7 @@ export const FAKE_STORIES: AdBlogStory[] = [
     content: `خالد، البالغ من العمر 23 عامًا، يعيش في مخيم للنازحين منذ أربع سنوات. يعاني من إعاقة في ساقه اليمنى منذ الطفولة، مما يجعل الحركة صعبة، بالإضافة إلى تحديات تعليمية بسبب نقص الموارد. لكنه لم يستسلم أبدًا. كل صباح، يستيقظ عند الفجر ويسير لمسافة تزيد عن 3 كيلومترات للوصول إلى مركز تعليمي مؤقت أقيم في المخيم بدعم من منظمة إنسانية. هناك، يتعلم القراءة والكتابة الأساسية بجانب أطفال أصغر منه سنًا، لكنه لا يشعر بالخجل. يحلم خالد أن يصبح يومًا معلمًا ليغير حياة الآخرين كما تغيرت حياته.`,
     created_at: new Date('2023-09-01T10:00:00Z'),
     updated_at: new Date('2025-05-26T15:06:00Z'),
-    brief:
-      'قصة نجاح خالد في تحدي ظروفه الصعبة لمواصلة تعليمه رغم الإعاقة والتحديات.',
+    brief: 'قصة نجاح خالد في تحدي ظروفه الصعبة لمواصلة تعليمه رغم الإعاقة والتحديات.',
     type: TYPE_WRITTEN_CONTENT.SUCCESS_STORIES,
   },
   {
@@ -36,8 +30,7 @@ export const FAKE_STORIES: AdBlogStory[] = [
     content: `فيصل، أب لثلاثة أطفال تتراوح أعمارهم بين 5 و 10 سنوات، واجه أصعب لحظات حياته عندما دُمر منزله في النزاع. اضطر للتسول في شوارع المدينة القريبة من المخيم لإطعام أطفاله. كان يشعر بالعار يوميًا، لكنه لم يجد خيارًا آخر. في أحد الأيام، سمع عن برنامج تدريب مهني تقدمه منظمة خيرية في المخيم. التحق فيصل بدورة لتعليم النجارة، وبعد ثلاثة أشهر من التدريب المكثف، بدأ بصنع أثاث بسيط مثل الكراسي والطاولات. الآن، يبيع فيصل منتجاته في سوق المخيم الصغير ويستطيع توفير حياة كريمة لعائلته.`,
     created_at: new Date('2023-11-20T09:00:00Z'),
     updated_at: new Date('2025-05-26T15:06:00Z'),
-    brief:
-      'تحول فيصل من التسول إلى العمل المهني بفضل التدريب الذي قدمته منظمة خيرية.',
+    brief: 'تحول فيصل من التسول إلى العمل المهني بفضل التدريب الذي قدمته منظمة خيرية.',
     type: TYPE_WRITTEN_CONTENT.SUCCESS_STORIES,
   },
   {
@@ -313,11 +306,7 @@ export const FAKE_BLOGS: AdBlogStory[] = [
     title: 'الصحة النفسية في المخيمات: دعم حيوي',
     brief: 'أهمية تقديم الدعم النفسي لسكان المخيمات.',
     content: `<div class="bg-white shadow-lg mx-auto p-6 rounded-lg max-w-4xl"><h1 class="mb-10 pb-4 border-red-500 border-b-2 text-4xl text-center">الصحة النفسية في المخيمات</h1><p class="text-gray-700 text-lg leading-relaxed">يعاني النازحون من ضغوط نفسية كبيرة بسبب النزوح وفقدان الأمان. يتطلب الأمر تدخلات مستمرة من متخصصين نفسيين وبرامج دعم مجتمعية.</p></div>`,
-    imgs: [
-      HOME_HERO_SLIDER_2.src,
-      HOME_HERO_SLIDER_1.src,
-      HOME_HERO_SLIDER_3.src,
-    ],
+    imgs: [HOME_HERO_SLIDER_2.src, HOME_HERO_SLIDER_1.src, HOME_HERO_SLIDER_3.src],
     created_at: new Date('2025-05-25T10:00:00Z'),
     updated_at: new Date('2025-05-26T15:06:00Z'),
     type: TYPE_WRITTEN_CONTENT.BLOG,
@@ -327,11 +316,7 @@ export const FAKE_BLOGS: AdBlogStory[] = [
     title: 'المرأة في المخيمات: قصص صمود',
     brief: 'كيف تقود النساء التغيير في ظروف صعبة؟',
     content: `<div class="bg-white shadow-lg mx-auto p-6 rounded-lg max-w-4xl"><h1 class="mb-10 pb-4 border-pink-500 border-b-2 text-4xl text-center">دور المرأة في المخيمات</h1><p class="text-gray-700 text-lg leading-relaxed">النساء يتحملن مسؤوليات كبيرة في رعاية الأسر، والمشاركة في التعليم والدعم النفسي رغم التحديات.</p></div>`,
-    imgs: [
-      HOME_HERO_SLIDER_1.src,
-      HOME_HERO_SLIDER_2.src,
-      HOME_HERO_SLIDER_3.src,
-    ],
+    imgs: [HOME_HERO_SLIDER_1.src, HOME_HERO_SLIDER_2.src, HOME_HERO_SLIDER_3.src],
     created_at: new Date('2025-05-27T09:00:00Z'),
     updated_at: new Date('2025-05-27T15:00:00Z'),
     type: TYPE_WRITTEN_CONTENT.BLOG,
@@ -341,11 +326,7 @@ export const FAKE_BLOGS: AdBlogStory[] = [
     title: 'التعليم غير الرسمي في المخيمات',
     brief: 'مبادرات تطوعية لتعويض غياب المدارس.',
     content: `<div class="bg-white shadow-lg mx-auto p-6 rounded-lg max-w-4xl"><h1 class="mb-10 pb-4 border-green-500 border-b-2 text-4xl text-center">التعليم غير الرسمي</h1><p class="text-gray-700 text-lg leading-relaxed">يبتكر المتطوعون طرقًا بسيطة للتعليم في ظل غياب المدارس، باستخدام القصص، والأنشطة التفاعلية، والتعلم الرقمي.</p></div>`,
-    imgs: [
-      HOME_HERO_SLIDER_2.src,
-      HOME_HERO_SLIDER_1.src,
-      HOME_HERO_SLIDER_3.src,
-    ],
+    imgs: [HOME_HERO_SLIDER_2.src, HOME_HERO_SLIDER_1.src, HOME_HERO_SLIDER_3.src],
     created_at: new Date('2025-05-28T11:00:00Z'),
     updated_at: new Date('2025-05-28T15:00:00Z'),
     type: TYPE_WRITTEN_CONTENT.BLOG,
@@ -382,15 +363,10 @@ export const FAKE_BLOGS: AdBlogStory[] = [
   },
 ];
 
-// Expanded Fake Ads with More Entries
 export const FAKE_ADS: AdBlogStory[] = [
   {
     id: 1,
-    imgs: [
-      HOME_HERO_SLIDER_1.src,
-      HOME_HERO_SLIDER_2.src,
-      HOME_HERO_SLIDER_3.src,
-    ],
+    imgs: [HOME_HERO_SLIDER_1.src, HOME_HERO_SLIDER_2.src, HOME_HERO_SLIDER_3.src],
     title: 'سيتم افتتاح خيمة للمساعدات الطبية خلال الأسبوع القادم',
     brief: 'افتتاح خيمة طبية جديدة لتقديم الخدمات الصحية المجانية للنازحين',
     content: `
@@ -419,11 +395,7 @@ export const FAKE_ADS: AdBlogStory[] = [
   },
   {
     id: 2,
-    imgs: [
-      HOME_HERO_SLIDER_1.src,
-      HOME_HERO_SLIDER_2.src,
-      HOME_HERO_SLIDER_3.src,
-    ],
+    imgs: [HOME_HERO_SLIDER_1.src, HOME_HERO_SLIDER_2.src, HOME_HERO_SLIDER_3.src],
     title: 'توزيع مساعدات غذائية يوم الخميس',
     brief: 'سلال غذائية شاملة للعائلات النازحة يوم 29 مايو 2025',
     content: `
@@ -452,11 +424,7 @@ export const FAKE_ADS: AdBlogStory[] = [
   },
   {
     id: 3,
-    imgs: [
-      HOME_HERO_SLIDER_1.src,
-      HOME_HERO_SLIDER_2.src,
-      HOME_HERO_SLIDER_3.src,
-    ],
+    imgs: [HOME_HERO_SLIDER_1.src, HOME_HERO_SLIDER_2.src, HOME_HERO_SLIDER_3.src],
     title: 'توزيع أغطية وملابس شتوية',
     brief: 'حماية العائلات من البرد اعتبارًا من 1 يونيو 2025',
     content: `
@@ -485,11 +453,7 @@ export const FAKE_ADS: AdBlogStory[] = [
   },
   {
     id: 4,
-    imgs: [
-      HOME_HERO_SLIDER_1.src,
-      HOME_HERO_SLIDER_2.src,
-      HOME_HERO_SLIDER_3.src,
-    ],
+    imgs: [HOME_HERO_SLIDER_1.src, HOME_HERO_SLIDER_2.src, HOME_HERO_SLIDER_3.src],
     title: 'شاحنة مياه نظيفة يوميًا',
     brief: 'توفير 50 لترًا يوميًا لكل عائلة بدءًا من 27 مايو 2025',
     content: `
@@ -517,11 +481,7 @@ export const FAKE_ADS: AdBlogStory[] = [
   },
   {
     id: 5,
-    imgs: [
-      HOME_HERO_SLIDER_1.src,
-      HOME_HERO_SLIDER_2.src,
-      HOME_HERO_SLIDER_3.src,
-    ],
+    imgs: [HOME_HERO_SLIDER_1.src, HOME_HERO_SLIDER_2.src, HOME_HERO_SLIDER_3.src],
     title: 'مدرسة مؤقتة للأطفال',
     brief: 'بدء الدراسة للأطفال النازحين يوم 3 يونيو 2025',
     content: `
@@ -550,11 +510,7 @@ export const FAKE_ADS: AdBlogStory[] = [
   },
   {
     id: 6,
-    imgs: [
-      HOME_HERO_SLIDER_1.src,
-      HOME_HERO_SLIDER_2.src,
-      HOME_HERO_SLIDER_3.src,
-    ],
+    imgs: [HOME_HERO_SLIDER_1.src, HOME_HERO_SLIDER_2.src, HOME_HERO_SLIDER_3.src],
     title: 'إنترنت مجاني في المخيم',
     brief: 'نقاط واي فاي متاحة للتواصل يوميًا بدءًا من 28 مايو 2025',
     content: `
@@ -582,11 +538,7 @@ export const FAKE_ADS: AdBlogStory[] = [
   },
   {
     id: 7,
-    imgs: [
-      HOME_HERO_SLIDER_1.src,
-      HOME_HERO_SLIDER_2.src,
-      HOME_HERO_SLIDER_3.src,
-    ],
+    imgs: [HOME_HERO_SLIDER_1.src, HOME_HERO_SLIDER_2.src, HOME_HERO_SLIDER_3.src],
     title: 'ورشة تدريب على الخياطة للنساء',
     brief: 'ورشة مجانية لتعليم الخياطة تبدأ يوم 4 يونيو 2025',
     content: `
@@ -615,11 +567,7 @@ export const FAKE_ADS: AdBlogStory[] = [
   },
   {
     id: 8,
-    imgs: [
-      HOME_HERO_SLIDER_1.src,
-      HOME_HERO_SLIDER_2.src,
-      HOME_HERO_SLIDER_3.src,
-    ],
+    imgs: [HOME_HERO_SLIDER_1.src, HOME_HERO_SLIDER_2.src, HOME_HERO_SLIDER_3.src],
     title: 'توزيع ألعاب للأطفال',
     brief: 'توزيع ألعاب مجانية للأطفال يوم 5 يونيو 2025',
     content: `
@@ -647,11 +595,7 @@ export const FAKE_ADS: AdBlogStory[] = [
   },
   {
     id: 9,
-    imgs: [
-      HOME_HERO_SLIDER_1.src,
-      HOME_HERO_SLIDER_2.src,
-      HOME_HERO_SLIDER_3.src,
-    ],
+    imgs: [HOME_HERO_SLIDER_1.src, HOME_HERO_SLIDER_2.src, HOME_HERO_SLIDER_3.src],
     title: 'جلسات دعم نفسي مجانية',
     brief: 'جلسات دعم نفسي للنازحين تبدأ يوم 6 يونيو 2025',
     content: `

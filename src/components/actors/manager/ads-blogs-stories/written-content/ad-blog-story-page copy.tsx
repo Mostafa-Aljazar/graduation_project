@@ -37,11 +37,7 @@ export default function Ad_Blog_Story_Page_Copy({
     isLoading,
     error,
   } = useQuery<AdBlogStoryResponse, Error>({
-    queryKey: [
-      'Ads_Blogs_Stories',
-      written_content_Id,
-      TYPE_WRITTEN_CONTENT.ADS,
-    ],
+    queryKey: ['Ads_Blogs_Stories', written_content_Id, TYPE_WRITTEN_CONTENT.ADS],
     queryFn: () =>
       getAdBlogStory({
         id: written_content_Id,
@@ -68,9 +64,7 @@ export default function Ad_Blog_Story_Page_Copy({
             </ThemeIcon>
           </Center>
           <Text c='red' fw={600} ta='center'>
-            {writtenContentsData?.error ||
-              error?.message ||
-              'حدث خطأ أثناء جلب المحتوى'}
+            {writtenContentsData?.error || error?.message || 'حدث خطأ أثناء جلب المحتوى'}
           </Text>
         </Paper>
       ) : (
@@ -98,8 +92,7 @@ export default function Ad_Blog_Story_Page_Copy({
                 onMouseLeave={autoplay.current.reset}
                 emblaOptions={{ loop: true }}
                 classNames={{
-                  controls:
-                    '!text-black !bg-transparent !px-10 !hidden md:!flex',
+                  controls: '!text-black !bg-transparent !px-10 !hidden md:!flex',
                   control: '!bg-second !bg-gray-100',
                 }}
                 styles={{ root: { width: '100%' } }}

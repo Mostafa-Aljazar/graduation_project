@@ -1,22 +1,13 @@
 'use client';
 import { useState } from 'react';
-import {
-  Button,
-  Stack,
-  Text,
-  PasswordInput,
-  LoadingOverlay,
-} from '@mantine/core';
+import { Button, Stack, Text, PasswordInput, LoadingOverlay } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { useRouter } from 'next/navigation';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { AUTH_ROUTES } from '@/constants/routes';
 import { useQueryStates, parseAsString } from 'nuqs';
-import {
-  createNewPassword,
-  createNewPasswordProps,
-} from '@/actions/auth/createNewPassword';
+import { createNewPassword, createNewPasswordProps } from '@/actions/auth/createNewPassword';
 import {
   createNewPasswordSchema,
   createNewPasswordType,
@@ -40,41 +31,39 @@ export default function Create_New_Password() {
     { shallow: true }
   );
 
-  const createNewPasswordMutation = useMutation<
-    generalAuthResponse,
-    Error,
-    createNewPasswordProps
-  >({
-    mutationFn: createNewPassword,
-    onSuccess: (data) => {
-      if (Number(data.status) == 200) {
+  const createNewPasswordMutation = useMutation<generalAuthResponse, Error, createNewPasswordProps>(
+    {
+      mutationFn: createNewPassword,
+      onSuccess: (data) => {
+        if (Number(data.status) == 200) {
+          notifications.show({
+            title: data.message,
+            message: 'تم تحديث كلمة المرور بنجاح',
+            color: 'grape',
+            position: 'top-left',
+            withBorder: true,
+            loading: true,
+          });
+
+          router.push(AUTH_ROUTES.LOGIN);
+          form.reset();
+        } else {
+          throw new Error(data.error || 'فشل في تحديث كلمة المرور');
+        }
+      },
+      onError: (error: any) => {
+        const errorMessage = error?.response?.data?.error || error?.message;
+        setError(errorMessage);
         notifications.show({
-          title: data.message,
-          message: 'تم تحديث كلمة المرور بنجاح',
-          color: 'grape',
+          title: 'خطأ',
+          message: errorMessage,
+          color: 'red',
           position: 'top-left',
           withBorder: true,
-          loading: true,
         });
-
-        router.push(AUTH_ROUTES.LOGIN);
-        form.reset();
-      } else {
-        throw new Error(data.error || 'فشل في تحديث كلمة المرور');
-      }
-    },
-    onError: (error: any) => {
-      const errorMessage = error?.response?.data?.error || error?.message;
-      setError(errorMessage);
-      notifications.show({
-        title: 'خطأ',
-        message: errorMessage,
-        color: 'red',
-        position: 'top-left',
-        withBorder: true,
-      });
-    },
-  });
+      },
+    }
+  );
 
   const handleSubmit = form.onSubmit((values: createNewPasswordType) => {
     createNewPasswordMutation.mutate({
@@ -107,20 +96,11 @@ export default function Create_New_Password() {
       </Text>
 
       <Stack justify='center' align='center' gap={20}>
-        <Text
-          fw={400}
-          fz={14}
-          c={'#817C74'}
-          ta={'center'}
-          w={{ base: 343, md: 400 }}
-        >
+        <Text fw={400} fz={14} c={'#817C74'} ta={'center'} w={{ base: 343, md: 400 }}>
           أدخل كلمة المرور الجديدة وتأكيدها
         </Text>
 
-        <form
-          className='!relative !flex flex-col items-center gap-0'
-          onSubmit={handleSubmit}
-        >
+        <form className='!relative !flex flex-col items-center gap-0' onSubmit={handleSubmit}>
           <PasswordInput
             type='password'
             label={
@@ -134,8 +114,7 @@ export default function Create_New_Password() {
             key={form.key('password')}
             {...form.getInputProps('password')}
             classNames={{
-              input:
-                '!text-dark placeholder:!text-sm !text-primary !font-normal',
+              input: '!text-dark placeholder:!text-sm !text-primary !font-normal',
               error: '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
             }}
           />
@@ -154,8 +133,7 @@ export default function Create_New_Password() {
             key={form.key('confirm_password')}
             {...form.getInputProps('confirm_password')}
             classNames={{
-              input:
-                '!text-dark placeholder:!text-sm !text-primary !font-normal',
+              input: '!text-dark placeholder:!text-sm !text-primary !font-normal',
               error: '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
             }}
           />
@@ -172,9 +150,7 @@ export default function Create_New_Password() {
                 ? '!bg-primary/70'
                 : '!bg-primary'
             }`}
-            disabled={
-              !form.getValues().password || !form.getValues().confirm_password
-            }
+            disabled={!form.getValues().password || !form.getValues().confirm_password}
           >
             حفظ
           </Button>

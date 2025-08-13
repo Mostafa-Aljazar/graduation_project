@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import Mantine_Provider from './mantine-provider';
 import React_Query_Provider from './react-query-provider';
-import Nuqs_Adapter from './Nuqs_Adapter';
+import Nuqs_Adapter from './nuqs-adapter';
 
 export default function Providers({ children }: { children: ReactNode }) {
   return (

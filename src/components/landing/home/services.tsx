@@ -1,60 +1,52 @@
 import React from 'react';
 import Image from 'next/image'; // Assuming Next.js Image component
 import { Box, Flex, SimpleGrid, Stack, Text, ThemeIcon } from '@mantine/core';
-import { SERVICES_Data, SERVICES_TITLE } from '@/content/landing/home';
+import { HOME_SERVICES_Data, HOME_SERVICES_TITLE } from '@/content/landing';
 import { SERVICES_TENT } from '@/assets/landing/home';
 
 export default function Services() {
   return (
-    <Stack
+    <Flex
+      direction={'column'}
+      id='our-service'
       align='center'
       px={{ base: '5%', xl: '10%' }}
       py={30}
-      gap={0}
-      id='our-service'
+      gap={{ base: 0, md: 20 }}
     >
-      <Text
-        fw={600}
-        c={'primary.8'}
-        fz={{ base: 20, md: 25 }}
-        ta={{ base: 'center', md: 'start' }}
-        w={'100%'}
-      >
-        {SERVICES_TITLE}
+      <Text fw={600} c={'primary.8'} fz={{ base: 20, md: 25 }} ta={'center'} w={'100%'}>
+        {HOME_SERVICES_TITLE}
       </Text>
       <Flex
         p={0}
         direction={{ base: 'column', md: 'row' }}
         align={{ base: 'center', md: 'start' }}
         gap={20}
+        w={'100%'}
       >
-        <Box w={{ base: 200, md: 700, lg: 700 }}>
-          <Image
-            src={SERVICES_TENT}
-            alt='Camp scene'
-            className='!object-fill'
-          />
+        <Box w={{ base: 300, md: 700, lg: 700 }}>
+          <Image src={SERVICES_TENT} alt='Camp scene' className='!object-fill' />
         </Box>
 
-        <SimpleGrid cols={{ base: 1, md: 2 }} spacing={20}>
-          {SERVICES_Data.map((stat, index) => (
+        <SimpleGrid cols={{ base: 1, md: 2 }} spacing={20} w={'100%'}>
+          {HOME_SERVICES_Data.map((stat, index) => (
             <Stack
               key={index}
               gap='sm'
               align='center'
               bg={'white'}
               p={10}
-              w={{ base: '100%', xs: 350, md: '100%' }}
-              className='!shadow-xs hover:!shadow-md rounded-sm !transition-all !duration-300 !ease-in-out'
+              w={{ base: '100%', md: '100%' }}
+              className='!shadow-md mx-auto rounded-sm !transition-all !duration-300 !ease-in-out'
             >
               <ThemeIcon variant='transparent' className='!text-primary'>
-                <stat.icon size={30} />
+                <stat.icon size={25} />
               </ThemeIcon>
               <Stack gap={0} justify='center' align='center'>
-                <Text ta={'center'} fw={600} fz='lg' className='!text-primary'>
+                <Text ta={'center'} fw={600} fz={16} className='!text-primary'>
                   {stat.title}
                 </Text>
-                <Text ta={'center'} fw={500} fz='lg' className='!text-primary'>
+                <Text ta={'center'} fw={500} fz={15} className='text-dark'>
                   {stat.description}
                 </Text>
               </Stack>
@@ -62,6 +54,6 @@ export default function Services() {
           ))}
         </SimpleGrid>
       </Flex>
-    </Stack>
+    </Flex>
   );
 }

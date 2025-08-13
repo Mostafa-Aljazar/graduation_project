@@ -9,12 +9,7 @@ type Props = {
 
 export default function Child_Section({ child_image, desc }: Props) {
   return (
-    <Box
-      pos={'relative'}
-      w={'100%'}
-      h={{ base: 250, md: 350, lg: 450 }}
-      className='!overflow-hidden'
-    >
+    <Box pos={'relative'} w={'100%'} h={{ base: 250, md: 350 }} className='!overflow-hidden'>
       <Image
         src={child_image}
         alt='child'
@@ -26,7 +21,7 @@ export default function Child_Section({ child_image, desc }: Props) {
       <Text
         w={'100%'}
         fw={500}
-        fz={{ base: 25, md: 35, lg: 50 }}
+        fz={{ base: 25, md: 35 }}
         pos='absolute'
         top={'5%'}
         right={'50%'}

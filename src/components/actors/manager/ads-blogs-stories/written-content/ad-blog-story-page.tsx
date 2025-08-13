@@ -24,18 +24,18 @@ import { useRef } from 'react';
 import { parseAsStringEnum, useQueryStates } from 'nuqs';
 
 interface AdBlogStoryPageProps {
-  manager_Id: number;
   written_content_Id: number;
+  destination?: TYPE_WRITTEN_CONTENT;
 }
 
 export default function Ad_Blog_Story_Page({
-  manager_Id,
   written_content_Id,
+  destination,
 }: AdBlogStoryPageProps) {
   const [query, setQuery] = useQueryStates({
     'written-tab': parseAsStringEnum<TYPE_WRITTEN_CONTENT>(
       Object.values(TYPE_WRITTEN_CONTENT)
-    ).withDefault(TYPE_WRITTEN_CONTENT.BLOG),
+    ).withDefault(destination ?? TYPE_WRITTEN_CONTENT.BLOG),
   });
 
   const {
@@ -43,7 +43,7 @@ export default function Ad_Blog_Story_Page({
     isLoading,
     error,
   } = useQuery<AdBlogStoryResponse, Error>({
-    queryKey: ['Ads_Blogs_Stories', written_content_Id, query['written-tab']],
+    queryKey: ['Ads_Blogs_Stories', written_content_Id, query['written-tab'], destination],
     queryFn: () =>
       getAdBlogStory({
         id: written_content_Id,
@@ -56,7 +56,7 @@ export default function Ad_Blog_Story_Page({
   const autoplay = useRef(Autoplay({ delay: 5000 }));
 
   return (
-    <Stack pos='relative' px={{ base: 16, md: 40 }} py={24} w='100%'>
+    <Stack pos='relative' px={{ base: 16, md: 40 }} py={20} w='100%'>
       <LoadingOverlay visible={isLoading} zIndex={1000} />
 
       {hasError ? (
@@ -67,9 +67,7 @@ export default function Ad_Blog_Story_Page({
             </ThemeIcon>
           </Center>
           <Text c='red' fw={600} ta='center'>
-            {writtenContentsData?.error ||
-              error?.message ||
-              'حدث خطأ أثناء جلب المحتوى'}
+            {writtenContentsData?.error || error?.message || 'حدث خطأ أثناء جلب المحتوى'}
           </Text>
         </Paper>
       ) : (
@@ -96,8 +94,7 @@ export default function Ad_Blog_Story_Page({
                 onMouseLeave={autoplay.current.reset}
                 emblaOptions={{ loop: true }}
                 classNames={{
-                  controls:
-                    '!text-black !bg-transparent !px-10 !hidden md:!flex',
+                  controls: '!text-black !bg-transparent !px-10 !hidden md:!flex',
                   control: '!bg-gray-100',
                 }}
                 styles={{ root: { width: '100%' } }}
