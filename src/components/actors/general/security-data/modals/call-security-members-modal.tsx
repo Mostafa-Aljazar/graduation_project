@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   sendCallRequest,
   sendCallRequestProps,
@@ -44,11 +44,7 @@ export default function Call_Security_Members_Modal({
     validate: zodResolver(callSchema),
   });
 
-  const callMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    sendSecurityCallRequestProps
-  >({
+  const callMutation = useMutation<modalActionResponse, unknown, sendSecurityCallRequestProps>({
     mutationFn: sendSecurityCallRequest,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {
@@ -116,9 +112,7 @@ export default function Call_Security_Members_Modal({
             }}
             valueFormat='DD/MM/YYYY - hh:mm A'
             value={form.values.dateTime}
-            onChange={(value) =>
-              form.setFieldValue('dateTime', new Date(value))
-            }
+            onChange={(value) => form.setFieldValue('dateTime', new Date(value))}
             error={form.errors.dateTime}
           />
           <Textarea

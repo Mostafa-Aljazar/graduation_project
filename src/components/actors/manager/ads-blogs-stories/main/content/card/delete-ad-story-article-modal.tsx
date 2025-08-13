@@ -1,7 +1,7 @@
 'use client';
 
 import { TYPE_WRITTEN_CONTENT } from '@/@types/actors/common-types/index.type';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   deleteAdBlogStory,
   deleteAdBlogStoryProps,
@@ -27,11 +27,7 @@ export default function Delete_Ad_Article_Story_Modal({
 }: DeleteAdBlogStoryModalProps) {
   const queryClient = useQueryClient();
 
-  const deleteMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    deleteAdBlogStoryProps
-  >({
+  const deleteMutation = useMutation<modalActionResponse, unknown, deleteAdBlogStoryProps>({
     mutationFn: deleteAdBlogStory,
     onSuccess: (data) => {
       if (data.status === 200) {

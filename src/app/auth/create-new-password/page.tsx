@@ -12,58 +12,58 @@ import {
   createNewPasswordSchema,
   createNewPasswordType,
 } from '@/validation/auth/createNewPasswordSchema';
-import { generalAuthResponse } from '@/@types/auth/generalAuthResponse.type';
+import { commonActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 
 export default function Create_New_Password() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  // Form state with better validation
   const form = useForm<createNewPasswordType>({
     mode: 'uncontrolled',
     initialValues: { password: '', confirm_password: '' },
     validate: zodResolver(createNewPasswordSchema),
   });
 
-  // Query states => will be used to get email
   const [query, setQuery] = useQueryStates(
     { email: parseAsString.withDefault('') },
     { shallow: true }
   );
 
-  const createNewPasswordMutation = useMutation<generalAuthResponse, Error, createNewPasswordProps>(
-    {
-      mutationFn: createNewPassword,
-      onSuccess: (data) => {
-        if (Number(data.status) == 200) {
-          notifications.show({
-            title: data.message,
-            message: 'تم تحديث كلمة المرور بنجاح',
-            color: 'grape',
-            position: 'top-left',
-            withBorder: true,
-            loading: true,
-          });
-
-          router.push(AUTH_ROUTES.LOGIN);
-          form.reset();
-        } else {
-          throw new Error(data.error || 'فشل في تحديث كلمة المرور');
-        }
-      },
-      onError: (error: any) => {
-        const errorMessage = error?.response?.data?.error || error?.message;
-        setError(errorMessage);
+  const createNewPasswordMutation = useMutation<
+    commonActionResponse,
+    Error,
+    createNewPasswordProps
+  >({
+    mutationFn: createNewPassword,
+    onSuccess: (data) => {
+      if (Number(data.status) == 200) {
         notifications.show({
-          title: 'خطأ',
-          message: errorMessage,
-          color: 'red',
+          title: data.message,
+          message: 'تم تحديث كلمة المرور بنجاح',
+          color: 'grape',
           position: 'top-left',
           withBorder: true,
+          loading: true,
         });
-      },
-    }
-  );
+
+        router.push(AUTH_ROUTES.LOGIN);
+        form.reset();
+      } else {
+        throw new Error(data.error || 'فشل في تحديث كلمة المرور');
+      }
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.response?.data?.error || error?.message;
+      setError(errorMessage);
+      notifications.show({
+        title: 'خطأ',
+        message: errorMessage,
+        color: 'red',
+        position: 'top-left',
+        withBorder: true,
+      });
+    },
+  });
 
   const handleSubmit = form.onSubmit((values: createNewPasswordType) => {
     createNewPasswordMutation.mutate({

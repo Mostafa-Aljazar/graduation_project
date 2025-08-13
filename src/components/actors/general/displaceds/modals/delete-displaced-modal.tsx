@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   deleteDisplaced,
   deleteDisplacedsProps,
@@ -15,16 +15,8 @@ interface DeleteModalProps {
   close: () => void;
 }
 
-export default function Delete_Displaced_Modal({
-  displaced_Ids,
-  opened,
-  close,
-}: DeleteModalProps) {
-  const deleteMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    deleteDisplacedsProps
-  >({
+export default function Delete_Displaced_Modal({ displaced_Ids, opened, close }: DeleteModalProps) {
+  const deleteMutation = useMutation<modalActionResponse, unknown, deleteDisplacedsProps>({
     mutationFn: deleteDisplaced,
     onSuccess: (data) => {
       if (data.status === 200) {

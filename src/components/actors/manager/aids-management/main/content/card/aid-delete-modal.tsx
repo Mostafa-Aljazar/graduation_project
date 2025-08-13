@@ -1,13 +1,10 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   deleteDisplaced,
   deleteDisplacedsProps,
 } from '@/actions/actors/general/displaceds/deleteDisplaced';
-import {
-  deleteAid,
-  deleteAidProps,
-} from '@/actions/actors/general/aids-management/deleteAid';
+import { deleteAid, deleteAidProps } from '@/actions/actors/general/aids-management/deleteAid';
 import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
@@ -18,16 +15,8 @@ interface AidDeleteModalProps {
   close: () => void;
 }
 
-export default function Aid_Delete_Modal({
-  aid_ID,
-  opened,
-  close,
-}: AidDeleteModalProps) {
-  const deleteMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    deleteAidProps
-  >({
+export default function Aid_Delete_Modal({ aid_ID, opened, close }: AidDeleteModalProps) {
+  const deleteMutation = useMutation<modalActionResponse, unknown, deleteAidProps>({
     mutationFn: deleteAid,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {

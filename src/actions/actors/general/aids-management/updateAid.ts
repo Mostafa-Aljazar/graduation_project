@@ -1,7 +1,7 @@
 "use server";
 
 import { Aid } from "@/@types/actors/manager/aid-management/add-aid-management.types";
-import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
+import { modalActionResponse } from "@/@types/common/modal/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 

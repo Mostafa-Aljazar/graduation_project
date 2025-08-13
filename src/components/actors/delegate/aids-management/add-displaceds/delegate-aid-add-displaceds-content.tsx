@@ -1,18 +1,8 @@
 'use state';
 
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import {
-  Stack,
-  Divider,
-  LoadingOverlay,
-  Group,
-  Button,
-  Text,
-} from '@mantine/core';
-import {
-  DISTRIBUTION_MECHANISM,
-  TYPE_GROUP_AIDS,
-} from '@/@types/actors/common-types/index.type';
+import { Stack, Divider, LoadingOverlay, Group, Button, Text } from '@mantine/core';
+import { DISTRIBUTION_MECHANISM, TYPE_GROUP_AIDS } from '@/@types/actors/common-types/index.type';
 import Common_Aid_Add_Displaceds from '../../../general/aids-management/add/aid-add-displaceds/common-aid-add-displaceds';
 import { useState } from 'react';
 import { CheckSquare } from 'lucide-react';
@@ -23,7 +13,7 @@ import {
   addAidDisplaceds,
   addAidDisplacedsProps,
 } from '@/actions/actors/general/aids-management/addAidDisplaceds';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 
 interface DelegateAidAddDisplacedsContentProps {
   isLoading: boolean;
@@ -40,11 +30,7 @@ export default function Delegate_Aid_Add_Displaceds_Content({
     (aid_Data && aid_Data?.selected_displaced_Ids) ?? []
   );
 
-  const actionAidMutation = useMutation<
-    modalActionResponse,
-    Error,
-    addAidDisplacedsProps
-  >({
+  const actionAidMutation = useMutation<modalActionResponse, Error, addAidDisplacedsProps>({
     // const { mutate, isPending, isError, error } = useMutation({
     mutationFn: addAidDisplaceds,
     onSuccess: (response) => {
@@ -107,8 +93,7 @@ export default function Delegate_Aid_Add_Displaceds_Content({
 
       {aid_Data &&
         aid_Data.aid_status == TYPE_GROUP_AIDS.COMING_AIDS &&
-        aid_Data.distribution_mechanism ==
-          DISTRIBUTION_MECHANISM.DELEGATES_LISTS && (
+        aid_Data.distribution_mechanism == DISTRIBUTION_MECHANISM.DELEGATES_LISTS && (
           <Common_Aid_Add_Displaceds
             selectedDisplacedIds={selectedDisplacedIds}
             setSelectedDisplacedIds={setSelectedDisplacedIds}

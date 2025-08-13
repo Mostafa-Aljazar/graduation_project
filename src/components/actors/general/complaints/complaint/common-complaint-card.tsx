@@ -7,27 +7,18 @@ import Image from 'next/image';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import { MAN } from '@/assets/actor';
 import { parseAsStringEnum, useQueryStates } from 'nuqs';
 import {
   changeStatusCommonComplaint,
   changeStatusCommonComplaintProps,
 } from '@/actions/actors/general/complaints/changeStatusCommonComplaint';
-import {
-  USER_RANK,
-  USER_RANK_LABELS,
-  USER_TYPE,
-  UserRank,
-  UserType,
-} from '@/constants/userTypes';
+import { USER_RANK, USER_RANK_LABELS, USER_TYPE, UserRank, UserType } from '@/constants/userTypes';
 import Common_Delete_Complaint from './common-delete-complaint';
 import Common_Complaint_Modal from './common-complaint-modal';
 import useAuth from '@/hooks/useAuth';
-import {
-  COMPLAINTS_STATUS,
-  COMPLAINTS_TABS,
-} from '@/@types/actors/common-types/index.type';
+import { COMPLAINTS_STATUS, COMPLAINTS_TABS } from '@/@types/actors/common-types/index.type';
 
 interface CommonComplaintCardProps {
   complaint: Complaint;
@@ -101,10 +92,7 @@ export default function Common_Complaint_Card({
         changeStatusMutation.mutate({
           complaint_Id: complaint.id,
           actor_Id,
-          role: role as Exclude<
-            UserRank,
-            typeof USER_RANK.SECURITY | typeof USER_RANK.DISPLACED
-          >,
+          role: role as Exclude<UserRank, typeof USER_RANK.SECURITY | typeof USER_RANK.DISPLACED>,
         });
       }
       open();
@@ -120,9 +108,7 @@ export default function Common_Complaint_Card({
         shadow='sm'
         className={cn(
           'hover:shadow-md !border !border-gray-300 transition-all cursor-pointer',
-          complaint.status === COMPLAINTS_STATUS.READ
-            ? '!bg-gray-50'
-            : '!bg-red-100'
+          complaint.status === COMPLAINTS_STATUS.READ ? '!bg-gray-50' : '!bg-red-100'
         )}
         onClick={handleClick}
       >
@@ -148,24 +134,20 @@ export default function Common_Complaint_Card({
                 {complaint.date}
               </Text>
               <Text size='xs' c='dimmed'>
-                الحالة:{' '}
-                {complaint.status === COMPLAINTS_STATUS.READ
-                  ? 'مقروءة'
-                  : 'قيد الانتظار'}
+                الحالة: {complaint.status === COMPLAINTS_STATUS.READ ? 'مقروءة' : 'قيد الانتظار'}
               </Text>
             </Flex>
             <Group flex={1} gap={5}>
               <Text fz={16} className='!text-primary'>
-                {query['complaints-tab'] ==
-                  COMPLAINTS_TABS.RECEIVED_COMPLAINTS &&
+                {query['complaints-tab'] == COMPLAINTS_TABS.RECEIVED_COMPLAINTS &&
                   `من ${USER_RANK_LABELS[complaint.sender.role]}`}
                 {query['complaints-tab'] == COMPLAINTS_TABS.SENT_COMPLAINTS &&
                   `الى ${USER_RANK_LABELS[complaint.receiver.role]}`}
                 {' :'}
               </Text>
               <Text fz={16} className='!text-dark'>
-                {query['complaints-tab'] ==
-                  COMPLAINTS_TABS.RECEIVED_COMPLAINTS && complaint.sender.name}
+                {query['complaints-tab'] == COMPLAINTS_TABS.RECEIVED_COMPLAINTS &&
+                  complaint.sender.name}
                 {query['complaints-tab'] == COMPLAINTS_TABS.SENT_COMPLAINTS &&
                   complaint.receiver.name}
               </Text>

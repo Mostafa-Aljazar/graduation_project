@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   sendCallRequest,
   sendCallRequestProps,
@@ -27,11 +27,7 @@ interface CallModalProps {
   opened: boolean;
   close: () => void;
 }
-export default function Call_Displaced_Modal({
-  displaced_Ids,
-  opened,
-  close,
-}: CallModalProps) {
+export default function Call_Displaced_Modal({ displaced_Ids, opened, close }: CallModalProps) {
   const form = useForm<callType>({
     initialValues: {
       dateTime: dayjs().add(1, 'hour').toDate(),
@@ -40,11 +36,7 @@ export default function Call_Displaced_Modal({
     validate: zodResolver(callSchema),
   });
 
-  const callMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    sendCallRequestProps
-  >({
+  const callMutation = useMutation<modalActionResponse, unknown, sendCallRequestProps>({
     mutationFn: sendCallRequest,
     onSuccess: (data) => {
       if (data.status === 200) {
@@ -111,9 +103,7 @@ export default function Call_Displaced_Modal({
             }}
             valueFormat='DD/MM/YYYY - hh:mm A'
             value={form.values.dateTime}
-            onChange={(value) =>
-              form.setFieldValue('dateTime', new Date(value))
-            }
+            onChange={(value) => form.setFieldValue('dateTime', new Date(value))}
             error={form.errors.dateTime}
             classNames={{
               input: 'placeholder:!text-sm !text-primary !font-normal',

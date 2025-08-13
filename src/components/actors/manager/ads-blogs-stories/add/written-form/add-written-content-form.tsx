@@ -32,7 +32,7 @@ import {
   addAdBlogStoryProps,
 } from '@/actions/actors/manager/blog-stories-ads/addAdBlogStory';
 
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import useAuth from '@/hooks/useAuth';
 import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import { handleUploadMedia } from '@/utils/uploadthing/handleUploadMedia';
@@ -63,16 +63,12 @@ export default function Add_Written_Content_Form() {
   const router = useRouter();
   const { user } = useAuth();
 
-  const { data: existingData, isLoading: isFetching } = useQuery<
-    AdBlogStoryResponse,
-    Error
-  >({
+  const { data: existingData, isLoading: isFetching } = useQuery<AdBlogStoryResponse, Error>({
     queryKey: ['edit-data', query],
     queryFn: async () => {
       return await getAdBlogStory({ id: query.id, type: query['written-tab'] });
     },
-    enabled:
-      query.action === ACTION_ADD_EDIT_DISPLAY.EDIT && !!Number(query.id),
+    enabled: query.action === ACTION_ADD_EDIT_DISPLAY.EDIT && !!Number(query.id),
   });
 
   const [selectedFiles, setSelectedFiles] = useState<FileWithPath[]>([]);
@@ -109,11 +105,7 @@ export default function Add_Written_Content_Form() {
     }
   }, [existingData]);
 
-  const updateMutation = useMutation<
-    modalActionResponse,
-    Error,
-    updateAdBlogStoryProps
-  >({
+  const updateMutation = useMutation<modalActionResponse, Error, updateAdBlogStoryProps>({
     mutationFn: updateAdBlogStory,
     onSuccess: (data) => {
       if (data.status === 200) {
@@ -127,8 +119,7 @@ export default function Add_Written_Content_Form() {
         setSelectedFiles([]);
         router.push(
           `${
-            MANAGER_ROUTES_fUNC({ manager_Id: user?.id as number })
-              .ADS_BLOGS_STORIES
+            MANAGER_ROUTES_fUNC({ manager_Id: user?.id as number }).ADS_BLOGS_STORIES
           }?written-tab=${query['written-tab']}`
         );
       } else {
@@ -150,11 +141,7 @@ export default function Add_Written_Content_Form() {
     },
   });
 
-  const addMutation = useMutation<
-    modalActionResponse,
-    Error,
-    addAdBlogStoryProps
-  >({
+  const addMutation = useMutation<modalActionResponse, Error, addAdBlogStoryProps>({
     mutationFn: addAdBlogStory,
     onSuccess: (data) => {
       if (data.status === 200) {
@@ -168,8 +155,7 @@ export default function Add_Written_Content_Form() {
         setSelectedFiles([]);
         router.push(
           `${
-            MANAGER_ROUTES_fUNC({ manager_Id: user?.id as number })
-              .ADS_BLOGS_STORIES
+            MANAGER_ROUTES_fUNC({ manager_Id: user?.id as number }).ADS_BLOGS_STORIES
           }?written-tab=${query['written-tab']}`
         );
       } else {
@@ -191,9 +177,7 @@ export default function Add_Written_Content_Form() {
     },
   });
 
-  const handleImageUpload = async (
-    files: FileWithPath[]
-  ): Promise<string[] | null> => {
+  const handleImageUpload = async (files: FileWithPath[]): Promise<string[] | null> => {
     try {
       const uploads = files.map((file) => handleUploadMedia(file, startUpload));
       const urls = await Promise.all(uploads);
@@ -212,10 +196,7 @@ export default function Add_Written_Content_Form() {
   };
 
   const handleSubmit = form.onSubmit(async (values) => {
-    if (
-      query.action === ACTION_ADD_EDIT_DISPLAY.ADD &&
-      selectedFiles.length === 0
-    ) {
+    if (query.action === ACTION_ADD_EDIT_DISPLAY.ADD && selectedFiles.length === 0) {
       notifications.show({
         title: 'خطأ',
         message: 'يجب عليك رفع صورة واحدة على الأقل في وضع الإضافة.',
@@ -265,27 +246,18 @@ export default function Add_Written_Content_Form() {
   });
 
   const isLoading =
-    addMutation.isPending ||
-    updateMutation.isPending ||
-    loadingImages ||
-    isFetching;
+    addMutation.isPending || updateMutation.isPending || loadingImages || isFetching;
 
   return (
     <form onSubmit={handleSubmit} className='relative'>
-      <LoadingOverlay
-        visible={isLoading}
-        zIndex={49}
-        overlayProps={{ radius: 'sm', blur: 0.3 }}
-      />
+      <LoadingOverlay visible={isLoading} zIndex={49} overlayProps={{ radius: 'sm', blur: 0.3 }} />
 
       <Stack gap={24} p={20}>
         <Group justify='space-between' align='center'>
           <Group gap={8}>
             <NotebookPen size={24} className='text-primary' />
             <Text fz={24} fw={600} className='!text-primary'>
-              {query.action === ACTION_ADD_EDIT_DISPLAY.EDIT
-                ? 'تعديل'
-                : 'إضافة'}
+              {query.action === ACTION_ADD_EDIT_DISPLAY.EDIT ? 'تعديل' : 'إضافة'}
             </Text>
           </Group>
         </Group>
@@ -355,9 +327,7 @@ export default function Add_Written_Content_Form() {
             form.setFieldValue('files', files);
           }}
           onRemoveUrl={(index) => {
-            const newUrls = (form.values.image_urls || []).filter(
-              (_, i) => i !== index
-            );
+            const newUrls = (form.values.image_urls || []).filter((_, i) => i !== index);
             form.setFieldValue('image_urls', newUrls);
           }}
           onRemoveFile={(index) => {
@@ -365,9 +335,7 @@ export default function Add_Written_Content_Form() {
             setSelectedFiles(newFiles);
             form.setFieldValue('files', newFiles);
           }}
-          action={
-            query.action === ACTION_ADD_EDIT_DISPLAY.EDIT ? 'edit' : 'add'
-          }
+          action={query.action === ACTION_ADD_EDIT_DISPLAY.EDIT ? 'edit' : 'add'}
         />
 
         <>

@@ -1,7 +1,7 @@
 "use server";
 
 import { TASKS_TABS } from "@/@types/actors/common-types/index.type";
-import { modalActionResponse } from "@/@types/common/modal/modalActionResponse.type";
+import { modalActionResponse } from "@/@types/common/modal/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 

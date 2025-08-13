@@ -1,4 +1,4 @@
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   deleteSecurityTask,
   deleteSecurityTaskProps,
@@ -23,11 +23,7 @@ export default function Security_Delete_Task_Modal({
 }: SecurityDeleteTaskProps) {
   const queryClient = useQueryClient();
 
-  const deleteMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    deleteSecurityTaskProps
-  >({
+  const deleteMutation = useMutation<modalActionResponse, unknown, deleteSecurityTaskProps>({
     mutationFn: deleteSecurityTask,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {

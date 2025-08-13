@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Define the form schema with static error messages
 export const createNewPasswordSchema = z
     .object({
         password: z

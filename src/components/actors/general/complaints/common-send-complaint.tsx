@@ -1,17 +1,11 @@
 'use client';
 
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   sendCommonComplaint,
   sendCommonComplaintProps,
 } from '@/actions/actors/general/complaints/sendCommonComplaint';
-import {
-  USER_RANK,
-  USER_RANK_LABELS,
-  USER_TYPE,
-  UserRank,
-  UserType,
-} from '@/constants/userTypes';
+import { USER_RANK, USER_RANK_LABELS, USER_TYPE, UserRank, UserType } from '@/constants/userTypes';
 import useAuth from '@/hooks/useAuth';
 import { cn } from '@/utils/cn';
 import {
@@ -36,11 +30,7 @@ import { useMutation } from '@tanstack/react-query';
 import { MessageSquareDiff, Send, X } from 'lucide-react';
 
 const ALLOWED_RECEPTIONS: Record<UserRank, UserRank[]> = {
-  DISPLACED: [
-    USER_TYPE.MANAGER,
-    USER_TYPE.DELEGATE,
-    USER_RANK.SECURITY_OFFICER,
-  ],
+  DISPLACED: [USER_TYPE.MANAGER, USER_TYPE.DELEGATE, USER_RANK.SECURITY_OFFICER],
   DELEGATE: [USER_TYPE.MANAGER, USER_RANK.SECURITY_OFFICER],
   SECURITY: [USER_TYPE.MANAGER, USER_RANK.SECURITY_OFFICER],
   SECURITY_OFFICER: [USER_TYPE.MANAGER],
@@ -51,8 +41,7 @@ export default function Common_Send_Complaint() {
   const { user } = useAuth();
   const [opened, { open, close }] = useDisclosure(false);
 
-  const allowedReceptions =
-    (user?.role && ALLOWED_RECEPTIONS[user.role as UserType]) || [];
+  const allowedReceptions = (user?.role && ALLOWED_RECEPTIONS[user.role as UserType]) || [];
 
   const dynamicReceptionOptions = allowedReceptions.map((value) => ({
     value: value as UserRank,
@@ -122,8 +111,7 @@ export default function Common_Send_Complaint() {
     });
   };
 
-  const disabled =
-    sendCommonComplaintMutation.isPending || allowedReceptions.length === 0;
+  const disabled = sendCommonComplaintMutation.isPending || allowedReceptions.length === 0;
 
   return (
     <>

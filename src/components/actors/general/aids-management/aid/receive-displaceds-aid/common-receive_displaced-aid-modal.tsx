@@ -1,21 +1,13 @@
 'use client';
 
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   receiveDisplacedAid,
   receiveDisplacedAidProps,
 } from '@/actions/actors/general/aids-management/receiveDisplacedAid';
 import useAuth from '@/hooks/useAuth';
 import { otpSchema, otpType } from '@/validation/auth/otpSchema';
-import {
-  Button,
-  Group,
-  LoadingOverlay,
-  Modal,
-  PinInput,
-  Stack,
-  Text,
-} from '@mantine/core';
+import { Button, Group, LoadingOverlay, Modal, PinInput, Stack, Text } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
@@ -41,11 +33,7 @@ export default function Common_Receive_Displaced_Aid_Modal({
     validate: zodResolver(otpSchema),
   });
 
-  const receiveMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    receiveDisplacedAidProps
-  >({
+  const receiveMutation = useMutation<modalActionResponse, unknown, receiveDisplacedAidProps>({
     mutationFn: receiveDisplacedAid,
     onSuccess: (data) => {
       if (data.status === 200) {
@@ -109,10 +97,7 @@ export default function Common_Receive_Displaced_Aid_Modal({
       classNames={{ title: '!w-full' }}
       centered
     >
-      <form
-        className='!relative flex flex-col items-center gap-0'
-        onSubmit={handleSubmit}
-      >
+      <form className='!relative flex flex-col items-center gap-0' onSubmit={handleSubmit}>
         <LoadingOverlay
           visible={receiveMutation.isPending}
           zIndex={1000}
@@ -130,8 +115,7 @@ export default function Common_Receive_Displaced_Aid_Modal({
             placeholder=''
             classNames={{
               root: 'gap-5',
-              input:
-                'border-1 border-[#DFDEDC] w-12 h-12 rounded-lg focus:border-primary',
+              input: 'border-1 border-[#DFDEDC] w-12 h-12 rounded-lg focus:border-primary',
             }}
             mx='auto'
             key={form.key('otp')}

@@ -1,6 +1,6 @@
 'use client';
 
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   deleteSecurityMembers,
   deleteSecurityMembersProps,
@@ -22,11 +22,7 @@ export default function Delete_Security_Members_Modal({
   opened,
   close,
 }: DeleteSecurityModalProps) {
-  const deleteMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    deleteSecurityMembersProps
-  >({
+  const deleteMutation = useMutation<modalActionResponse, unknown, deleteSecurityMembersProps>({
     mutationFn: deleteSecurityMembers,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {
@@ -83,11 +79,7 @@ export default function Delete_Security_Members_Modal({
             withArrow
             position='right'
           >
-            <Info
-              size={18}
-              style={{ cursor: 'help' }}
-              className='!text-red-500'
-            />
+            <Info size={18} style={{ cursor: 'help' }} className='!text-red-500' />
           </Tooltip>
           <Text fz={14} fw={600} className='!text-red-500'>
             هذا الإجراء لا يمكن التراجع عنه.

@@ -1,8 +1,7 @@
 "use server";
 import { AqsaGuestAPI } from "@/services";
 import { USER_RANK, UserType } from "@/constants/userTypes";
-import { loginResponse } from "@/@types/auth/loginResponse.type";
-
+import { loginResponse, User } from "@/@types/auth/loginResponse.type";
 
 export interface loginProps {
     userType: UserType;
@@ -12,8 +11,7 @@ export interface loginProps {
 
 export const login = async ({ email, password, userType }: loginProps): Promise<loginResponse> => {
 
-    //FIXME: remove this => just as  an example
-    const FakeData: loginResponse = {
+    const fakeData: loginResponse = {
         status: 200,
         message: 'تم تسجيل الدخول بنجاح',
         token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
@@ -26,18 +24,16 @@ export const login = async ({ email, password, userType }: loginProps): Promise<
             created_at: new Date(),
             role: userType,
             rank: USER_RANK[userType],
-            image: null,
+            profile_image: "",
+
         },
     };
 
-
     return await new Promise((resolve) => {
-        // Return fake data after 1 seconds => Simulate API delay
         setTimeout(() => {
-            resolve(FakeData);
-        }, 1000);
+            resolve(fakeData);
+        }, 500);
     });
-
 
     /////////////////////////////////////////////////////////////
     //FIXME: THIS IS THE REAL IMPLEMENTATION
@@ -60,16 +56,7 @@ export const login = async ({ email, password, userType }: loginProps): Promise<
             status: error.response?.status || 500,
             message: error.response?.data?.error || "حدث خطأ في تسجيل الدخول",
             token: "",
-            user: {
-                id: 0,
-                name: "",
-                email: "",
-                identity: "0",
-                phone_number: "",
-                created_at: new Date(),
-                role: "" as UserType,
-                image: null,
-            },
+            user: {} as User,
             error: error.response?.data?.error || "حدث خطأ في تسجيل الدخول",
         };
     }

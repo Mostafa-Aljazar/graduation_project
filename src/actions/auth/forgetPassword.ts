@@ -1,30 +1,27 @@
 "use server";
-import { generalAuthResponse } from "@/@types/auth/generalAuthResponse.type";
+import { commonActionResponse } from "@/@types/common/modal/commonActionResponse.type";
 import { AqsaGuestAPI } from "@/services";
-
 
 export interface forgetPasswordProps {
     email: string
 }
 
-export const forgetPassword = async ({ email }: forgetPasswordProps): Promise<generalAuthResponse> => {
-    //FIXME: remove this => just as an example
-    const FakeData: generalAuthResponse = {
-        status: 200, // 500 | 200
+export const forgetPassword = async ({ email }: forgetPasswordProps): Promise<commonActionResponse> => {
+    const fakeData: commonActionResponse = {
+        status: 200,
         message: "تم إرسال رمز التحقق إلى بريدك الإلكتروني"
     }
+
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(FakeData);
-        }, 1000);
+            resolve(fakeData);
+        }, 500);
     });
 
     /////////////////////////////////////////////////////////////
     //FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-
-
         const response = await AqsaGuestAPI.post("/auth/forget-password", {
             email
         });
@@ -36,15 +33,11 @@ export const forgetPassword = async ({ email }: forgetPasswordProps): Promise<ge
             };
         }
 
-        return {
-            status: 500,
-            message: "حدث خطأ في إرسال رمز التحقق",
-            error: "حدث خطأ في إرسال رمز التحقق"
-        };
+        throw new Error("حدث خطأ في إرسال رمز التحقق");
 
     } catch (error: any) {
         return {
-            status: error.response?.status?.toString() || 500,
+            status: error.response?.status || 500,
             message: error.response?.data?.error || "حدث خطأ في إرسال رمز التحقق",
             error: error.response?.data?.error || "حدث خطأ في إرسال رمز التحقق"
         };

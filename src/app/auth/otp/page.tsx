@@ -1,13 +1,6 @@
 'use client';
 import { useState, useEffect, Suspense } from 'react';
-import {
-  Button,
-  PinInput,
-  Stack,
-  Text,
-  Group,
-  LoadingOverlay,
-} from '@mantine/core';
+import { Button, PinInput, Stack, Text, Group, LoadingOverlay } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { Timer } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -15,13 +8,10 @@ import { useQueryStates, parseAsString, parseAsInteger } from 'nuqs';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { verifyOtp, verifyOtpProps } from '@/actions/auth/verifyOtp';
-import {
-  forgetPassword,
-  forgetPasswordProps,
-} from '@/actions/auth/forgetPassword';
+import { forgetPassword, forgetPasswordProps } from '@/actions/auth/forgetPassword';
 import { AUTH_ROUTES } from '@/constants/routes';
 import { otpSchema, otpType } from '@/validation/auth/otpSchema';
-import { generalAuthResponse } from '@/@types/auth/generalAuthResponse.type';
+import { commonActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 
 export default function OTP() {
   return (
@@ -34,12 +24,11 @@ export default function OTP() {
 function OTPContent() {
   const router = useRouter();
 
-  // Query states => will be used to get email, callback and date from url
   const [query, setQuery] = useQueryStates(
     {
       email: parseAsString.withDefault(''),
-      callback: parseAsString.withDefault('/'), // will be used to redirect to the page after verifying the OTP
-      date: parseAsInteger.withDefault(Date.now()), // will be used to calculate the time remaining for the OTP to expire
+      callback: parseAsString.withDefault('/'),
+      date: parseAsInteger.withDefault(Date.now()),
     },
     { shallow: true }
   );
@@ -50,12 +39,10 @@ function OTPContent() {
     }
   }, []);
 
-  // Timer state
   const [seconds, setSeconds] = useState(() =>
     Math.max(60 - Math.floor((Date.now() - query.date) / 1000), 0)
   );
 
-  // Timer effect with better handling
   useEffect(() => {
     if (seconds > 0) {
       const interval = setInterval(() => {
@@ -71,7 +58,6 @@ function OTPContent() {
     }
   }, [seconds]);
 
-  // Time formatting with better display
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   const timeDisplay = `${minutes.toString().padStart(2, '0')}:${remainingSeconds
@@ -80,22 +66,16 @@ function OTPContent() {
 
   const [error, setError] = useState('');
 
-  // Form state with better validation
   const form = useForm<otpType>({
     mode: 'uncontrolled',
     initialValues: { otp: '' },
     validate: zodResolver(otpSchema),
   });
 
-  // Verify OTP mutation with better error handling
-  const verifyOtpMutation = useMutation<
-    generalAuthResponse,
-    Error,
-    verifyOtpProps
-  >({
+  const verifyOtpMutation = useMutation<commonActionResponse, Error, verifyOtpProps>({
     mutationFn: verifyOtp,
     onSuccess: (data) => {
-      if (Number(data.status) == 200) {
+      if (data.status == 200) {
         notifications.show({
           title: data.message || 'تم التحقق من الرمز بنجاح',
           message: 'قم بتعيين كلمة مرور جديدة',
@@ -128,7 +108,6 @@ function OTPContent() {
     },
   });
 
-  // Handle submit with better validation
   const handleSubmit = form.onSubmit((values: otpType) => {
     try {
       if (!seconds) {
@@ -147,12 +126,7 @@ function OTPContent() {
     }
   });
 
-  // Resend OTP mutation with better handling
-  const resendOtpMutation = useMutation<
-    generalAuthResponse,
-    Error,
-    forgetPasswordProps
-  >({
+  const resendOtpMutation = useMutation<commonActionResponse, Error, forgetPasswordProps>({
     mutationFn: forgetPassword,
     onSuccess: (data) => {
       if (data.status == 200) {
@@ -171,8 +145,7 @@ function OTPContent() {
         form.reset();
         setError('');
       } else {
-        const errorMessage =
-          data.error || 'فشل في إرسال رمز التحقق إلى بريدك الإلكتروني';
+        const errorMessage = data.error || 'فشل في إرسال رمز التحقق إلى بريدك الإلكتروني';
         setError(errorMessage);
         throw new Error(errorMessage);
       }
@@ -190,7 +163,6 @@ function OTPContent() {
     },
   });
 
-  // Handle resend with better UX
   const handleResend = async () => {
     setError('');
     resendOtpMutation.mutate({ email: query.email });
@@ -219,35 +191,21 @@ function OTPContent() {
       </Text>
 
       <Stack justify='center' align='center' gap={20}>
-        <Text
-          fw={500}
-          fz={16}
-          c={'#817C74'}
-          ta={'center'}
-          w={{ base: 343, md: 400 }}
-        >
+        <Text fw={500} fz={16} c={'#817C74'} ta={'center'} w={{ base: 343, md: 400 }}>
           لقد أرسلنا رمز التحقق إلى <br />
           <span className='font-bold'>{query.email}</span>
         </Text>
 
-        <form
-          className='flex flex-col items-center gap-0'
-          onSubmit={handleSubmit}
-        >
+        <form className='flex flex-col items-center gap-0' onSubmit={handleSubmit}>
           <PinInput
-            disabled={
-              verifyOtpMutation.isPending ||
-              resendOtpMutation.isPending ||
-              seconds === 0
-            }
+            disabled={verifyOtpMutation.isPending || resendOtpMutation.isPending || seconds === 0}
             type='number'
             size='md'
             length={4}
             placeholder=''
             classNames={{
               root: 'gap-5',
-              input:
-                'border-1 border-[#DFDEDC] w-12 h-12 rounded-lg focus:border-primary',
+              input: 'border-1 border-[#DFDEDC] w-12 h-12 rounded-lg focus:border-primary',
             }}
             key={form.key('otp')}
             {...form.getInputProps('otp')}
@@ -301,11 +259,7 @@ function OTPContent() {
                 : '!bg-primary hover:!bg-primary/90'
             }`}
             w={228}
-            disabled={
-              !seconds ||
-              form.getValues().otp.length !== 4 ||
-              verifyOtpMutation.isPending
-            }
+            disabled={!seconds || form.getValues().otp.length !== 4 || verifyOtpMutation.isPending}
           >
             تحقق
           </Button>

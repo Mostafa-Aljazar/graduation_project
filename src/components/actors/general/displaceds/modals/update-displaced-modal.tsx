@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   sendUpdateRequest,
   sendUpdateRequestProps,
@@ -14,16 +14,8 @@ interface UpdateModalProps {
   close: () => void;
 }
 
-export default function Update_Displaced_Modal({
-  displaced_Ids,
-  opened,
-  close,
-}: UpdateModalProps) {
-  const updateMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    sendUpdateRequestProps
-  >({
+export default function Update_Displaced_Modal({ displaced_Ids, opened, close }: UpdateModalProps) {
+  const updateMutation = useMutation<modalActionResponse, unknown, sendUpdateRequestProps>({
     mutationFn: sendUpdateRequest,
     onSuccess: (data) => {
       if (data.status === 200) {

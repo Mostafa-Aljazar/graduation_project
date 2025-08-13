@@ -7,7 +7,7 @@ import React from 'react';
 import Notification_Icon from './notification-icon';
 import Notification_Modal from './notification-modal';
 import { useMutation } from '@tanstack/react-query';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   changeNotificationStatus,
   changeNotificationStatusProps,
@@ -21,11 +21,8 @@ interface NotificationCardProps {
   notification: NotificationItem;
 }
 
-export default function Notification_Card({
-  notification,
-}: NotificationCardProps) {
-  const [modalOpened, { open: openModal, close: closeModal }] =
-    useDisclosure(false);
+export default function Notification_Card({ notification }: NotificationCardProps) {
+  const [modalOpened, { open: openModal, close: closeModal }] = useDisclosure(false);
 
   const { user } = useAuth();
 
@@ -80,9 +77,7 @@ export default function Notification_Card({
         radius='md'
         withBorder
         shadow='xs'
-        bg={
-          notification.status === NotificationStatus.UNREAD ? 'blue.0' : 'white'
-        }
+        bg={notification.status === NotificationStatus.UNREAD ? 'blue.0' : 'white'}
         onClick={() => {
           handleOpenModal({ n: notification });
         }}
@@ -100,18 +95,13 @@ export default function Notification_Card({
               </Text>
             </Flex>
             <Text size='sm' c='dimmed'>
-              من: {notification.from.name} (
-              {` ${USER_RANK_LABELS[notification.from.role]} `})
+              من: {notification.from.name} ({` ${USER_RANK_LABELS[notification.from.role]} `})
             </Text>
           </Stack>
         </Group>
       </Paper>
 
-      <Notification_Modal
-        opened={modalOpened}
-        onClose={closeModal}
-        notification={notification}
-      />
+      <Notification_Modal opened={modalOpened} onClose={closeModal} notification={notification} />
     </>
   );
 }

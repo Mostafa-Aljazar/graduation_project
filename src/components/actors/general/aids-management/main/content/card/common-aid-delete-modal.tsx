@@ -1,9 +1,6 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
-import {
-  deleteAid,
-  deleteAidProps,
-} from '@/actions/actors/general/aids-management/deleteAid';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
+import { deleteAid, deleteAidProps } from '@/actions/actors/general/aids-management/deleteAid';
 import useAuth from '@/hooks/useAuth';
 import { Button, Group, Modal, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
@@ -24,11 +21,7 @@ export default function Common_Aid_Delete_Modal({
 }: CommonAidDeleteModalProps) {
   const { user, isManager } = useAuth();
 
-  const deleteMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    deleteAidProps
-  >({
+  const deleteMutation = useMutation<modalActionResponse, unknown, deleteAidProps>({
     mutationFn: deleteAid,
     onSuccess: (data) => {
       if (data.status === 200) {

@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   deleteDelegates,
   deleteDelegatesProps,
@@ -14,16 +14,8 @@ interface DeleteModalProps {
   close: () => void;
 }
 
-export default function Delete_Delegate_Modal({
-  delegate_Ids,
-  opened,
-  close,
-}: DeleteModalProps) {
-  const deleteMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    deleteDelegatesProps
-  >({
+export default function Delete_Delegate_Modal({ delegate_Ids, opened, close }: DeleteModalProps) {
+  const deleteMutation = useMutation<modalActionResponse, unknown, deleteDelegatesProps>({
     mutationFn: deleteDelegates,
     onSuccess: (data) => {
       if (data.status === 200) {
@@ -83,8 +75,7 @@ export default function Delete_Delegate_Modal({
           </Text>
         )}
         <Text fz={16} fw={500} className='!text-red-500'>
-          ملاحظة / سيتم نقل النازحين الخاضة به/بهم إلى المندوب الإفتراضي (بدون
-          مندوب).
+          ملاحظة / سيتم نقل النازحين الخاضة به/بهم إلى المندوب الإفتراضي (بدون مندوب).
         </Text>
         <Group justify='flex-end'>
           <Button

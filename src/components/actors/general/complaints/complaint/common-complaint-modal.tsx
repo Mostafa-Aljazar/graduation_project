@@ -18,18 +18,12 @@ import { Calendar, Clock, MessageSquareReply, UserCircle } from 'lucide-react';
 import { parseAsStringEnum, useQueryStates } from 'nuqs';
 import { cn } from '@/utils/cn';
 import { Complaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   replyCommonComplaint,
   replyCommonComplaintProps,
 } from '@/actions/actors/general/complaints/replyCommonComplaint';
-import {
-  USER_RANK,
-  USER_RANK_LABELS,
-  USER_TYPE,
-  UserRank,
-  UserType,
-} from '@/constants/userTypes';
+import { USER_RANK, USER_RANK_LABELS, USER_TYPE, UserRank, UserType } from '@/constants/userTypes';
 import { z } from 'zod';
 import useAuth from '@/hooks/useAuth';
 import { COMPLAINTS_TABS } from '@/@types/actors/common-types/index.type';
@@ -58,9 +52,9 @@ export default function Common_Complaint_Modal({
   const { user } = useAuth();
 
   const [query] = useQueryStates({
-    'complaints-tab': parseAsStringEnum(
-      Object.values(COMPLAINTS_TABS)
-    ).withDefault(COMPLAINTS_TABS.SENT_COMPLAINTS),
+    'complaints-tab': parseAsStringEnum(Object.values(COMPLAINTS_TABS)).withDefault(
+      COMPLAINTS_TABS.SENT_COMPLAINTS
+    ),
   });
 
   const form = useForm<complaintType>({
@@ -68,11 +62,7 @@ export default function Common_Complaint_Modal({
     validate: zodResolver(complaintSchema),
   });
 
-  const replyMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    replyCommonComplaintProps
-  >({
+  const replyMutation = useMutation<modalActionResponse, unknown, replyCommonComplaintProps>({
     mutationFn: replyCommonComplaint,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {
@@ -105,21 +95,16 @@ export default function Common_Complaint_Modal({
       reply: values.reply,
       complaint_Id: complaint.id,
       actor_Id,
-      role: role as Exclude<
-        UserRank,
-        typeof USER_RANK.SECURITY | typeof USER_RANK.DISPLACED
-      >,
+      role: role as Exclude<UserRank, typeof USER_RANK.SECURITY | typeof USER_RANK.DISPLACED>,
     });
   };
 
-  const isReceived =
-    query['complaints-tab'] === COMPLAINTS_TABS.RECEIVED_COMPLAINTS;
+  const isReceived = query['complaints-tab'] === COMPLAINTS_TABS.RECEIVED_COMPLAINTS;
   const isSent = query['complaints-tab'] === COMPLAINTS_TABS.SENT_COMPLAINTS;
 
   const isReply =
     user?.role === USER_TYPE.MANAGER ||
-    ((user?.role === USER_TYPE.DELEGATE ||
-      user?.rank === USER_RANK.SECURITY_OFFICER) &&
+    ((user?.role === USER_TYPE.DELEGATE || user?.rank === USER_RANK.SECURITY_OFFICER) &&
       query['complaints-tab'] === COMPLAINTS_TABS.RECEIVED_COMPLAINTS);
 
   return (
@@ -152,8 +137,7 @@ export default function Common_Complaint_Modal({
                 if (role === USER_TYPE.DISPLACED) {
                   return (
                     <>
-                      إلى: {complaint.receiver.name} (
-                      {USER_RANK_LABELS[complaint.receiver.role]})
+                      إلى: {complaint.receiver.name} ({USER_RANK_LABELS[complaint.receiver.role]})
                     </>
                   );
                 }
@@ -161,35 +145,29 @@ export default function Common_Complaint_Modal({
                 if (role === USER_TYPE.MANAGER) {
                   return (
                     <>
-                      من: {complaint.sender.name} (
-                      {USER_RANK_LABELS[complaint.sender.role]})
+                      من: {complaint.sender.name} ({USER_RANK_LABELS[complaint.sender.role]})
                     </>
                   );
                 }
 
                 if (
-                  (role === USER_TYPE.DELEGATE ||
-                    role === USER_TYPE.SECURITY) &&
-                  query['complaints-tab'] ===
-                    COMPLAINTS_TABS.RECEIVED_COMPLAINTS
+                  (role === USER_TYPE.DELEGATE || role === USER_TYPE.SECURITY) &&
+                  query['complaints-tab'] === COMPLAINTS_TABS.RECEIVED_COMPLAINTS
                 ) {
                   return (
                     <>
-                      من: {complaint.sender.name} (
-                      {USER_RANK_LABELS[complaint.sender.role]})
+                      من: {complaint.sender.name} ({USER_RANK_LABELS[complaint.sender.role]})
                     </>
                   );
                 }
 
                 if (
-                  (role === USER_TYPE.DELEGATE ||
-                    role === USER_TYPE.SECURITY) &&
+                  (role === USER_TYPE.DELEGATE || role === USER_TYPE.SECURITY) &&
                   query['complaints-tab'] === COMPLAINTS_TABS.SENT_COMPLAINTS
                 ) {
                   return (
                     <>
-                      إلى: {complaint.receiver.name} (
-                      {USER_RANK_LABELS[complaint.receiver.role]})
+                      إلى: {complaint.receiver.name} ({USER_RANK_LABELS[complaint.receiver.role]})
                     </>
                   );
                 }
@@ -198,8 +176,7 @@ export default function Common_Complaint_Modal({
                 if (isReceived) {
                   return (
                     <>
-                      من: {complaint.sender.name} (
-                      {USER_RANK_LABELS[complaint.sender.role]})
+                      من: {complaint.sender.name} ({USER_RANK_LABELS[complaint.sender.role]})
                     </>
                   );
                 }
@@ -207,8 +184,7 @@ export default function Common_Complaint_Modal({
                 if (isSent) {
                   return (
                     <>
-                      إلى: {complaint.receiver.name} (
-                      {USER_RANK_LABELS[complaint.receiver.role]})
+                      إلى: {complaint.receiver.name} ({USER_RANK_LABELS[complaint.receiver.role]})
                     </>
                   );
                 }

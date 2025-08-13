@@ -1,19 +1,11 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 
 import {
   sendSecurityMeetingRequest,
   sendSecurityMeetingRequestProps,
 } from '@/actions/actors/general/security-data/sendSecurityMeetingRequest';
-import {
-  Button,
-  Group,
-  Modal,
-  Stack,
-  Text,
-  Textarea,
-  Tooltip,
-} from '@mantine/core';
+import { Button, Group, Modal, Stack, Text, Textarea, Tooltip } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useForm, zodResolver } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -123,9 +115,7 @@ export default function Meeting_Security_Members_Modal({
             // defaultValue={dayjs().format('MMM DD YYYY ')}
             valueFormat='DD/MM/YYYY - hh:mm A'
             value={form.values.dateTime}
-            onChange={(value) =>
-              form.setFieldValue('dateTime', new Date(value))
-            }
+            onChange={(value) => form.setFieldValue('dateTime', new Date(value))}
             error={form.errors.dateTime}
           />
           <Textarea
@@ -143,16 +133,8 @@ export default function Meeting_Security_Members_Modal({
           />
 
           <Group gap={6} wrap='nowrap'>
-            <Tooltip
-              label='يرجى تحديد موعد دقيق وكتابة تفاصيل واضحة'
-              withArrow
-              position='right'
-            >
-              <Info
-                size={18}
-                style={{ cursor: 'help' }}
-                className='!text-primary'
-              />
+            <Tooltip label='يرجى تحديد موعد دقيق وكتابة تفاصيل واضحة' withArrow position='right'>
+              <Info size={18} style={{ cursor: 'help' }} className='!text-primary' />
             </Tooltip>
             <Text fz={14} color='dimmed' fw={500}>
               سيتم إرسال إشعار للأعضاء المحددين.

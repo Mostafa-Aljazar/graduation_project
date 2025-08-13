@@ -1,29 +1,15 @@
 'use client';
 import { useState } from 'react';
-import {
-  Button,
-  Divider,
-  Group,
-  LoadingOverlay,
-  Stack,
-  Text,
-  TextInput,
-} from '@mantine/core';
+import { Button, Divider, Group, LoadingOverlay, Stack, Text, TextInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AUTH_ROUTES } from '@/constants/routes';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
-import {
-  forgetPassword,
-  forgetPasswordProps,
-} from '@/actions/auth/forgetPassword';
-import {
-  forgetPasswordSchema,
-  forgetPasswordType,
-} from '@/validation/auth/forgetPasswordSchema';
-import { generalAuthResponse } from '@/@types/auth/generalAuthResponse.type';
+import { forgetPassword, forgetPasswordProps } from '@/actions/auth/forgetPassword';
+import { forgetPasswordSchema, forgetPasswordType } from '@/validation/auth/forgetPasswordSchema';
+import { commonActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 
 export default function Forget_Password() {
   const form = useForm<forgetPasswordType>({
@@ -35,11 +21,7 @@ export default function Forget_Password() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const forgetPasswordMutation = useMutation<
-    generalAuthResponse,
-    Error,
-    forgetPasswordProps
-  >({
+  const forgetPasswordMutation = useMutation<commonActionResponse, Error, forgetPasswordProps>({
     mutationFn: forgetPassword,
     onSuccess: (data) => {
       if (data.status == 200) {
@@ -55,15 +37,13 @@ export default function Forget_Password() {
         router.push(
           `${AUTH_ROUTES.OTP}?email=${encodeURIComponent(
             form.getValues().email
-          )}&date=${encodeURIComponent(
-            Date.now()
-          )}&callback=${encodeURIComponent(AUTH_ROUTES.CREATE_NEW_PASSWORD)}`
+          )}&date=${encodeURIComponent(Date.now())}&callback=${encodeURIComponent(
+            AUTH_ROUTES.CREATE_NEW_PASSWORD
+          )}`
         );
         form.reset();
       } else {
-        throw new Error(
-          data.error || 'فشل في إرسال رمز التحقق إلى بريدك الإلكتروني'
-        );
+        throw new Error(data.error || 'فشل في إرسال رمز التحقق إلى بريدك الإلكتروني');
       }
     },
     onError: (error: any) => {
@@ -106,10 +86,7 @@ export default function Forget_Password() {
       </Text>
 
       <Stack justify='center' align='center' gap={20} pos={'relative'}>
-        <form
-          className='flex flex-col items-center gap-0'
-          onSubmit={handleSubmit}
-        >
+        <form className='flex flex-col items-center gap-0' onSubmit={handleSubmit}>
           <TextInput
             type='email'
             label={
@@ -123,8 +100,7 @@ export default function Forget_Password() {
             key={form.key('email')}
             {...form.getInputProps('email')}
             classNames={{
-              input:
-                '!text-dark placeholder:!text-sm !text-primary !font-normal',
+              input: '!text-dark placeholder:!text-sm !text-primary !font-normal',
               error: '!w-full !text-end !text-[#FD6265] !font-normal !text-sm',
             }}
           />
@@ -132,7 +108,7 @@ export default function Forget_Password() {
           <Button
             type='submit'
             size='sm'
-            fz={18}
+            fz={16}
             fw={500}
             c={'white'}
             w={228}
@@ -159,11 +135,8 @@ export default function Forget_Password() {
         </Group>
 
         <Text fw={500} fz={16} className='!text-primary'>
-          لديك حساب؟{' '}
-          <Link
-            href={AUTH_ROUTES.LOGIN}
-            className='underline hover:!cursor-pointer'
-          >
+          لديك حساب؟
+          <Link href={AUTH_ROUTES.LOGIN} className='underline hover:!cursor-pointer'>
             تسجيل الدخول
           </Link>
         </Text>

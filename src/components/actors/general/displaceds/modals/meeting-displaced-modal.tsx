@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   sendMeetingRequest,
   sendMeetingRequestProps,
@@ -39,11 +39,7 @@ export default function Meeting_Displaced_Modal({
     validate: zodResolver(meetingSchema),
   });
 
-  const meetingMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    sendMeetingRequestProps
-  >({
+  const meetingMutation = useMutation<modalActionResponse, unknown, sendMeetingRequestProps>({
     mutationFn: sendMeetingRequest,
     onSuccess: (data) => {
       if (data.status === 200) {
@@ -113,9 +109,7 @@ export default function Meeting_Displaced_Modal({
             // defaultValue={dayjs().format('MMM DD YYYY ')}
             valueFormat='DD/MM/YYYY - hh:mm A'
             value={form.values.dateTime}
-            onChange={(value) =>
-              form.setFieldValue('dateTime', new Date(value))
-            }
+            onChange={(value) => form.setFieldValue('dateTime', new Date(value))}
             error={form.errors.dateTime}
             classNames={{
               input: 'placeholder:!text-sm !text-primary !font-normal',

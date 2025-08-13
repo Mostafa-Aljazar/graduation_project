@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   sendMeetingDelegateRequest,
   sendMeetingDelegateRequestProps,
@@ -27,11 +27,7 @@ const meetingSchema = z.object({
 
 export type meetingType = z.infer<typeof meetingSchema>;
 
-export default function Meeting_Delegate_Modal({
-  delegate_Ids,
-  opened,
-  close,
-}: MeetingModalProps) {
+export default function Meeting_Delegate_Modal({ delegate_Ids, opened, close }: MeetingModalProps) {
   const form = useForm<meetingType>({
     initialValues: {
       dateTime: dayjs().add(1, 'hour').toDate(),
@@ -114,9 +110,7 @@ export default function Meeting_Delegate_Modal({
             // defaultValue={dayjs().format('MMM DD YYYY ')}
             valueFormat='DD/MM/YYYY - hh:mm A'
             value={form.values.dateTime}
-            onChange={(value) =>
-              form.setFieldValue('dateTime', new Date(value))
-            }
+            onChange={(value) => form.setFieldValue('dateTime', new Date(value))}
             error={form.errors.dateTime}
             classNames={{
               input: 'placeholder:!text-sm !text-primary !font-normal',

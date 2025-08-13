@@ -22,7 +22,7 @@ import {
   addAidDisplaceds,
   addAidDisplacedsProps,
 } from '@/actions/actors/general/aids-management/addAidDisplaceds';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import { notifications } from '@mantine/notifications';
 import { displacedsFilterValuesType } from '@/validation/actor/general/displaceds-filter-form';
 import { getDisplacedsIds } from '@/actions/actors/general/displaceds/getDisplacedsIds';
@@ -49,9 +49,8 @@ export default function Aid_Add_Displaceds_Table({
 }: DisplacedsTableProps) {
   const limitSelectedDisplaced =
     role == 'DELEGATE'
-      ? (aid_Data?.selected_delegates_portions?.find(
-          (item) => item.delegate_Id == actor_Id
-        )?.portion as number)
+      ? (aid_Data?.selected_delegates_portions?.find((item) => item.delegate_Id == actor_Id)
+          ?.portion as number)
       : -1;
 
   // const selectedDisplacedIds =
@@ -129,17 +128,13 @@ export default function Aid_Add_Displaceds_Table({
   const isRowSelected = (id: number) => selectedDisplacedIds.includes(id);
 
   const areAllPagesRowsSelected = () =>
-    selectedDisplacedIds.length ===
-    (displacedData?.pagination?.total_items || 0);
+    selectedDisplacedIds.length === (displacedData?.pagination?.total_items || 0);
 
   const handleRowSelection = (id: number, checked: boolean) => {
     if (checked) {
       if (role == 'DELEGATE') {
         if (limitSelectedDisplaced > selectedDisplacedIds.length) {
-          setSelectedDisplacedIds((prev) => [
-            ...prev.filter((rowId) => rowId !== id),
-            id,
-          ]);
+          setSelectedDisplacedIds((prev) => [...prev.filter((rowId) => rowId !== id), id]);
           if (areAllPagesRowsSelected()) setSelectAllAcrossPages(true);
         } else {
           notifications.show({
@@ -151,10 +146,7 @@ export default function Aid_Add_Displaceds_Table({
           });
         }
       } else {
-        setSelectedDisplacedIds((prev) => [
-          ...prev.filter((rowId) => rowId !== id),
-          id,
-        ]);
+        setSelectedDisplacedIds((prev) => [...prev.filter((rowId) => rowId !== id), id]);
         if (areAllPagesRowsSelected()) setSelectAllAcrossPages(true);
       }
     } else {
@@ -194,42 +186,21 @@ export default function Aid_Add_Displaceds_Table({
         <ActionIcon
           variant='light'
           aria-label='Select all rows across all pages'
-          onClick={() =>
-            handleSelectAllAcrossAllPages(!areAllPagesRowsSelected())
-          }
+          onClick={() => handleSelectAllAcrossAllPages(!areAllPagesRowsSelected())}
         >
-          {areAllPagesRowsSelected() ? (
-            <ListX size={18} />
-          ) : (
-            <ListChecks size={18} />
-          )}
+          {areAllPagesRowsSelected() ? <ListX size={18} /> : <ListChecks size={18} />}
         </ActionIcon>
       </Table.Th>
       <Table.Th px={5} ta='center' w='fit-content'>
         الرقم
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         اسم النازح
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         رقم الهوية
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         رقم الخيمة
       </Table.Th>
       <Table.Th px={5} ta='center' w='fit-content'>
@@ -238,12 +209,7 @@ export default function Aid_Add_Displaceds_Table({
       <Table.Th px={5} ta='center' w='fit-content'>
         رقم الجوال
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         اسم المندوب
       </Table.Th>
     </Table.Tr>
@@ -252,35 +218,22 @@ export default function Aid_Add_Displaceds_Table({
   const rows = (displacedData?.displaceds || []).map((element, index) => (
     <Table.Tr
       key={element.id}
-      bg={
-        isRowSelected(element.id)
-          ? 'var(--mantine-color-blue-light)'
-          : undefined
-      }
+      bg={isRowSelected(element.id) ? 'var(--mantine-color-blue-light)' : undefined}
     >
       <Table.Td px={5} ta='center' w='fit-content'>
         <Checkbox
           aria-label='Select row'
           checked={isRowSelected(element.id)}
-          onChange={(e) =>
-            handleRowSelection(element.id, e.currentTarget.checked)
-          }
+          onChange={(e) => handleRowSelection(element.id, e.currentTarget.checked)}
         />
       </Table.Td>
       <Table.Td px={5} ta='center' w='fit-content'>
-        {((query.displaced_page ??
-          (displacedData?.pagination?.page as number)) -
-          1) *
+        {((query.displaced_page ?? (displacedData?.pagination?.page as number)) - 1) *
           (displacedData?.pagination?.limit || 7) +
           index +
           1}
       </Table.Td>
-      <Table.Td
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Td px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         {element.name}
       </Table.Td>
       <Table.Td px={5} ta='center' w='fit-content'>
@@ -295,12 +248,7 @@ export default function Aid_Add_Displaceds_Table({
       <Table.Td px={5} ta='center' w='fit-content'>
         {element.mobile_number}
       </Table.Td>
-      <Table.Td
-        px={5}
-        w='fit-content'
-        ta='center'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Td px={5} w='fit-content' ta='center' style={{ whiteSpace: 'nowrap' }}>
         {element.delegate.name}
       </Table.Td>
     </Table.Tr>
@@ -361,8 +309,7 @@ export default function Aid_Add_Displaceds_Table({
             لم يتم تحديد أي عنصر
           </Text>
         ) : selectAllAcrossPages ||
-          selectedDisplacedIds?.length ===
-            displacedData?.pagination?.total_items ? (
+          selectedDisplacedIds?.length === displacedData?.pagination?.total_items ? (
           <Text size='md' fw={500} style={{ whiteSpace: 'nowrap' }}>
             تم تحديد جميع العناصر عبر جميع الصفحات
             {isLoadingAll && ' (جاري تحميل البيانات...)'}
@@ -390,29 +337,19 @@ export default function Aid_Add_Displaceds_Table({
             {error.message}
           </Text>
         )}
-        {!isLoading &&
-          (!displacedData?.displaceds ||
-            displacedData.displaceds.length === 0) && (
-            <Text fw={500} size='sm' ta='center' c='dimmed'>
-              لا توجد بيانات للنازحين
-            </Text>
-          )}
-        <Table
-          horizontalSpacing='xs'
-          striped
-          highlightOnHover
-          withTableBorder
-          withColumnBorders
-        >
+        {!isLoading && (!displacedData?.displaceds || displacedData.displaceds.length === 0) && (
+          <Text fw={500} size='sm' ta='center' c='dimmed'>
+            لا توجد بيانات للنازحين
+          </Text>
+        )}
+        <Table horizontalSpacing='xs' striped highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead>{headers}</Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
       </Table.ScrollContainer>
       <Pagination
         value={query.displaced_page}
-        onChange={(page) =>
-          setQuery((prev) => ({ ...prev, displaced_page: page }))
-        }
+        onChange={(page) => setQuery((prev) => ({ ...prev, displaced_page: page }))}
         total={displacedData?.pagination?.total_pages || 0}
         pt={30}
         size='sm'

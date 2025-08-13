@@ -1,6 +1,6 @@
 'use client';
 
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   sendSecurityUpdateRequest,
   sendSecurityUpdateRequestProps,
@@ -21,11 +21,7 @@ export default function Update_Security_Members_Modal({
   opened,
   close,
 }: UpdateSecurityModalProps) {
-  const mutation = useMutation<
-    modalActionResponse,
-    unknown,
-    sendSecurityUpdateRequestProps
-  >({
+  const mutation = useMutation<modalActionResponse, unknown, sendSecurityUpdateRequestProps>({
     mutationFn: sendSecurityUpdateRequest,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {

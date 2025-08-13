@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/modal/modalActionResponse.type';
+import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   sendCallDelegatesRequest,
   sendCallDelegatesRequestProps,
@@ -27,11 +27,7 @@ const callSchema = z.object({
 
 export type callType = z.infer<typeof callSchema>;
 
-export default function Call_Delegate_Modal({
-  delegate_Ids,
-  opened,
-  close,
-}: CallModalProps) {
+export default function Call_Delegate_Modal({ delegate_Ids, opened, close }: CallModalProps) {
   const form = useForm<callType>({
     initialValues: {
       dateTime: dayjs().add(1, 'hour').toDate(),
@@ -40,11 +36,7 @@ export default function Call_Delegate_Modal({
     validate: zodResolver(callSchema),
   });
 
-  const callMutation = useMutation<
-    modalActionResponse,
-    unknown,
-    sendCallDelegatesRequestProps
-  >({
+  const callMutation = useMutation<modalActionResponse, unknown, sendCallDelegatesRequestProps>({
     mutationFn: sendCallDelegatesRequest,
     onSuccess: (data) => {
       if (data.status === 200) {
@@ -111,9 +103,7 @@ export default function Call_Delegate_Modal({
             }}
             valueFormat='DD/MM/YYYY - hh:mm A'
             value={form.values.dateTime}
-            onChange={(value) =>
-              form.setFieldValue('dateTime', new Date(value))
-            }
+            onChange={(value) => form.setFieldValue('dateTime', new Date(value))}
             error={form.errors.dateTime}
             classNames={{
               input: 'placeholder:!text-sm !text-primary !font-normal',
