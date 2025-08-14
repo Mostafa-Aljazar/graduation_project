@@ -11,7 +11,7 @@ export interface addNewDelegateProps {
 
 
 export const addNewDelegate = async ({ payload }: addNewDelegateProps): Promise<DelegateProfileResponse> => {
-    const fakeData: DelegateProfileResponse = {
+    const fakeResponse: DelegateProfileResponse = {
         status: 201, // 201 Created
         message: "تم إضافة المندوب الجديد بنجاح",
         user: {
@@ -26,7 +26,7 @@ export const addNewDelegate = async ({ payload }: addNewDelegateProps): Promise<
 
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 
@@ -35,7 +35,7 @@ export const addNewDelegate = async ({ payload }: addNewDelegateProps): Promise<
     /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.post<DelegateProfileResponse>("/manager/delegates/add", payload); // Assuming a manager endpoint for adding delegates
+        const response = await AqsaAPI.post<DelegateProfileResponse>("/delegates/add", payload); // Assuming a manager endpoint for adding delegates
 
         if (response.data?.user) {
             return response.data

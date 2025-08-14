@@ -20,7 +20,6 @@ import {
 } from '@/validation/actor/manager/profile/manager-profile-Schema';
 import '@mantine/core/styles.css';
 import { Camera, UserPen } from 'lucide-react';
-import { DatePickerInput } from '@mantine/dates';
 import { Custom_Phone_Input } from '@/components/common/custom/Custom_Phone_Input';
 import { useUploadThing } from '@/utils/uploadthing/uploadthing';
 import { useEffect, useState } from 'react';
@@ -43,7 +42,6 @@ import {
   GENDER_LABELS,
   SOCIAL_STATUS,
 } from '@/@types/actors/common-types/index.type';
-import { useRouter } from 'next/navigation';
 import { parseAsStringEnum, useQueryState } from 'nuqs';
 
 interface ManagerProfileFormProps {
@@ -59,7 +57,6 @@ export default function Manager_Profile_Form({ manager_Id }: ManagerProfileFormP
 
   const { isManager, user } = useAuth();
   const isOwner = isManager && user?.id === manager_Id;
-  const router = useRouter();
 
   const [query, setQuery] = useQueryState(
     'action',
@@ -98,10 +95,10 @@ export default function Manager_Profile_Form({ manager_Id }: ManagerProfileFormP
     queryFn: () => getManagerProfile({ manager_Id: manager_Id as number }),
   });
 
-  useEffect(() => {
-    if (managerProfileData) {
-      if (managerProfileData.status === 200 && managerProfileData.user) {
-        const userData = managerProfileData.user;
+  const applyData = ({ managerData }: { managerData: ManagerProfileResponse | undefined }) => {
+    if (managerData) {
+      if (managerData.status === 200 && managerData.user) {
+        const userData = managerData.user;
 
         setProfileImage(userData.profile_image ?? MAN.src);
 
@@ -127,13 +124,17 @@ export default function Manager_Profile_Form({ manager_Id }: ManagerProfileFormP
       } else {
         notifications.show({
           title: 'خطأ',
-          message: managerProfileData.error || 'فشل في تحميل بيانات الملف الشخصي للمدير',
+          message: managerData.error || 'فشل في تحميل بيانات الملف الشخصي للمدير',
           color: 'red',
           position: 'top-left',
           withBorder: true,
         });
       }
     }
+  };
+
+  useEffect(() => {
+    applyData({ managerData: managerProfileData });
   }, [managerProfileData]);
 
   useEffect(() => {
@@ -159,33 +160,9 @@ export default function Manager_Profile_Form({ manager_Id }: ManagerProfileFormP
           withBorder: true,
         });
 
-        const userData = data.user;
-
-        setProfileImage(MAN.src || userData.profile_image || MAN.src);
-
-        form.setValues({
-          name: userData.name,
-          email: userData.email || '',
-          identity: userData.identity,
-          gender: userData.gender,
-          nationality: userData.nationality,
-          phone_number:
-            userData.phone_number.length === 10
-              ? `+970${userData.phone_number}`
-              : userData.phone_number,
-          alternative_phone_number:
-            userData.alternative_phone_number?.length === 10
-              ? `+970${userData.alternative_phone_number}`
-              : userData.alternative_phone_number || '',
-          social_status: userData.social_status || SOCIAL_STATUS.SINGLE,
-        });
-        form.clearErrors();
-        form.resetTouched();
-        form.resetDirty();
-
+        applyData({ managerData: data });
         setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY);
         refetch();
-
         queryClient.invalidateQueries({ queryKey: ['manager-profile'] });
       } else {
         throw new Error(data.error || 'فشل في تحديث الملف الشخصي');

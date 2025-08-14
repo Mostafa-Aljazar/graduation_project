@@ -65,10 +65,8 @@ export default function Delegate_Profile_Form({
   const queryClient = useQueryClient();
 
   const { startUpload } = useUploadThing('mediaUploader');
-  const [profileImage, setProfileImage] = useState<File | string | null>(
-    MAN.src
-  );
   const [uploading, setUploading] = useState(false);
+  const [profileImage, setProfileImage] = useState<File | string | null>(MAN.src);
 
   const { isDelegate, isManager, user } = useAuth();
   const isOwner = isDelegate && user?.id === delegate_Id;
@@ -77,20 +75,15 @@ export default function Delegate_Profile_Form({
 
   const [query, setQuery] = useQueryState(
     'action',
-    parseAsStringEnum<ACTION_ADD_EDIT_DISPLAY>(
-      Object.values(ACTION_ADD_EDIT_DISPLAY)
-    ).withDefault(ACTION_ADD_EDIT_DISPLAY.DISPLAY)
+    parseAsStringEnum<ACTION_ADD_EDIT_DISPLAY>(Object.values(ACTION_ADD_EDIT_DISPLAY)).withDefault(
+      destination ?? ACTION_ADD_EDIT_DISPLAY.DISPLAY
+    )
   );
 
-  const isAddMode =
-    (isManager || isDelegate) && destination == ACTION_ADD_EDIT_DISPLAY.ADD;
-
-  const isEditMode =
-    (isManager || isOwner) && query === ACTION_ADD_EDIT_DISPLAY.EDIT;
-
+  const isAddMode = isManager && destination == ACTION_ADD_EDIT_DISPLAY.ADD;
+  const isEditMode = (isManager || isOwner) && query === ACTION_ADD_EDIT_DISPLAY.EDIT;
   const isDisplayMode =
-    query === ACTION_ADD_EDIT_DISPLAY.DISPLAY &&
-    destination !== ACTION_ADD_EDIT_DISPLAY.ADD;
+    query === ACTION_ADD_EDIT_DISPLAY.DISPLAY && destination !== ACTION_ADD_EDIT_DISPLAY.ADD;
 
   const form = useForm<DelegateProfileType>({
     mode: 'uncontrolled',
@@ -105,8 +98,6 @@ export default function Delegate_Profile_Form({
       education: '',
       phone_number: '',
       alternative_phone_number: '',
-      // number_of_responsible_camps: 0,
-      // number_of_families: 0,
     },
     validate: zodResolver(DelegateProfileSchema),
     validateInputOnChange: true,
@@ -119,74 +110,46 @@ export default function Delegate_Profile_Form({
   } = useQuery<DelegateProfileResponse>({
     queryKey: ['delegate-profile', delegate_Id],
     queryFn: () => getDelegateProfile({ delegate_Id: delegate_Id as number }),
-    enabled: (isDisplayMode || isEditMode) && !!delegate_Id,
+    enabled: isDisplayMode || isEditMode,
   });
 
-  const applyData = () => {
-    if (
-      !isAddMode &&
-      delegateProfileData &&
-      delegateProfileData.status === 200 &&
-      delegateProfileData.user
-    ) {
-      setProfileImage(delegateProfileData.user.profile_image || MAN.src);
-      form.setFieldValue('name', delegateProfileData.user.name);
-      form.setFieldValue('identity', delegateProfileData.user.identity);
-      form.setFieldValue('gender', delegateProfileData.user.gender);
-      form.setFieldValue(
-        'social_status',
-        delegateProfileData.user.social_status
-      );
-      form.setFieldValue('nationality', delegateProfileData.user.nationality);
-      form.setFieldValue('email', delegateProfileData.user.email);
-      form.setFieldValue('age', delegateProfileData.user.age);
-      form.setFieldValue('education', delegateProfileData.user.education);
-      if (delegateProfileData.user.phone_number.length == 10) {
-        form.setFieldValue(
-          'phone_number',
-          `+97${delegateProfileData.user.phone_number}`
-        );
+  const applyData = ({ delegateData }: { delegateData: DelegateProfileResponse | undefined }) => {
+    if (!isAddMode && delegateData) {
+      if (delegateData.status === 200 && delegateData.user) {
+        const userData = delegateData.user;
+
+        setProfileImage(userData.profile_image ?? MAN.src);
+
+        form.setValues({
+          name: userData.name,
+          email: userData.email,
+          identity: userData.identity,
+          gender: userData.gender,
+          nationality: userData.nationality,
+          phone_number:
+            userData.phone_number.length === 10
+              ? `+970${userData.phone_number}`
+              : userData.phone_number,
+          alternative_phone_number:
+            userData.alternative_phone_number?.length === 10
+              ? `+970${userData.alternative_phone_number}`
+              : userData.alternative_phone_number || '',
+          social_status: userData.social_status,
+          age: userData.age,
+          education: userData.education,
+        });
+        form.clearErrors();
+        form.resetTouched();
+        form.resetDirty();
       } else {
-        form.setFieldValue(
-          'phone_number',
-          delegateProfileData.user.phone_number
-        );
+        notifications.show({
+          title: 'خطأ',
+          message: delegateData.error || 'فشل في تحميل بيانات الملف الشخصي للمندوب',
+          color: 'red',
+          position: 'top-left',
+          withBorder: true,
+        });
       }
-
-      if (
-        delegateProfileData.user.alternative_phone_number &&
-        delegateProfileData.user.alternative_phone_number.length == 10
-      ) {
-        form.setFieldValue(
-          'alternative_phone_number',
-          `+97${delegateProfileData.user.alternative_phone_number}` || ''
-        );
-      } else {
-        form.setFieldValue(
-          'alternative_phone_number',
-          delegateProfileData.user.alternative_phone_number || ''
-        );
-      }
-
-      form.clearErrors();
-      form.resetTouched();
-      form.resetDirty();
-    }
-
-    if (
-      !isAddMode &&
-      delegateProfileData &&
-      delegateProfileData.status !== 200
-    ) {
-      notifications.show({
-        title: 'خطأ',
-        message:
-          delegateProfileData.error ||
-          'فشل في تحميل بيانات الملف الشخصي للمندوب',
-        color: 'red',
-        position: 'top-left',
-        withBorder: true,
-      });
     }
 
     if (isAddMode) {
@@ -196,7 +159,7 @@ export default function Delegate_Profile_Form({
   };
 
   useEffect(() => {
-    applyData();
+    applyData({ delegateData: delegateProfileData });
   }, [delegateProfileData, isAddMode]);
 
   useEffect(() => {
@@ -222,27 +185,9 @@ export default function Delegate_Profile_Form({
           position: 'top-left',
           withBorder: true,
         });
-        const user = data.user;
 
-        form.setValues({
-          name: user.name,
-          nationality: user.nationality,
-          gender: user.gender,
-          social_status: user.social_status,
-          identity: user.identity,
-          email: user.email,
-          age: user.age as number,
-          education: user.education,
-          phone_number: user.phone_number,
-          alternative_phone_number: user.alternative_phone_number || '',
-        });
-
-        form.clearErrors();
-        form.resetTouched();
-        form.resetDirty();
-        setProfileImage(user.profile_image || MAN.src);
+        applyData({ delegateData: data });
         refetch();
-
         queryClient.invalidateQueries({ queryKey: ['delegate-profile'] });
       } else {
         throw new Error(data.error || 'فشل في تحديث الملف الشخصي للمندوب');
@@ -251,8 +196,7 @@ export default function Delegate_Profile_Form({
     onError: (error) => {
       setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY);
 
-      const errorMessage =
-        error?.message || 'حدث خطأ أثناء تحديث الملف الشخصي للمندوب';
+      const errorMessage = error?.message || 'حدث خطأ أثناء تحديث الملف الشخصي للمندوب';
       form.setErrors({ general: errorMessage });
       notifications.show({
         title: 'خطأ',
@@ -264,11 +208,7 @@ export default function Delegate_Profile_Form({
     },
   });
 
-  const addDelegateMutation = useMutation<
-    DelegateProfileResponse,
-    Error,
-    addNewDelegateProps
-  >({
+  const addDelegateMutation = useMutation<DelegateProfileResponse, Error, addNewDelegateProps>({
     mutationFn: addNewDelegate,
     onSuccess: (data) => {
       if (data.status === 201) {
@@ -279,8 +219,8 @@ export default function Delegate_Profile_Form({
           position: 'top-left',
           withBorder: true,
         });
-        queryClient.invalidateQueries({ queryKey: ['delegates'] });
 
+        queryClient.invalidateQueries({ queryKey: ['delegates'] });
         router.push(GENERAL_ACTOR_ROUTES.DELEGATES);
       } else {
         throw new Error(data.error || 'فشل في إضافة المندوب الجديد');
@@ -289,8 +229,7 @@ export default function Delegate_Profile_Form({
     onError: (error) => {
       setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY);
 
-      const errorMessage =
-        error?.message || 'حدث خطأ أثناء إضافة المندوب الجديد';
+      const errorMessage = error?.message || 'حدث خطأ أثناء إضافة المندوب الجديد';
       form.setErrors({ general: errorMessage });
       notifications.show({
         title: 'خطأ',
@@ -307,8 +246,7 @@ export default function Delegate_Profile_Form({
     try {
       setUploading(true);
       const mediaUrl = await handleUploadMedia(file, startUpload);
-      if (!mediaUrl)
-        throw new Error('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.');
+      if (!mediaUrl) throw new Error('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.');
       return mediaUrl;
     } catch {
       notifications.show({
@@ -325,8 +263,6 @@ export default function Delegate_Profile_Form({
   };
 
   const handleSubmit = form.onSubmit(async (values: DelegateProfileType) => {
-    console.log('🚀 ~ handleSubmit ~ values:', values);
-
     const avatarUrl =
       profileImage && profileImage instanceof File
         ? await uploadImages(profileImage)
@@ -338,8 +274,7 @@ export default function Delegate_Profile_Form({
     };
 
     const handleError = (error: unknown) => {
-      const errorMessage =
-        (error as Error)?.message || 'فشل في حفظ الملف الشخصي للمندوب';
+      const errorMessage = (error as Error)?.message || 'فشل في حفظ الملف الشخصي للمندوب';
       form.setErrors({ general: errorMessage });
       notifications.show({
         title: 'خطأ',
@@ -365,8 +300,7 @@ export default function Delegate_Profile_Form({
     }
   });
 
-  const isMutationLoading =
-    updateProfileMutation.isPending || addDelegateMutation.isPending;
+  const isMutationLoading = updateProfileMutation.isPending || addDelegateMutation.isPending;
 
   return (
     <Stack p={10} pos='relative'>
@@ -404,12 +338,7 @@ export default function Delegate_Profile_Form({
               />
             )
           ) : (
-            <Image
-              src={MAN}
-              alt='Avatar'
-              className='w-[100px] h-[100px]'
-              priority
-            />
+            <Image src={MAN} alt='Avatar' className='w-[100px] h-[100px]' priority />
           )}
           {(isEditMode || isAddMode) && (
             <Upload_Media File_Type='image' setFileObject={setProfileImage}>
@@ -455,23 +384,11 @@ export default function Delegate_Profile_Form({
             </Button>
           )}
         </Group>
-        <form
-          onSubmit={handleSubmit}
-          className='flex flex-col items-center w-full'
-        >
-          <SimpleGrid
-            cols={{ base: 1, md: 2, lg: 3 }}
-            verticalSpacing='sm'
-            w='100%'
-          >
+        <form onSubmit={handleSubmit} className='flex flex-col items-center w-full'>
+          <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} verticalSpacing='sm' w='100%'>
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-dark !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-dark !text-nowrap'>
                   الاسم :
                 </Text>
               }
@@ -489,12 +406,7 @@ export default function Delegate_Profile_Form({
             <TextInput
               type='number'
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-dark !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-dark !text-nowrap'>
                   رقم الهوية :
                 </Text>
               }
@@ -511,12 +423,7 @@ export default function Delegate_Profile_Form({
 
             <NativeSelect
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-dark !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-dark !text-nowrap'>
                   الجنس :
                 </Text>
               }
@@ -536,12 +443,7 @@ export default function Delegate_Profile_Form({
 
             <NativeSelect
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-dark !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-dark !text-nowrap'>
                   الحالة الاجتماعية :
                 </Text>
               }
@@ -562,12 +464,7 @@ export default function Delegate_Profile_Form({
 
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-dark !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-dark !text-nowrap'>
                   الجنسية :
                 </Text>
               }
@@ -584,12 +481,7 @@ export default function Delegate_Profile_Form({
 
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-dark !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-dark !text-nowrap'>
                   البريد الإلكتروني :
                 </Text>
               }
@@ -607,7 +499,7 @@ export default function Delegate_Profile_Form({
 
             <NumberInput
               label={
-                <Text fz={18} fw={500} className='!text-dark !text-nowrap'>
+                <Text fz={16} fw={500} mb={4} className='!text-dark !text-nowrap'>
                   العمر :
                 </Text>
               }
@@ -629,12 +521,7 @@ export default function Delegate_Profile_Form({
 
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-dark !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-dark !text-nowrap'>
                   المؤهل العلمي :
                 </Text>
               }
@@ -666,18 +553,6 @@ export default function Delegate_Profile_Form({
                   {...form.getInputProps('phone_number')}
                   disabled={isDisplayMode}
                 />
-                {/* <PhoneInput
-                  name='phone_number'
-                  international
-                  countryCallingCodeEditable={false}
-                  defaultCountry='PS'
-                  inputComponent={Custom_Phone_Input}
-                  placeholder='ادخل رقم الجوال...'
-                  value={form.values.phone_number}
-                  className='!bg-white !font-normal !text-primary placeholder:!text-sm disabled:!cursor-text'
-                  {...form.getInputProps('phone_number')}
-                  disabled={isDisplayMode}
-                /> */}
               </Box>
             </Stack>
 
@@ -686,12 +561,7 @@ export default function Delegate_Profile_Form({
               (delegateProfileData?.user.alternative_phone_number &&
                 delegateProfileData.user.alternative_phone_number !== '')) && (
               <Stack w='100%' gap={0}>
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-dark !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-dark !text-nowrap'>
                   رقم بديل :
                 </Text>
                 <Box dir='ltr' className='w-full'>
@@ -713,18 +583,11 @@ export default function Delegate_Profile_Form({
             {!isAddMode && !isEditMode && (
               <TextInput
                 label={
-                  <Text
-                    fz={16}
-                    fw={500}
-                    mb={4}
-                    // className={cn(isEditMode&&)}
-                  >
+                  <Text fz={16} fw={500} mb={4}>
                     عدد المخيمات المسؤولة :
                   </Text>
                 }
-                value={
-                  delegateProfileData?.user.number_of_responsible_camps || 0
-                }
+                value={delegateProfileData?.user.number_of_responsible_camps || 0}
                 classNames={{
                   input:
                     'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
@@ -738,12 +601,7 @@ export default function Delegate_Profile_Form({
             {!isAddMode && !isEditMode && (
               <TextInput
                 label={
-                  <Text
-                    fz={16}
-                    fw={500}
-                    mb={4}
-                    className='!text-dark !text-nowrap'
-                  >
+                  <Text fz={16} fw={500} mb={4} className='!text-dark !text-nowrap'>
                     عدد العائلات :
                   </Text>
                 }
@@ -770,9 +628,7 @@ export default function Delegate_Profile_Form({
                 fw={500}
                 fz={16}
                 className='shadow-sm'
-                rightSection={
-                  isEditMode ? <UserPen size={16} /> : <Save size={16} />
-                }
+                rightSection={isEditMode ? <UserPen size={16} /> : <Save size={16} />}
               >
                 {isAddMode ? 'إضافة' : 'حفظ التعديلات'}
               </Button>
