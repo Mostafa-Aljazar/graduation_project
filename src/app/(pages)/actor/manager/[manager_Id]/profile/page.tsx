@@ -10,8 +10,8 @@ export default async function Manager_Profile({
 
   return (
     <Manager_Profile_Form
-      manager_Id={Number(manager_Id)}
-      destination={ACTION_ADD_EDIT_DISPLAY.DISPLAY}
+      manager_Id={parseInt(manager_Id)}
+      // destination={ACTION_ADD_EDIT_DISPLAY.DISPLAY}
     />
   );
 }

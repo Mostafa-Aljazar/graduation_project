@@ -22,9 +22,9 @@ function Ads_Blogs_Stories_Header({
 }) {
   const [activeTab, setActiveTab] = useQueryState(
     'written-tab',
-    parseAsStringEnum<TYPE_WRITTEN_CONTENT>(
-      Object.values(TYPE_WRITTEN_CONTENT)
-    ).withDefault(TYPE_WRITTEN_CONTENT.BLOG)
+    parseAsStringEnum<TYPE_WRITTEN_CONTENT>(Object.values(TYPE_WRITTEN_CONTENT)).withDefault(
+      TYPE_WRITTEN_CONTENT.BLOG
+    )
   );
 
   const route = useRouter();
@@ -42,11 +42,7 @@ function Ads_Blogs_Stories_Header({
     <Group justify='space-between' wrap='nowrap' w={'100%'}>
       <Group gap={10} wrap='nowrap' justify='center' align='center'>
         {IconComponent && (
-          <ThemeIcon
-            variant='transparent'
-            className='flex-shrink-0 !text-primary'
-            size={16}
-          >
+          <ThemeIcon variant='transparent' className='flex-shrink-0 !text-primary' size={16}>
             <IconComponent size={16} />
           </ThemeIcon>
         )}
@@ -75,9 +71,7 @@ interface AdsBlogsStoriesPageProps {
   manager_Id: number;
 }
 
-export default function Ads_Blogs_Stories_Page({
-  manager_Id,
-}: AdsBlogsStoriesPageProps) {
+export default function Ads_Blogs_Stories_Page({ manager_Id }: AdsBlogsStoriesPageProps) {
   const { user } = useAuth();
   const isOwner = user?.role == USER_TYPE.MANAGER && manager_Id == user?.id;
 

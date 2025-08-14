@@ -4,20 +4,17 @@ import { ManagerProfile, ManagerProfileResponse } from "@/@types/actors/manager/
 import { fakeManagerProfileResponse } from "@/content/actor/manager/fake-manager-profile";
 import { AqsaAPI } from "@/services";
 
-
-
 export interface getManagerProfileProps {
     manager_Id: number;
 };
 
-
 export const getManagerProfile = async ({ manager_Id }: getManagerProfileProps): Promise<ManagerProfileResponse> => {
 
-    const fakeData: ManagerProfileResponse = fakeManagerProfileResponse({ manager_Id })
+    const fakeResponse: ManagerProfileResponse = fakeManagerProfileResponse({ manager_Id })
 
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 

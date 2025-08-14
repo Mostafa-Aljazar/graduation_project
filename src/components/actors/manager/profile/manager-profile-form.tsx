@@ -6,7 +6,6 @@ import {
   Group,
   LoadingOverlay,
   NativeSelect,
-  NumberInput,
   SimpleGrid,
   Stack,
   Text,
@@ -20,7 +19,7 @@ import {
   ManagerProfileType,
 } from '@/validation/actor/manager/profile/manager-profile-Schema';
 import '@mantine/core/styles.css';
-import { Calendar, Camera, Save, UserPen } from 'lucide-react';
+import { Camera, UserPen } from 'lucide-react';
 import { DatePickerInput } from '@mantine/dates';
 import { Custom_Phone_Input } from '@/components/common/custom/Custom_Phone_Input';
 import { useUploadThing } from '@/utils/uploadthing/uploadthing';
@@ -48,41 +47,30 @@ import { useRouter } from 'next/navigation';
 import { parseAsStringEnum, useQueryState } from 'nuqs';
 
 interface ManagerProfileFormProps {
-  manager_Id?: number;
-  destination?: ACTION_ADD_EDIT_DISPLAY;
+  manager_Id: number;
 }
 
-export default function Manager_Profile_Form({
-  manager_Id,
-  destination,
-}: ManagerProfileFormProps) {
+export default function Manager_Profile_Form({ manager_Id }: ManagerProfileFormProps) {
   const queryClient = useQueryClient();
 
   const { startUpload } = useUploadThing('mediaUploader');
-  const [profileImage, setProfileImage] = useState<File | string | null>(
-    MAN.src
-  );
   const [uploading, setUploading] = useState(false);
+  const [profileImage, setProfileImage] = useState<File | string | null>(MAN.src);
 
   const { isManager, user } = useAuth();
   const isOwner = isManager && user?.id === manager_Id;
-
   const router = useRouter();
 
   const [query, setQuery] = useQueryState(
     'action',
-    parseAsStringEnum<ACTION_ADD_EDIT_DISPLAY>(
-      Object.values(ACTION_ADD_EDIT_DISPLAY)
-    ).withDefault(ACTION_ADD_EDIT_DISPLAY.DISPLAY)
+    parseAsStringEnum<ACTION_ADD_EDIT_DISPLAY>(Object.values(ACTION_ADD_EDIT_DISPLAY)).withDefault(
+      ACTION_ADD_EDIT_DISPLAY.DISPLAY
+    )
   );
-
-  const isAddMode = isManager && destination == ACTION_ADD_EDIT_DISPLAY.ADD;
 
   const isEditMode = isOwner && query === ACTION_ADD_EDIT_DISPLAY.EDIT;
 
-  const isDisplayMode =
-    query === ACTION_ADD_EDIT_DISPLAY.DISPLAY &&
-    destination !== ACTION_ADD_EDIT_DISPLAY.ADD;
+  const isDisplayMode = query === ACTION_ADD_EDIT_DISPLAY.DISPLAY;
 
   const form = useForm<ManagerProfileType>({
     mode: 'uncontrolled',
@@ -108,20 +96,18 @@ export default function Manager_Profile_Form({
   } = useQuery<ManagerProfileResponse>({
     queryKey: ['manager-profile', manager_Id],
     queryFn: () => getManagerProfile({ manager_Id: manager_Id as number }),
-    enabled: (isDisplayMode || isEditMode) && !!manager_Id,
   });
 
   useEffect(() => {
-    // if (!isAddMode && managerProfileData) {
     if (managerProfileData) {
       if (managerProfileData.status === 200 && managerProfileData.user) {
         const userData = managerProfileData.user;
 
-        setProfileImage(MAN.src || userData.profile_image || MAN.src);
+        setProfileImage(userData.profile_image ?? MAN.src);
 
         form.setValues({
           name: userData.name,
-          email: userData.email || '',
+          email: userData.email,
           identity: userData.identity,
           gender: userData.gender,
           nationality: userData.nationality,
@@ -133,7 +119,7 @@ export default function Manager_Profile_Form({
             userData.alternative_phone_number?.length === 10
               ? `+970${userData.alternative_phone_number}`
               : userData.alternative_phone_number || '',
-          social_status: userData.social_status || SOCIAL_STATUS.SINGLE,
+          social_status: userData.social_status,
         });
         form.clearErrors();
         form.resetTouched();
@@ -141,21 +127,14 @@ export default function Manager_Profile_Form({
       } else {
         notifications.show({
           title: 'خطأ',
-          message:
-            managerProfileData.error ||
-            'فشل في تحميل بيانات الملف الشخصي للمدير',
+          message: managerProfileData.error || 'فشل في تحميل بيانات الملف الشخصي للمدير',
           color: 'red',
           position: 'top-left',
           withBorder: true,
         });
       }
     }
-
-    if (isAddMode) {
-      form.reset();
-      setProfileImage(MAN.src);
-    }
-  }, [managerProfileData, isAddMode]);
+  }, [managerProfileData]);
 
   useEffect(() => {
     if (profileImage instanceof File) {
@@ -231,8 +210,7 @@ export default function Manager_Profile_Form({
     try {
       setUploading(true);
       const mediaUrl = await handleUploadMedia(file, startUpload);
-      if (!mediaUrl)
-        throw new Error('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.');
+      if (!mediaUrl) throw new Error('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.');
       return mediaUrl;
     } catch {
       notifications.show({
@@ -249,7 +227,7 @@ export default function Manager_Profile_Form({
   };
 
   const handleSubmit = form.onSubmit(async (values: ManagerProfileType) => {
-    console.log('🚀 ~ values:', values);
+    console.log('🚀 ~  ~ values:', values);
     const avatarUrl =
       profileImage instanceof File
         ? await uploadImages(profileImage)
@@ -257,12 +235,12 @@ export default function Manager_Profile_Form({
 
     const payload: ManagerProfileType = {
       ...values,
-      profile_image: avatarUrl,
+      profile_image: avatarUrl ?? '',
     };
+    console.log('🚀 ~  ~ payload:', payload);
 
     const handleError = (error: unknown) => {
-      const errorMessage =
-        (error as Error)?.message || 'فشل في حفظ الملف الشخصي للمدير';
+      const errorMessage = (error as Error)?.message || 'فشل في حفظ الملف الشخصي للمدير';
       form.setErrors({ general: errorMessage });
       notifications.show({
         title: 'خطأ',
@@ -274,12 +252,6 @@ export default function Manager_Profile_Form({
     };
 
     try {
-      if (isAddMode) {
-        // addDisplacedProfileMutation.mutate(
-        //   { payload },
-        //   { onError: handleError }
-        // );
-      }
       if (isEditMode) {
         updateProfileMutation.mutate(
           { manager_Id: manager_Id as number, payload },
@@ -329,14 +301,9 @@ export default function Manager_Profile_Form({
               />
             )
           ) : (
-            <Image
-              src={MAN}
-              alt='Avatar'
-              className='w-[100px] h-[100px]'
-              priority
-            />
+            <Image src={MAN} alt='Avatar' className='w-[100px] h-[100px]' priority />
           )}
-          {(isEditMode || isAddMode) && (
+          {isEditMode && (
             <Upload_Media File_Type='image' setFileObject={setProfileImage}>
               <ActionIcon
                 variant='outline'
@@ -389,12 +356,7 @@ export default function Manager_Profile_Form({
           >
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   الاسم :
                 </Text>
               }
@@ -412,12 +374,7 @@ export default function Manager_Profile_Form({
             <TextInput
               type='email'
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   البريد الإلكتروني :
                 </Text>
               }
@@ -434,12 +391,7 @@ export default function Manager_Profile_Form({
 
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   رقم الهوية :
                 </Text>
               }
@@ -456,12 +408,7 @@ export default function Manager_Profile_Form({
 
             <NativeSelect
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   الجنس :
                 </Text>
               }
@@ -481,12 +428,7 @@ export default function Manager_Profile_Form({
 
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   الجنسية :
                 </Text>
               }
@@ -502,12 +444,7 @@ export default function Manager_Profile_Form({
             />
 
             <Stack w='100%' gap={0}>
-              <Text
-                fz={16}
-                fw={500}
-                mb={4}
-                className='!text-black !text-nowrap'
-              >
+              <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                 رقم الجوال :
               </Text>
               <Box dir='ltr' className='w-full'>
@@ -527,16 +464,10 @@ export default function Manager_Profile_Form({
             </Stack>
 
             {(isEditMode ||
-              isAddMode ||
               (managerProfileData?.user.alternative_phone_number &&
                 managerProfileData.user.alternative_phone_number !== '')) && (
               <Stack w='100%' gap={0}>
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   رقم بديل :
                 </Text>
                 <Box dir='ltr' className='w-full'>
