@@ -1,13 +1,14 @@
-import { Group, Stack, Text } from '@mantine/core';
+import { Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { BellRing } from 'lucide-react';
-import Notifications_List from '@/components/actors/general/notifications/notifications-list';
 import Notifications_Content from '@/components/actors/general/notifications/notifications-content';
 
-export function Notifications_Header() {
+function Notifications_Header() {
   return (
-    <Group gap={10}>
-      <BellRing size={20} className='!text-primary' />
-      <Text fw={600} fz={20} className='!text-primary'>
+    <Group gap={8}>
+      <ThemeIcon color='green' radius={'100%'} variant='light' size='lg'>
+        <BellRing size={16} className='!text-primary' />
+      </ThemeIcon>
+      <Text fw={600} fz={{ base: 16, md: 18 }} className='!text-primary'>
         الإشعارات :
       </Text>
     </Group>

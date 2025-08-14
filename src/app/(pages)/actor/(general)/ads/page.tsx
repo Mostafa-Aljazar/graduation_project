@@ -1,17 +1,25 @@
-import Ads_List from '@/components/actors/general/ads/ads-list';
-import { Box, Group, Stack, Text } from '@mantine/core';
+import Ads_Content from '@/components/actors/general/ads/ads-content';
+import { Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { Megaphone } from 'lucide-react';
+
+function Ads_Header() {
+  return (
+    <Group gap={8}>
+      <ThemeIcon color='green' radius={'100%'} variant='light' size='lg'>
+        <Megaphone size={16} className='!text-primary' />
+      </ThemeIcon>
+      <Text fw={600} fz={{ base: 16, md: 20 }} className='!text-primary'>
+        الإعلانات :
+      </Text>
+    </Group>
+  );
+}
 
 export default function Ads() {
   return (
     <Stack py={20} gap={10} w={'100%'} px={10}>
-      <Group gap={10}>
-        <Megaphone size={20} className='!text-primary' />
-        <Text fw={600} fz={20} className='!text-primary'>
-          الإعلانات :
-        </Text>
-      </Group>
-      <Ads_List />
+      <Ads_Header />
+      <Ads_Content />
     </Stack>
   );
 }

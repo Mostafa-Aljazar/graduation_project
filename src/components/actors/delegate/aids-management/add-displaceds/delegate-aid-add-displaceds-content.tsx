@@ -13,7 +13,7 @@ import {
   addAidDisplaceds,
   addAidDisplacedsProps,
 } from '@/actions/actors/general/aids-management/addAidDisplaceds';
-import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
+import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
 
 interface DelegateAidAddDisplacedsContentProps {
   isLoading: boolean;

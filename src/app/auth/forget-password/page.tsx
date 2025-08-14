@@ -9,7 +9,7 @@ import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { forgetPassword, forgetPasswordProps } from '@/actions/auth/forgetPassword';
 import { forgetPasswordSchema, forgetPasswordType } from '@/validation/auth/forgetPasswordSchema';
-import { commonActionResponse } from '@/@types/common/modal/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 
 export default function Forget_Password() {
   const form = useForm<forgetPasswordType>({

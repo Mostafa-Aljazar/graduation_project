@@ -18,7 +18,7 @@ import { Calendar, Clock, MessageSquareReply, UserCircle } from 'lucide-react';
 import { parseAsStringEnum, useQueryStates } from 'nuqs';
 import { cn } from '@/utils/cn';
 import { Complaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
-import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
+import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   replyCommonComplaint,
   replyCommonComplaintProps,

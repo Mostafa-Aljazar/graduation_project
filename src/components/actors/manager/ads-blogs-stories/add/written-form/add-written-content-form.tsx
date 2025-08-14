@@ -32,7 +32,7 @@ import {
   addAdBlogStoryProps,
 } from '@/actions/actors/manager/blog-stories-ads/addAdBlogStory';
 
-import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
+import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import useAuth from '@/hooks/useAuth';
 import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import { handleUploadMedia } from '@/utils/uploadthing/handleUploadMedia';

@@ -1,5 +1,5 @@
 "use server";
-import { commonActionResponse } from "@/@types/common/modal/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaGuestAPI } from "@/services";
 
 

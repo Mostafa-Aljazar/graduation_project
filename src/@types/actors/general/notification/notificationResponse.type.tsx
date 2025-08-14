@@ -1,5 +1,5 @@
 import { UserType } from '@/constants/userTypes';
-import { TYPE_AIDS } from '@/content/actor/manager/aids-management';
+import { TYPE_AIDS } from '../../common-types/index.type';
 
 // add complaints {read, reply}
 export type NotificationAction =
@@ -14,7 +14,7 @@ export type NotificationAction =
 
 export interface NotificationType {
   action: NotificationAction;
-  aid_type?: TYPE_AIDS; // only for add-aid
+  aid_type?: TYPE_AIDS;
 }
 
 export enum NotificationStatus {
@@ -24,8 +24,7 @@ export enum NotificationStatus {
 
 export interface NotificationItem {
   id: number;
-  date: string;
-  time: string;
+  dateTime: Date;
   title: string;
   body: string;
   status: NotificationStatus;

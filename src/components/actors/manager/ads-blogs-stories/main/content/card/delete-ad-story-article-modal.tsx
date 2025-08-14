@@ -1,7 +1,7 @@
 'use client';
 
 import { TYPE_WRITTEN_CONTENT } from '@/@types/actors/common-types/index.type';
-import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
+import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   deleteAdBlogStory,
   deleteAdBlogStoryProps,

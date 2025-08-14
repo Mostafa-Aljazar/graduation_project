@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/modal/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { UserType } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
@@ -14,45 +14,37 @@ export const changeNotificationStatus = async ({
     actor_Id,
     role,
     notification_Id,
-}: changeNotificationStatusProps): Promise<modalActionResponse> => {
-    // FIXME: Remove this fake data logic in production
-    const fakeData: modalActionResponse = {
+}: changeNotificationStatusProps): Promise<commonActionResponse> => {
+    const fakeResponse: commonActionResponse = {
         status: 200,
-        message: `تم تغيير حالة الاشعار بنجاح`,
-
+        message: "تم تغيير حالة الاشعار بنجاح"
     }
-    // Simulate API delay
+
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
-        }, 2000);
+            resolve(fakeResponse);
+        }, 500);
     });
 
-
-    // Real implementation with filters
-
+    /////////////////////////////////////////////////////////////
+    //FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.post("/notifications/changeStatus", {
+        const response = await AqsaAPI.post<commonActionResponse>("/notifications/change-status", {
             actor_Id,
             role,
             notification_Id,
         });
 
-        return {
-            status: 200,
-            message: `تم تغيير حالة الاشعار بنجاح`,
-        };
-
-        if (response.data.status == 200) {
+        if (response.data) {
             return {
                 status: 200,
-                message: `تم تغيير حالة الاشعار بنجاح`,
+                message: "تم تغيير حالة الاشعار بنجاح"
             };
         }
 
         throw new Error("حدث خطأ أثناء تغيير حالة الاشعار");
-
 
     } catch (error: any) {
         const errorMessage =

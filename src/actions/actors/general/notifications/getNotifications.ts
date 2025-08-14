@@ -2,7 +2,7 @@
 
 import { NotificationsResponse } from "@/@types/actors/general/notification/notificationResponse.type";
 import { UserType } from "@/constants/userTypes";
-import { fakeNotificationsResponse } from "@/content/actor/displaced/fake-displaced-notifications";
+import { fakeNotificationsResponse } from "@/content/actor/general/notifications/fake-notifications";
 import { AqsaAPI } from "@/services";
 
 export interface getNotificationsProps {
@@ -15,24 +15,30 @@ export interface getNotificationsProps {
 export const getNotifications = async ({ page = 1, limit = 7, actor_Id, role }: getNotificationsProps): Promise<NotificationsResponse> => {
 
     const fakeResponse = fakeNotificationsResponse({ page, limit, actor_Id, role })
+    return await new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(fakeResponse);
+        }, 500);
+    });
 
-    return new Promise((resolve) => setTimeout(() => resolve(fakeResponse), 1000));
-
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.post('/notifications', { page, limit, actor_Id, role });
+        const response = await AqsaAPI.get<NotificationsResponse>('/notifications',
+            {
+                params:
+                    { page, limit, actor_Id, role }
+            }
+        );
 
         if (response.data?.notifications) {
             return {
                 status: 200,
                 message: "تم جلب الاشعارات بنجاح",
-                notifications: response.data.displaceds,
-                pagination: response.data.pagination || {
-                    page,
-                    limit,
-                    total_items: response.data.notifications.length,
-                    total_pages: Math.ceil(response.data.notifications.length / limit),
-                },
+                notifications: response.data.notifications,
+                pagination: response.data.pagination
             };
         }
 

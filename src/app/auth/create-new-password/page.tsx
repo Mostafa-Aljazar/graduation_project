@@ -12,7 +12,7 @@ import {
   createNewPasswordSchema,
   createNewPasswordType,
 } from '@/validation/auth/createNewPasswordSchema';
-import { commonActionResponse } from '@/@types/common/modal/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 
 export default function Create_New_Password() {
   const [error, setError] = useState('');

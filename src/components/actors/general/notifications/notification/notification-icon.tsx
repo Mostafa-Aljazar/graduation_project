@@ -13,11 +13,8 @@ import {
 } from 'lucide-react';
 
 import { ThemeIcon } from '@mantine/core';
-import {
-  GET_AIDS_TYPE_ICONS,
-  TYPE_AIDS,
-} from '@/content/actor/manager/aids-management';
 import { NotificationItem } from '@/@types/actors/general/notification/notificationResponse.type';
+import { GET_AIDS_TYPE_ICONS, TYPE_AIDS } from '@/@types/actors/common-types/index.type';
 
 const ACTION_ICONS = {
   change_delegate: UserCheck,
@@ -37,8 +34,7 @@ export default function Notification_Icon({ notification }: Props) {
   const notification_type = notification.notification_type;
 
   if (notification_type.action === 'add-aid' && notification_type?.aid_type) {
-    const AidIcon =
-      GET_AIDS_TYPE_ICONS[notification_type.aid_type as keyof typeof TYPE_AIDS];
+    const AidIcon = GET_AIDS_TYPE_ICONS[notification_type.aid_type as keyof typeof TYPE_AIDS];
     if (AidIcon)
       return (
         <ThemeIcon color='blue' variant='light' size={40} radius='100%'>

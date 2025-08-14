@@ -1,13 +1,13 @@
+'use client';
 import {
   NotificationItem,
   NotificationStatus,
 } from '@/@types/actors/general/notification/notificationResponse.type';
-import { Flex, Group, Paper, Stack, Text } from '@mantine/core';
+import { Flex, Group, Paper, Stack, Text, ThemeIcon } from '@mantine/core';
 import React from 'react';
 import Notification_Icon from './notification-icon';
 import Notification_Modal from './notification-modal';
 import { useMutation } from '@tanstack/react-query';
-import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
 import {
   changeNotificationStatus,
   changeNotificationStatusProps,
@@ -16,6 +16,9 @@ import { notifications } from '@mantine/notifications';
 import useAuth from '@/hooks/useAuth';
 import { useDisclosure } from '@mantine/hooks';
 import { USER_RANK_LABELS, UserType } from '@/constants/userTypes';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { Calendar } from 'lucide-react';
+import { getTimeSince } from '@/utils/getTimeSince';
 
 interface NotificationCardProps {
   notification: NotificationItem;
@@ -27,7 +30,7 @@ export default function Notification_Card({ notification }: NotificationCardProp
   const { user } = useAuth();
 
   const changeStatusMutation = useMutation<
-    modalActionResponse,
+    commonActionResponse,
     unknown,
     changeNotificationStatusProps
   >({
@@ -57,7 +60,6 @@ export default function Notification_Card({ notification }: NotificationCardProp
     },
   });
 
-  // Function to handle modal open and mark as read
   const handleOpenModal = async ({ n }: { n: NotificationItem }) => {
     if (n.status === NotificationStatus.UNREAD) {
       changeStatusMutation.mutate({
@@ -83,18 +85,25 @@ export default function Notification_Card({ notification }: NotificationCardProp
         }}
         style={{ cursor: 'pointer' }}
       >
-        <Group align='flex-start' wrap='nowrap'>
+        <Group align='center' wrap='nowrap'>
           <Notification_Icon notification={notification} />
           <Stack gap={4} flex={1}>
             <Flex justify='space-between' align='center' wrap='wrap'>
-              <Text fw={notification.status === 'UNREAD' ? 600 : 500} size='md'>
+              <Text fw={600} fz={14}>
                 {notification.title}
               </Text>
-              <Text size='xs' c='dimmed'>
-                {notification.date} - {notification.time}
-              </Text>
+
+              <Group gap={5}>
+                <Text fz={12} c='dimmed'>
+                  {getTimeSince(notification.dateTime)}
+                </Text>
+
+                <ThemeIcon size='sm' variant='light' color='green'>
+                  <Calendar size={14} />
+                </ThemeIcon>
+              </Group>
             </Flex>
-            <Text size='sm' c='dimmed'>
+            <Text fz={14} fw={500} c='dimmed'>
               من: {notification.from.name} ({` ${USER_RANK_LABELS[notification.from.role]} `})
             </Text>
           </Stack>

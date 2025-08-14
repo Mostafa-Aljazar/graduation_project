@@ -22,7 +22,7 @@ import {
   addAidDisplaceds,
   addAidDisplacedsProps,
 } from '@/actions/actors/general/aids-management/addAidDisplaceds';
-import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
+import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import { notifications } from '@mantine/notifications';
 import { displacedsFilterValuesType } from '@/validation/actor/general/displaceds-filter-form';
 import { getDisplacedsIds } from '@/actions/actors/general/displaceds/getDisplacedsIds';

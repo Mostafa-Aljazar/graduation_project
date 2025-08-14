@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/modal/commonActionResponse.type";
+import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { UserRank, UserType } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 

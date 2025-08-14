@@ -5,7 +5,7 @@ import { Trash2 } from 'lucide-react';
 import { useDisclosure } from '@mantine/hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { notifications } from '@mantine/notifications';
-import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
+import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   deleteCommonComplaint,
   deleteCommonComplaintProps,

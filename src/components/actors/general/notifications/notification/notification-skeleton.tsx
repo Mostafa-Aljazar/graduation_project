@@ -2,14 +2,7 @@ import { Flex, Group, Paper, Skeleton, Stack } from '@mantine/core';
 
 export default function Notification_Skeleton() {
   return (
-    <Paper
-      p='md'
-      radius='md'
-      withBorder
-      shadow='xs'
-      bg='gray.0'
-      style={{ cursor: 'wait' }}
-    >
+    <Paper p='md' radius='md' withBorder shadow='xs' bg='gray.0' style={{ cursor: 'wait' }}>
       <Group align='flex-start' wrap='nowrap'>
         <Skeleton height={48} width={48} radius={999} />
 

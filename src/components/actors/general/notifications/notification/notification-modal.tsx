@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  Modal,
-  Stack,
-  Group,
-  Text,
-  Paper,
-  ThemeIcon,
-  Flex,
-} from '@mantine/core';
+import { Modal, Stack, Group, Text, Paper, ThemeIcon, Flex } from '@mantine/core';
 import { UserCircle, Info, Calendar } from 'lucide-react';
 import { NotificationItem } from '@/@types/actors/general/notification/notificationResponse.type';
 import { USER_RANK_LABELS, UserRank, UserType } from '@/constants/userTypes';
@@ -24,6 +16,18 @@ export default function Notification_Modal({
   onClose,
   notification,
 }: NotificationModalProps) {
+  const date = notification.dateTime.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
+
+  const time = notification.dateTime.toLocaleTimeString('en-EG', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  });
+
   return (
     <Modal
       title={
@@ -48,11 +52,7 @@ export default function Notification_Modal({
       }}
     >
       <Stack>
-        <Flex
-          direction={{ base: 'column-reverse', md: 'row' }}
-          justify={'space-between'}
-          gap={5}
-        >
+        <Flex direction={{ base: 'column-reverse', md: 'row' }} justify={'space-between'} gap={5}>
           <Group gap={5}>
             <ThemeIcon size='sm' variant='light' color='green'>
               <UserCircle size={16} />
@@ -68,7 +68,10 @@ export default function Notification_Modal({
               <Calendar size={16} />
             </ThemeIcon>
             <Text size='sm' c='dimmed'>
-              {notification.date} - {notification.time}
+              {date}
+            </Text>
+            <Text size='sm' c='dimmed'>
+              {time}
             </Text>
           </Group>
         </Flex>

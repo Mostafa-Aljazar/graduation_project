@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/modal/commonActionResponse.type';
+import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import { deleteAid, deleteAidProps } from '@/actions/actors/general/aids-management/deleteAid';
 import useAuth from '@/hooks/useAuth';
 import { Button, Group, Modal, Stack, Text } from '@mantine/core';

@@ -1,25 +1,8 @@
 'use client';
 
-import {
-  Stack,
-  Text,
-  Paper,
-  ThemeIcon,
-  Flex,
-  Pagination,
-  Center,
-  Skeleton,
-  Group,
-} from '@mantine/core';
-import {
-  NotificationItem,
-  NotificationsResponse,
-} from '@/@types/actors/general/notification/notificationResponse.type';
-import { useQuery } from '@tanstack/react-query';
-import { getNotifications } from '@/actions/actors/general/notifications/getNotifications';
+import { Stack, Text, Paper, Flex, Pagination, Group } from '@mantine/core';
+import { NotificationItem } from '@/@types/actors/general/notification/notificationResponse.type';
 import { parseAsInteger, useQueryStates } from 'nuqs';
-import useAuth from '@/hooks/useAuth';
-import { USER_TYPE, UserRank, UserType } from '@/constants/userTypes';
 import { MessageCircleWarning } from 'lucide-react';
 import Notification_Card from './notification/notification-card';
 import Notification_Skeleton from './notification/notification-skeleton';
@@ -64,13 +47,12 @@ export default function Notifications_List({
             ))}
         </Stack>
       )}
+
       {!loading && total_pages > 1 && (
         <Flex justify='center' mt='xl'>
           <Pagination
             value={query['notifications-page']}
-            onChange={(value: number) =>
-              setQuery({ 'notifications-page': value })
-            }
+            onChange={(value: number) => setQuery({ 'notifications-page': value })}
             total={total_pages}
             size='sm'
             radius='xl'

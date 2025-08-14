@@ -1,7 +1,7 @@
 'use server';
 
 import { TASKS_TABS } from "@/@types/actors/common-types/index.type";
-import { modalActionResponse } from "@/@types/common/modal/commonActionResponse.type";
+import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 export interface updateSecurityTaskProps {

@@ -11,7 +11,7 @@ import { verifyOtp, verifyOtpProps } from '@/actions/auth/verifyOtp';
 import { forgetPassword, forgetPasswordProps } from '@/actions/auth/forgetPassword';
 import { AUTH_ROUTES } from '@/constants/routes';
 import { otpSchema, otpType } from '@/validation/auth/otpSchema';
-import { commonActionResponse } from '@/@types/common/modal/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 
 export default function OTP() {
   return (
