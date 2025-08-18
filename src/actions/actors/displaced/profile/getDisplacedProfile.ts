@@ -10,11 +10,11 @@ export interface getDisplacedProfileProps {
 
 export const getDisplacedProfile = async ({ displaced_Id }: getDisplacedProfileProps): Promise<DisplacedProfileResponse> => {
 
-    const fakeData: DisplacedProfileResponse = fakeDisplacedProfileResponse({ displaced_Id: displaced_Id })
+    const fakeResponse: DisplacedProfileResponse = fakeDisplacedProfileResponse({ displaced_Id: displaced_Id })
 
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 

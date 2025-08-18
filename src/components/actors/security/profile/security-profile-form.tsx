@@ -53,7 +53,7 @@ import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import Upload_Media from '../../common/upload-files/Upload_Media';
 
-interface SecurityPersonProps {
+interface SecurityProfileFormProps {
   security_Id?: number;
   destination?: ACTION_ADD_EDIT_DISPLAY;
 }
@@ -61,14 +61,12 @@ interface SecurityPersonProps {
 export default function Security_Profile_Form({
   security_Id,
   destination,
-}: SecurityPersonProps) {
+}: SecurityProfileFormProps) {
   const queryClient = useQueryClient();
 
   const { startUpload } = useUploadThing('mediaUploader');
-  const [profileImage, setProfileImage] = useState<File | string | null>(
-    MAN.src
-  );
   const [uploading, setUploading] = useState(false);
+  const [profileImage, setProfileImage] = useState<File | string | null>(MAN.src);
 
   const { isSecurityOfficer, isSecurity, isManager, user } = useAuth();
   const isOwner = isSecurity && user?.id === security_Id;
@@ -77,22 +75,16 @@ export default function Security_Profile_Form({
 
   const [query, setQuery] = useQueryState(
     'action',
-    parseAsStringEnum<ACTION_ADD_EDIT_DISPLAY>(
-      Object.values(ACTION_ADD_EDIT_DISPLAY)
-    ).withDefault(ACTION_ADD_EDIT_DISPLAY.DISPLAY)
+    parseAsStringEnum<ACTION_ADD_EDIT_DISPLAY>(Object.values(ACTION_ADD_EDIT_DISPLAY)).withDefault(
+      destination ?? ACTION_ADD_EDIT_DISPLAY.DISPLAY
+    )
   );
 
-  const isAddMode =
-    (isManager || isSecurityOfficer) &&
-    destination === ACTION_ADD_EDIT_DISPLAY.ADD;
-
+  const isAddMode = (isManager || isSecurityOfficer) && destination === ACTION_ADD_EDIT_DISPLAY.ADD;
   const isEditMode =
-    (isManager || isSecurityOfficer || isOwner) &&
-    query === ACTION_ADD_EDIT_DISPLAY.EDIT;
-
+    (isManager || isSecurityOfficer || isOwner) && query === ACTION_ADD_EDIT_DISPLAY.EDIT;
   const isDisplayMode =
-    query === ACTION_ADD_EDIT_DISPLAY.DISPLAY &&
-    destination !== ACTION_ADD_EDIT_DISPLAY.ADD;
+    query === ACTION_ADD_EDIT_DISPLAY.DISPLAY && destination !== ACTION_ADD_EDIT_DISPLAY.ADD;
 
   const form = useForm<SecurityProfileSchemaType>({
     mode: 'uncontrolled',
@@ -120,55 +112,44 @@ export default function Security_Profile_Form({
   } = useQuery<SecurityProfileResponse>({
     queryKey: ['security-profile', security_Id],
     queryFn: () => getSecurityProfile({ security_Id: security_Id as number }),
-    enabled: (isDisplayMode || isEditMode) && !!security_Id,
+    enabled: !!security_Id && (isDisplayMode || isEditMode),
   });
 
-  useEffect(() => {
-    if (!isAddMode && securityProfileData) {
-      if (securityProfileData.status === 200 && securityProfileData.user) {
-        const user = securityProfileData.user;
+  const applyData = ({ securityData }: { securityData: SecurityProfileResponse | undefined }) => {
+    if (!isAddMode && securityData && securityData.status === 200 && securityData.user) {
+      const userData = securityData.user;
+      setProfileImage(MAN.src || userData.profile_image || MAN.src);
 
-        setProfileImage(MAN.src || user.profile_image || MAN.src);
-
-        form.setValues({
-          name: user.name,
-          email: user.email || '',
-          identity: user.identity,
-          gender: user.gender,
-          nationality: user.nationality,
-          profile_image: user.profile_image || null,
-          phone_number:
-            user.phone_number.length === 10
-              ? `+970${user.phone_number}`
-              : user.phone_number,
-          alternative_phone_number:
-            user.alternative_phone_number?.length === 10
-              ? `+970${user.alternative_phone_number}`
-              : user.alternative_phone_number || '',
-          social_status: user.social_status || SOCIAL_STATUS.SINGLE,
-          rank: user.rank || USER_RANK.SECURITY,
-          additional_notes: user.additional_notes || '',
-        });
-        form.clearErrors();
-        form.resetTouched();
-        form.resetDirty();
-      } else {
-        notifications.show({
-          title: 'خطأ',
-          message:
-            securityProfileData.error ||
-            'فشل في تحميل بيانات الملف الشخصي للأمن',
-          color: 'red',
-          position: 'top-left',
-          withBorder: true,
-        });
-      }
-    }
-
-    if (isAddMode) {
+      form.setValues({
+        name: userData.name,
+        email: userData.email || '',
+        identity: userData.identity,
+        gender: userData.gender,
+        nationality: userData.nationality,
+        profile_image: userData.profile_image || null,
+        phone_number:
+          userData.phone_number.length === 10
+            ? `+970${userData.phone_number}`
+            : userData.phone_number,
+        alternative_phone_number:
+          userData.alternative_phone_number?.length === 10
+            ? `+970${userData.alternative_phone_number}`
+            : userData.alternative_phone_number || '',
+        social_status: userData.social_status || SOCIAL_STATUS.SINGLE,
+        rank: userData.rank || USER_RANK.SECURITY,
+        additional_notes: userData.additional_notes || '',
+      });
+      form.clearErrors();
+      form.resetTouched();
+      form.resetDirty();
+    } else if (isAddMode) {
       form.reset();
       setProfileImage(MAN.src);
     }
+  };
+
+  useEffect(() => {
+    applyData({ securityData: securityProfileData });
   }, [securityProfileData, isAddMode]);
 
   useEffect(() => {
@@ -194,32 +175,8 @@ export default function Security_Profile_Form({
           position: 'top-left',
           withBorder: true,
         });
-        const security_user = data.user;
-        form.setValues({
-          name: security_user.name,
-          email: security_user.email || '',
-          identity: security_user.identity,
-          gender: security_user.gender,
-          nationality: security_user.nationality,
-          profile_image: security_user.profile_image || null,
-          phone_number:
-            security_user.phone_number.length === 10
-              ? `+970${security_user.phone_number}`
-              : security_user.phone_number,
-          alternative_phone_number:
-            security_user.alternative_phone_number?.length === 10
-              ? `+970${security_user.alternative_phone_number}`
-              : security_user.alternative_phone_number || '',
-          social_status: security_user.social_status || SOCIAL_STATUS.SINGLE,
-          rank: security_user.rank || USER_RANK.SECURITY,
-          additional_notes: security_user.additional_notes || '',
-        });
-        form.clearErrors();
-        form.resetTouched();
-        form.resetDirty();
-        setProfileImage(security_user.profile_image || MAN.src);
+        applyData({ securityData: data });
         refetch();
-
         queryClient.invalidateQueries({ queryKey: ['security-profile'] });
       } else {
         throw new Error(data.error || 'فشل في تحديث الملف الشخصي للأمن');
@@ -227,8 +184,7 @@ export default function Security_Profile_Form({
     },
     onError: (error) => {
       setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY);
-      const errorMessage =
-        error?.message || 'حدث خطأ أثناء تحديث الملف الشخصي للأمن';
+      const errorMessage = error?.message || 'حدث خطأ أثناء تحديث الملف الشخصي للأمن';
       form.setErrors({ general: errorMessage });
       notifications.show({
         title: 'خطأ',
@@ -280,8 +236,7 @@ export default function Security_Profile_Form({
     try {
       setUploading(true);
       const mediaUrl = await handleUploadMedia(file, startUpload);
-      if (!mediaUrl)
-        throw new Error('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.');
+      if (!mediaUrl) throw new Error('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.');
       return mediaUrl;
     } catch {
       notifications.show({
@@ -297,53 +252,47 @@ export default function Security_Profile_Form({
     }
   };
 
-  const handleSubmit = form.onSubmit(
-    async (values: SecurityProfileSchemaType) => {
-      const avatarUrl =
-        profileImage instanceof File
-          ? await uploadImages(profileImage)
-          : (profileImage as string | null) ?? null;
+  const handleSubmit = form.onSubmit(async (values: SecurityProfileSchemaType) => {
+    console.log('🚀 ~ Security_Profile_Form ~ values:', values);
+    const avatarUrl =
+      profileImage instanceof File
+        ? await uploadImages(profileImage)
+        : (profileImage as string | null) ?? null;
 
-      const payload: SecurityProfileSchemaType = {
-        ...values,
-        profile_image: avatarUrl,
-      };
+    const payload: SecurityProfileSchemaType = {
+      ...values,
+      profile_image: avatarUrl,
+    };
 
-      const handleError = (error: unknown) => {
-        const errorMessage =
-          (error as Error)?.message || 'فشل في حفظ الملف الشخصي للأمن';
-        form.setErrors({ general: errorMessage });
-        notifications.show({
-          title: 'خطأ',
-          message: errorMessage,
-          color: 'red',
-          position: 'top-left',
-          withBorder: true,
-        });
-      };
+    const handleError = (error: unknown) => {
+      const errorMessage = (error as Error)?.message || 'فشل في حفظ الملف الشخصي للأمن';
+      form.setErrors({ general: errorMessage });
+      notifications.show({
+        title: 'خطأ',
+        message: errorMessage,
+        color: 'red',
+        position: 'top-left',
+        withBorder: true,
+      });
+    };
 
-      try {
-        if (isAddMode) {
-          addSecurityProfileMutation.mutate(
-            { payload },
-            { onError: handleError }
-          );
-        }
-        if (isEditMode) {
-          updateSecurityProfileMutation.mutate(
-            { security_Id: security_Id as number, payload },
-            { onError: handleError }
-          );
-        }
-      } catch (error) {
-        handleError(error);
+    try {
+      if (isAddMode) {
+        addSecurityProfileMutation.mutate({ payload }, { onError: handleError });
       }
+      if (isEditMode) {
+        updateSecurityProfileMutation.mutate(
+          { security_Id: security_Id as number, payload },
+          { onError: handleError }
+        );
+      }
+    } catch (error) {
+      handleError(error);
     }
-  );
+  });
 
   const isMutationLoading =
-    updateSecurityProfileMutation.isPending ||
-    addSecurityProfileMutation.isPending;
+    updateSecurityProfileMutation.isPending || addSecurityProfileMutation.isPending;
 
   return (
     <Stack p={{ base: 10, md: 20 }} pos='relative'>
@@ -381,12 +330,7 @@ export default function Security_Profile_Form({
               />
             )
           ) : (
-            <Image
-              src={MAN}
-              alt='Avatar'
-              className='w-[100px] h-[100px]'
-              priority
-            />
+            <Image src={MAN} alt='Avatar' className='w-[100px] h-[100px]' priority />
           )}
           {(isEditMode || isAddMode) && (
             <Upload_Media File_Type='image' setFileObject={setProfileImage}>
@@ -441,12 +385,7 @@ export default function Security_Profile_Form({
           >
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   الاسم :
                 </Text>
               }
@@ -464,12 +403,7 @@ export default function Security_Profile_Form({
             <TextInput
               type='email'
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   البريد الإلكتروني :
                 </Text>
               }
@@ -486,12 +420,7 @@ export default function Security_Profile_Form({
 
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   رقم الهوية :
                 </Text>
               }
@@ -508,12 +437,7 @@ export default function Security_Profile_Form({
 
             <NativeSelect
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   الجنس :
                 </Text>
               }
@@ -533,12 +457,7 @@ export default function Security_Profile_Form({
 
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   الجنسية :
                 </Text>
               }
@@ -555,12 +474,7 @@ export default function Security_Profile_Form({
 
             <NativeSelect
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   الحالة الاجتماعية :
                 </Text>
               }
@@ -579,12 +493,7 @@ export default function Security_Profile_Form({
             />
 
             <Stack w='100%' gap={0}>
-              <Text
-                fz={16}
-                fw={500}
-                mb={4}
-                className='!text-black !text-nowrap'
-              >
+              <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                 رقم الجوال :
               </Text>
               <Box dir='ltr' className='w-full'>
@@ -608,12 +517,7 @@ export default function Security_Profile_Form({
               (form.getValues().alternative_phone_number &&
                 form.getValues().alternative_phone_number !== '')) && (
               <Stack w='100%' gap={0}>
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   رقم بديل :
                 </Text>
                 <Box dir='ltr' className='w-full'>
@@ -636,32 +540,26 @@ export default function Security_Profile_Form({
 
           {isEditMode ||
             isAddMode ||
-            (form.getValues().additional_notes &&
-              form.getValues().additional_notes !== '' && (
-                <Box className='bg-gray-50 shadow-md rounded-lg' p={16}>
-                  <Textarea
-                    label={
-                      <Text
-                        fz={18}
-                        fw={600}
-                        mb={4}
-                        className='!text-primary !text-nowrap'
-                      >
-                        ملاحظات إضافية :
-                      </Text>
-                    }
-                    placeholder='ادخل ملاحظات إضافية...'
-                    size='sm'
-                    w='100%'
-                    classNames={{
-                      input:
-                        'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
-                    }}
-                    {...form.getInputProps('additional_notes')}
-                    disabled={isDisplayMode}
-                  />
-                </Box>
-              ))}
+            (form.getValues().additional_notes && form.getValues().additional_notes !== '' && (
+              <Box className='bg-gray-50 shadow-md rounded-lg' p={16}>
+                <Textarea
+                  label={
+                    <Text fz={18} fw={600} mb={4} className='!text-primary !text-nowrap'>
+                      ملاحظات إضافية :
+                    </Text>
+                  }
+                  placeholder='ادخل ملاحظات إضافية...'
+                  size='sm'
+                  w='100%'
+                  classNames={{
+                    input:
+                      'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
+                  }}
+                  {...form.getInputProps('additional_notes')}
+                  disabled={isDisplayMode}
+                />
+              </Box>
+            ))}
 
           {(isEditMode || isAddMode) && (
             <Group justify='center' w={'100%'} mt={20}>
@@ -674,9 +572,7 @@ export default function Security_Profile_Form({
                 fw={500}
                 fz={16}
                 className='shadow-sm'
-                rightSection={
-                  isEditMode ? <UserPen size={16} /> : <Save size={16} />
-                }
+                rightSection={isEditMode ? <UserPen size={16} /> : <Save size={16} />}
               >
                 {isAddMode ? 'إضافة' : 'حفظ التعديلات'}
               </Button>

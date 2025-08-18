@@ -9,11 +9,11 @@ export interface getSecurityProfileProps {
 
 export const getSecurityProfile = async ({ security_Id }: getSecurityProfileProps): Promise<SecurityProfileResponse> => {
 
-    const fakeData: SecurityProfileResponse = fakeSecurityProfileResponse({ security_Id: security_Id })
+    const fakeResponse: SecurityProfileResponse = fakeSecurityProfileResponse({ security_Id: security_Id })
 
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 
