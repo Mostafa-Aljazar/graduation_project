@@ -205,7 +205,7 @@ export const fakeSecurities: Security[] = [
 ];
 
 
-export const fakeSecuritiesResponse = ({ page = 1, limit = 10, search }: getSecurityDataProps): SecuritiesResponse => {
+export const fakeSecuritiesResponse = ({ page = 1, limit = 10 }: getSecurityDataProps): SecuritiesResponse => {
     const paged = fakeSecurities.slice((page - 1) * limit, page * limit);
     return {
         status: 200,

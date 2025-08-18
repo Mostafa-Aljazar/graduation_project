@@ -14,14 +14,14 @@ export const sendMeetingDelegateRequest = async ({
     dateTime,
     details,
 }: sendMeetingDelegateRequestProps): Promise<commonActionResponse> => {
-    const fakeData: commonActionResponse = {
+    const fakeResponse: commonActionResponse = {
         status: 200,
         message: `تم ارسال طلب الاجتماع لـ ${delegate_Ids.length} مندوب بنجاح`,
 
     }
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 

@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 export interface sendSecurityMeetingRequestProps {
@@ -13,37 +13,38 @@ export const sendSecurityMeetingRequest = async ({
     security_Ids,
     dateTime,
     details,
-}: sendSecurityMeetingRequestProps): Promise<modalActionResponse> => {
-    // FIXME: Remove this fake data logic in production
-    const fakeData: modalActionResponse = {
+}: sendSecurityMeetingRequestProps): Promise<commonActionResponse> => {
+    const fakeResponse: commonActionResponse = {
         status: 200,
-        message: `تم إرسال طلب الاجتماع لـ ${security_Ids.length} عنصر أمني بنجاح`,
-    };
+        message: `تم ارسال طلب الاجتماع لـ ${security_Ids.length} عنصر أمني بنجاح`,
+    }
 
-    // Simulate API delay for fake data
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
-        }, 2000);
+            resolve(fakeResponse);
+        }, 500);
     });
 
-    // Real implementation
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post("/securities/meeting", {
+
+        const response = await AqsaAPI.post<commonActionResponse>("/securities/meeting", {
             security_Ids,
             dateTime,
             details,
         });
 
         return {
-            status: response.status,
-            message: `تم إرسال طلب الاجتماع لـ ${security_Ids.length} عنصر أمني بنجاح`,
+            status: 200,
+            message: `تم ارسال طلب الاجتماع لـ ${security_Ids.length} عنصر أمني بنجاح`,
         };
     } catch (error: any) {
+
         const errorMessage =
-            error.response?.data?.error ||
-            error.message ||
-            "حدث خطأ أثناء إرسال طلب الاجتماع";
+            error.response?.data?.error || error.message || "حدث خطأ أثناء ارسال طلب الاجتماع";
+
         return {
             status: error.response?.status || 500,
             message: errorMessage,

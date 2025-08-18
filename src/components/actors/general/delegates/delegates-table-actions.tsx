@@ -28,17 +28,13 @@ interface ActionItem {
   action: () => void;
 }
 
-interface DelegatesTableActionsProps {
+interface Props {
   delegate_Id?: number;
   delegate_Ids?: number[];
   disabled?: boolean;
 }
 
-export default function Delegates_Table_Actions({
-  delegate_Id,
-  delegate_Ids,
-  disabled,
-}: DelegatesTableActionsProps) {
+export default function Delegates_Table_Actions({ delegate_Id, delegate_Ids, disabled }: Props) {
   const { isManager, isSecurity, isSecurityOfficer } = useAuth();
   const [openedPopover, setOpenedPopover] = useState(false);
   const [modalType, setModalType] = useState<

@@ -1,6 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
-
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   sendSecurityMeetingRequest,
   sendSecurityMeetingRequestProps,
@@ -42,13 +41,13 @@ export default function Meeting_Security_Members_Modal({
   });
 
   const meetingMutation = useMutation<
-    modalActionResponse,
+    commonActionResponse,
     unknown,
     sendSecurityMeetingRequestProps
   >({
     mutationFn: sendSecurityMeetingRequest,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تم الارسال',
           message: data.message,
@@ -117,6 +116,9 @@ export default function Meeting_Security_Members_Modal({
             value={form.values.dateTime}
             onChange={(value) => form.setFieldValue('dateTime', new Date(value))}
             error={form.errors.dateTime}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
           />
           <Textarea
             size='sm'
@@ -130,16 +132,10 @@ export default function Meeting_Security_Members_Modal({
             maxRows={6}
             autosize
             {...form.getInputProps('details')}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
           />
-
-          <Group gap={6} wrap='nowrap'>
-            <Tooltip label='يرجى تحديد موعد دقيق وكتابة تفاصيل واضحة' withArrow position='right'>
-              <Info size={18} style={{ cursor: 'help' }} className='!text-primary' />
-            </Tooltip>
-            <Text fz={14} color='dimmed' fw={500}>
-              سيتم إرسال إشعار للأعضاء المحددين.
-            </Text>
-          </Group>
 
           <Group justify='flex-end'>
             <Button
@@ -148,14 +144,14 @@ export default function Meeting_Security_Members_Modal({
               variant='outline'
               onClick={close}
               fw={600}
-              className='!border-primary !text-primary'
+              className='!shadow-md !border-primary !text-primary'
             >
               إلغاء
             </Button>
             <Button
               size='sm'
               type='submit'
-              className='!bg-primary'
+              className='!bg-primary !shadow-md'
               loading={meetingMutation.isPending}
             >
               تأكيد

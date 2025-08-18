@@ -12,12 +12,6 @@ import { useMutation } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { z } from 'zod';
 
-interface CallModalProps {
-  delegate_Ids: number[];
-  opened: boolean;
-  close: () => void;
-}
-
 const callSchema = z.object({
   dateTime: z.date().refine((date) => dayjs(date).isAfter(dayjs()), {
     message: 'الرجاء اختيار تاريخ ووقت في المستقبل',
@@ -27,7 +21,16 @@ const callSchema = z.object({
 
 export type callType = z.infer<typeof callSchema>;
 
-export default function Call_Delegate_Modal({ delegate_Ids, opened, close }: CallModalProps) {
+interface CallDelegateModalProps {
+  delegate_Ids: number[];
+  opened: boolean;
+  close: () => void;
+}
+export default function Call_Delegate_Modal({
+  delegate_Ids,
+  opened,
+  close,
+}: CallDelegateModalProps) {
   const form = useForm<callType>({
     initialValues: {
       dateTime: dayjs().add(1, 'hour').toDate(),

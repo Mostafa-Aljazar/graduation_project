@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   sendCallRequest,
   sendCallRequestProps,
@@ -44,10 +44,10 @@ export default function Call_Security_Members_Modal({
     validate: zodResolver(callSchema),
   });
 
-  const callMutation = useMutation<modalActionResponse, unknown, sendSecurityCallRequestProps>({
+  const callMutation = useMutation<commonActionResponse, unknown, sendSecurityCallRequestProps>({
     mutationFn: sendSecurityCallRequest,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تم الاستدعاء',
           message: data.message,
@@ -74,7 +74,6 @@ export default function Call_Security_Members_Modal({
   });
 
   const handleSubmit = (values: callType) => {
-    console.log('🚀 ~ handleSubmit ~ values:', values);
     callMutation.mutate({
       security_Ids,
       dateTime: values.dateTime,
@@ -114,7 +113,11 @@ export default function Call_Security_Members_Modal({
             value={form.values.dateTime}
             onChange={(value) => form.setFieldValue('dateTime', new Date(value))}
             error={form.errors.dateTime}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
           />
+
           <Textarea
             size='sm'
             label={
@@ -127,7 +130,11 @@ export default function Call_Security_Members_Modal({
             maxRows={6}
             autosize
             {...form.getInputProps('details')}
+            classNames={{
+              input: 'placeholder:!text-sm !text-primary !font-normal',
+            }}
           />
+
           <Group justify='flex-end'>
             <Button
               size='sm'
@@ -142,7 +149,7 @@ export default function Call_Security_Members_Modal({
             <Button
               size='sm'
               type='submit'
-              className='!bg-primary'
+              className='!bg-primary !shadow-md'
               loading={callMutation.isPending}
             >
               تأكيد

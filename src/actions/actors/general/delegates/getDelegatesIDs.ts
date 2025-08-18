@@ -5,10 +5,10 @@ import { fakeDelegatesIdsResponse } from "@/content/actor/delegate/fake-delegate
 import { AqsaAPI } from "@/services";
 
 export const getDelegatesIds = async (): Promise<DelegatesIdsResponse> => {
-    const fakeData: DelegatesIdsResponse = fakeDelegatesIdsResponse()
+    const fakeResponse: DelegatesIdsResponse = fakeDelegatesIdsResponse()
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 

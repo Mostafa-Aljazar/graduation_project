@@ -1,15 +1,13 @@
 'use client';
 
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   deleteSecurityMembers,
   deleteSecurityMembersProps,
 } from '@/actions/actors/general/security-data/deleteSecurityMembers';
-
 import { Button, Group, Modal, Stack, Text, Tooltip } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
-import { Info } from 'lucide-react';
 
 interface DeleteSecurityModalProps {
   security_Ids: number[];
@@ -22,12 +20,12 @@ export default function Delete_Security_Members_Modal({
   opened,
   close,
 }: DeleteSecurityModalProps) {
-  const deleteMutation = useMutation<modalActionResponse, unknown, deleteSecurityMembersProps>({
+  const deleteMutation = useMutation<commonActionResponse, unknown, deleteSecurityMembersProps>({
     mutationFn: deleteSecurityMembers,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
-          title: 'تم الحذف',
+          title: 'تمت العملية بنجاح',
           message: data.message,
           color: 'grape',
           position: 'top-left',
@@ -51,41 +49,36 @@ export default function Delete_Security_Members_Modal({
   });
 
   const handleClick = () => {
-    deleteMutation.mutate({ security_Ids });
+    deleteMutation.mutate({
+      security_Ids,
+    });
   };
 
   return (
     <Modal
       opened={opened}
-      onClose={close}
+      onClose={() => close()}
       title={
         <Text fz={18} fw={600} ta='center' className='!text-red-500'>
           تأكيد الحذف
         </Text>
       }
-      classNames={{ title: '!w-full' }}
+      classNames={{
+        title: '!w-full',
+      }}
       centered
     >
       <Stack>
-        <Text fz={16} fw={600} mt='xs'>
-          {security_Ids.length === 1
-            ? 'هل أنت متأكد من حذف هذا العنصر؟'
-            : `هل أنت متأكد من حذف ${security_Ids.length} عناصر؟`}
-        </Text>
-
-        <Group gap={6} wrap='nowrap'>
-          <Tooltip
-            label='لا يمكن التراجع عن حذف العناصر بعد تأكيد العملية'
-            withArrow
-            position='right'
-          >
-            <Info size={18} style={{ cursor: 'help' }} className='!text-red-500' />
-          </Tooltip>
-          <Text fz={14} fw={600} className='!text-red-500'>
-            هذا الإجراء لا يمكن التراجع عنه.
+        {security_Ids.length == 1 && (
+          <Text fz={16} fw={500}>
+            هل أنت متأكد من حذف هذا العنصر؟ هذا الإجراء لا يمكن التراجع عنه.
           </Text>
-        </Group>
-
+        )}
+        {security_Ids.length > 1 && (
+          <Text fz={16} fw={500}>
+            هل أنت متأكد من حذف هؤلاء العناصر هذا الإجراء لا يمكن التراجع عنه.
+          </Text>
+        )}
         <Group justify='flex-end'>
           <Button
             size='sm'
@@ -93,14 +86,14 @@ export default function Delete_Security_Members_Modal({
             variant='outline'
             onClick={close}
             fw={600}
-            className='!border-primary !text-primary'
+            className='!shadow-md !border-primary !text-primary'
           >
             إلغاء
           </Button>
           <Button
             size='sm'
             type='button'
-            className='!bg-red-500'
+            className='!bg-red-500 !shadow-md'
             loading={deleteMutation.isPending}
             onClick={handleClick}
           >

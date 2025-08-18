@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 export interface sendSecurityCallRequestProps {
@@ -13,24 +13,23 @@ export const sendSecurityCallRequest = async ({
     security_Ids,
     dateTime,
     details,
-}: sendSecurityCallRequestProps): Promise<modalActionResponse> => {
-    // FIXME: Remove this fake data logic in production
-    const fakeData: modalActionResponse = {
+}: sendSecurityCallRequestProps): Promise<commonActionResponse> => {
+    const fakeResponse: commonActionResponse = {
         status: 200,
         message: `تم إنشاء استدعاء لـ ${security_Ids.length} عنصر أمني بنجاح`,
 
     }
-    // Simulate API delay for fake data
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
-        }, 2000);
+            resolve(fakeResponse);
+        }, 500);
     });
 
-    // Real implementation with filters
-
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post("/securities/calls", {
+        const response = await AqsaAPI.post<commonActionResponse>("/securities/calls", {
             security_Ids,
             dateTime,
             details,
@@ -40,9 +39,12 @@ export const sendSecurityCallRequest = async ({
             status: 200,
             message: `تم إنشاء استدعاء لـ ${security_Ids.length} عنصر أمني بنجاح`,
         };
+
     } catch (error: any) {
+
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء إنشاء الاستدعاء";
+
         return {
             status: error.response?.status || 500,
             message: errorMessage,

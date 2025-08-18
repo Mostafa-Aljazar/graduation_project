@@ -10,11 +10,11 @@ interface GetSecurityNamesProps {
 
 export const getSecurityNames = async ({ ids }: GetSecurityNamesProps): Promise<SecurityNamesResponse> => {
 
-    const fakeData = fakeSecuritiesNamesResponse({ ids });
+    const fakeResponse = fakeSecuritiesNamesResponse({ ids });
 
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 
@@ -29,11 +29,7 @@ export const getSecurityNames = async ({ ids }: GetSecurityNamesProps): Promise<
         });
 
         if (response.data?.security_names) {
-            return {
-                status: 200,
-                message: "تم جلب أسماء أفراد الأمن بنجاح",
-                security_names: response.data.security_names,
-            };
+            return response.data
         }
 
         throw new Error("بيانات  أسماء أفراد الأمن غير متوفرة");

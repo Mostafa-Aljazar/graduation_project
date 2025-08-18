@@ -26,14 +26,15 @@ import Delegates_Table_Actions from '../delegates-table-actions';
 import { ListChecks, ListX, Users } from 'lucide-react';
 
 export default function Delegates_Table() {
-  const [selectedDelegateIds, setSelectedDelegateIds] = useState<number[]>([]);
-  const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
   const [query, setQuery] = useQueryStates(
     {
       delegate_page: parseAsInteger.withDefault(1),
     },
     { shallow: true }
   );
+
+  const [selectedDelegateIds, setSelectedDelegateIds] = useState<number[]>([]);
+  const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
 
   const currentPage = query.delegate_page || 1;
   const limit = 7;
@@ -114,7 +115,7 @@ export default function Delegates_Table() {
         </ActionIcon>
       </Table.Th>
       <Table.Th px={5} ta='center' w='fit-content'>
-        الرقم
+        #
       </Table.Th>
       <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         اسم المندوب
@@ -134,7 +135,7 @@ export default function Delegates_Table() {
       <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         رقم الجوال
       </Table.Th>
-      <Table.Th px={5} ta='center' w='fit-content'>
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         الإجراءات
       </Table.Th>
     </Table.Tr>
@@ -221,6 +222,11 @@ export default function Delegates_Table() {
           )}
         </Group>
 
+        {selectedDelegateIds.length > 0 && (
+          <Group justify='flex-end' flex={1}>
+            <Delegates_Table_Actions delegate_Ids={selectedDelegateIds} />
+          </Group>
+        )}
         <Group justify='flex-end' flex={1}>
           <Delegates_Table_Actions delegate_Ids={selectedDelegateIds} />
         </Group>
@@ -238,15 +244,15 @@ export default function Delegates_Table() {
             zIndex={1000}
             overlayProps={{ radius: 'sm', blur: 0.3 }}
           />
-          {queryError && (
+          {error && (
             <Text fw={500} size='sm' ta='center' c='red'>
-              {queryError.message}
+              {error.message}
             </Text>
           )}
         </>
+
         <Table horizontalSpacing='xs' striped highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead>{columns}</Table.Thead>
-          <Table.Tbody>{rows}</Table.Tbody>
           <Table.Tbody>{rows.length === 0 ? noDelegates : rows}</Table.Tbody>
         </Table>
       </Table.ScrollContainer>

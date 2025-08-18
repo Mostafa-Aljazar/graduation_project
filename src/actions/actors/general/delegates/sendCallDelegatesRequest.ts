@@ -14,14 +14,14 @@ export const sendCallDelegatesRequest = async ({
     dateTime,
     details,
 }: sendCallDelegatesRequestProps): Promise<commonActionResponse> => {
-    const fakeData: commonActionResponse = {
+    const fakeResponse: commonActionResponse = {
         status: 200,
         message: `تم إنشاء استدعاء لـ ${delegate_Ids.length} مندوب بنجاح`,
 
     }
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 

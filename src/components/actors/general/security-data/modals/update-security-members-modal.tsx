@@ -1,6 +1,6 @@
 'use client';
 
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   sendSecurityUpdateRequest,
   sendSecurityUpdateRequestProps,
@@ -21,36 +21,38 @@ export default function Update_Security_Members_Modal({
   opened,
   close,
 }: UpdateSecurityModalProps) {
-  const mutation = useMutation<modalActionResponse, unknown, sendSecurityUpdateRequestProps>({
-    mutationFn: sendSecurityUpdateRequest,
-    onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+  const updateMutation = useMutation<commonActionResponse, unknown, sendSecurityUpdateRequestProps>(
+    {
+      mutationFn: sendSecurityUpdateRequest,
+      onSuccess: (data) => {
+        if (data.status === 200) {
+          notifications.show({
+            title: 'تم الارسال',
+            message: data.message,
+            color: 'grape',
+            position: 'top-left',
+            withBorder: true,
+          });
+          close();
+        } else {
+          throw new Error(data.error || 'فشل في الارسال');
+        }
+      },
+      onError: (error: any) => {
+        const errorMessage = error?.message || 'فشل في الارسال';
         notifications.show({
-          title: 'تم الإرسال',
-          message: data.message,
-          color: 'grape',
+          title: 'خطأ',
+          message: errorMessage,
+          color: 'red',
           position: 'top-left',
           withBorder: true,
         });
-        close();
-      } else {
-        throw new Error(data.error || 'فشل في إرسال الطلب');
-      }
-    },
-    onError: (error: any) => {
-      const message = error?.message || 'فشل في إرسال الطلب';
-      notifications.show({
-        title: 'خطأ',
-        message,
-        color: 'red',
-        position: 'top-left',
-        withBorder: true,
-      });
-    },
-  });
+      },
+    }
+  );
 
   const handleClick = () => {
-    mutation.mutate({ security_Ids });
+    updateMutation.mutate({ security_Ids });
   };
 
   return (
@@ -58,15 +60,17 @@ export default function Update_Security_Members_Modal({
       opened={opened}
       onClose={close}
       title={
-        <Text fz={18} fw={600} ta='center' className='!text-primary'>
+        <Text fz={18} fw={600} ta={'center'} className='!text-primary'>
           تحديث البيانات
         </Text>
       }
-      classNames={{ title: '!w-full' }}
+      classNames={{
+        title: '!w-full',
+      }}
       centered
     >
       <Stack>
-        <Text fz={16} fw={600} mt='xs'>
+        <Text fz={16} fw={500}>
           الرجاء التوجه لتحديث البيانات
         </Text>
         <Group justify='flex-end'>
@@ -76,15 +80,15 @@ export default function Update_Security_Members_Modal({
             variant='outline'
             onClick={close}
             fw={600}
-            className='!border-primary !text-primary'
+            className='!shadow-md !border-primary !text-primary'
           >
             إلغاء
           </Button>
           <Button
             size='sm'
             type='button'
-            className='!bg-primary'
-            loading={mutation.isPending}
+            className='!bg-primary !shadow-md'
+            loading={updateMutation.isPending}
             onClick={handleClick}
           >
             تأكيد

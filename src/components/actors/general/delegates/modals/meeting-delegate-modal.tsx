@@ -12,12 +12,6 @@ import { useMutation } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { z } from 'zod';
 
-interface MeetingModalProps {
-  delegate_Ids: Number[];
-  opened: boolean;
-  close: () => void;
-}
-
 const meetingSchema = z.object({
   dateTime: z.date().refine((date) => dayjs(date).isAfter(dayjs()), {
     message: 'الرجاء اختيار تاريخ ووقت في المستقبل',
@@ -27,6 +21,11 @@ const meetingSchema = z.object({
 
 export type meetingType = z.infer<typeof meetingSchema>;
 
+interface MeetingModalProps {
+  delegate_Ids: Number[];
+  opened: boolean;
+  close: () => void;
+}
 export default function Meeting_Delegate_Modal({ delegate_Ids, opened, close }: MeetingModalProps) {
   const form = useForm<meetingType>({
     initialValues: {

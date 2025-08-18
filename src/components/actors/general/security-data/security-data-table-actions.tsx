@@ -39,9 +39,7 @@ export default function Security_Data_Table_Actions({
   security_Ids,
   disabled,
 }: Props) {
-  const { isManager, isSecurity, isSecurityOfficer, isDelegate, isDisplaced } =
-    useAuth();
-
+  const { isManager, isSecurity, isSecurityOfficer } = useAuth();
   const [openedPopover, setOpenedPopover] = useState(false);
   const [modalType, setModalType] = useState<
     'edit' | 'delete' | 'call' | 'update' | 'meeting' | null
@@ -56,66 +54,40 @@ export default function Security_Data_Table_Actions({
 
   const closeModal = () => setModalType(null);
 
-  const getActions = (): ActionItem[] => {
-    const generalActions: ActionItem[] = [
-      { label: 'حذف', icon: Trash, action: () => openModal('delete') },
-      { label: 'استدعاء', icon: Speech, action: () => openModal('call') },
-      {
-        label: 'تحديث بيانات',
-        icon: UserCog,
-        action: () => openModal('update'),
-      },
-      { label: 'اجتماع', icon: Users, action: () => openModal('meeting') },
-    ];
+  const buildRoute = (id: number, edit = false) => {
+    const base = SECURITY_ROUTES_fUNC({ security_Id: id });
+    return edit ? `${base.PROFILE}?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}` : base.PROFILE;
+  };
 
-    const singleViewAction: ActionItem = {
+  const commonActions: ActionItem[] = [
+    { label: 'حذف', icon: Trash, action: () => openModal('delete') },
+    { label: 'استدعاء', icon: Speech, action: () => openModal('call') },
+    { label: 'تحديث بيانات', icon: UserCog, action: () => openModal('update') },
+    { label: 'اجتماع', icon: Users, action: () => openModal('meeting') },
+  ];
+
+  const viewEditActions: ActionItem[] = [
+    {
       label: 'عرض',
       icon: Eye,
-      action: () =>
-        router.push(SECURITY_ROUTES_fUNC(security_Id || -1).PROFILE),
-    };
-
-    const singleEditAction: ActionItem = {
+      action: () => router.push(buildRoute(security_Id || 0)),
+    },
+    {
       label: 'تعديل',
       icon: UserPen,
-      action: () =>
-        router.push(
-          `${SECURITY_ROUTES_fUNC(security_Id || -1).PROFILE}?action=${
-            ACTION_ADD_EDIT_DISPLAY.EDIT
-          }`
-        ),
-    };
+      action: () => router.push(buildRoute(security_Id || 0, true)),
+    },
+  ];
 
-    if (isManager || isSecurityOfficer) {
-      if (security_Ids) return generalActions;
-      if (security_Id)
-        return [singleViewAction, singleEditAction, ...generalActions];
-    }
-
-    if (isSecurity) {
-      if (security_Id)
-        return [
-          singleViewAction,
-          { label: 'استدعاء', icon: Speech, action: () => openModal('call') },
-          { label: 'اجتماع', icon: Users, action: () => openModal('meeting') },
-        ];
-      if (security_Ids)
-        return [
-          { label: 'استدعاء', icon: Speech, action: () => openModal('call') },
-          { label: 'اجتماع', icon: Users, action: () => openModal('meeting') },
-        ];
-    }
-
-    // if ((isDelegate || isDisplaced) && security_Id)
-    //   return [
-    //     singleViewAction,
-    //     { label: 'اجتماع', icon: Users, action: () => openModal('meeting') },
-    //   ];
-
+  const getActions = (): ActionItem[] => {
+    if ((isManager || isSecurityOfficer) && security_Ids) return [...commonActions];
+    if ((isManager || isSecurityOfficer) && security_Id)
+      return [...viewEditActions, ...commonActions];
     return [];
   };
 
   const ACTIONS = getActions();
+  const IDs = security_Ids || (security_Id ? [security_Id] : []);
 
   const Dropdown_Items = ACTIONS.map((item, index) => (
     <Button
@@ -140,8 +112,6 @@ export default function Security_Data_Table_Actions({
     </Button>
   ));
 
-  const IDs = security_Ids || (security_Id ? [security_Id] : []);
-
   return (
     <>
       <Popover
@@ -158,35 +128,28 @@ export default function Security_Data_Table_Actions({
       >
         <Popover.Target>
           {security_Ids ? (
-            !(isDelegate || isDisplaced) && (
-              <Button
-                type='button'
-                w={130}
-                size='sm'
-                px={15}
-                fz={16}
-                fw={500}
-                c='white'
-                radius='lg'
-                className='!justify-end !items-end !self-end !bg-primary !shadow-lg'
-                rightSection={<Hammer size={15} />}
-                disabled={disabled}
-                onClick={() => setOpenedPopover((o) => !o)}
-              >
-                العمليات
-              </Button>
-            )
-          ) : (
-            <ActionIcon
-              bg='transparent'
-              mt={5}
+            <Button
+              type='button'
+              w={130}
+              size='sm'
+              px={15}
+              fz={16}
+              fw={500}
+              c='white'
+              radius='md'
+              className='!justify-end !items-end !self-end !bg-primary !shadow-lg'
+              rightSection={<Hammer size={15} />}
+              disabled={disabled}
               onClick={() => setOpenedPopover((o) => !o)}
             >
+              العمليات
+            </Button>
+          ) : (
+            <ActionIcon bg='transparent' mt={5} onClick={() => setOpenedPopover((o) => !o)}>
               <EllipsisVertical size={20} className='mx-auto text-primary' />
             </ActionIcon>
           )}
         </Popover.Target>
-
         <Popover.Dropdown p={0} className='!bg-gray-200 !border-none'>
           <Stack justify='flex-start' gap={0}>
             {Dropdown_Items}
@@ -206,15 +169,15 @@ export default function Security_Data_Table_Actions({
         close={closeModal}
       />
 
-      <Meeting_Security_Members_Modal
-        security_Ids={IDs}
-        opened={modalType === 'meeting'}
-        close={closeModal}
-      />
-
       <Update_Security_Members_Modal
         security_Ids={IDs}
         opened={modalType === 'update'}
+        close={closeModal}
+      />
+
+      <Meeting_Security_Members_Modal
+        security_Ids={IDs}
+        opened={modalType === 'meeting'}
         close={closeModal}
       />
     </>

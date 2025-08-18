@@ -22,18 +22,13 @@ import { getSecuritiesIds } from '@/actions/actors/general/security-data/getSecu
 import Security_Data_Table_Actions from '../security-data-table-actions';
 import { SecuritiesResponse } from '@/@types/actors/general/security-data/securitiesDataResponse.types';
 import { ListChecks, ListX, Users } from 'lucide-react';
+import { USER_RANK_LABELS } from '@/constants/userTypes';
+import { cn } from '@/utils/cn';
 
-interface SecurityTableProps {
-  setSecurityNum: (count: number) => void;
-}
-
-export default function Security_Data_Table({
-  setSecurityNum,
-}: SecurityTableProps) {
+export default function Security_Data_Table() {
   const [query, setQuery] = useQueryStates(
     {
       security_page: parseAsInteger.withDefault(1),
-      search: parseAsString.withDefault(''),
     },
     { shallow: true }
   );
@@ -54,7 +49,6 @@ export default function Security_Data_Table({
     queryFn: () =>
       getSecurityData({
         page: query.security_page,
-        search: query.search,
         limit: 7,
       }),
     retry: 1,
@@ -65,9 +59,9 @@ export default function Security_Data_Table({
     isLoading: isLoadingAll,
     error: allQueryError,
   } = useQuery({
-    queryKey: ['securities_all_ids'],
+    queryKey: ['securities_all'],
     queryFn: async () => {
-      const response = await getSecuritiesIds({ search: query.search });
+      const response = await getSecuritiesIds();
 
       return response.security_Ids;
     },
@@ -78,12 +72,6 @@ export default function Security_Data_Table({
 
   const isLoading = isLoadingAll || isLoadingRegular;
   const error = allQueryError || queryError;
-
-  useEffect(() => {
-    if (securityData) {
-      setSecurityNum(securityData.pagination.total_items);
-    }
-  }, [securityData]);
 
   useEffect(() => {
     if (allSecuritiesIDs && selectAllAcrossPages) {
@@ -98,10 +86,7 @@ export default function Security_Data_Table({
 
   const handleRowSelection = (id: number, checked: boolean) => {
     if (checked) {
-      setSelectedSecurityIds((prev) => [
-        ...prev.filter((rowId) => rowId !== id),
-        id,
-      ]);
+      setSelectedSecurityIds((prev) => [...prev.filter((rowId) => rowId !== id), id]);
       if (areAllPagesRowsSelected()) setSelectAllAcrossPages(true);
     } else {
       setSelectedSecurityIds((prev) => prev.filter((rowId) => rowId !== id));
@@ -127,33 +112,27 @@ export default function Security_Data_Table({
           variant='light'
           aria-label='Select all rows across all pages'
           disabled={!securityData?.securities?.length}
-          onClick={() =>
-            handleSelectAllAcrossAllPages(!areAllPagesRowsSelected())
-          }
+          onClick={() => handleSelectAllAcrossAllPages(!areAllPagesRowsSelected())}
         >
-          {areAllPagesRowsSelected() ? (
-            <ListX size={18} />
-          ) : (
-            <ListChecks size={18} />
-          )}
+          {areAllPagesRowsSelected() ? <ListX size={18} /> : <ListChecks size={18} />}
         </ActionIcon>
       </Table.Th>
-      <Table.Th px={5} ta='center'>
-        الرقم
+      <Table.Th px={5} ta='center' w='fit-content'>
+        #
       </Table.Th>
-      <Table.Th px={5} ta='center' style={{ whiteSpace: 'nowrap' }}>
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         الاسم
       </Table.Th>
-      <Table.Th px={5} ta='center'>
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         رقم الهوية
       </Table.Th>
-      <Table.Th px={5} ta='center'>
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         رقم الجوال
       </Table.Th>
-      <Table.Th px={5} ta='center' style={{ whiteSpace: 'nowrap' }}>
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         الرتبة
       </Table.Th>
-      <Table.Th px={5} ta='center'>
+      <Table.Th px={5} ta='center' w='fit-content'>
         الإجراءات
       </Table.Th>
     </Table.Tr>
@@ -163,20 +142,13 @@ export default function Security_Data_Table({
     return (securityData?.securities || []).map((element, index) => (
       <Table.Tr
         key={element.id}
-        bg={
-          isRowSelected(element.id)
-            ? 'var(--mantine-color-blue-light)'
-            : undefined
-        }
+        bg={isRowSelected(element.id) ? 'var(--mantine-color-blue-light)' : undefined}
       >
         <Table.Td px={5} ta='center'>
           <Checkbox
-            mx={'auto'}
             aria-label='Select row'
             checked={isRowSelected(element.id)}
-            onChange={(e) =>
-              handleRowSelection(element.id, e.currentTarget.checked)
-            }
+            onChange={(e) => handleRowSelection(element.id, e.currentTarget.checked)}
           />
         </Table.Td>
         <Table.Td px={5} ta='center'>
@@ -192,7 +164,7 @@ export default function Security_Data_Table({
           {element.mobile_number}
         </Table.Td>
         <Table.Td px={5} ta='center' style={{ whiteSpace: 'nowrap' }}>
-          {element.role}
+          {USER_RANK_LABELS[element.role]}
         </Table.Td>
         <Table.Td px={5} ta='center'>
           <Security_Data_Table_Actions security_Id={element.id} />
@@ -203,7 +175,7 @@ export default function Security_Data_Table({
 
   const noSecurities = (
     <Table.Tr>
-      <Table.Td colSpan={9}>
+      <Table.Td colSpan={7}>
         <Center w='100%' py={30}>
           <Stack align='center' gap={8}>
             <ThemeIcon variant='light' radius='xl' size={50} color='gray'>
@@ -242,49 +214,38 @@ export default function Security_Data_Table({
 
         {selectedSecurityIds.length > 0 && (
           <Group justify='flex-end' flex={1}>
-            <Security_Data_Table_Actions
-              security_Ids={selectedSecurityIds}
-              disabled={selectedSecurityIds?.length === 0 || isLoadingAll}
-            />
+            <Security_Data_Table_Actions security_Ids={selectedSecurityIds} />
           </Group>
         )}
       </Group>
 
-      <Table.ScrollContainer minWidth='100%' pos='relative'>
-        <LoadingOverlay
-          visible={isLoading || isLoadingAll}
-          zIndex={1000}
-          overlayProps={{ radius: 'sm', blur: 0.3 }}
-        />
+      <Table.ScrollContainer
+        minWidth='100%'
+        pos='relative'
+        className={cn(isLoading && '!min-h-[300px]')}
+      >
+        <>
+          <LoadingOverlay
+            visible={isLoading || isLoadingAll}
+            zIndex={1000}
+            overlayProps={{ radius: 'sm', blur: 0.3 }}
+          />
+          {error && (
+            <Text fw={500} size='sm' ta='center' c='red'>
+              {error.message}
+            </Text>
+          )}
+        </>
 
-        {error && (
-          <Text c='red' ta='center'>
-            {error.message}
-            فشل في تحميل البيانات
-          </Text>
-        )}
-
-        <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead
-            style={{
-              position: 'sticky',
-              top: 0,
-              background: 'white',
-              zIndex: 1,
-            }}
-          >
-            {columns}
-          </Table.Thead>
-
+        <Table horizontalSpacing='xs' striped highlightOnHover withTableBorder withColumnBorders>
+          <Table.Thead>{columns}</Table.Thead>
           <Table.Tbody>{rows.length === 0 ? noSecurities : rows}</Table.Tbody>
         </Table>
       </Table.ScrollContainer>
 
       <Pagination
         value={currentPage}
-        onChange={(page) =>
-          setQuery((prev) => ({ ...prev, security_page: page }))
-        }
+        onChange={(page) => setQuery((prev) => ({ ...prev, security_page: page }))}
         total={securityData?.pagination?.total_pages || 0}
         pt={30}
         size='sm'

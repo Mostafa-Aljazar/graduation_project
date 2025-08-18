@@ -10,21 +10,20 @@ export interface sendUpdateDelegatesRequestProps {
 export const sendUpdateDelegatesRequest = async ({
     delegate_Ids
 }: sendUpdateDelegatesRequestProps): Promise<commonActionResponse> => {
-    const fakeData: commonActionResponse = {
+    const fakeResponse: commonActionResponse = {
         status: 200,
         message: `تم ارسال طلب تحديث لـ ${delegate_Ids.length} مندوب بنجاح`,
 
     }
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 
     // /////////////////////////////////////////////////////////////
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
-
     try {
         const response = await AqsaAPI.post<commonActionResponse>("/delegates/update", {
             delegate_Ids,

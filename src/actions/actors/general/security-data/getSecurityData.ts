@@ -7,13 +7,11 @@ import { AqsaAPI } from "@/services";
 export interface getSecurityDataProps {
     page?: number;
     limit?: number;
-    search?: string;
 }
 
 export const getSecurityData = async ({
     page = 1,
     limit = 15,
-    search,
 }: getSecurityDataProps): Promise<SecuritiesResponse> => {
     // FIXME: Remove this fake data logic in production
     const fakeData = fakeSecuritiesResponse({ page, limit });
@@ -28,7 +26,7 @@ export const getSecurityData = async ({
     try {
         const response = await AqsaAPI.get<SecuritiesResponse>("/securities", {
             params: {
-                page, limit, search
+                page, limit
             }
         });
 
