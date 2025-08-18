@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 export interface sendUpdateRequestProps {
@@ -9,8 +9,8 @@ export interface sendUpdateRequestProps {
 
 export const sendUpdateRequest = async ({
     displaced_Ids
-}: sendUpdateRequestProps): Promise<modalActionResponse> => {
-    const fakeData: modalActionResponse = {
+}: sendUpdateRequestProps): Promise<commonActionResponse> => {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم ارسال طلب تحديث لـ ${displaced_Ids.length} نازح بنجاح`,
 
@@ -26,7 +26,7 @@ export const sendUpdateRequest = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post<modalActionResponse>("/displaceds/update", {
+        const response = await AqsaAPI.post<commonActionResponse>("/displaceds/update", {
             displaced_Ids
         });
 

@@ -2,11 +2,11 @@
 
 import { DelegateProfile, DelegateProfileResponse } from "@/@types/actors/delegate/profile/delegateProfileResponse.type";
 import { AqsaAPI } from "@/services";
-import { DelegateProfileType } from "@/validation/actor/delegate/delegate-profile-schema"; // Import the new payload type
+import { DelegateProfileSchemaType } from "@/validation/actor/delegate/delegate-profile-schema"; // Import the new payload type
 
 export interface UpdateDelegateProfileProps {
     delegate_Id: number;
-    payload: DelegateProfileType;
+    payload: DelegateProfileSchemaType;
 }
 
 export const updateDelegateProfile = async ({ delegate_Id, payload }: UpdateDelegateProfileProps): Promise<DelegateProfileResponse> => {

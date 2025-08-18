@@ -24,7 +24,6 @@ import Meeting_Displaced_Modal from './modals/meeting-displaced-modal';
 import Change_Delegate_In_Displaced_Modal from './modals/change-delegate-in-displaceds-modal';
 import { ACTION_ADD_EDIT_DISPLAY } from '@/@types/actors/common-types/index.type';
 
-// Define the type for action items
 interface ActionItem {
   label: string;
   icon: React.ComponentType<{ size?: number | string }>;
@@ -33,7 +32,6 @@ interface ActionItem {
 
 interface DisplacedTableActionsProps {
   displaced_Id?: number;
-  // many
   displaced_Ids?: number[];
   disabled?: boolean;
 }
@@ -53,16 +51,14 @@ export default function Displaced_Table_Actions({
 
   const openModal = (type: typeof modalType) => {
     setModalType(type);
-    setOpenedPopover(false); // Close the popover
+    setOpenedPopover(false);
   };
 
   const closeModal = () => setModalType(null);
 
   const buildRoute = (id: number, edit = false) => {
     const base = DISPLACED_ROUTES_fUNC({ displaced_Id: id });
-    return edit
-      ? `${base.PROFILE}?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
-      : base.PROFILE;
+    return edit ? `${base.PROFILE}?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}` : base.PROFILE;
   };
 
   const commonActions: ActionItem[] = [
@@ -104,11 +100,9 @@ export default function Displaced_Table_Actions({
 
   const getActions = (): ActionItem[] => {
     if (isManager && displaced_Ids) return [...commonActions, ...managerExtras];
-    if (isManager && displaced_Id)
-      return [...viewEditActions, ...commonActions, ...managerExtras];
+    if (isManager && displaced_Id) return [...viewEditActions, ...commonActions, ...managerExtras];
     if (isDelegate && displaced_Ids) return [...commonActions];
-    if (isDelegate && displaced_Id)
-      return [...viewEditActions, ...commonActions];
+    if (isDelegate && displaced_Id) return [...viewEditActions, ...commonActions];
     if (isSecurity || isSecurityOfficer) return securityActions;
     return [];
   };
@@ -172,11 +166,7 @@ export default function Displaced_Table_Actions({
               العمليات
             </Button>
           ) : (
-            <ActionIcon
-              bg='transparent'
-              mt={5}
-              onClick={() => setOpenedPopover((o) => !o)}
-            >
+            <ActionIcon bg='transparent' mt={5} onClick={() => setOpenedPopover((o) => !o)}>
               <EllipsisVertical size={20} className='mx-auto text-primary' />
             </ActionIcon>
           )}
@@ -204,11 +194,7 @@ export default function Displaced_Table_Actions({
         />
       )}
 
-      <Call_Displaced_Modal
-        displaced_Ids={IDs}
-        opened={modalType === 'call'}
-        close={closeModal}
-      />
+      <Call_Displaced_Modal displaced_Ids={IDs} opened={modalType === 'call'} close={closeModal} />
 
       {(isDelegate || isManager) && (
         <Update_Displaced_Modal

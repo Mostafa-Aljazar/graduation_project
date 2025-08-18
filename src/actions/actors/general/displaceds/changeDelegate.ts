@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 export interface changeDelegateProps {
@@ -11,8 +11,8 @@ export interface changeDelegateProps {
 export const changeDelegate = async ({
     displaced_Ids,
     delegateId,
-}: changeDelegateProps): Promise<modalActionResponse> => {
-    const fakeData: modalActionResponse = {
+}: changeDelegateProps): Promise<commonActionResponse> => {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم تغيبر المندوب لـ ${displaced_Ids.length} نازح بنجاح`,
 
@@ -27,7 +27,7 @@ export const changeDelegate = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post<modalActionResponse>("/displaceds/change-delegate", {
+        const response = await AqsaAPI.post<commonActionResponse>("/displaceds/change-delegate", {
             displaced_Ids,
             delegateId,
         });

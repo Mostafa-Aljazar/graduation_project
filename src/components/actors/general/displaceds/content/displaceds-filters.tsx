@@ -32,6 +32,7 @@ import {
   CHRONIC_DISEASE_LABELS,
   WIFE_STATUS,
   WIFE_STATUS_LABELS,
+  ACTION_ADD_EDIT_DISPLAY,
 } from '@/@types/actors/common-types/index.type';
 import { fakeDelegates } from '@/content/actor/delegate/fake-delegates';
 import {
@@ -42,6 +43,7 @@ import useAuth from '@/hooks/useAuth';
 import { DelegatesNamesResponse } from '@/@types/actors/general/delegates/delegatesResponse.type';
 import { useQuery } from '@tanstack/react-query';
 import { getDelegatesNames } from '@/actions/actors/delegates/names/getDelegatesNames';
+import useGetDelegatesNames from '@/hooks/useGetDelegatesNames';
 
 interface DisplacedsFiltersProps {
   setLocalFilters: React.Dispatch<React.SetStateAction<displacedsFilterValuesType>>;
@@ -53,17 +55,13 @@ export default function Displaceds_Filters({
   displacedNum,
 }: DisplacedsFiltersProps) {
   const {
-    data: delegatedData,
-    isLoading: isLoadingDelegated,
+    delegatedData,
+    isLoading,
     error: queryDelegateError,
-  } = useQuery<DelegatesNamesResponse, Error>({
-    queryKey: ['delegatesNames'],
-    queryFn: () => getDelegatesNames({}),
-    retry: 1,
+    hasError,
+  } = useGetDelegatesNames({
+    mode: ACTION_ADD_EDIT_DISPLAY.EDIT,
   });
-
-  const isLoading = isLoadingDelegated;
-  const hasError = Boolean(queryDelegateError) || Boolean(delegatedData?.error);
 
   const { user, isDelegate } = useAuth();
 

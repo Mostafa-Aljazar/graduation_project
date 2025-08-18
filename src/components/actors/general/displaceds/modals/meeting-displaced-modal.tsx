@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   sendMeetingRequest,
   sendMeetingRequestProps,
@@ -39,7 +39,7 @@ export default function Meeting_Displaced_Modal({
     validate: zodResolver(meetingSchema),
   });
 
-  const meetingMutation = useMutation<modalActionResponse, unknown, sendMeetingRequestProps>({
+  const meetingMutation = useMutation<commonActionResponse, unknown, sendMeetingRequestProps>({
     mutationFn: sendMeetingRequest,
     onSuccess: (data) => {
       if (data.status === 200) {

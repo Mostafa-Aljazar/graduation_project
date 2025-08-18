@@ -1,5 +1,4 @@
-import { TYPE_AIDS } from "@/content/actor/manager/aids-management";
-import { DISPLACED_RECEIVED_AIDS_TABS } from "../../common-types/index.type";
+import { DISPLACED_RECEIVED_AIDS_TABS, TYPE_AIDS } from "../../common-types/index.type";
 
 export interface DisplacedReceivedAidsResponse {
     status: number;

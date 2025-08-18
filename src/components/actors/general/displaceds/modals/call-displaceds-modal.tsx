@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   sendCallRequest,
   sendCallRequestProps,
@@ -36,7 +36,7 @@ export default function Call_Displaced_Modal({ displaced_Ids, opened, close }: C
     validate: zodResolver(callSchema),
   });
 
-  const callMutation = useMutation<modalActionResponse, unknown, sendCallRequestProps>({
+  const callMutation = useMutation<commonActionResponse, unknown, sendCallRequestProps>({
     mutationFn: sendCallRequest,
     onSuccess: (data) => {
       if (data.status === 200) {

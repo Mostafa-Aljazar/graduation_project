@@ -3,13 +3,13 @@
 import { DisplacedsResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
 import { fakeDisplacedResponse } from "@/content/actor/displaced/fake-displaced";
 import { AqsaAPI } from "@/services";
-import { displacedsFilterValues } from "@/validation/actor/general/displaceds/displaceds-filter-form";
+import { displacedsFilterValuesType } from "@/validation/actor/general/displaceds/displaceds-filter-form";
 
 export interface getDisplacedsProps {
     page?: number;
     limit?: number;
     search?: string;
-    filters?: displacedsFilterValues;
+    filters?: displacedsFilterValuesType;
 };
 
 export const getDisplaceds = async ({ page = 1, limit = 7, search = '', filters }: getDisplacedsProps): Promise<DisplacedsResponse> => {

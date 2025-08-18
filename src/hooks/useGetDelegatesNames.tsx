@@ -30,6 +30,7 @@ export default function useGetDelegatesNames({ ids, mode }: Props) {
 
   return {
     isLoading,
+    error: queryDelegateError,
     hasError,
     delegatedData,
   };

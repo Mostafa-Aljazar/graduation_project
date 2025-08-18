@@ -3,13 +3,13 @@
 import { DisplacedsIdsResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
 import { fakeDisplacedIdsResponse } from "@/content/actor/displaced/fake-displaced";
 import { AqsaAPI } from "@/services";
-import { displacedsFilterValues } from "@/validation/actor/general/displaceds/displaceds-filter-form";
+import { displacedsFilterValuesType } from "@/validation/actor/general/displaceds/displaceds-filter-form";
 
-export interface getDisplacedsIDsProps {
-    filters: displacedsFilterValues;
+export interface getDisplacedsIdsProps {
+    filters: displacedsFilterValuesType;
 };
 
-export const getDisplacedsIds = async ({ filters }: getDisplacedsIDsProps): Promise<DisplacedsIdsResponse> => {
+export const getDisplacedsIds = async ({ filters }: getDisplacedsIdsProps): Promise<DisplacedsIdsResponse> => {
 
     const fakeResponse = fakeDisplacedIdsResponse()
     return await new Promise((resolve) => {

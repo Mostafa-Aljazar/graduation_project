@@ -21,7 +21,7 @@ import {
   Delegate,
   DelegatesResponse,
 } from '@/@types/actors/general/delegates/delegatesResponse.type';
-import { getDelegatesIDs } from '@/actions/actors/general/delegates/getDelegatesIds';
+import { getDelegatesIds } from '@/actions/actors/general/delegates/getDelegatesIds';
 import Delegates_Table_Actions from '../delegates-table-actions';
 import { ListChecks, ListX, Users } from 'lucide-react';
 
@@ -60,7 +60,7 @@ export default function Delegates_Table() {
   } = useQuery<number[], Error>({
     queryKey: ['delegates_all'],
     queryFn: async () => {
-      return (await getDelegatesIDs()).delegates_Ids;
+      return (await getDelegatesIds()).delegates_Ids;
     },
     enabled: selectAllAcrossPages,
     retry: 1,
@@ -79,15 +79,11 @@ export default function Delegates_Table() {
   const isRowSelected = (id: number) => selectedDelegateIds.includes(id);
 
   const areAllPagesRowsSelected = () =>
-    selectedDelegateIds.length ===
-    (delegatesData?.pagination?.total_items || 0);
+    selectedDelegateIds.length === (delegatesData?.pagination?.total_items || 0);
 
   const handleRowSelection = (id: number, checked: boolean) => {
     if (checked) {
-      setSelectedDelegateIds((prev) => [
-        ...prev.filter((rowId) => rowId !== id),
-        id,
-      ]);
+      setSelectedDelegateIds((prev) => [...prev.filter((rowId) => rowId !== id), id]);
       if (areAllPagesRowsSelected()) setSelectAllAcrossPages(true);
     } else {
       setSelectedDelegateIds((prev) => prev.filter((rowId) => rowId !== id));
@@ -112,66 +108,30 @@ export default function Delegates_Table() {
           variant='light'
           aria-label='Select all rows across all pages'
           disabled={!delegatesData?.delegates?.length}
-          onClick={() =>
-            handleSelectAllAcrossAllPages(!areAllPagesRowsSelected())
-          }
+          onClick={() => handleSelectAllAcrossAllPages(!areAllPagesRowsSelected())}
         >
-          {areAllPagesRowsSelected() ? (
-            <ListX size={18} />
-          ) : (
-            <ListChecks size={18} />
-          )}
+          {areAllPagesRowsSelected() ? <ListX size={18} /> : <ListChecks size={18} />}
         </ActionIcon>
       </Table.Th>
       <Table.Th px={5} ta='center' w='fit-content'>
         الرقم
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         اسم المندوب
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         رقم الهوية
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         عدد النازحين
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         عدد العائلات
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         عدد الخيام
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         رقم الجوال
       </Table.Th>
       <Table.Th px={5} ta='center' w='fit-content'>
@@ -184,19 +144,13 @@ export default function Delegates_Table() {
     return (delegatesData?.delegates || []).map((element, index) => (
       <Table.Tr
         key={element.id}
-        bg={
-          isRowSelected(element.id)
-            ? 'var(--mantine-color-blue-light)'
-            : undefined
-        }
+        bg={isRowSelected(element.id) ? 'var(--mantine-color-blue-light)' : undefined}
       >
         <Table.Td px={5} ta='center'>
           <Checkbox
             aria-label='Select row'
             checked={isRowSelected(element.id)}
-            onChange={(e) =>
-              handleRowSelection(element.id, e.currentTarget.checked)
-            }
+            onChange={(e) => handleRowSelection(element.id, e.currentTarget.checked)}
           />
         </Table.Td>
         <Table.Td px={5} ta='center'>
@@ -290,13 +244,7 @@ export default function Delegates_Table() {
             </Text>
           )}
         </>
-        <Table
-          horizontalSpacing='xs'
-          striped
-          highlightOnHover
-          withTableBorder
-          withColumnBorders
-        >
+        <Table horizontalSpacing='xs' striped highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead>{columns}</Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
           <Table.Tbody>{rows.length === 0 ? noDelegates : rows}</Table.Tbody>
@@ -305,9 +253,7 @@ export default function Delegates_Table() {
 
       <Pagination
         value={currentPage}
-        onChange={(page) =>
-          setQuery((prev) => ({ ...prev, delegate_page: page }))
-        }
+        onChange={(page) => setQuery((prev) => ({ ...prev, delegate_page: page }))}
         total={delegatesData?.pagination?.total_pages || 0}
         pt={30}
         size='sm'
