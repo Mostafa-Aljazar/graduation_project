@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   sendUpdateDelegatesRequest,
   sendUpdateDelegatesRequestProps,
@@ -15,35 +15,37 @@ interface UpdateModalProps {
 }
 
 export default function Update_Delegate_Modal({ delegate_Ids, opened, close }: UpdateModalProps) {
-  const updateMutation = useMutation<modalActionResponse, unknown, sendUpdateDelegatesRequestProps>(
-    {
-      mutationFn: sendUpdateDelegatesRequest,
-      onSuccess: (data) => {
-        if (data.status === 200) {
-          notifications.show({
-            title: 'تم الارسال',
-            message: data.message,
-            color: 'grape',
-            position: 'top-left',
-            withBorder: true,
-          });
-          close();
-        } else {
-          throw new Error(data.error || 'فشل في الارسال');
-        }
-      },
-      onError: (error: any) => {
-        const errorMessage = error?.message || 'فشل في الارسال';
+  const updateMutation = useMutation<
+    commonActionResponse,
+    unknown,
+    sendUpdateDelegatesRequestProps
+  >({
+    mutationFn: sendUpdateDelegatesRequest,
+    onSuccess: (data) => {
+      if (data.status === 200) {
         notifications.show({
-          title: 'خطأ',
-          message: errorMessage,
-          color: 'red',
+          title: 'تم الارسال',
+          message: data.message,
+          color: 'grape',
           position: 'top-left',
           withBorder: true,
         });
-      },
-    }
-  );
+        close();
+      } else {
+        throw new Error(data.error || 'فشل في الارسال');
+      }
+    },
+    onError: (error: any) => {
+      const errorMessage = error?.message || 'فشل في الارسال';
+      notifications.show({
+        title: 'خطأ',
+        message: errorMessage,
+        color: 'red',
+        position: 'top-left',
+        withBorder: true,
+      });
+    },
+  });
 
   const handleClick = () => {
     updateMutation.mutate({

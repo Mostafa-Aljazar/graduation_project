@@ -55,10 +55,8 @@ export default function Delegates_Table_Actions({
   const closeModal = () => setModalType(null);
 
   const buildRoute = (id: number, edit = false) => {
-    const base = DELEGATE_ROUTES_fUNC(id);
-    return edit
-      ? `${base.PROFILE}?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
-      : base.PROFILE;
+    const base = DELEGATE_ROUTES_fUNC({ delegate_Id: id });
+    return edit ? `${base.PROFILE}?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}` : base.PROFILE;
   };
 
   const commonActions: ActionItem[] = [
@@ -156,11 +154,7 @@ export default function Delegates_Table_Actions({
               العمليات
             </Button>
           ) : (
-            <ActionIcon
-              bg='transparent'
-              mt={5}
-              onClick={() => setOpenedPopover((o) => !o)}
-            >
+            <ActionIcon bg='transparent' mt={5} onClick={() => setOpenedPopover((o) => !o)}>
               <EllipsisVertical size={20} className='mx-auto text-primary' />
             </ActionIcon>
           )}
@@ -180,11 +174,7 @@ export default function Delegates_Table_Actions({
         />
       )}
 
-      <Call_Delegate_Modal
-        delegate_Ids={IDs}
-        opened={modalType === 'call'}
-        close={closeModal}
-      />
+      <Call_Delegate_Modal delegate_Ids={IDs} opened={modalType === 'call'} close={closeModal} />
 
       <Update_Delegate_Modal
         delegate_Ids={IDs}

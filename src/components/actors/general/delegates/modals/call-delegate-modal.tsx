@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   sendCallDelegatesRequest,
   sendCallDelegatesRequestProps,
@@ -36,7 +36,7 @@ export default function Call_Delegate_Modal({ delegate_Ids, opened, close }: Cal
     validate: zodResolver(callSchema),
   });
 
-  const callMutation = useMutation<modalActionResponse, unknown, sendCallDelegatesRequestProps>({
+  const callMutation = useMutation<commonActionResponse, unknown, sendCallDelegatesRequestProps>({
     mutationFn: sendCallDelegatesRequest,
     onSuccess: (data) => {
       if (data.status === 200) {

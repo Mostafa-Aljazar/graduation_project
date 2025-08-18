@@ -1,4 +1,3 @@
-'use client';
 import Delegates_List from '@/components/actors/general/delegates/content/delegates-list';
 import { Stack } from '@mantine/core';
 

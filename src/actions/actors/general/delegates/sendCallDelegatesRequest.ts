@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 export interface sendCallDelegatesRequestProps {
@@ -13,8 +13,8 @@ export const sendCallDelegatesRequest = async ({
     delegate_Ids,
     dateTime,
     details,
-}: sendCallDelegatesRequestProps): Promise<modalActionResponse> => {
-    const fakeData: modalActionResponse = {
+}: sendCallDelegatesRequestProps): Promise<commonActionResponse> => {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم إنشاء استدعاء لـ ${delegate_Ids.length} مندوب بنجاح`,
 
@@ -29,7 +29,7 @@ export const sendCallDelegatesRequest = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post<modalActionResponse>("/delegates/calls", {
+        const response = await AqsaAPI.post<commonActionResponse>("/delegates/calls", {
             delegate_Ids,
             dateTime,
             details,

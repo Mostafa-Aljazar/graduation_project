@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 export interface sendMeetingDelegateRequestProps {
@@ -13,8 +13,8 @@ export const sendMeetingDelegateRequest = async ({
     delegate_Ids,
     dateTime,
     details,
-}: sendMeetingDelegateRequestProps): Promise<modalActionResponse> => {
-    const fakeData: modalActionResponse = {
+}: sendMeetingDelegateRequestProps): Promise<commonActionResponse> => {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم ارسال طلب الاجتماع لـ ${delegate_Ids.length} مندوب بنجاح`,
 
@@ -27,7 +27,7 @@ export const sendMeetingDelegateRequest = async ({
 
     try {
 
-        const response = await AqsaAPI.post<modalActionResponse>("/delegates/meeting", {
+        const response = await AqsaAPI.post<commonActionResponse>("/delegates/meeting", {
             delegate_Ids,
             dateTime,
             details,

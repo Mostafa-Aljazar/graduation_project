@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 export interface deleteDelegatesProps {
@@ -9,9 +9,9 @@ export interface deleteDelegatesProps {
 
 export const deleteDelegates = async ({
     delegate_Ids,
-}: deleteDelegatesProps): Promise<modalActionResponse> => {
+}: deleteDelegatesProps): Promise<commonActionResponse> => {
 
-    const fakeData: modalActionResponse = {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم حذف ${delegate_Ids.length} مندوب بنجاح`,
 
@@ -27,7 +27,7 @@ export const deleteDelegates = async ({
     /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.delete<modalActionResponse>("/delegates/delete", {
+        const response = await AqsaAPI.delete<commonActionResponse>("/delegates/delete", {
             params: {
                 delegate_Ids
             },

@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   sendMeetingDelegateRequest,
   sendMeetingDelegateRequestProps,
@@ -37,7 +37,7 @@ export default function Meeting_Delegate_Modal({ delegate_Ids, opened, close }: 
   });
 
   const meetingMutation = useMutation<
-    modalActionResponse,
+    commonActionResponse,
     unknown,
     sendMeetingDelegateRequestProps
   >({

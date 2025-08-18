@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 export interface sendUpdateDelegatesRequestProps {
@@ -9,8 +9,8 @@ export interface sendUpdateDelegatesRequestProps {
 
 export const sendUpdateDelegatesRequest = async ({
     delegate_Ids
-}: sendUpdateDelegatesRequestProps): Promise<modalActionResponse> => {
-    const fakeData: modalActionResponse = {
+}: sendUpdateDelegatesRequestProps): Promise<commonActionResponse> => {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم ارسال طلب تحديث لـ ${delegate_Ids.length} مندوب بنجاح`,
 
@@ -26,7 +26,7 @@ export const sendUpdateDelegatesRequest = async ({
     /////////////////////////////////////////////////////////////
 
     try {
-        const response = await AqsaAPI.post<modalActionResponse>("/delegates/update", {
+        const response = await AqsaAPI.post<commonActionResponse>("/delegates/update", {
             delegate_Ids,
         });
 

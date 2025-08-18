@@ -1,5 +1,5 @@
 'use client';
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   deleteDelegates,
   deleteDelegatesProps,
@@ -15,7 +15,7 @@ interface DeleteModalProps {
 }
 
 export default function Delete_Delegate_Modal({ delegate_Ids, opened, close }: DeleteModalProps) {
-  const deleteMutation = useMutation<modalActionResponse, unknown, deleteDelegatesProps>({
+  const deleteMutation = useMutation<commonActionResponse, unknown, deleteDelegatesProps>({
     mutationFn: deleteDelegates,
     onSuccess: (data) => {
       if (data.status === 200) {
