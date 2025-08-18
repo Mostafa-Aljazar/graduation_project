@@ -3,7 +3,7 @@
 import { DisplacedsIdsResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
 import { fakeDisplacedIdsResponse } from "@/content/actor/displaced/fake-displaced";
 import { AqsaAPI } from "@/services";
-import { displacedsFilterValues } from "@/validation/actor/general/displaceds-filter-form";
+import { displacedsFilterValues } from "@/validation/actor/general/displaceds/displaceds-filter-form";
 
 export interface getDisplacedsIDsProps {
     filters: displacedsFilterValues;

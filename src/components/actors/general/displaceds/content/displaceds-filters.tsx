@@ -1,19 +1,24 @@
 'use client';
 
 import {
+  Box,
   Button,
+  Center,
   Flex,
   Group,
+  LoadingOverlay,
   MultiSelect,
   NumberInput,
+  Paper,
   Select,
   SimpleGrid,
   Stack,
   Text,
   TextInput,
+  ThemeIcon,
 } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
-import { ListFilter, RotateCcw, Search } from 'lucide-react';
+import { ListFilter, MessageCircleWarning, RotateCcw, Search } from 'lucide-react';
 import { parseAsString, useQueryState } from 'nuqs';
 import { useState } from 'react';
 import {
@@ -31,12 +36,15 @@ import {
 import { fakeDelegates } from '@/content/actor/delegate/fake-delegates';
 import {
   displacedsFilterSchema,
-  displacedsFilterValues,
-} from '@/validation/actor/general/displaceds-filter-form';
+  displacedsFilterValuesType,
+} from '@/validation/actor/general/displaceds/displaceds-filter-form';
 import useAuth from '@/hooks/useAuth';
+import { DelegatesNamesResponse } from '@/@types/actors/general/delegates/delegatesResponse.type';
+import { useQuery } from '@tanstack/react-query';
+import { getDelegatesNames } from '@/actions/actors/delegates/names/getDelegatesNames';
 
 interface DisplacedsFiltersProps {
-  setLocalFilters: React.Dispatch<React.SetStateAction<displacedsFilterValues>>;
+  setLocalFilters: React.Dispatch<React.SetStateAction<displacedsFilterValuesType>>;
   displacedNum: number;
 }
 
@@ -44,9 +52,22 @@ export default function Displaceds_Filters({
   setLocalFilters,
   displacedNum,
 }: DisplacedsFiltersProps) {
+  const {
+    data: delegatedData,
+    isLoading: isLoadingDelegated,
+    error: queryDelegateError,
+  } = useQuery<DelegatesNamesResponse, Error>({
+    queryKey: ['delegatesNames'],
+    queryFn: () => getDelegatesNames({}),
+    retry: 1,
+  });
+
+  const isLoading = isLoadingDelegated;
+  const hasError = Boolean(queryDelegateError) || Boolean(delegatedData?.error);
+
   const { user, isDelegate } = useAuth();
 
-  const initData: displacedsFilterValues = {
+  const initData: displacedsFilterValuesType = {
     wife_status: null,
     family_number: null,
     ages: [],
@@ -58,12 +79,9 @@ export default function Displaceds_Filters({
 
   const [searchInput, setSearchInput] = useState('');
   const [resetKey, setResetKey] = useState(0);
-  const [search, setSearch] = useQueryState(
-    'search',
-    parseAsString.withDefault('')
-  );
+  const [search, setSearch] = useQueryState('search', parseAsString.withDefault(''));
 
-  const form = useForm<displacedsFilterValues>({
+  const form = useForm<displacedsFilterValuesType>({
     initialValues: initData,
     validate: zodResolver(displacedsFilterSchema),
   });
@@ -101,11 +119,7 @@ export default function Displaceds_Filters({
           <Text fw={600} fz={18} className='!text-primary'>
             عدد النازحين :
           </Text>
-          <Text
-            fz={14}
-            px={5}
-            className='border-1 border-second rounded-md text-dark'
-          >
+          <Text fz={14} px={5} className='border-1 border-second rounded-md text-dark'>
             {displacedNum ?? 0}
           </Text>
           <Text fw={500} fz={18} className='!text-dark'>
@@ -124,8 +138,7 @@ export default function Displaceds_Filters({
               placeholder='رقم الهوية/رقم الخيمة...'
               size='sm'
               classNames={{
-                input:
-                  '!border-none !outline-none placeholder:!text-sm !text-primary !font-normal',
+                input: '!border-none !outline-none placeholder:!text-sm !text-primary !font-normal',
               }}
               leftSection={<Search size={18} />}
               value={searchInput}
@@ -147,176 +160,199 @@ export default function Displaceds_Filters({
           </Group>
         </Stack>
       </Flex>
-      <form onSubmit={form.onSubmit(handleApplyFilters)}>
-        <SimpleGrid
-          cols={{ base: 1, sm: 2, lg: 3 }}
-          spacing='sm'
-          p={15}
-          className='shadow-sm border-1 border-gray-200 rounded-xl'
-        >
-          <Select
-            label={
-              <Text fz={16} fw={500}>
-                الزوجة :
+      <form onSubmit={form.onSubmit(handleApplyFilters)} className='relative'>
+        <LoadingOverlay
+          visible={isLoading}
+          zIndex={49}
+          overlayProps={{ radius: 'sm', blur: 0.3 }}
+        />
+
+        {hasError ? (
+          <Paper p='md' withBorder m='md' className='!bg-red-100 rounded-md text-center'>
+            <Box>
+              <Center mb='sm'>
+                <ThemeIcon color='red' variant='light' size='lg'>
+                  <MessageCircleWarning />
+                </ThemeIcon>
+              </Center>
+              <Text c='red' fw={600}>
+                {delegatedData?.error ||
+                  queryDelegateError?.message ||
+                  'حدث خطأ أثناء جلب بيانات المناديب'}
               </Text>
-            }
-            placeholder='حالة الزوجة'
-            data={Object.entries(WIFE_STATUS).map(([key, value]) => ({
-              value: value,
-              label: WIFE_STATUS_LABELS[value],
-            }))}
-            size='sm'
-            key={`wife_status-${resetKey}`}
-            {...form.getInputProps('wife_status')}
-            classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
-            }}
-            clearable
-          />
-          <NumberInput
-            label={
-              <Text fz={16} fw={500}>
-                عدد الأفراد :
-              </Text>
-            }
-            placeholder='0'
-            max={99}
-            min={0}
-            allowDecimal={false}
-            size='sm'
-            key={`family_number-${resetKey}`}
-            {...form.getInputProps('family_number')}
-            classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
-            }}
-          />
-          <MultiSelect
-            label={
-              <Text fz={16} fw={500}>
-                أعمار الأفراد :
-              </Text>
-            }
-            placeholder='حدد أعمار الأفراد'
-            data={Object.entries(AGES).map(([key, value]) => ({
-              value: value,
-              label: AGES_LABELS[value],
-            }))}
-            size='sm'
-            key={`ages-${resetKey}`}
-            {...form.getInputProps('ages')}
-            classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
-            }}
-          />
-          <Select
-            label={
-              <Text fz={16} fw={500}>
-                حالة صحية مزمنة :
-              </Text>
-            }
-            placeholder='الحالة'
-            data={Object.entries(CHRONIC_DISEASE).map(([key, value]) => ({
-              value: value,
-              label: CHRONIC_DISEASE_LABELS[value],
-            }))}
-            size='sm'
-            key={`chronic_disease-${resetKey}`}
-            {...form.getInputProps('chronic_disease')}
-            classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
-            }}
-            clearable
-          />
-          <Select
-            label={
-              <Text fz={16} fw={500}>
-                نوع الإيواء :
-              </Text>
-            }
-            placeholder='المكان'
-            data={Object.entries(ACCOMMODATION_TYPE).map(([key, value]) => ({
-              value: value,
-              label: ACCOMMODATION_TYPE_LABELS[value],
-            }))}
-            size='sm'
-            key={`accommodation_type-${resetKey}`}
-            {...form.getInputProps('accommodation_type')}
-            classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
-            }}
-            clearable
-          />
-          <Select
-            label={
-              <Text fz={16} fw={500}>
-                نوع الحالة :
-              </Text>
-            }
-            placeholder='الحالة'
-            data={Object.entries(FAMILY_STATUS_TYPE).map(([key, value]) => ({
-              value: value,
-              label: FAMILY_STATUS_TYPE_LABELS[value],
-            }))}
-            size='sm'
-            key={`case_type-${resetKey}`}
-            {...form.getInputProps('case_type')}
-            classNames={{
-              input: 'placeholder:!text-sm !text-primary !font-normal',
-            }}
-            clearable
-          />
-          <MultiSelect
-            label={
-              <Text fz={16} fw={500}>
-                المندوب :
-              </Text>
-            }
-            placeholder='اختر المندوب'
-            data={fakeDelegates.map((item) => ({
-              value: item.id.toString(),
-              label: item.name,
-            }))}
-            // disabled={destination == 'AID' && role == 'DELEGATE'}
-            size='sm'
-            key={`delegate-${resetKey}`}
-            {...form.getInputProps('delegate')}
-            classNames={{
-              input:
-                'placeholder:!text-sm  placeholder-shown:!hidden placeholder:!hidden !text-primary !font-normal',
-            }}
-            className='placeholder-shown:!hidden'
-          />
-          <Group visibleFrom='lg' />
-          <Group flex={1} justify='end'>
-            <Button
-              type='button'
+            </Box>
+          </Paper>
+        ) : (
+          <SimpleGrid
+            cols={{ base: 1, sm: 2, lg: 3 }}
+            spacing='sm'
+            p={15}
+            className='shadow-sm border-1 border-gray-200 rounded-xl'
+          >
+            <Select
+              label={
+                <Text fz={16} fw={500}>
+                  الزوجة :
+                </Text>
+              }
+              placeholder='حالة الزوجة'
+              data={Object.entries(WIFE_STATUS).map(([key, value]) => ({
+                value: value,
+                label: WIFE_STATUS_LABELS[value],
+              }))}
               size='sm'
-              px={15}
-              fz={16}
-              fw={500}
-              c='dark'
-              radius='lg'
-              className='!justify-end !items-end !self-end !bg-gray-300 !shadow-lg'
-              rightSection={<RotateCcw size={15} />}
-              onClick={handleReset}
-            >
-              إفراغ
-            </Button>
-            <Button
-              type='submit'
+              key={`wife_status-${resetKey}`}
+              {...form.getInputProps('wife_status')}
+              classNames={{
+                input: 'placeholder:!text-sm !text-primary !font-normal',
+              }}
+              clearable
+            />
+            <NumberInput
+              label={
+                <Text fz={16} fw={500}>
+                  عدد الأفراد :
+                </Text>
+              }
+              placeholder='0'
+              max={99}
+              min={0}
+              allowDecimal={false}
               size='sm'
-              px={15}
-              fz={16}
-              fw={500}
-              c='white'
-              radius='lg'
-              className='!justify-end !items-end !self-end !bg-primary !shadow-lg'
-              rightSection={<ListFilter size={15} />}
-            >
-              فلتر
-            </Button>
-          </Group>
-        </SimpleGrid>
+              key={`family_number-${resetKey}`}
+              {...form.getInputProps('family_number')}
+              classNames={{
+                input: 'placeholder:!text-sm !text-primary !font-normal',
+              }}
+            />
+            <MultiSelect
+              label={
+                <Text fz={16} fw={500}>
+                  أعمار الأفراد :
+                </Text>
+              }
+              placeholder='حدد أعمار الأفراد'
+              data={Object.entries(AGES).map(([key, value]) => ({
+                value: value,
+                label: AGES_LABELS[value],
+              }))}
+              size='sm'
+              key={`ages-${resetKey}`}
+              {...form.getInputProps('ages')}
+              classNames={{
+                input: 'placeholder:!text-sm !text-primary !font-normal',
+              }}
+            />
+            <Select
+              label={
+                <Text fz={16} fw={500}>
+                  حالة صحية مزمنة :
+                </Text>
+              }
+              placeholder='الحالة'
+              data={Object.entries(CHRONIC_DISEASE).map(([key, value]) => ({
+                value: value,
+                label: CHRONIC_DISEASE_LABELS[value],
+              }))}
+              size='sm'
+              key={`chronic_disease-${resetKey}`}
+              {...form.getInputProps('chronic_disease')}
+              classNames={{
+                input: 'placeholder:!text-sm !text-primary !font-normal',
+              }}
+              clearable
+            />
+            <Select
+              label={
+                <Text fz={16} fw={500}>
+                  نوع الإيواء :
+                </Text>
+              }
+              placeholder='المكان'
+              data={Object.entries(ACCOMMODATION_TYPE).map(([key, value]) => ({
+                value: value,
+                label: ACCOMMODATION_TYPE_LABELS[value],
+              }))}
+              size='sm'
+              key={`accommodation_type-${resetKey}`}
+              {...form.getInputProps('accommodation_type')}
+              classNames={{
+                input: 'placeholder:!text-sm !text-primary !font-normal',
+              }}
+              clearable
+            />
+            <Select
+              label={
+                <Text fz={16} fw={500}>
+                  نوع الحالة :
+                </Text>
+              }
+              placeholder='الحالة'
+              data={Object.entries(FAMILY_STATUS_TYPE).map(([key, value]) => ({
+                value: value,
+                label: FAMILY_STATUS_TYPE_LABELS[value],
+              }))}
+              size='sm'
+              key={`case_type-${resetKey}`}
+              {...form.getInputProps('case_type')}
+              classNames={{
+                input: 'placeholder:!text-sm !text-primary !font-normal',
+              }}
+              clearable
+            />
+            <MultiSelect
+              label={
+                <Text fz={16} fw={500}>
+                  المندوب :
+                </Text>
+              }
+              placeholder='اختر المندوب'
+              data={(delegatedData?.delegate_names || []).map((item) => ({
+                value: item.id.toString(),
+                label: item.name,
+              }))}
+              // disabled={destination == 'AID' && role == 'DELEGATE'}
+              size='sm'
+              key={`delegate-${resetKey}`}
+              {...form.getInputProps('delegate')}
+              classNames={{
+                input:
+                  'placeholder:!text-sm  placeholder-shown:!hidden placeholder:!hidden !text-primary !font-normal',
+              }}
+              className='placeholder-shown:!hidden'
+            />
+            <Group visibleFrom='lg' />
+            <Group flex={1} justify='end'>
+              <Button
+                type='button'
+                size='sm'
+                px={15}
+                fz={16}
+                fw={500}
+                c='dark'
+                radius='lg'
+                className='!justify-end !items-end !self-end !bg-gray-300 !shadow-lg'
+                rightSection={<RotateCcw size={15} />}
+                onClick={handleReset}
+              >
+                إفراغ
+              </Button>
+              <Button
+                type='submit'
+                size='sm'
+                px={15}
+                fz={16}
+                fw={500}
+                c='white'
+                radius='lg'
+                className='!justify-end !items-end !self-end !bg-primary !shadow-lg'
+                rightSection={<ListFilter size={15} />}
+              >
+                فلتر
+              </Button>
+            </Group>
+          </SimpleGrid>
+        )}
       </form>
     </Stack>
   );

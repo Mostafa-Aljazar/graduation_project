@@ -32,13 +32,8 @@ import { fakeDelegates } from '@/content/actor/delegate/fake-delegates';
 import {
   displacedsFilterSchema,
   displacedsFilterValues,
-} from '@/validation/actor/general/displaceds-filter-form';
-import {
-  USER_RANK,
-  USER_TYPE,
-  UserRank,
-  UserType,
-} from '@/constants/userTypes';
+} from '@/validation/actor/general/displaceds/displaceds-filter-form';
+import { USER_RANK, USER_TYPE, UserRank, UserType } from '@/constants/userTypes';
 import { cn } from '@/utils/cn';
 
 interface CommonDisplacedFiltersProps {
@@ -46,10 +41,7 @@ interface CommonDisplacedFiltersProps {
   displacedNum: number;
 
   actor_Id: number;
-  role?: Exclude<
-    UserRank,
-    typeof USER_RANK.DISPLACED | typeof USER_RANK.SECURITY
-  >;
+  role?: Exclude<UserRank, typeof USER_RANK.DISPLACED | typeof USER_RANK.SECURITY>;
 }
 
 export default function Aid_Add_Displaceds_Filters({
@@ -70,10 +62,7 @@ export default function Aid_Add_Displaceds_Filters({
 
   const [searchInput, setSearchInput] = useState('');
   const [resetKey, setResetKey] = useState(0);
-  const [search, setSearch] = useQueryState(
-    'search',
-    parseAsString.withDefault('')
-  );
+  const [search, setSearch] = useQueryState('search', parseAsString.withDefault(''));
 
   const form = useForm<displacedsFilterValues>({
     initialValues: initData,
@@ -113,11 +102,7 @@ export default function Aid_Add_Displaceds_Filters({
           <Text fw={600} fz={18} className='!text-primary'>
             عدد النازحين :
           </Text>
-          <Text
-            fz={14}
-            px={5}
-            className='border-1 border-second rounded-md text-dark'
-          >
+          <Text fz={14} px={5} className='border-1 border-second rounded-md text-dark'>
             {displacedNum ?? 0}
           </Text>
           <Text fw={500} fz={18} className='!text-dark'>
@@ -136,8 +121,7 @@ export default function Aid_Add_Displaceds_Filters({
               placeholder='رقم الهوية/رقم الخيمة...'
               size='sm'
               classNames={{
-                input:
-                  '!border-none !outline-none placeholder:!text-sm !text-primary !font-normal',
+                input: '!border-none !outline-none placeholder:!text-sm !text-primary !font-normal',
               }}
               leftSection={<Search size={18} />}
               value={searchInput}

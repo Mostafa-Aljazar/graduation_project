@@ -18,7 +18,7 @@ import 'react-phone-number-input/style.css';
 import { useForm, zodResolver } from '@mantine/form';
 import {
   DelegateProfileSchema,
-  DelegateProfileType,
+  DelegateProfileSchemaType,
 } from '@/validation/actor/delegate/delegate-profile-schema';
 import '@mantine/core/styles.css';
 import { Camera, Save, UserPen, X } from 'lucide-react';
@@ -33,8 +33,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   updateDelegateProfile,
   UpdateDelegateProfileProps,
-} from '@/actions/actors/delegate/profile/updateProfileInfo';
-import { getDelegateProfile } from '@/actions/actors/delegate/profile/getDelegateProfile';
+} from '@/actions/actors/delegates/profile/updateProfileInfo';
+import { getDelegateProfile } from '@/actions/actors/delegates/profile/getDelegateProfile';
 import useAuth from '@/hooks/useAuth';
 import { MAN } from '@/assets/actor';
 import { DelegateProfileResponse } from '@/@types/actors/delegate/profile/delegateProfileResponse.type';
@@ -42,7 +42,7 @@ import { parseAsStringEnum, useQueryState } from 'nuqs';
 import {
   addNewDelegate,
   addNewDelegateProps,
-} from '@/actions/actors/delegate/profile/addNewDelegate';
+} from '@/actions/actors/delegates/profile/addNewDelegate';
 import { useRouter } from 'next/navigation';
 import { GENERAL_ACTOR_ROUTES } from '@/constants/routes';
 import {
@@ -85,7 +85,7 @@ export default function Delegate_Profile_Form({
   const isDisplayMode =
     query === ACTION_ADD_EDIT_DISPLAY.DISPLAY && destination !== ACTION_ADD_EDIT_DISPLAY.ADD;
 
-  const form = useForm<DelegateProfileType>({
+  const form = useForm<DelegateProfileSchemaType>({
     mode: 'uncontrolled',
     initialValues: {
       name: '',
@@ -262,16 +262,17 @@ export default function Delegate_Profile_Form({
     }
   };
 
-  const handleSubmit = form.onSubmit(async (values: DelegateProfileType) => {
+  const handleSubmit = form.onSubmit(async (values: DelegateProfileSchemaType) => {
     const avatarUrl =
       profileImage && profileImage instanceof File
         ? await uploadImages(profileImage)
         : (profileImage as string | null);
 
-    const payload: DelegateProfileType = {
+    const payload: DelegateProfileSchemaType = {
       ...values,
       profile_image: avatarUrl,
     };
+    console.log('🚀 ~ Delegate_Profile_Form ~ payload:', payload);
 
     const handleError = (error: unknown) => {
       const errorMessage = (error as Error)?.message || 'فشل في حفظ الملف الشخصي للمندوب';

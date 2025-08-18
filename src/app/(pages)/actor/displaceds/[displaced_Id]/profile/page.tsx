@@ -7,5 +7,5 @@ export default async function Displaced_Profile({
 }) {
   const { displaced_Id } = await params;
 
-  return <Displaced_Profile_Form displaced_Id={Number(displaced_Id)} />;
+  return <Displaced_Profile_Form displaced_Id={parseInt(displaced_Id)} />;
 }

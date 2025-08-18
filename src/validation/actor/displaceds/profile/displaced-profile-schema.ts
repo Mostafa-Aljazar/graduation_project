@@ -8,7 +8,22 @@ import {
     FAMILY_STATUS_TYPE,
 } from '@/@types/actors/common-types/index.type';
 
+const phoneSchema = z
+    .string()
+    .refine(isValidPhoneNumber, { message: 'رقم الجوال غير صالح' });
+
+const optionalPhoneSchema = z
+    .string()
+    .refine((val) => val === '' || isValidPhoneNumber(val), {
+        message: 'رقم بديل غير صالح',
+    })
+    .transform((val) => (val === '' ? undefined : val))
+    .optional()
+    .nullable();
+
 export const displacedProfileSchema = z.object({
+    id: z.number().optional(), // optional for create
+
     profile_image: z.string().optional().nullable(),
 
     name: z
@@ -31,18 +46,9 @@ export const displacedProfileSchema = z.object({
         .string({ required_error: 'العنوان الأصلي مطلوب' })
         .min(2, { message: 'العنوان يجب أن يحتوي على حرفين على الأقل' }),
 
-    phone_number: z
-        .string({ required_error: 'رقم الجوال مطلوب' })
-        .refine(isValidPhoneNumber, { message: 'رقم الجوال غير صالح' }),
+    phone_number: phoneSchema,
 
-    alternative_phone_number: z
-        .string()
-        .refine((val) => val === '' || isValidPhoneNumber(val), {
-            message: 'رقم بديل غير صالح',
-        })
-        .transform((val) => (val === '' ? undefined : val))
-        .optional()
-        .nullable(),
+    alternative_phone_number: optionalPhoneSchema,
 
     wives: z.array(
         z.object({
@@ -67,29 +73,13 @@ export const displacedProfileSchema = z.object({
         status: z.nativeEnum(SOCIAL_STATUS, {
             required_error: 'الحالة الاجتماعية مطلوبة',
         }),
-        number_of_wives: z
-            .number({ required_error: 'عدد الزوجات مطلوب' })
-            .int()
-            .min(0, { message: 'عدد الزوجات يجب ألا يكون سالبًا' }),
-
-        number_of_males: z
-            .number({ required_error: 'عدد الذكور مطلوب' })
-            .int()
-            .min(0, { message: 'عدد الذكور يجب ألا يكون سالبًا' }),
-
-        number_of_females: z
-            .number({ required_error: 'عدد الإناث مطلوب' })
-            .int()
-            .min(0, { message: 'عدد الإناث يجب ألا يكون سالبًا' }),
-
-        total_family_members: z
-            .number({ required_error: 'عدد أفراد الأسرة مطلوب' })
-            .int()
-            .min(1, { message: 'عدد أفراد الأسرة يجب ألا يكون سالبًا' }),
-
+        number_of_wives: z.number().int().min(0),
+        number_of_males: z.number().int().min(0),
+        number_of_females: z.number().int().min(0),
+        total_family_members: z.number().int().min(1),
         age_groups: z.record(
             z.nativeEnum(AGES),
-            z.number().int().min(0, { message: 'القيمة يجب أن تكون رقمًا غير سالب' })
+            z.number().int().min(0)
         ),
     }),
 
@@ -112,23 +102,10 @@ export const displacedProfileSchema = z.object({
                 message: 'تاريخ النزوح غير صالح',
             }),
 
-        delegate_name: z
-            .string({ required_error: 'اسم المندوب مطلوب' })
-            .min(2, { message: 'اسم المندوب يجب أن يحتوي على حرفين على الأقل' }),
-
-        delegate_phone: z
-            .string({ required_error: 'رقم جوال المندوب مطلوب' })
-            .refine(isValidPhoneNumber, { message: 'رقم جوال المندوب غير صالح' }),
-
-        camp_manager: z
-            .string({ required_error: 'اسم مسؤول المخيم مطلوب' })
-            .min(2, { message: 'الاسم يجب أن يحتوي على حرفين على الأقل' }),
-
-        camp_managerPhone: z
-            .string({ required_error: 'رقم جوال مسؤول المخيم مطلوب' })
-            .refine(isValidPhoneNumber, {
-                message: 'رقم جوال مسؤول المخيم غير صالح',
-            }),
+        delegate: z.object({
+            id: z.string(),
+            name: z.string(),
+        }),
     }),
 
     war_injuries: z.array(
@@ -151,10 +128,7 @@ export const displacedProfileSchema = z.object({
         })
     ),
 
-    additional_notes: z
-        .string()
-        .optional()
-        .nullable(),
+    additional_notes: z.string().optional().nullable(),
 });
 
 export type DisplacedProfileSchemaType = z.infer<typeof displacedProfileSchema>;

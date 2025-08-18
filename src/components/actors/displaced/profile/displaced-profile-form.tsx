@@ -8,7 +8,6 @@ import {
   Divider,
   Box,
   SimpleGrid,
-  Flex,
   LoadingOverlay,
   ActionIcon,
   Button,
@@ -16,6 +15,7 @@ import {
   NativeSelect,
   NumberInput,
   Textarea,
+  Select,
 } from '@mantine/core';
 import Image from 'next/image';
 import { MAN } from '@/assets/actor';
@@ -36,7 +36,7 @@ import {
   FAMILY_STATUS_TYPE,
 } from '@/@types/actors/common-types/index.type';
 import { useUploadThing } from '@/utils/uploadthing/uploadthing';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useAuth from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { parseAsStringEnum, useQueryState } from 'nuqs';
@@ -47,7 +47,7 @@ import {
 } from '@/validation/actor/displaceds/profile/displaced-profile-schema';
 import { handleUploadMedia } from '@/utils/uploadthing/handleUploadMedia';
 import { notifications } from '@mantine/notifications';
-import { GENERAL_ACTOR_ROUTES } from '@/constants/routes';
+import { DELEGATE_ROUTES_fUNC, GENERAL_ACTOR_ROUTES } from '@/constants/routes';
 import {
   addNewDisplaced,
   AddNewDisplacedProps,
@@ -57,11 +57,11 @@ import {
   UpdateDisplacedProfileProps,
 } from '@/actions/actors/displaced/profile/updateDisplacedProfile';
 import Upload_Media from '../../common/upload-files/Upload_Media';
-import { Camera, UserPen, Save, Plus, Trash } from 'lucide-react';
+import { Camera, UserPen, Save, Plus, Trash, Eye } from 'lucide-react';
 import { Custom_Phone_Input } from '@/components/common/custom/Custom_Phone_Input';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
-import { cn } from '@/utils/cn';
+import useGetDelegatesNames from '@/hooks/useGetDelegatesNames';
 
 interface DisplacedProfileFormProps {
   displaced_Id?: number;
@@ -73,35 +73,25 @@ export default function Displaced_Profile_Form({
   destination,
 }: DisplacedProfileFormProps) {
   const queryClient = useQueryClient();
-
-  const { startUpload } = useUploadThing('mediaUploader');
-  const [profileImage, setProfileImage] = useState<File | string | null>(
-    MAN.src
-  );
-  const [uploading, setUploading] = useState(false);
-
-  const { isDisplaced, isDelegate, isManager, isSecurity, user } = useAuth();
-  const isOwner = isDisplaced && user?.id === displaced_Id;
-
   const router = useRouter();
 
   const [query, setQuery] = useQueryState(
     'action',
-    parseAsStringEnum<ACTION_ADD_EDIT_DISPLAY>(
-      Object.values(ACTION_ADD_EDIT_DISPLAY)
-    ).withDefault(ACTION_ADD_EDIT_DISPLAY.DISPLAY)
+    parseAsStringEnum<ACTION_ADD_EDIT_DISPLAY>(Object.values(ACTION_ADD_EDIT_DISPLAY)).withDefault(
+      destination ?? ACTION_ADD_EDIT_DISPLAY.DISPLAY
+    )
   );
 
-  const isAddMode =
-    (isManager || isDelegate) && destination == ACTION_ADD_EDIT_DISPLAY.ADD;
+  const { isDisplaced, isDelegate, isManager, user } = useAuth();
 
-  const isEditMode =
-    (isManager || isDelegate || isOwner) &&
-    query === ACTION_ADD_EDIT_DISPLAY.EDIT;
-
+  const isAddMode = (isManager || isDelegate) && destination === ACTION_ADD_EDIT_DISPLAY.ADD;
+  const isEditMode = (isManager || isDelegate) && query === ACTION_ADD_EDIT_DISPLAY.EDIT;
   const isDisplayMode =
-    query === ACTION_ADD_EDIT_DISPLAY.DISPLAY &&
-    destination !== ACTION_ADD_EDIT_DISPLAY.ADD;
+    query === ACTION_ADD_EDIT_DISPLAY.DISPLAY && destination !== ACTION_ADD_EDIT_DISPLAY.ADD;
+
+  const { startUpload } = useUploadThing('mediaUploader');
+  const [uploading, setUploading] = useState(false);
+  const [profileImage, setProfileImage] = useState<File | string | null>(MAN.src);
 
   const form = useForm<DisplacedProfileSchemaType>({
     mode: 'uncontrolled',
@@ -136,10 +126,10 @@ export default function Displaced_Profile_Form({
         tent_type: ACCOMMODATION_TYPE.INDOOR_TENT,
         family_status_type: FAMILY_STATUS_TYPE.NORMAL,
         displacement_date: '',
-        delegate_name: '',
-        delegate_phone: '',
-        camp_manager: '',
-        camp_managerPhone: '',
+        delegate: {
+          id: '',
+          name: '',
+        },
       },
       war_injuries: [],
       martyrs: [],
@@ -156,103 +146,125 @@ export default function Displaced_Profile_Form({
     refetch,
   } = useQuery<DisplacedProfileResponse>({
     queryKey: ['displaced-profile', displaced_Id],
-    queryFn: () =>
-      getDisplacedProfile({ displaced_Id: displaced_Id as number }),
-    enabled: (isDisplayMode || isEditMode) && !!displaced_Id,
+    queryFn: () => getDisplacedProfile({ displaced_Id: displaced_Id as number }),
+    enabled: !!displaced_Id && (isDisplayMode || isEditMode),
   });
 
+  // Fetch delegate data based on mode
+  const {
+    delegatedData,
+    hasError: errorDelegate,
+    isLoading: isLoadingDelegates,
+  } = useGetDelegatesNames({
+    ids:
+      isDisplayMode && displaced_Id
+        ? [Number(displacedProfileData?.user.displacement.delegate.id)]
+        : undefined,
+    mode: query,
+  });
+
+  const [delegatesNames, setDelegatesNames] = useState<{ id: string; name: string }[]>([]);
+
   useEffect(() => {
-    if (!isAddMode && displacedProfileData) {
-      if (displacedProfileData.status === 200 && displacedProfileData.user) {
-        const user = displacedProfileData.user;
-
-        setProfileImage(MAN.src || user.profile_image || MAN.src);
-
-        form.setValues({
-          name: user.name,
-          email: user.email || '',
-          identity: user.identity,
-          gender: user.gender,
-          nationality: user.nationality,
-          original_address: user.original_address,
-          profile_image: user.profile_image || null,
-          phone_number:
-            user.phone_number.length === 10
-              ? `+970${user.phone_number}`
-              : user.phone_number,
-          alternative_phone_number:
-            user.alternative_phone_number?.length === 10
-              ? `+970${user.alternative_phone_number}`
-              : user.alternative_phone_number || '',
-          wives: user.wives || [],
-          social_status: {
-            status: user.social_status?.status || SOCIAL_STATUS.SINGLE,
-            number_of_wives: user.social_status?.number_of_wives || 0,
-            number_of_males: user.social_status?.number_of_males || 0,
-            number_of_females: user.social_status?.number_of_females || 0,
-            total_family_members: user.social_status?.total_family_members || 1,
-            age_groups: {
-              [AGES.LESS_THAN_6_MONTHS]:
-                user.social_status?.age_groups?.[AGES.LESS_THAN_6_MONTHS] || 0,
-              [AGES.FROM_6_MONTHS_TO_2_YEARS]:
-                user.social_status?.age_groups?.[
-                  AGES.FROM_6_MONTHS_TO_2_YEARS
-                ] || 0,
-              [AGES.FROM_2_YEARS_To_6_YEARS]:
-                user.social_status?.age_groups?.[
-                  AGES.FROM_2_YEARS_To_6_YEARS
-                ] || 0,
-              [AGES.FROM_6_YEARS_To_12_YEARS]:
-                user.social_status?.age_groups?.[
-                  AGES.FROM_6_YEARS_To_12_YEARS
-                ] || 0,
-              [AGES.FROM_12_YEARS_To_18_YEARS]:
-                user.social_status?.age_groups?.[
-                  AGES.FROM_12_YEARS_To_18_YEARS
-                ] || 0,
-              [AGES.MORE_THAN_18]:
-                user.social_status?.age_groups?.[AGES.MORE_THAN_18] || 0,
-            },
-          },
-          displacement: {
-            tent_number: user.displacement?.tent_number || '',
-            tent_type:
-              user.displacement?.tent_type || ACCOMMODATION_TYPE.INDOOR_TENT,
-            family_status_type:
-              user.displacement?.family_status_type ||
-              FAMILY_STATUS_TYPE.NORMAL,
-            displacement_date: user.displacement?.displacement_date || '',
-            delegate_name: user.displacement?.delegate_name || '',
-            delegate_phone: user.displacement?.delegate_phone || '',
-            camp_manager: user.displacement?.camp_manager || '',
-            camp_managerPhone: user.displacement?.camp_managerPhone || '',
-          },
-          war_injuries: user.war_injuries || [],
-          martyrs: user.martyrs || [],
-          medical_conditions: user.medical_conditions || [],
-          additional_notes: user.additional_notes || '',
-        });
-        form.clearErrors();
-        form.resetTouched();
-        form.resetDirty();
-      } else {
-        notifications.show({
-          title: 'خطأ',
-          message:
-            displacedProfileData.error ||
-            'فشل في تحميل بيانات الملف الشخصي للنازح',
-          color: 'red',
-          position: 'top-left',
-          withBorder: true,
-        });
-      }
+    if (delegatedData?.delegate_names) {
+      setDelegatesNames(
+        delegatedData.delegate_names.map((item) => ({
+          ...item,
+          id: item.id.toString(),
+        }))
+      );
     }
+  }, [delegatedData, isLoadingDelegates]);
 
-    if (isAddMode) {
+  const delegateOptions = useMemo(
+    () =>
+      delegatesNames.map((delegate) => ({
+        value: delegate.id.toString(),
+        label: delegate.name,
+      })),
+    [delegatesNames]
+  );
+
+  const applyData = ({
+    displacedData,
+  }: {
+    displacedData: DisplacedProfileResponse | undefined;
+  }) => {
+    if (!isAddMode && displacedData && displacedData.status === 200 && displacedData.user) {
+      const userData = displacedData.user;
+
+      setProfileImage(userData.profile_image ?? MAN.src);
+
+      const delegate = delegatesNames.find(
+        (item) => item.id.toString() === userData.displacement.delegate.id.toString()
+      ) || {
+        id: userData.displacement.delegate.id.toString(),
+        name: userData.displacement.delegate.name,
+      };
+
+      form.setValues({
+        name: userData.name,
+        email: userData.email || '',
+        identity: userData.identity,
+        gender: userData.gender,
+        nationality: userData.nationality,
+        original_address: userData.original_address,
+        profile_image: userData.profile_image || null,
+        phone_number:
+          userData.phone_number.length === 10
+            ? `+970${userData.phone_number}`
+            : userData.phone_number,
+        alternative_phone_number:
+          userData.alternative_phone_number?.length === 10
+            ? `+970${userData.alternative_phone_number}`
+            : userData.alternative_phone_number || '',
+        wives: userData.wives || [],
+        social_status: {
+          status: userData.social_status?.status || SOCIAL_STATUS.SINGLE,
+          number_of_wives: userData.social_status?.number_of_wives || 0,
+          number_of_males: userData.social_status?.number_of_males || 0,
+          number_of_females: userData.social_status?.number_of_females || 0,
+          total_family_members: userData.social_status?.total_family_members || 1,
+          age_groups: {
+            [AGES.LESS_THAN_6_MONTHS]:
+              userData.social_status?.age_groups?.[AGES.LESS_THAN_6_MONTHS] || 0,
+            [AGES.FROM_6_MONTHS_TO_2_YEARS]:
+              userData.social_status?.age_groups?.[AGES.FROM_6_MONTHS_TO_2_YEARS] || 0,
+            [AGES.FROM_2_YEARS_To_6_YEARS]:
+              userData.social_status?.age_groups?.[AGES.FROM_2_YEARS_To_6_YEARS] || 0,
+            [AGES.FROM_6_YEARS_To_12_YEARS]:
+              userData.social_status?.age_groups?.[AGES.FROM_6_YEARS_To_12_YEARS] || 0,
+            [AGES.FROM_12_YEARS_To_18_YEARS]:
+              userData.social_status?.age_groups?.[AGES.FROM_12_YEARS_To_18_YEARS] || 0,
+            [AGES.MORE_THAN_18]: userData.social_status?.age_groups?.[AGES.MORE_THAN_18] || 0,
+          },
+        },
+        displacement: {
+          tent_number: userData.displacement?.tent_number || '',
+          tent_type: userData.displacement?.tent_type || ACCOMMODATION_TYPE.INDOOR_TENT,
+          family_status_type:
+            userData.displacement?.family_status_type || FAMILY_STATUS_TYPE.NORMAL,
+          displacement_date: userData.displacement?.displacement_date || '',
+          delegate,
+        },
+        war_injuries: userData.war_injuries || [],
+        martyrs: userData.martyrs || [],
+        medical_conditions: userData.medical_conditions || [],
+        additional_notes: userData.additional_notes || '',
+      });
+      form.clearErrors();
+      form.resetTouched();
+      form.resetDirty();
+    } else if (isAddMode) {
       form.reset();
       setProfileImage(MAN.src);
+      form.setFieldValue('displacement.delegate', { id: '', name: '' });
     }
-  }, [displacedProfileData, isAddMode]);
+  };
+
+  useEffect(() => {
+    applyData({ displacedData: displacedProfileData });
+  }, [displacedProfileData, isAddMode, isLoadingDelegates, delegatesNames]);
 
   useEffect(() => {
     if (profileImage instanceof File) {
@@ -277,46 +289,16 @@ export default function Displaced_Profile_Form({
           position: 'top-left',
           withBorder: true,
         });
-        const user = data.user;
-        form.setValues({
-          name: user.name,
-          email: user.email,
-          identity: user.identity,
-          gender: user.gender,
-          nationality: user.nationality,
-          original_address: user.original_address,
-          profile_image: user.profile_image || null,
-          phone_number:
-            user.phone_number.length === 10
-              ? `+970${user.phone_number}`
-              : user.phone_number,
-          alternative_phone_number:
-            user.alternative_phone_number?.length === 10
-              ? `+970${user.alternative_phone_number}`
-              : user.alternative_phone_number || '',
-          wives: user.wives || [],
-          social_status: user.social_status,
-          displacement: user.displacement,
-          war_injuries: user.war_injuries || [],
-          martyrs: user.martyrs || [],
-          medical_conditions: user.medical_conditions || [],
-          additional_notes: user.additional_notes || '',
-        });
-        form.clearErrors();
-        form.resetTouched();
-        form.resetDirty();
-        setProfileImage(user.profile_image || MAN.src);
+        applyData({ displacedData: data });
         refetch();
-
-        queryClient.invalidateQueries({ queryKey: ['security-profile'] });
+        queryClient.invalidateQueries({ queryKey: ['displaced-profile'] });
       } else {
         throw new Error(data.error || 'فشل في تحديث الملف الشخصي للنازح');
       }
     },
     onError: (error) => {
       setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY);
-      const errorMessage =
-        error?.message || 'حدث خطأ أثناء تحديث الملف الشخصي للنازح';
+      const errorMessage = error?.message || 'حدث خطأ أثناء تحديث الملف الشخصي للنازح';
       form.setErrors({ general: errorMessage });
       notifications.show({
         title: 'خطأ',
@@ -344,7 +326,6 @@ export default function Displaced_Profile_Form({
           withBorder: true,
         });
         queryClient.invalidateQueries({ queryKey: ['displaceds'] });
-
         router.push(GENERAL_ACTOR_ROUTES.DISPLACEDS);
       } else {
         throw new Error(data.error || 'فشل في إضافة النازح الجديد');
@@ -352,8 +333,7 @@ export default function Displaced_Profile_Form({
     },
     onError: (error) => {
       setQuery(ACTION_ADD_EDIT_DISPLAY.DISPLAY);
-      const errorMessage =
-        error?.message || 'حدث خطأ أثناء إضافة النازح الجديد';
+      const errorMessage = error?.message || 'حدث خطأ أثناء إضافة النازح الجديد';
       form.setErrors({ general: errorMessage });
       notifications.show({
         title: 'خطأ',
@@ -370,8 +350,7 @@ export default function Displaced_Profile_Form({
     try {
       setUploading(true);
       const mediaUrl = await handleUploadMedia(file, startUpload);
-      if (!mediaUrl)
-        throw new Error('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.');
+      if (!mediaUrl) throw new Error('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.');
       return mediaUrl;
     } catch {
       notifications.show({
@@ -387,50 +366,44 @@ export default function Displaced_Profile_Form({
     }
   };
 
-  const handleSubmit = form.onSubmit(
-    async (values: DisplacedProfileSchemaType) => {
-      console.log('🚀 ~ values:', values);
-      const avatarUrl =
-        profileImage instanceof File
-          ? await uploadImages(profileImage)
-          : (profileImage as string | null) ?? null;
+  const handleSubmit = form.onSubmit(async (values: DisplacedProfileSchemaType) => {
+    console.log('🚀 ~ values:', values);
+    const avatarUrl =
+      profileImage instanceof File
+        ? await uploadImages(profileImage)
+        : (profileImage as string | null) ?? null;
 
-      const payload: DisplacedProfileSchemaType = {
-        ...values,
-        profile_image: avatarUrl,
-      };
+    const payload: DisplacedProfileSchemaType = {
+      ...values,
+      profile_image: avatarUrl,
+    };
 
-      const handleError = (error: unknown) => {
-        const errorMessage =
-          (error as Error)?.message || 'فشل في حفظ الملف الشخصي للنازح';
-        form.setErrors({ general: errorMessage });
-        notifications.show({
-          title: 'خطأ',
-          message: errorMessage,
-          color: 'red',
-          position: 'top-left',
-          withBorder: true,
-        });
-      };
+    const handleError = (error: unknown) => {
+      const errorMessage = (error as Error)?.message || 'فشل في حفظ الملف الشخصي للنازح';
+      form.setErrors({ general: errorMessage });
+      notifications.show({
+        title: 'خطأ',
+        message: errorMessage,
+        color: 'red',
+        position: 'top-left',
+        withBorder: true,
+      });
+    };
 
-      try {
-        if (isAddMode) {
-          addDisplacedProfileMutation.mutate(
-            { payload },
-            { onError: handleError }
-          );
-        }
-        if (isEditMode) {
-          updateProfileMutation.mutate(
-            { displaced_Id: displaced_Id as number, payload },
-            { onError: handleError }
-          );
-        }
-      } catch (error) {
-        handleError(error);
+    try {
+      if (isAddMode) {
+        addDisplacedProfileMutation.mutate({ payload }, { onError: handleError });
       }
+      if (isEditMode) {
+        updateProfileMutation.mutate(
+          { displaced_Id: displaced_Id as number, payload },
+          { onError: handleError }
+        );
+      }
+    } catch (error) {
+      handleError(error);
     }
-  );
+  });
 
   const addWife = () => {
     form.insertListItem('wives', {
@@ -473,6 +446,14 @@ export default function Displaced_Profile_Form({
   const isMutationLoading =
     updateProfileMutation.isPending || addDisplacedProfileMutation.isPending;
 
+  const handleOpenDelegateProfile = (event: React.MouseEvent) => {
+    event.preventDefault();
+    const selectedDelegateId = form.getValues().displacement.delegate.id;
+    if (selectedDelegateId) {
+      router.push(DELEGATE_ROUTES_fUNC({ delegate_Id: Number(selectedDelegateId) }).PROFILE);
+    }
+  };
+
   return (
     <Stack p={{ base: 10, md: 20 }} pos='relative'>
       <LoadingOverlay
@@ -490,7 +471,7 @@ export default function Displaced_Profile_Form({
           pos='absolute'
           bottom='-50%'
           left='50%'
-          className='bg-primary border-1 border-second !rounded-full !overflow-hidden !-translate-x-1/2'
+          className='bg-primary border-1 border-second !rounded-full !overflow-hidden !- multiculturalism-x-1/2'
           w={100}
           h={100}
         >
@@ -509,12 +490,7 @@ export default function Displaced_Profile_Form({
               />
             )
           ) : (
-            <Image
-              src={MAN}
-              alt='Avatar'
-              className='w-[100px] h-[100px]'
-              priority
-            />
+            <Image src={MAN} alt='Avatar' className='w-[100px] h-[100px]' priority />
           )}
           {(isEditMode || isAddMode) && (
             <Upload_Media File_Type='image' setFileObject={setProfileImage}>
@@ -543,7 +519,7 @@ export default function Displaced_Profile_Form({
             <Text ta='start' fz={18} fw={600} className='!text-primary'>
               {isAddMode ? 'إضافة نازح جديد :' : 'البيانات الشخصية :'}
             </Text>
-            {(isManager || isDelegate || isOwner) && isDisplayMode && (
+            {(isManager || isDelegate) && isDisplayMode && (
               <Button
                 variant='filled'
                 size='xs'
@@ -569,12 +545,7 @@ export default function Displaced_Profile_Form({
           >
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   الاسم :
                 </Text>
               }
@@ -591,12 +562,7 @@ export default function Displaced_Profile_Form({
             <TextInput
               type='email'
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   البريد الإلكتروني :
                 </Text>
               }
@@ -612,12 +578,7 @@ export default function Displaced_Profile_Form({
             />
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   رقم الهوية :
                 </Text>
               }
@@ -633,12 +594,7 @@ export default function Displaced_Profile_Form({
             />
             <NativeSelect
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   الجنس :
                 </Text>
               }
@@ -657,12 +613,7 @@ export default function Displaced_Profile_Form({
             />
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   الجنسية :
                 </Text>
               }
@@ -678,12 +629,7 @@ export default function Displaced_Profile_Form({
             />
             <TextInput
               label={
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   عنوان السكن الأصلي :
                 </Text>
               }
@@ -698,12 +644,7 @@ export default function Displaced_Profile_Form({
               disabled={isDisplayMode}
             />
             <Stack w='100%' gap={0}>
-              <Text
-                fz={16}
-                fw={500}
-                mb={4}
-                className='!text-black !text-nowrap'
-              >
+              <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                 رقم الجوال :
               </Text>
               <Box dir='ltr' className='w-full'>
@@ -726,12 +667,7 @@ export default function Displaced_Profile_Form({
               (displacedProfileData?.user.alternative_phone_number &&
                 displacedProfileData.user.alternative_phone_number !== '')) && (
               <Stack w='100%' gap={0}>
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
+                <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                   رقم بديل :
                 </Text>
                 <Box dir='ltr' className='w-full'>
@@ -776,12 +712,7 @@ export default function Displaced_Profile_Form({
                   <SimpleGrid cols={{ base: 1, sm: 2, md: 4 }} w={'100%'}>
                     <TextInput
                       label={
-                        <Text
-                          fz={16}
-                          fw={500}
-                          mb={4}
-                          className='!text-black !text-nowrap'
-                        >
+                        <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                           اسم الزوجة :
                         </Text>
                       }
@@ -797,12 +728,7 @@ export default function Displaced_Profile_Form({
                     />
                     <TextInput
                       label={
-                        <Text
-                          fz={16}
-                          fw={500}
-                          mb={4}
-                          className='!text-black !text-nowrap'
-                        >
+                        <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                           رقم هوية الزوجة :
                         </Text>
                       }
@@ -818,12 +744,7 @@ export default function Displaced_Profile_Form({
                     />
                     <TextInput
                       label={
-                        <Text
-                          fz={16}
-                          fw={500}
-                          mb={4}
-                          className='!text-black !text-nowrap'
-                        >
+                        <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                           جنسية الزوجة :
                         </Text>
                       }
@@ -861,11 +782,7 @@ export default function Displaced_Profile_Form({
                         disabled={isDisplayMode}
                       />
                       {(isEditMode || isAddMode) && (
-                        <ActionIcon
-                          variant='outline'
-                          color='red'
-                          onClick={() => removeWife(index)}
-                        >
+                        <ActionIcon variant='outline' color='red' onClick={() => removeWife(index)}>
                           <Trash size={16} />
                         </ActionIcon>
                       )}
@@ -890,17 +807,12 @@ export default function Displaced_Profile_Form({
             <SimpleGrid
               cols={{ base: 2, md: 4 }}
               w={'100%'}
-              className='bg-gray-50 shadow-md rounded-lg'
+              className='bg-gray-50 shadow-md rounded-lg преимуще'
               p={16}
             >
               <NativeSelect
                 label={
-                  <Text
-                    fz={16}
-                    fw={500}
-                    mb={4}
-                    className='!text-black !text-nowrap'
-                  >
+                  <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                     الحالة الاجتماعية :
                   </Text>
                 }
@@ -918,38 +830,9 @@ export default function Displaced_Profile_Form({
                 disabled={isDisplayMode}
               />
 
-              {/* <NumberInput
-                hidden={!isDisplayMode}
-                label={
-                  <Text
-                    fz={16}
-                    fw={500}
-                    mb={4}
-                    className='!text-black !text-nowrap'
-                  >
-                    عدد الزوجات :
-                  </Text>
-                }
-                placeholder='ادخل عدد الزوجات...'
-                size='sm'
-                w='100%'
-                classNames={{
-                  input:
-                    'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
-                }}
-                min={0}
-                {...form.getInputProps('social_status.number_of_wives')}
-                disabled={isDisplayMode}
-              /> */}
-
               <NumberInput
                 label={
-                  <Text
-                    fz={16}
-                    fw={500}
-                    mb={4}
-                    className='!text-black !text-nowrap'
-                  >
+                  <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                     عدد الذكور :
                   </Text>
                 }
@@ -968,12 +851,7 @@ export default function Displaced_Profile_Form({
 
               <NumberInput
                 label={
-                  <Text
-                    fz={16}
-                    fw={500}
-                    mb={4}
-                    className='!text-black !text-nowrap'
-                  >
+                  <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                     عدد الإناث :
                   </Text>
                 }
@@ -991,18 +869,12 @@ export default function Displaced_Profile_Form({
               />
 
               {Object.values(AGES).map((ageGroup) => {
-                const value =
-                  form.getValues().social_status.age_groups[ageGroup];
+                const value = form.getValues().social_status.age_groups[ageGroup];
                 return (
                   <NumberInput
                     key={ageGroup}
                     label={
-                      <Text
-                        fz={16}
-                        fw={500}
-                        mb={4}
-                        className='!text-black !text-nowrap'
-                      >
+                      <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                         {AGES_LABELS[ageGroup]} :
                       </Text>
                     }
@@ -1010,10 +882,7 @@ export default function Displaced_Profile_Form({
                     size='sm'
                     w='100%'
                     value={value}
-                    // key={form.key(`social_status.age_groups.${ageGroup}`)}
-                    {...form.getInputProps(
-                      `social_status.age_groups.${ageGroup}`
-                    )}
+                    {...form.getInputProps(`social_status.age_groups.${ageGroup}`)}
                     disabled={isDisplayMode}
                     classNames={{
                       input:
@@ -1037,12 +906,7 @@ export default function Displaced_Profile_Form({
             >
               <TextInput
                 label={
-                  <Text
-                    fz={16}
-                    fw={500}
-                    mb={4}
-                    className='!text-black !text-nowrap'
-                  >
+                  <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                     رقم الخيمة :
                   </Text>
                 }
@@ -1058,22 +922,14 @@ export default function Displaced_Profile_Form({
               />
               <NativeSelect
                 label={
-                  <Text
-                    fz={16}
-                    fw={500}
-                    mb={4}
-                    className='!text-black !text-nowrap'
-                  >
+                  <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                     نوع الإيواء :
                   </Text>
                 }
-                data={Object.entries(ACCOMMODATION_TYPE).map(
-                  ([key, value]) => ({
-                    value,
-                    label:
-                      ACCOMMODATION_TYPE_LABELS[value as ACCOMMODATION_TYPE],
-                  })
-                )}
+                data={Object.entries(ACCOMMODATION_TYPE).map(([key, value]) => ({
+                  value,
+                  label: ACCOMMODATION_TYPE_LABELS[value as ACCOMMODATION_TYPE],
+                }))}
                 size='sm'
                 w='100%'
                 classNames={{
@@ -1085,22 +941,14 @@ export default function Displaced_Profile_Form({
               />
               <NativeSelect
                 label={
-                  <Text
-                    fz={16}
-                    fw={500}
-                    mb={4}
-                    className='!text-black !text-nowrap'
-                  >
+                  <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                     نوع حالة الأسرة :
                   </Text>
                 }
-                data={Object.entries(FAMILY_STATUS_TYPE).map(
-                  ([key, value]) => ({
-                    value,
-                    label:
-                      FAMILY_STATUS_TYPE_LABELS[value as FAMILY_STATUS_TYPE],
-                  })
-                )}
+                data={Object.entries(FAMILY_STATUS_TYPE).map(([key, value]) => ({
+                  value,
+                  label: FAMILY_STATUS_TYPE_LABELS[value as FAMILY_STATUS_TYPE],
+                }))}
                 size='sm'
                 w='100%'
                 classNames={{
@@ -1112,12 +960,7 @@ export default function Displaced_Profile_Form({
               />
               <TextInput
                 label={
-                  <Text
-                    fz={16}
-                    fw={500}
-                    mb={4}
-                    className='!text-black !text-nowrap'
-                  >
+                  <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                     تاريخ النزوح :
                   </Text>
                 }
@@ -1132,103 +975,41 @@ export default function Displaced_Profile_Form({
                 {...form.getInputProps('displacement.displacement_date')}
                 disabled={isDisplayMode}
               />
-              <TextInput
+              <Select
                 label={
-                  <Text
-                    fz={16}
-                    fw={500}
-                    mb={4}
-                    className='!text-black !text-nowrap'
-                  >
-                    اسم المندوب :
-                  </Text>
+                  <Group w={'100%'} justify='space-between'>
+                    <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
+                      المندوب :
+                    </Text>
+                    {form.getValues().displacement.delegate.id && (
+                      <ActionIcon size={20} variant='light' onClick={handleOpenDelegateProfile}>
+                        <Eye size={18} />
+                      </ActionIcon>
+                    )}
+                  </Group>
                 }
-                placeholder='ادخل اسم المندوب...'
+                placeholder='اختر المندوب...'
                 size='sm'
                 w='100%'
                 classNames={{
+                  label: '!w-full',
                   input:
                     'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
                 }}
-                {...form.getInputProps('displacement.delegate_name')}
-                disabled={isDisplayMode}
-                className={cn(isEditMode && '!hidden')}
-              />
-              <Stack w='100%' gap={0} className={cn(isEditMode && '!hidden')}>
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
-                  رقم المندوب :
-                </Text>
-                <Box dir='ltr' className='w-full'>
-                  <PhoneInput
-                    name='displacement.delegate_phone'
-                    international
-                    countryCallingCodeEditable={true}
-                    defaultCountry='PS'
-                    inputComponent={Custom_Phone_Input}
-                    placeholder='ادخل رقم المندوب...'
-                    value={
-                      form.getValues().displacement.delegate_phone as string
-                    }
-                    key={form.key('displacement.delegate_phone')}
-                    {...form.getInputProps('displacement.delegate_phone')}
-                    disabled={isDisplayMode}
-                  />
-                </Box>
-              </Stack>
-              <TextInput
-                label={
-                  <Text
-                    // hidden={isAddMode || isEditMode}
-                    fz={16}
-                    fw={500}
-                    mb={4}
-                    className='!text-black !text-nowrap'
-                  >
-                    اسم مدير المخيم :
-                  </Text>
-                }
-                placeholder='ادخل اسم مدير المخيم...'
-                size='sm'
-                w='100%'
-                classNames={{
-                  input:
-                    'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
+                data={delegateOptions}
+                searchable
+                clearable
+                disabled={isDisplayMode || isLoadingDelegates || !isManager}
+                aria-label='اختر المندوب'
+                clearButtonProps={{ 'aria-label': 'مسح المندوب' }}
+                value={form.getValues().displacement.delegate.id.toString() || undefined}
+                onChange={(value, option) => {
+                  form.setFieldValue('displacement.delegate', {
+                    id: value ? value.toString() : '',
+                    name: value ? option?.label || '' : '',
+                  });
                 }}
-                {...form.getInputProps('displacement.camp_manager')}
-                disabled={isDisplayMode}
-                className={cn(isEditMode && '!hidden')}
               />
-              <Stack w='100%' gap={0} className={cn(isEditMode && '!hidden')}>
-                <Text
-                  fz={16}
-                  fw={500}
-                  mb={4}
-                  className='!text-black !text-nowrap'
-                >
-                  رقم مدير المخيم :
-                </Text>
-                <Box dir='ltr' className='w-full'>
-                  <PhoneInput
-                    name='displacement.camp_managerPhone'
-                    international
-                    countryCallingCodeEditable={true}
-                    defaultCountry='PS'
-                    inputComponent={Custom_Phone_Input}
-                    placeholder='ادخل رقم مدير المخيم...'
-                    value={
-                      form.getValues().displacement.camp_managerPhone as string
-                    }
-                    key={form.key('displacement.camp_managerPhone')}
-                    {...form.getInputProps('displacement.camp_managerPhone')}
-                    disabled={isDisplayMode}
-                  />
-                </Box>
-              </Stack>
             </SimpleGrid>
           </Stack>
 
@@ -1254,12 +1035,7 @@ export default function Displaced_Profile_Form({
                 <SimpleGrid key={index} cols={{ base: 1, md: 3 }} w='100%'>
                   <TextInput
                     label={
-                      <Text
-                        fz={16}
-                        fw={500}
-                        mb={4}
-                        className='!text-black !text-nowrap'
-                      >
+                      <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                         اسم المصاب :
                       </Text>
                     }
@@ -1275,12 +1051,7 @@ export default function Displaced_Profile_Form({
                   />
                   <TextInput
                     label={
-                      <Text
-                        fz={16}
-                        fw={500}
-                        mb={4}
-                        className='!text-black !text-nowrap'
-                      >
+                      <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                         الإصابة :
                       </Text>
                     }
@@ -1299,7 +1070,9 @@ export default function Displaced_Profile_Form({
                       variant='outline'
                       color='red'
                       onClick={() => removeWarInjury(index)}
+                      size={24}
                       mt={30}
+                      radius={8}
                     >
                       <Trash size={16} />
                     </ActionIcon>
@@ -1331,12 +1104,7 @@ export default function Displaced_Profile_Form({
                 <SimpleGrid key={index} cols={{ base: 1, md: 3 }} w='100%'>
                   <TextInput
                     label={
-                      <Text
-                        fz={16}
-                        fw={500}
-                        mb={4}
-                        className='!text-black !text-nowrap'
-                      >
+                      <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                         اسم الشهيد :
                       </Text>
                     }
@@ -1355,7 +1123,9 @@ export default function Displaced_Profile_Form({
                       variant='outline'
                       color='red'
                       onClick={() => removeMartyr(index)}
+                      size={24}
                       mt={30}
+                      radius={8}
                     >
                       <Trash size={16} />
                     </ActionIcon>
@@ -1387,12 +1157,7 @@ export default function Displaced_Profile_Form({
                 <SimpleGrid key={index} cols={{ base: 1, md: 3 }} w='100%'>
                   <TextInput
                     label={
-                      <Text
-                        fz={16}
-                        fw={500}
-                        mb={4}
-                        className='!text-black !text-nowrap'
-                      >
+                      <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                         اسم المريض :
                       </Text>
                     }
@@ -1408,12 +1173,7 @@ export default function Displaced_Profile_Form({
                   />
                   <TextInput
                     label={
-                      <Text
-                        fz={16}
-                        fw={500}
-                        mb={4}
-                        className='!text-black !text-nowrap'
-                      >
+                      <Text fz={16} fw={500} mb={4} className='!text-black !text-nowrap'>
                         الحالة المرضية :
                       </Text>
                     }
@@ -1424,9 +1184,7 @@ export default function Displaced_Profile_Form({
                       input:
                         'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
                     }}
-                    {...form.getInputProps(
-                      `medical_conditions.${index}.condition`
-                    )}
+                    {...form.getInputProps(`medical_conditions.${index}.condition`)}
                     disabled={isDisplayMode}
                   />
                   {(isEditMode || isAddMode) && (
@@ -1434,7 +1192,9 @@ export default function Displaced_Profile_Form({
                       variant='outline'
                       color='red'
                       onClick={() => removeMedicalCondition(index)}
+                      size={24}
                       mt={30}
+                      radius={8}
                     >
                       <Trash size={16} />
                     </ActionIcon>
@@ -1447,12 +1207,7 @@ export default function Displaced_Profile_Form({
             <Stack my={20}>
               <Textarea
                 label={
-                  <Text
-                    fz={18}
-                    fw={600}
-                    mb={4}
-                    className='!text-primary !text-nowrap'
-                  >
+                  <Text fz={18} fw={600} mb={4} className='!text-primary !text-nowrap'>
                     ملاحظات إضافية :
                   </Text>
                 }
@@ -1480,9 +1235,7 @@ export default function Displaced_Profile_Form({
                 fw={500}
                 fz={16}
                 className='shadow-sm'
-                rightSection={
-                  isEditMode ? <UserPen size={16} /> : <Save size={16} />
-                }
+                rightSection={isEditMode ? <UserPen size={16} /> : <Save size={16} />}
               >
                 {isAddMode ? 'إضافة' : 'حفظ التعديلات'}
               </Button>

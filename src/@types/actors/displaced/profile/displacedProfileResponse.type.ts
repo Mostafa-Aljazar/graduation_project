@@ -8,6 +8,11 @@ export interface DisplacedProfileResponse {
     error?: string;
 }
 
+export interface AdminName {
+    id: string;
+    name: string
+}
+
 export interface DisplacedProfile {
     id?: number; //HINT: optional in create delegate
     name: string
@@ -45,11 +50,7 @@ export interface DisplacedProfile {
         family_status_type: FAMILY_STATUS_TYPE
         displacement_date: string
 
-        delegate_name: string
-        delegate_phone: string
-
-        camp_manager: string
-        camp_managerPhone: string
+        delegate: AdminName
     }
 
 

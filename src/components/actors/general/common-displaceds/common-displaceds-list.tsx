@@ -3,7 +3,7 @@
 import { Group, Stack, Text } from '@mantine/core';
 import { Database } from 'lucide-react';
 import { Suspense, useState } from 'react';
-import {} from '@/validation/actor/general/displaceds-filter-form';
+import {} from '@/validation/actor/general/displaceds/displaceds-filter-form';
 import Displaceds_Filters from '../aids-management/aid/delivery-displaceds/common-aid-delivery-displaceds-filters';
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 
@@ -36,10 +36,7 @@ export default function Common_Displaceds_List({}: CommonDisplacedListProps) {
       </Group>
 
       <Suspense fallback={<div>جارٍ التحميل...</div>}>
-        <Displaceds_Filters
-          setLocalFilters={setLocalFilters}
-          displacedNum={displacedNum}
-        />
+        <Displaceds_Filters setLocalFilters={setLocalFilters} displacedNum={displacedNum} />
       </Suspense>
 
       {/* <Suspense fallback={<div>جارٍ التحميل...</div>}>

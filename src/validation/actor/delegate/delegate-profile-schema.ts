@@ -57,7 +57,7 @@ export const DelegateProfileSchema = z.object({
     // number_of_families: z.number().int().min(0).optional(),
 })
 
-export type DelegateProfileType = z.infer<typeof DelegateProfileSchema>
+export type DelegateProfileSchemaType = z.infer<typeof DelegateProfileSchema>
 
 // export type delegateUpdatePayload = Omit<
 //     delegateProfileType,

@@ -2,11 +2,11 @@
 
 import { DelegateProfile, DelegateProfileResponse } from "@/@types/actors/delegate/profile/delegateProfileResponse.type";
 import { AqsaAPI } from "@/services";
-import { DelegateProfileType } from "@/validation/actor/delegate/delegate-profile-schema"; // Reuse the payload type
+import { DelegateProfileSchemaType } from "@/validation/actor/delegate/delegate-profile-schema"; // Reuse the payload type
 
 
 export interface addNewDelegateProps {
-    payload: DelegateProfileType;
+    payload: DelegateProfileSchemaType;
 }
 
 

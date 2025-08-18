@@ -8,7 +8,7 @@ export const fakeDisplacedProfile: DisplacedProfile = {
     email: "mostafa@gmail.com",
     name: 'سعيد يوسف',
     gender: GENDER.MALE,
-    profile_image: 'https://example.com/image.jpg',
+    profile_image: '',
     identity: '123456789',
     nationality: 'فلسطيني',
     original_address: 'غزة - الشجاعية',
@@ -53,10 +53,10 @@ export const fakeDisplacedProfile: DisplacedProfile = {
         tent_type: ACCOMMODATION_TYPE.INDOOR_TENT,
         family_status_type: FAMILY_STATUS_TYPE.DIFFICULT,
         displacement_date: '2023-10-01',
-        delegate_name: 'خالد عبد الله',
-        delegate_phone: '+970599999999',
-        camp_manager: 'محمود ناصر',
-        camp_managerPhone: '+970598888888',
+        delegate: {
+            id: "101", name: 'محمد صالح بن عبد'
+        },
+
     },
 
     war_injuries: [
@@ -86,11 +86,6 @@ export const fakeDisplacedProfile: DisplacedProfile = {
     role: USER_TYPE.DISPLACED,
     additional_notes: 'العائلة بحاجة إلى حليب أطفال وأدوية مزمنة.',
 }
-
-
-
-
-
 
 export const fakeDisplacedProfileResponse = ({ displaced_Id }: { displaced_Id: number }): DisplacedProfileResponse => {
 

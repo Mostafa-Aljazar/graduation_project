@@ -6,7 +6,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import Displaceds_Filters from '@/components/actors/general/displaceds/content/displaceds-filters';
 import { WIFE_STATUS } from '@/@types/actors/common-types/index.type';
 import Aid_Add_Displaceds_Table from './common-aid-add-displaceds-table';
-import { displacedsFilterValuesType } from '@/validation/actor/general/displaceds-filter-form';
+import { displacedsFilterValuesType } from '@/validation/actor/general/displaceds/displaceds-filter-form';
 import Common_Displaceds_Filters from '@/components/actors/general/common-displaceds/common-displaceds-filters';
 
 interface CommonAidDeliveryDisplacedsProps {

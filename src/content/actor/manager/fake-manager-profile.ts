@@ -4,8 +4,8 @@ import { USER_TYPE } from "@/constants/userTypes";
 
 export const fakeManagerProfile: ManagerProfile = {
     id: 1,
-    email: "mostafa@gmail.com",
     name: 'مصطفى يوسف',
+    email: "mostafa@gmail.com",
     gender: GENDER.MALE,
     profile_image: '',
     identity: '123456789',

@@ -17,25 +17,22 @@ import {
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
-import { displacedsFilterValues } from '@/validation/actor/general/displaceds-filter-form';
+import { displacedsFilterValuesType } from '@/validation/actor/general/displaceds/displaceds-filter-form';
 import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
 import { getDisplaceds } from '@/actions/actors/general/displaceds/getDisplaceds';
 import Displaced_Table_Actions from '@/components/actors/general/displaceds/displaced-table-actions';
 import { ListChecks, ListX, Users } from 'lucide-react';
 import { getDisplacedsIds } from '@/actions/actors/general/displaceds/getDisplacedsIds';
+import { getDelegatesNames } from '@/actions/actors/delegates/names/getDelegatesNames';
+import { DelegatesNamesResponse } from '@/@types/actors/general/delegates/delegatesResponse.type';
 
 interface DisplacedsTableProps {
-  localFilters: displacedsFilterValues;
+  localFilters: displacedsFilterValuesType;
   setDisplacedNum: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function Displaceds_Table({
-  localFilters,
-  setDisplacedNum,
-}: DisplacedsTableProps) {
-  const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<number[]>(
-    []
-  );
+export default function Displaceds_Table({ localFilters, setDisplacedNum }: DisplacedsTableProps) {
+  const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<number[]>([]);
   const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
 
   const [query, setQuery] = useQueryStates(
@@ -72,8 +69,7 @@ export default function Displaceds_Table({
     error: allQueryError,
   } = useQuery<number[], Error>({
     queryKey: ['displaced_all', query.search, localFilters],
-    queryFn: async () =>
-      (await getDisplacedsIds({ filters: localFilters })).displaceds_Ids,
+    queryFn: async () => (await getDisplacedsIds({ filters: localFilters })).displaceds_Ids,
     enabled: selectAllAcrossPages,
     retry: 1,
     staleTime: 1000 * 60 * 5,
@@ -95,15 +91,11 @@ export default function Displaceds_Table({
   const isRowSelected = (id: number) => selectedDisplacedIds.includes(id);
 
   const areAllPagesRowsSelected = () =>
-    selectedDisplacedIds.length ===
-    (displacedData?.pagination?.total_items || 0);
+    selectedDisplacedIds.length === (displacedData?.pagination?.total_items || 0);
 
   const handleRowSelection = (id: number, checked: boolean) => {
     if (checked) {
-      setSelectedDisplacedIds((prev) => [
-        ...prev.filter((rowId) => rowId !== id),
-        id,
-      ]);
+      setSelectedDisplacedIds((prev) => [...prev.filter((rowId) => rowId !== id), id]);
       if (areAllPagesRowsSelected()) setSelectAllAcrossPages(true);
     } else {
       setSelectedDisplacedIds((prev) => prev.filter((rowId) => rowId !== id));
@@ -128,15 +120,9 @@ export default function Displaceds_Table({
           variant='light'
           aria-label='Select all rows across all pages'
           disabled={!displacedData?.displaceds?.length}
-          onClick={() =>
-            handleSelectAllAcrossAllPages(!areAllPagesRowsSelected())
-          }
+          onClick={() => handleSelectAllAcrossAllPages(!areAllPagesRowsSelected())}
         >
-          {areAllPagesRowsSelected() ? (
-            <ListX size={18} />
-          ) : (
-            <ListChecks size={18} />
-          )}
+          {areAllPagesRowsSelected() ? <ListX size={18} /> : <ListChecks size={18} />}
         </ActionIcon>
       </Table.Th>
       <Table.Th px={5} ta='center'>
@@ -170,19 +156,13 @@ export default function Displaceds_Table({
     return (displacedData?.displaceds || []).map((element, index) => (
       <Table.Tr
         key={element.id}
-        bg={
-          isRowSelected(element.id)
-            ? 'var(--mantine-color-blue-light)'
-            : undefined
-        }
+        bg={isRowSelected(element.id) ? 'var(--mantine-color-blue-light)' : undefined}
       >
         <Table.Td px={5} ta='center'>
           <Checkbox
             aria-label='Select row'
             checked={isRowSelected(element.id)}
-            onChange={(e) =>
-              handleRowSelection(element.id, e.currentTarget.checked)
-            }
+            onChange={(e) => handleRowSelection(element.id, e.currentTarget.checked)}
           />
         </Table.Td>
         <Table.Td px={5} ta='center'>
@@ -280,9 +260,7 @@ export default function Displaceds_Table({
 
       <Pagination
         value={currentPage}
-        onChange={(page) =>
-          setQuery((prev) => ({ ...prev, displaced_page: page }))
-        }
+        onChange={(page) => setQuery((prev) => ({ ...prev, displaced_page: page }))}
         total={displacedData?.pagination?.total_pages || 0}
         pt={30}
         size='sm'
