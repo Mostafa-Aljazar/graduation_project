@@ -32,7 +32,7 @@ import {
   addAdBlogStoryProps,
 } from '@/actions/actors/manager/blog-stories-ads/addAdBlogStory';
 
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import useAuth from '@/hooks/useAuth';
 import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import { handleUploadMedia } from '@/utils/uploadthing/handleUploadMedia';
@@ -105,7 +105,7 @@ export default function Add_Written_Content_Form() {
     }
   }, [existingData]);
 
-  const updateMutation = useMutation<modalActionResponse, Error, updateAdBlogStoryProps>({
+  const updateMutation = useMutation<commonActionResponse, Error, updateAdBlogStoryProps>({
     mutationFn: updateAdBlogStory,
     onSuccess: (data) => {
       if (data.status === 200) {
@@ -141,7 +141,7 @@ export default function Add_Written_Content_Form() {
     },
   });
 
-  const addMutation = useMutation<modalActionResponse, Error, addAdBlogStoryProps>({
+  const addMutation = useMutation<commonActionResponse, Error, addAdBlogStoryProps>({
     mutationFn: addAdBlogStory,
     onSuccess: (data) => {
       if (data.status === 200) {

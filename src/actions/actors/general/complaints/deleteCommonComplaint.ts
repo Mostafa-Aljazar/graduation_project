@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { UserRank, UserType } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
@@ -14,9 +14,9 @@ export const deleteCommonComplaint = async ({
     complaint_Id,
     actor_Id,
     role,
-}: deleteCommonComplaintProps): Promise<modalActionResponse> => {
+}: deleteCommonComplaintProps): Promise<commonActionResponse> => {
 
-    const fakeData: modalActionResponse = {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم حذف الشكوى بنجاح`,
 
@@ -32,7 +32,7 @@ export const deleteCommonComplaint = async ({
     /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.delete<modalActionResponse>(`/complaints/${complaint_Id}`, {
+        const response = await AqsaAPI.delete<commonActionResponse>(`/complaints/${complaint_Id}`, {
             params: {
                 actor_Id,
                 role

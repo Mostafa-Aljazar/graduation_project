@@ -1,6 +1,6 @@
 'use server';
 
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import { AqsaAPI } from '@/services';
 
 export interface updateAdBlogStoryProps {
@@ -17,8 +17,8 @@ export const updateAdBlogStory = async ({
     content,
     brief = "",
     image_urls,
-}: updateAdBlogStoryProps): Promise<modalActionResponse> => {
-    const fakeData: modalActionResponse = {
+}: updateAdBlogStoryProps): Promise<commonActionResponse> => {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم تحديث المحتوى بنجاح`,
     }
@@ -34,7 +34,7 @@ export const updateAdBlogStory = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.put<modalActionResponse>(`/written-content/${id}`, {
+        const response = await AqsaAPI.put<commonActionResponse>(`/written-content/${id}`, {
             title,
             content,
             brief,

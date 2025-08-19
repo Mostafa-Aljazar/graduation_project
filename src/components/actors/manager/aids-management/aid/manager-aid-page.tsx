@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  Aid,
-  AidResponse,
-} from '@/@types/actors/manager/aid-management/add-aid-management.types';
+import { Aid, AidResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { getAid } from '@/actions/actors/general/aids-management/getAid';
 import { Box, Center, Paper, Stack, Text, ThemeIcon } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
@@ -15,10 +12,7 @@ export interface ManagerAidPageProps {
   manager_Id: number;
 }
 
-export default function Manager_Aid_Page({
-  manager_Id,
-  aid_Id,
-}: ManagerAidPageProps) {
+export default function Manager_Aid_Page({ manager_Id, aid_Id }: ManagerAidPageProps) {
   const {
     data: aidData,
     isLoading,
@@ -33,12 +27,7 @@ export default function Manager_Aid_Page({
   return (
     <Stack w={'100%'} p={20}>
       {hasError ? (
-        <Paper
-          p='md'
-          withBorder
-          m='md'
-          className='!bg-red-100 rounded-md text-center'
-        >
+        <Paper p='md' withBorder m='md' className='!bg-red-100 rounded-md text-center'>
           <Box>
             <Center mb='sm'>
               <ThemeIcon color='red' variant='light' size='lg'>
@@ -46,9 +35,7 @@ export default function Manager_Aid_Page({
               </ThemeIcon>
             </Center>
             <Text c='red' fw={600}>
-              {aidData?.error ||
-                error?.message ||
-                'حدث خطأ أثناء جلب بيانات المساعدة'}
+              {aidData?.error || error?.message || 'حدث خطأ أثناء جلب بيانات المساعدة'}
             </Text>
           </Box>
         </Paper>

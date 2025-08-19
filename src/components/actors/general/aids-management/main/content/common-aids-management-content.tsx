@@ -7,12 +7,7 @@ import { getAids } from '@/actions/actors/general/aids-management/getAids';
 import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import { AidsResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { aidsManagementFilterFormType } from '@/validation/actor/manager/aids-management/aids-management-filters-schema';
-import {
-  USER_RANK,
-  USER_TYPE,
-  UserRank,
-  UserType,
-} from '@/constants/userTypes';
+import { USER_RANK, USER_TYPE, UserRank, UserType } from '@/constants/userTypes';
 import Common_Aids_Management_Filters from './common-aids-management-filters';
 import Common_Aids_List from './card/common-aids-list';
 import { TYPE_GROUP_AIDS } from '@/@types/actors/common-types/index.type';
@@ -22,9 +17,7 @@ interface CommonAidsManagementContentProps {
   actor_Id: number;
   role: Exclude<
     (typeof USER_RANK)[UserRank],
-    | typeof USER_RANK.SECURITY_OFFICER
-    | typeof USER_TYPE.DISPLACED
-    | typeof USER_TYPE.SECURITY
+    typeof USER_RANK.SECURITY_OFFICER | typeof USER_TYPE.DISPLACED | typeof USER_TYPE.SECURITY
   >;
 }
 
@@ -33,18 +26,17 @@ export default function Common_Aids_Management_Content({
   role,
 }: CommonAidsManagementContentProps) {
   const [query, setQuery] = useQueryStates({
-    'aids-tab': parseAsStringEnum<TYPE_GROUP_AIDS>(
-      Object.values(TYPE_GROUP_AIDS)
-    ).withDefault(TYPE_GROUP_AIDS.ONGOING_AIDS),
+    'aids-tab': parseAsStringEnum<TYPE_GROUP_AIDS>(Object.values(TYPE_GROUP_AIDS)).withDefault(
+      TYPE_GROUP_AIDS.ONGOING_AIDS
+    ),
     'aids-page': parseAsInteger.withDefault(1),
   });
 
-  const [localFilters, setLocalFilters] =
-    useState<aidsManagementFilterFormType>({
-      type: null,
-      date_range: [null, null],
-      recipients_range: [null, null],
-    });
+  const [localFilters, setLocalFilters] = useState<aidsManagementFilterFormType>({
+    type: null,
+    date_range: [null, null],
+    recipients_range: [null, null],
+  });
 
   const limit = 10;
 
@@ -77,12 +69,7 @@ export default function Common_Aids_Management_Content({
       />
 
       {hasError ? (
-        <Paper
-          p='md'
-          withBorder
-          mt='md'
-          className='!bg-red-100 rounded-md text-center'
-        >
+        <Paper p='md' withBorder mt='md' className='!bg-red-100 rounded-md text-center'>
           <Box>
             <Center mb='sm'>
               <ThemeIcon color='red' variant='light' size='lg'>
@@ -90,9 +77,7 @@ export default function Common_Aids_Management_Content({
               </ThemeIcon>
             </Center>
             <Text c='red' fw={600}>
-              {AidsData?.error ||
-                error?.message ||
-                'حدث خطأ أثناء جلب المساعدات'}
+              {AidsData?.error || error?.message || 'حدث خطأ أثناء جلب المساعدات'}
             </Text>
           </Box>
         </Paper>

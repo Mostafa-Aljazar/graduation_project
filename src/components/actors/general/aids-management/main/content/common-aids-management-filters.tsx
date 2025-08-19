@@ -20,10 +20,7 @@ import {
 } from '@/validation/actor/manager/aids-management/aids-management-filters-schema';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { Dispatch, SetStateAction, useState } from 'react';
-import {
-  TYPE_AIDS,
-  TYPE_AIDS_LABELS,
-} from '@/@types/actors/common-types/index.type';
+import { TYPE_AIDS, TYPE_AIDS_LABELS } from '@/@types/actors/common-types/index.type';
 
 interface CommonAidsManagementFiltersProps {
   setLocalFilters: Dispatch<SetStateAction<aidsManagementFilterFormType>>;
@@ -34,10 +31,7 @@ export default function Common_Aids_Management_Filters({
   setLocalFilters,
   aidsNum,
 }: CommonAidsManagementFiltersProps) {
-  const [activePage, setActivePage] = useQueryState(
-    'aids-page',
-    parseAsInteger.withDefault(1)
-  );
+  const [activePage, setActivePage] = useQueryState('aids-page', parseAsInteger.withDefault(1));
 
   const initData: aidsManagementFilterFormType = {
     type: null,
@@ -143,11 +137,7 @@ export default function Common_Aids_Management_Filters({
             <Text fz={16} fw={500}>
               عدد المستفيدين :
             </Text>
-            <Group
-              gap={0}
-              wrap='nowrap'
-              className='border-1 border-gray-300 rounded-lg'
-            >
+            <Group gap={0} wrap='nowrap' className='border-1 border-gray-300 rounded-lg'>
               <NumberInput
                 placeholder='من'
                 size='sm'

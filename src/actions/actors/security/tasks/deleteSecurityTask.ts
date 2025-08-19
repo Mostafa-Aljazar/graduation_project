@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 export interface deleteSecurityTaskProps {
@@ -12,9 +12,9 @@ export interface deleteSecurityTaskProps {
 export const deleteSecurityTask = async ({
     task_Id,
     security_Id,
-}: deleteSecurityTaskProps): Promise<modalActionResponse> => {
+}: deleteSecurityTaskProps): Promise<commonActionResponse> => {
 
-    const fakeData: modalActionResponse = {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم حذف المهمة بنجاح`,
 
@@ -29,7 +29,7 @@ export const deleteSecurityTask = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.delete<modalActionResponse>("/securities/tasks", {
+        const response = await AqsaAPI.delete<commonActionResponse>("/securities/tasks", {
             params: {
                 task_Id,
                 security_Id,

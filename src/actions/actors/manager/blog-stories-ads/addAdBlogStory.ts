@@ -1,6 +1,6 @@
 'use server';
 
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import { AqsaAPI } from '@/services';
 
 export interface addAdBlogStoryProps {
@@ -15,8 +15,8 @@ export const addAdBlogStory = async ({
     content,
     brief = "",
     image_urls,
-}: addAdBlogStoryProps): Promise<modalActionResponse> => {
-    const fakeData: modalActionResponse = {
+}: addAdBlogStoryProps): Promise<commonActionResponse> => {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم إضافة المحتوى بنجاح`,
     }
@@ -30,7 +30,7 @@ export const addAdBlogStory = async ({
 
     try {
 
-        const response = await AqsaAPI.post<modalActionResponse>(`/written-content/`, {
+        const response = await AqsaAPI.post<commonActionResponse>(`/written-content/`, {
             title,
             content,
             brief,

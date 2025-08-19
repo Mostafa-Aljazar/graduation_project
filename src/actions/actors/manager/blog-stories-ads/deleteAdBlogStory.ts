@@ -1,7 +1,7 @@
 "use server";
 
 import { TYPE_WRITTEN_CONTENT } from "@/@types/actors/common-types/index.type";
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 export interface deleteAdBlogStoryProps {
@@ -14,8 +14,8 @@ export const deleteAdBlogStory = async ({
     content_Id,
     manager_Id,
     type
-}: deleteAdBlogStoryProps): Promise<modalActionResponse> => {
-    const fakeData: modalActionResponse = {
+}: deleteAdBlogStoryProps): Promise<commonActionResponse> => {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم حذف المحتوى بنجاح`,
 
@@ -31,7 +31,7 @@ export const deleteAdBlogStory = async ({
     /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.delete<modalActionResponse>(`/written-content`, {
+        const response = await AqsaAPI.delete<commonActionResponse>(`/written-content`, {
             params: {
                 type, content_Id, manager_Id
             }

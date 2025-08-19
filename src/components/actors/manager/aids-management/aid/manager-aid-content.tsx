@@ -67,8 +67,7 @@ function Aid_Header({
         onClick={() =>
           router.push(
             `${
-              MANAGER_ROUTES_fUNC({ manager_Id: manager_Id, aid_Id: aid_Id })
-                .ADD_AID
+              MANAGER_ROUTES_fUNC({ manager_Id: manager_Id, aid_Id: aid_Id }).ADD_AID
             }?aid_Id=${aid_Id}`
           )
         }
@@ -117,17 +116,15 @@ export default function Manager_Aid_Content({
 
       <Divider h={1} bg='#DFDEDC' w='100%' flex={1} />
 
-      {aid_Data &&
-        aid_Data?.distribution_mechanism ==
-          DISTRIBUTION_MECHANISM.DELEGATES_LISTS && (
-          <Common_Aid_Delegates_List
-            destination={DESTINATION_AID.DISPLAY_AIDS}
-            selectedDelegatesPortions={selectedDelegatesPortions}
-            setSelectedDelegatesPortions={setSelectedDelegatesPortions}
-            aid_Id={aid_Data.id ?? -1}
-            aid_Data={aid_Data}
-          />
-        )}
+      {aid_Data && aid_Data?.distribution_mechanism == DISTRIBUTION_MECHANISM.DELEGATES_LISTS && (
+        <Common_Aid_Delegates_List
+          destination={DESTINATION_AID.DISPLAY_AIDS}
+          selectedDelegatesPortions={selectedDelegatesPortions}
+          setSelectedDelegatesPortions={setSelectedDelegatesPortions}
+          aid_Id={aid_Data.id ?? -1}
+          aid_Data={aid_Data}
+        />
+      )}
 
       <Divider h={1} bg='#DFDEDC' w='100%' flex={1} />
 

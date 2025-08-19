@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import { MAN } from '@/assets/actor';
 import { parseAsStringEnum, useQueryStates } from 'nuqs';
 import {
@@ -45,7 +45,7 @@ export default function Common_Complaint_Card({
   const queryClient = useQueryClient();
 
   const changeStatusMutation = useMutation<
-    modalActionResponse,
+    commonActionResponse,
     unknown,
     changeStatusCommonComplaintProps
   >({

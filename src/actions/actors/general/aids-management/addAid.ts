@@ -1,12 +1,12 @@
 "use server";
 
 import { Aid } from "@/@types/actors/manager/aid-management/add-aid-management.types";
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 
-export const addAid = async (payload: Aid): Promise<modalActionResponse> => {
-    const fakeResponse: modalActionResponse = {
+export const addAid = async (payload: Aid): Promise<commonActionResponse> => {
+    const fakeResponse: commonActionResponse = {
         status: 200,
         message: "تم إضافة المساعدة بنجاح",
     }
@@ -21,7 +21,7 @@ export const addAid = async (payload: Aid): Promise<modalActionResponse> => {
     /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.post<modalActionResponse>('/aids/add', payload);
+        const response = await AqsaAPI.post<commonActionResponse>('/aids/add', payload);
 
         if (response.data) {
             return {

@@ -1,6 +1,6 @@
 'use client';
 
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   sendCommonComplaint,
   sendCommonComplaintProps,
@@ -66,7 +66,7 @@ export default function Common_Send_Complaint() {
   });
 
   const sendCommonComplaintMutation = useMutation<
-    modalActionResponse,
+    commonActionResponse,
     unknown,
     sendCommonComplaintProps
   >({

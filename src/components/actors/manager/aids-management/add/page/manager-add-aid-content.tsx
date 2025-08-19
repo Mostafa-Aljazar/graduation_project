@@ -4,15 +4,7 @@ import {
   Aid,
   SelectedDelegatePortion,
 } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import {
-  Stack,
-  LoadingOverlay,
-  Group,
-  Text,
-  ThemeIcon,
-  Divider,
-  Button,
-} from '@mantine/core';
+import { Stack, LoadingOverlay, Group, Text, ThemeIcon, Divider, Button } from '@mantine/core';
 import {
   ACTION_ADD_EDIT_DISPLAY,
   DESTINATION_AID,
@@ -39,8 +31,7 @@ function Add_Aid_Header() {
     )
   );
 
-  const headerMode =
-    action === ACTION_ADD_EDIT_DISPLAY.EDIT ? 'تعديل' : 'إضافة';
+  const headerMode = action === ACTION_ADD_EDIT_DISPLAY.EDIT ? 'تعديل' : 'إضافة';
 
   return (
     <Group gap={10} justify='space-between' w='100%'>
@@ -77,13 +68,13 @@ export default function Add_Aid_Content({
 
   const [query, setQuery] = useQueryStates(
     {
-      action: parseAsStringEnum(
-        Object.values(ACTION_ADD_EDIT_DISPLAY)
-      ).withDefault(ACTION_ADD_EDIT_DISPLAY.ADD),
+      action: parseAsStringEnum(Object.values(ACTION_ADD_EDIT_DISPLAY)).withDefault(
+        ACTION_ADD_EDIT_DISPLAY.ADD
+      ),
 
-      distributionMechanism: parseAsStringEnum(
-        Object.values(DISTRIBUTION_MECHANISM)
-      ).withDefault(distributionMechanismDefault),
+      distributionMechanism: parseAsStringEnum(Object.values(DISTRIBUTION_MECHANISM)).withDefault(
+        distributionMechanismDefault
+      ),
     },
     { shallow: true }
   );
@@ -92,9 +83,7 @@ export default function Add_Aid_Content({
     SelectedDelegatePortion[]
   >([]);
 
-  const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<number[]>(
-    []
-  );
+  const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<number[]>([]);
   console.log('🚀 ~ selectedDisplacedIds:', selectedDisplacedIds);
 
   useEffect(() => {
@@ -111,8 +100,7 @@ export default function Add_Aid_Content({
     if (aid_Data) setQuery({ action: ACTION_ADD_EDIT_DISPLAY.EDIT });
   }, [aid_Data]);
 
-  const isDisplaced =
-    query.distributionMechanism == DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES;
+  const isDisplaced = query.distributionMechanism == DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES;
 
   const actionAidMutation = useMutation({
     // const { mutate, isPending, isError, error } = useMutation({
@@ -125,9 +113,7 @@ export default function Add_Aid_Content({
         setQuery({ action: ACTION_ADD_EDIT_DISPLAY.DISPLAY });
         notifications.show({
           title:
-            query.action === ACTION_ADD_EDIT_DISPLAY.EDIT
-              ? 'تم تعديل المساعدة'
-              : 'تم حفظ المساعدة',
+            query.action === ACTION_ADD_EDIT_DISPLAY.EDIT ? 'تم تعديل المساعدة' : 'تم حفظ المساعدة',
           message: response.message || 'تم إرسال البيانات بنجاح',
           color: 'green',
           position: 'top-left',
@@ -161,17 +147,12 @@ export default function Add_Aid_Content({
       if (values.security_required) return false;
 
       // Delegates scenario - need at least one delegate
-      if (
-        values.distribution_mechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS
-      ) {
+      if (values.distribution_mechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS) {
         if (selectedDelegatesPortions.length === 0) return false;
       }
 
       // Displaced scenario - need at least one displaced person
-      if (
-        values.distribution_mechanism ===
-        DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES
-      ) {
+      if (values.distribution_mechanism === DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES) {
         if (selectedDisplacedIds.length === 0) return false;
       }
 
@@ -189,17 +170,12 @@ export default function Add_Aid_Content({
       }
 
       // Delegates scenario - still need at least one delegate
-      if (
-        values.distribution_mechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS
-      ) {
+      if (values.distribution_mechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS) {
         if (selectedDelegatesPortions.length === 0) return false;
       }
 
       // Displaced scenario - still need at least one displaced person
-      if (
-        values.distribution_mechanism ===
-        DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES
-      ) {
+      if (values.distribution_mechanism === DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES) {
         if (selectedDisplacedIds.length === 0) return false;
       }
 
@@ -232,8 +208,7 @@ export default function Add_Aid_Content({
     }
 
     const selectedDelegatesPortionsValues =
-      values.distribution_mechanism ===
-      DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES
+      values.distribution_mechanism === DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES
         ? []
         : selectedDelegatesPortions;
 
@@ -270,14 +245,11 @@ export default function Add_Aid_Content({
         isDisabled={false}
       />
 
-      {query.distributionMechanism ===
-        DISTRIBUTION_MECHANISM.DELEGATES_LISTS && (
+      {query.distributionMechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS && (
         <>
           <Divider h={1} bg='#DFDEDC' w='100%' flex={1} />
           <Common_Aid_Delegates_List
-            destination={
-              aid_Data ? DESTINATION_AID.EDIT_AIDS : DESTINATION_AID.ADD_AIDS
-            }
+            destination={aid_Data ? DESTINATION_AID.EDIT_AIDS : DESTINATION_AID.ADD_AIDS}
             selectedDelegatesPortions={selectedDelegatesPortions}
             setSelectedDelegatesPortions={setSelectedDelegatesPortions}
             aid_Id={aid_Data?.id ?? -1}

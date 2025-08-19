@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { USER_RANK, USER_TYPE, UserRank, UserType } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
@@ -19,9 +19,9 @@ export const addAidDisplaceds = async ({
     displaceds_Ids,
     actor_Id,
     role,
-}: addAidDisplacedsProps): Promise<modalActionResponse> => {
+}: addAidDisplacedsProps): Promise<commonActionResponse> => {
 
-    const fakeData: modalActionResponse = {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: 'تم إضافة النازحين للمساعدة بنجاح',
 
@@ -37,7 +37,7 @@ export const addAidDisplaceds = async ({
     /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.post<modalActionResponse>(`/aids/${aid_Id}/add-displaceds`, {
+        const response = await AqsaAPI.post<commonActionResponse>(`/aids/${aid_Id}/add-displaceds`, {
             aid_Id,
             displaceds_Ids,
             actor_Id,

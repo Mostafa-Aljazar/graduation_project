@@ -7,12 +7,7 @@ import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.t
 import { useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth';
 import { parseAsStringEnum, useQueryStates } from 'nuqs';
-import {
-  USER_RANK,
-  USER_TYPE,
-  UserRank,
-  UserType,
-} from '@/constants/userTypes';
+import { USER_RANK, USER_TYPE, UserRank, UserType } from '@/constants/userTypes';
 import Common_Aid_Action from './common-aid-action';
 import { DELEGATE_ROUTES_fUNC, MANAGER_ROUTES_fUNC } from '@/constants/routes';
 import {
@@ -26,9 +21,7 @@ interface CommonAidCardProps {
   actor_Id: number;
   role: Exclude<
     (typeof USER_RANK)[UserRank],
-    | typeof USER_RANK.SECURITY_OFFICER
-    | typeof USER_TYPE.DISPLACED
-    | typeof USER_TYPE.SECURITY
+    typeof USER_RANK.SECURITY_OFFICER | typeof USER_TYPE.DISPLACED | typeof USER_TYPE.SECURITY
   >;
 }
 
@@ -37,15 +30,11 @@ const getAidTypeIcon = (type: TYPE_AIDS) => {
   return <IconComponent size={20} className='text-white' />;
 };
 
-export default function Common_Aid_Card({
-  aid,
-  actor_Id,
-  role,
-}: CommonAidCardProps) {
+export default function Common_Aid_Card({ aid, actor_Id, role }: CommonAidCardProps) {
   const [query] = useQueryStates({
-    'aids-tab': parseAsStringEnum<TYPE_GROUP_AIDS>(
-      Object.values(TYPE_GROUP_AIDS)
-    ).withDefault(TYPE_GROUP_AIDS.ONGOING_AIDS),
+    'aids-tab': parseAsStringEnum<TYPE_GROUP_AIDS>(Object.values(TYPE_GROUP_AIDS)).withDefault(
+      TYPE_GROUP_AIDS.ONGOING_AIDS
+    ),
   });
 
   const router = useRouter();
@@ -63,18 +52,14 @@ export default function Common_Aid_Card({
     if (!clickedOnCard) return;
 
     if (role === USER_TYPE.MANAGER && isManager) {
-      router.push(
-        `${MANAGER_ROUTES_fUNC({ manager_Id: actor_Id, aid_Id: aid.id }).AID}`
-      );
+      router.push(`${MANAGER_ROUTES_fUNC({ manager_Id: actor_Id, aid_Id: aid.id }).AID}`);
     }
 
     if (
       role === USER_TYPE.DELEGATE &&
       (isManager || isSecurityOfficer || (isDelegate && isOwner))
     ) {
-      router.push(
-        `${DELEGATE_ROUTES_fUNC({ delegate_Id: actor_Id, aid_Id: aid.id }).AID}`
-      );
+      router.push(`${DELEGATE_ROUTES_fUNC({ delegate_Id: actor_Id, aid_Id: aid.id }).AID}`);
     }
   };
 
@@ -84,17 +69,13 @@ export default function Common_Aid_Card({
       key={aid.id}
       p='xs'
       className={cn(
-        '!bg-green-100 !shadow-md border-1 border-gray-200 rounded-lg hover:cursor-pointer',
-        aid.is_completed && '!bg-red-100'
+        '!bg-red-100 !shadow-md border-1 border-gray-200 rounded-lg hover:cursor-pointer',
+        aid.is_completed && '!bg-green-100'
       )}
       onClick={handleClick}
     >
       <Group>
-        <Center
-          w={48}
-          h={48}
-          className='bg-primary border-1 border-gray-300 rounded-full'
-        >
+        <Center w={48} h={48} className='bg-primary border-1 border-gray-300 rounded-full'>
           {getAidTypeIcon(aid.aid_type as TYPE_AIDS)}
         </Center>
 
@@ -111,14 +92,11 @@ export default function Common_Aid_Card({
                 {aid.aid_name || `مساعدة: ${aid.aid_type}`}
               </Text>
               <Text fz={14} c='dimmed'>
-                {new Date(aid.delivery_date as Date).toLocaleDateString(
-                  'ar-EG',
-                  {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                  }
-                )}
+                {new Date(aid.delivery_date as Date).toLocaleDateString('ar-EG', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })}
               </Text>
             </Flex>
 

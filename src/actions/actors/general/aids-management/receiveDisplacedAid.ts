@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { USER_TYPE, UserType } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
@@ -21,8 +21,8 @@ export const receiveDisplacedAid = async ({
     displaced_Id,
     role,
     actor_Id,
-}: receiveDisplacedAidProps): Promise<modalActionResponse> => {
-    const fakeData: modalActionResponse = {
+}: receiveDisplacedAidProps): Promise<commonActionResponse> => {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم تسليم المساعدة بنجاح`,
     };
@@ -37,7 +37,7 @@ export const receiveDisplacedAid = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post<modalActionResponse>(`/aids/${aid_Id}/receive-aid`, {
+        const response = await AqsaAPI.post<commonActionResponse>(`/aids/${aid_Id}/receive-aid`, {
             receive_code,
             aid_Id,
             displaced_Id,

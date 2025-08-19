@@ -29,9 +29,7 @@ interface CommonAidActionProps {
   actor_Id: number;
   role: Exclude<
     (typeof USER_RANK)[UserRank],
-    | typeof USER_RANK.SECURITY_OFFICER
-    | typeof USER_TYPE.DISPLACED
-    | typeof USER_TYPE.SECURITY
+    typeof USER_RANK.SECURITY_OFFICER | typeof USER_TYPE.DISPLACED | typeof USER_TYPE.SECURITY
   >;
 }
 
@@ -42,15 +40,14 @@ export default function Common_Aid_Action({
   role,
 }: CommonAidActionProps) {
   const [query] = useQueryStates({
-    'aids-tab': parseAsStringEnum<TYPE_GROUP_AIDS>(
-      Object.values(TYPE_GROUP_AIDS)
-    ).withDefault(TYPE_GROUP_AIDS.ONGOING_AIDS),
+    'aids-tab': parseAsStringEnum<TYPE_GROUP_AIDS>(Object.values(TYPE_GROUP_AIDS)).withDefault(
+      TYPE_GROUP_AIDS.ONGOING_AIDS
+    ),
   });
 
   const { user, isManager, isDelegate, isSecurityOfficer } = useAuth();
   const [openedPopover, setOpenedPopover] = useState(false);
-  const [openedDelete, { open: openDelete, close: closeDelete }] =
-    useDisclosure(false);
+  const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
 
   const router = useRouter();
   const isOwner = actor_Id === user?.id;
@@ -73,10 +70,7 @@ export default function Common_Aid_Action({
           {
             label: 'تعديل',
             icon: UserPen,
-            action: () =>
-              router.push(
-                `${routeFunc.AID}?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`
-              ),
+            action: () => router.push(`${routeFunc.AID}?action=${ACTION_ADD_EDIT_DISPLAY.EDIT}`),
           },
           { label: 'حذف', icon: Trash, action: openDelete },
         ];
@@ -93,9 +87,7 @@ export default function Common_Aid_Action({
     }
 
     if (role === USER_TYPE.MANAGER && isManager && !isOwner) {
-      return [
-        { label: 'عرض', icon: Eye, action: () => router.push(routeFunc.AID) },
-      ];
+      return [{ label: 'عرض', icon: Eye, action: () => router.push(routeFunc.AID) }];
     }
 
     if (role === USER_TYPE.DELEGATE && isDelegate && isOwner) {
@@ -114,8 +106,7 @@ export default function Common_Aid_Action({
             icon: UserPlus,
             action: () =>
               router.push(
-                DELEGATE_ROUTES_fUNC({ delegate_Id: actor_Id, aid_Id })
-                  .ADD_AID_DISPLACEDS
+                DELEGATE_ROUTES_fUNC({ delegate_Id: actor_Id, aid_Id }).ADD_AID_DISPLACEDS
               ),
           },
         ];
@@ -134,13 +125,38 @@ export default function Common_Aid_Action({
       {
         label: 'عرض',
         icon: Eye,
-        action: () =>
-          router.push(
-            DELEGATE_ROUTES_fUNC({ delegate_Id: actor_Id, aid_Id }).AID
-          ),
+        action: () => router.push(DELEGATE_ROUTES_fUNC({ delegate_Id: actor_Id, aid_Id }).AID),
       },
     ];
   })();
+
+  const Dropdown_Items = ACTIONS.map((item, index) => (
+    <Button
+      key={index}
+      justify='flex-start'
+      px={10}
+      leftSection={
+        <ThemeIcon variant='transparent' className='!text-dark'>
+          <item.icon size={18} />
+        </ThemeIcon>
+      }
+      p={0}
+      bg='transparent'
+      fz={16}
+      fw={500}
+      className={cn(
+        '!rounded-none !text-dark',
+        index + 1 !== ACTIONS.length && '!border-gray-100 !border-0 !border-b-1'
+      )}
+      onClick={(e) => {
+        e.stopPropagation();
+        item.action();
+        setOpenedPopover(false);
+      }}
+    >
+      {item.label}
+    </Button>
+  ));
 
   return (
     <>
@@ -169,36 +185,7 @@ export default function Common_Aid_Action({
         </Popover.Target>
 
         <Popover.Dropdown p={0} className='!bg-gray-200 !border-none'>
-          <Stack gap={0}>
-            {ACTIONS.map((item, index) => (
-              <Button
-                key={index}
-                justify='flex-start'
-                px={10}
-                leftSection={
-                  <ThemeIcon variant='transparent' className='!text-dark'>
-                    <item.icon size={18} />
-                  </ThemeIcon>
-                }
-                p={0}
-                bg='transparent'
-                fz={16}
-                fw={500}
-                className={cn(
-                  '!rounded-none !text-dark',
-                  index + 1 !== ACTIONS.length &&
-                    '!border-gray-100 !border-0 !border-b-1'
-                )}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  item.action();
-                  setOpenedPopover(false);
-                }}
-              >
-                {item.label}
-              </Button>
-            ))}
-          </Stack>
+          <Stack gap={0}>{Dropdown_Items}</Stack>
         </Popover.Dropdown>
       </Popover>
 

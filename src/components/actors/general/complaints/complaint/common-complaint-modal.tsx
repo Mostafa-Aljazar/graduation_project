@@ -18,7 +18,7 @@ import { Calendar, Clock, MessageSquareReply, UserCircle } from 'lucide-react';
 import { parseAsStringEnum, useQueryStates } from 'nuqs';
 import { cn } from '@/utils/cn';
 import { Complaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   replyCommonComplaint,
   replyCommonComplaintProps,
@@ -62,7 +62,7 @@ export default function Common_Complaint_Modal({
     validate: zodResolver(complaintSchema),
   });
 
-  const replyMutation = useMutation<modalActionResponse, unknown, replyCommonComplaintProps>({
+  const replyMutation = useMutation<commonActionResponse, unknown, replyCommonComplaintProps>({
     mutationFn: replyCommonComplaint,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {

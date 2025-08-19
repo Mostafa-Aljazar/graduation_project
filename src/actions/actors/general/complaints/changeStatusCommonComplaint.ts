@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { USER_RANK, USER_TYPE, UserRank, UserType } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
@@ -13,9 +13,9 @@ export interface changeStatusCommonComplaintProps {
 
 export const changeStatusCommonComplaint = async ({
     complaint_Id, actor_Id, role
-}: changeStatusCommonComplaintProps): Promise<modalActionResponse> => {
+}: changeStatusCommonComplaintProps): Promise<commonActionResponse> => {
 
-    const fakeData: modalActionResponse = {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم تغيير حالة الشكوى بنجاح`,
     }
@@ -31,7 +31,7 @@ export const changeStatusCommonComplaint = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.put<modalActionResponse>(`/complaints/${complaint_Id}/changeStatus`, {
+        const response = await AqsaAPI.put<commonActionResponse>(`/complaints/${complaint_Id}/changeStatus`, {
             actor_Id, role
         });
 

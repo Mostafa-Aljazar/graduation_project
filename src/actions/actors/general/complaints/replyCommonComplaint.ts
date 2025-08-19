@@ -1,6 +1,6 @@
 "use server";
 
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { USER_RANK, UserRank } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 
@@ -16,9 +16,9 @@ export const replyCommonComplaint = async ({
     actor_Id,
     role,
     reply,
-}: replyCommonComplaintProps): Promise<modalActionResponse> => {
+}: replyCommonComplaintProps): Promise<commonActionResponse> => {
 
-    const fakeData: modalActionResponse = {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم ارسال الرد بنجاح`,
 
@@ -33,7 +33,7 @@ export const replyCommonComplaint = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post<modalActionResponse>(`/complaints/${complaint_Id}/reply`, {
+        const response = await AqsaAPI.post<commonActionResponse>(`/complaints/${complaint_Id}/reply`, {
             actor_Id,
             role,
             reply,

@@ -1,7 +1,7 @@
 "use server";
 
 import { TASKS_TABS } from "@/@types/actors/common-types/index.type";
-import { modalActionResponse } from "@/@types/common/action/commonActionResponse.type";
+import { commonActionResponse } from "@/@types/common/action/commonActionResponse.type";
 import { AqsaAPI } from "@/services";
 
 
@@ -21,9 +21,9 @@ export const addSecurityTask = async ({
     body,
     security_men,
     type,
-}: addSecurityTaskProps): Promise<modalActionResponse> => {
+}: addSecurityTaskProps): Promise<commonActionResponse> => {
 
-    const fakeData: modalActionResponse = {
+    const fakeData: commonActionResponse = {
         status: 200,
         message: `تم اضافة المهمة بنجاح`,
 
@@ -38,7 +38,7 @@ export const addSecurityTask = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post<modalActionResponse>('/securities/tasks/add', {
+        const response = await AqsaAPI.post<commonActionResponse>('/securities/tasks/add', {
             security_Id,
             dateTime,
             title,

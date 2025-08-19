@@ -1,6 +1,6 @@
 'use client';
 
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   receiveDisplacedAid,
   receiveDisplacedAidProps,
@@ -33,7 +33,7 @@ export default function Common_Receive_Displaced_Aid_Modal({
     validate: zodResolver(otpSchema),
   });
 
-  const receiveMutation = useMutation<modalActionResponse, unknown, receiveDisplacedAidProps>({
+  const receiveMutation = useMutation<commonActionResponse, unknown, receiveDisplacedAidProps>({
     mutationFn: receiveDisplacedAid,
     onSuccess: (data) => {
       if (data.status === 200) {

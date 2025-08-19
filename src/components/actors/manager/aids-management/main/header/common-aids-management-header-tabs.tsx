@@ -1,37 +1,25 @@
 'use client';
 
-import {
-  GET_AIDS_MANAGEMENT_TABS,
-  TYPE_GROUP_AIDS,
-} from '@/@types/actors/common-types/index.type';
+import { GET_AIDS_MANAGEMENT_TABS, TYPE_GROUP_AIDS } from '@/@types/actors/common-types/index.type';
 import { cn } from '@/utils/cn';
-import {
-  Divider,
-  FloatingIndicator,
-  Group,
-  Stack,
-  Tabs,
-  Text,
-  ThemeIcon,
-} from '@mantine/core';
+import { Divider, FloatingIndicator, Group, Stack, Tabs, Text, ThemeIcon } from '@mantine/core';
 import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import { useState, useRef } from 'react';
 
 export default function Common_Aids_Management_Header_Tabs() {
   const [query, setQuery] = useQueryStates({
-    'aids-tab': parseAsStringEnum<TYPE_GROUP_AIDS>(
-      Object.values(TYPE_GROUP_AIDS)
-    ).withDefault(TYPE_GROUP_AIDS.ONGOING_AIDS),
+    'aids-tab': parseAsStringEnum<TYPE_GROUP_AIDS>(Object.values(TYPE_GROUP_AIDS)).withDefault(
+      TYPE_GROUP_AIDS.ONGOING_AIDS
+    ),
     'aids-page': parseAsInteger.withDefault(1),
   });
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
   const controlsRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
-  const setControlRef =
-    (tabKey: string) => (node: HTMLButtonElement | null) => {
-      controlsRefs.current[tabKey] = node;
-    };
+  const setControlRef = (tabKey: string) => (node: HTMLButtonElement | null) => {
+    controlsRefs.current[tabKey] = node;
+  };
 
   const activeTabSection = (tabKey: TYPE_GROUP_AIDS) => {
     const IconComponent = GET_AIDS_MANAGEMENT_TABS[tabKey].icon;
@@ -46,11 +34,7 @@ export default function Common_Aids_Management_Header_Tabs() {
       >
         <Group flex={1} wrap='nowrap' gap={3} justify='center' align='center'>
           {IconComponent && (
-            <ThemeIcon
-              variant='transparent'
-              className='flex-shrink-0 !text-dark'
-              size={16}
-            >
+            <ThemeIcon variant='transparent' className='flex-shrink-0 !text-dark' size={16}>
               <IconComponent size={16} />
             </ThemeIcon>
           )}

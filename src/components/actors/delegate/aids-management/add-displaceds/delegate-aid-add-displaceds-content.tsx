@@ -13,7 +13,7 @@ import {
   addAidDisplaceds,
   addAidDisplacedsProps,
 } from '@/actions/actors/general/aids-management/addAidDisplaceds';
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 
 interface DelegateAidAddDisplacedsContentProps {
   isLoading: boolean;
@@ -30,7 +30,7 @@ export default function Delegate_Aid_Add_Displaceds_Content({
     (aid_Data && aid_Data?.selected_displaced_Ids) ?? []
   );
 
-  const actionAidMutation = useMutation<modalActionResponse, Error, addAidDisplacedsProps>({
+  const actionAidMutation = useMutation<commonActionResponse, Error, addAidDisplacedsProps>({
     // const { mutate, isPending, isError, error } = useMutation({
     mutationFn: addAidDisplaceds,
     onSuccess: (response) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import { getDelegates } from '@/actions/actors/general/delegates/getDelegates';
 import {
   changeDelegate,
@@ -52,7 +52,7 @@ export default function Change_Delegate_In_Displaced_Modal({
       })),
   });
 
-  const changeMutation = useMutation<modalActionResponse, unknown, changeDelegateProps>({
+  const changeMutation = useMutation<commonActionResponse, unknown, changeDelegateProps>({
     mutationFn: changeDelegate,
     onSuccess: (data) => {
       if (Number(data.status) === 200) {
@@ -83,7 +83,7 @@ export default function Change_Delegate_In_Displaced_Modal({
 
   const handleSubmit = (values: changeDelegateType) => {
     changeMutation.mutate({
-      displacedIDs,
+      displaced_Ids: displacedIDs,
       delegateId: Number(values.delegateId),
     });
   };

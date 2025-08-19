@@ -3,12 +3,7 @@ import { Stack, Group, Text, Flex, Pagination } from '@mantine/core';
 import { Package } from 'lucide-react';
 import { parseAsInteger, useQueryState } from 'nuqs';
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import {
-  USER_RANK,
-  USER_TYPE,
-  UserRank,
-  UserType,
-} from '@/constants/userTypes';
+import { USER_RANK, USER_TYPE, UserRank, UserType } from '@/constants/userTypes';
 import Common_Aid_Card from './common-aid-card';
 import Common_Aid_Card_Skeleton from './common-aid-card-skeleton';
 
@@ -19,9 +14,7 @@ interface CommonAidsListProps {
   actor_Id: number;
   role: Exclude<
     (typeof USER_RANK)[UserRank],
-    | typeof USER_RANK.SECURITY_OFFICER
-    | typeof USER_TYPE.DISPLACED
-    | typeof USER_TYPE.SECURITY
+    typeof USER_RANK.SECURITY_OFFICER | typeof USER_TYPE.DISPLACED | typeof USER_TYPE.SECURITY
   >;
 }
 
@@ -32,10 +25,7 @@ export default function Common_Aids_List({
   actor_Id,
   role,
 }: CommonAidsListProps) {
-  const [activePage, setActivePage] = useQueryState(
-    'aids-page',
-    parseAsInteger.withDefault(1)
-  );
+  const [activePage, setActivePage] = useQueryState('aids-page', parseAsInteger.withDefault(1));
 
   return (
     <Stack pos={'relative'} py={20}>
@@ -55,12 +45,7 @@ export default function Common_Aids_List({
       ) : (
         <Stack gap='xs'>
           {data.map((aid) => (
-            <Common_Aid_Card
-              aid={aid}
-              key={aid.id}
-              actor_Id={actor_Id}
-              role={role}
-            />
+            <Common_Aid_Card aid={aid} key={aid.id} actor_Id={actor_Id} role={role} />
           ))}
         </Stack>
       )}

@@ -5,7 +5,7 @@ import { Trash2 } from 'lucide-react';
 import { useDisclosure } from '@mantine/hooks';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { notifications } from '@mantine/notifications';
-import { modalActionResponse } from '@/@types/common/action/commonActionResponse.type';
+import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import {
   deleteCommonComplaint,
   deleteCommonComplaintProps,
@@ -26,7 +26,7 @@ export default function Common_Delete_Complaint({
   const [opened, { open, close }] = useDisclosure(false);
   const queryClient = useQueryClient();
 
-  const deleteMutation = useMutation<modalActionResponse, unknown, deleteCommonComplaintProps>({
+  const deleteMutation = useMutation<commonActionResponse, unknown, deleteCommonComplaintProps>({
     mutationFn: deleteCommonComplaint,
     onSuccess: (data) => {
       if (data.status === 200) {
