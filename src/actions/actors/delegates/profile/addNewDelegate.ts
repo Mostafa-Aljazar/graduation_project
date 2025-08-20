@@ -44,12 +44,15 @@ export const addNewDelegate = async ({ payload }: addNewDelegateProps): Promise<
         throw new Error("فشل في إضافة المندوب الجديد");
 
     } catch (error: any) {
+
         const errorMessage = error.response?.data?.error || error.message || "حدث خطأ أثناء إضافة المندوب الجديد";
+
         return {
             status: error.response?.status || 500,
             message: errorMessage,
             user: {} as DelegateProfile,
             error: errorMessage,
         };
+
     }
 };

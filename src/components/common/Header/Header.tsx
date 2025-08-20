@@ -11,10 +11,10 @@ import { LOGO } from '@/assets/common';
 import { LogIn } from 'lucide-react';
 import Header_Avatar from './header-avatar';
 
-type Props = {
+interface Props {
   opened: boolean;
   toggle: () => void;
-};
+}
 
 export default function Header({ opened, toggle }: Props) {
   const pathname = usePathname();

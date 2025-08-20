@@ -7,7 +7,6 @@ import { TYPE_WRITTEN_CONTENT } from '@/@types/actors/common-types/index.type';
 import { getAdsBlogsStories } from '@/actions/actors/manager/blog-stories-ads/getAdsBlogsStories';
 import { BLOG_TITLE, SUCCESS_STORIES_TITLE } from '@/content/landing';
 import { MessageCircleWarning } from 'lucide-react';
-import Success_Stories_List from './blog-or-stories-list';
 import Blog_Or_Stories_List from './blog-or-stories-list';
 
 interface Props {

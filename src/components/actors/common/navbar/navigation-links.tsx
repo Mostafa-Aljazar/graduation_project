@@ -1,15 +1,12 @@
 'use client';
 
 import { Box, Stack, Text } from '@mantine/core';
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/utils/cn';
 import useAuth from '@/hooks/useAuth';
-import {
-  managerNavLinks,
-  guestManagerNavLinks,
-} from '@/content/actor/manager/navLinks';
+import { managerNavLinks, guestManagerNavLinks } from '@/content/actor/manager/navLinks';
 import {
   delegate_NavLinks,
   guest_Delegate_NavLinks,
@@ -21,10 +18,7 @@ import {
   guest_Security_NavLinks,
   manager_OR_Security_Guest_Security_NavLinks,
 } from '@/content/actor/security/navLinks';
-import {
-  displaced_NavLinks,
-  guest_Displaced_NavLinks,
-} from '@/content/actor/displaced/navLinks';
+import { displaced_NavLinks, guest_Displaced_NavLinks } from '@/content/actor/displaced/navLinks';
 
 interface NavLink {
   label: string;
@@ -33,14 +27,7 @@ interface NavLink {
 }
 
 export default function Navigation_Links() {
-  const {
-    user,
-    isDelegate,
-    isDisplaced,
-    isSecurity,
-    isSecurityOfficer,
-    isManager,
-  } = useAuth();
+  const { user, isDelegate, isDisplaced, isSecurity, isSecurityOfficer, isManager } = useAuth();
   const userId = Number(user?.id) || 0;
   const pathname = usePathname();
 
@@ -70,18 +57,21 @@ export default function Navigation_Links() {
         const id = extractId('delegates');
         if (isDelegate && userId === id) return delegate_NavLinks(userId);
         if (isDisplaced) return displaced_As_Guest_Delegate_NavLinks(id);
-        if (isDelegate || isSecurity)
-          return security_OR_delegate_As_Guest_Delegate_NavLinks(id);
+        if (isDelegate || isSecurity) return security_OR_delegate_As_Guest_Delegate_NavLinks(id);
         return guest_Delegate_NavLinks(id);
       }
     }
 
     if (pathname.includes('/security/')) {
-      const id = extractId('security');
-      if ((isSecurity || isSecurityOfficer) && userId === id)
+      if (pathname.includes('/security/add') && isManager) {
+        return managerNavLinks(userId);
+      } else if (pathname.includes('/security/add') && isSecurityOfficer) {
         return security_NavLinks(userId);
-      if (isDisplaced) return guest_Security_NavLinks(id);
-      return manager_OR_Security_Guest_Security_NavLinks(id);
+      } else {
+        const id = extractId('security');
+        if ((isSecurity || isSecurityOfficer) && userId === id) return security_NavLinks(userId);
+        return manager_OR_Security_Guest_Security_NavLinks(id);
+      }
     }
 
     if (pathname.includes('/manager/')) {
@@ -96,21 +86,10 @@ export default function Navigation_Links() {
     if (isManager) return managerNavLinks(userId);
 
     return [];
-  }, [
-    pathname,
-    userId,
-    isDisplaced,
-    isDelegate,
-    isSecurity,
-    isSecurityOfficer,
-    isManager,
-  ]);
+  }, [pathname, userId, isDisplaced, isDelegate, isSecurity, isSecurityOfficer, isManager]);
 
   return (
-    <Box
-      w='100%'
-      className='bg-white shadow-lg border border-gray-200 rounded-2xl overflow-hidden'
-    >
+    <Box w='100%' className='bg-white shadow-lg border border-gray-200 rounded-2xl overflow-hidden'>
       <Stack gap={0}>
         {navLinks.map((link, index) => {
           const isActive = pathname.includes(link.href);

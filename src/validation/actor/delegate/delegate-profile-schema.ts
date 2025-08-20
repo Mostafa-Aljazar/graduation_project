@@ -2,32 +2,47 @@ import { z } from 'zod'
 import { isValidPhoneNumber } from 'react-phone-number-input'
 import { GENDER, SOCIAL_STATUS } from '@/@types/actors/common-types/index.type'
 
+const phoneSchema = z
+    .string()
+    .refine(isValidPhoneNumber, { message: 'رقم الجوال غير صالح' });
+
+const optionalPhoneSchema = z
+    .string()
+    .refine((val) => val === '' || isValidPhoneNumber(val), {
+        message: 'رقم بديل غير صالح',
+    })
+    .transform((val) => (val === '' ? undefined : val))
+    .optional()
+    .nullable();
+
 export const DelegateProfileSchema = z.object({
+    id: z.number().optional(), // optional for create
+
     profile_image: z.string().optional().nullable(),
 
     name: z
         .string({ required_error: 'الاسم مطلوب' })
-        .min(2, { message: 'الاسم يجب أن يحتوي على 2 أحرف على الأقل' }),
+        .min(2, { message: 'الاسم يجب أن يحتوي على حرفين على الأقل' }),
+
+    email: z.string().email(),
 
     identity: z
         .string({ required_error: 'رقم الهوية مطلوب' })
-        .refine((val) => /^\d{9}$/.test(val), {
-            message: 'رقم الهوية يجب أن يتكون من 9 أرقام بالضبط',
-        }),
+        .regex(/^\d{9}$/, { message: 'رقم الهوية يجب أن يكون 9 أرقام' }),
 
     gender: z.nativeEnum(GENDER, { required_error: 'الجنس مطلوب' }),
-
-    social_status: z.nativeEnum(SOCIAL_STATUS, {
-        required_error: 'الحالة الاجتماعية مطلوبة',
-    }),
 
     nationality: z
         .string({ required_error: 'الجنسية مطلوبة' })
         .min(2, { message: 'الجنسية يجب أن تحتوي على 2 أحرف على الأقل' }),
 
-    email: z
-        .string({ required_error: 'البريد الإلكتروني مطلوب' })
-        .email({ message: 'البريد الإلكتروني غير صالح' }),
+    phone_number: phoneSchema,
+
+    alternative_phone_number: optionalPhoneSchema,
+
+    social_status: z.nativeEnum(SOCIAL_STATUS, {
+        required_error: 'الحالة الاجتماعية مطلوبة',
+    }),
 
     age: z
         .number({ required_error: 'العمر مطلوب' })
@@ -39,27 +54,6 @@ export const DelegateProfileSchema = z.object({
         .string({ required_error: 'المؤهل العلمي مطلوب' })
         .min(2, { message: 'المؤهل العلمي يجب أن يحتوي على 2 أحرف على الأقل' }),
 
-    phone_number: z
-        .string({ required_error: 'رقم الجوال مطلوب' })
-        .refine(isValidPhoneNumber, { message: 'رقم الجوال غير صالح' }),
-
-    alternative_phone_number: z
-        .string()
-        .refine((val) => val === '' || isValidPhoneNumber(val), {
-            message: 'رقم بديل غير صالح',
-        })
-        .transform((val) => (val === '' ? undefined : val))
-        .optional()
-        .nullable(),
-
-    // number_of_responsible_camps: z.number().int().min(0).optional(),
-
-    // number_of_families: z.number().int().min(0).optional(),
 })
 
 export type DelegateProfileSchemaType = z.infer<typeof DelegateProfileSchema>
-
-// export type delegateUpdatePayload = Omit<
-//     delegateProfileType,
-//     'number_of_responsible_camps' | 'number_of_families'
-// >

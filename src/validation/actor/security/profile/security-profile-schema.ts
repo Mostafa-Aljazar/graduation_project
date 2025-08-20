@@ -6,7 +6,6 @@ import {
 } from '@/@types/actors/common-types/index.type';
 import { USER_RANK } from '@/constants/userTypes';
 
-
 const phoneSchema = z
     .string()
     .refine(isValidPhoneNumber, { message: 'رقم الجوال غير صالح' });
@@ -51,10 +50,8 @@ export const SecurityProfileSchema = z.object({
 
     rank: z.nativeEnum(USER_RANK, { required_error: 'الدور مطلوب' }),
 
-    additional_notes: z
-        .string()
-        .optional()
-        .nullable(),
+    additional_notes: z.string().optional().nullable(),
+
 });
 
 export type SecurityProfileSchemaType = z.infer<typeof SecurityProfileSchema>;

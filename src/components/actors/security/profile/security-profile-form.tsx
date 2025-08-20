@@ -354,28 +354,27 @@ export default function Security_Profile_Form({
       </Box>
 
       <Stack my={30}>
-        <form onSubmit={handleSubmit}>
-          <Group wrap='nowrap' align='center'>
-            <Text ta='start' fz={18} fw={600} className='!text-primary'>
-              {isAddMode ? 'إضافة أمن جديد :' : 'البيانات الشخصية :'}
-            </Text>
-            {(isManager || isSecurityOfficer || isOwner) && isDisplayMode && (
-              <Button
-                variant='filled'
-                size='xs'
-                color='primary'
-                rightSection={<UserPen size={16} />}
-                loading={isMutationLoading}
-                onClick={() => setQuery(ACTION_ADD_EDIT_DISPLAY.EDIT)}
-                fw={500}
-                fz={16}
-                className='shadow-sm'
-              >
-                تعديل
-              </Button>
-            )}
-          </Group>
-
+        <Group wrap='nowrap' align='center'>
+          <Text ta='start' fz={18} fw={600} className='!text-primary'>
+            {isAddMode ? 'إضافة أمن جديد :' : 'البيانات الشخصية :'}
+          </Text>
+          {(isManager || isSecurityOfficer) && isDisplayMode && (
+            <Button
+              variant='filled'
+              size='xs'
+              color='primary'
+              rightSection={<UserPen size={16} />}
+              loading={isMutationLoading}
+              onClick={() => setQuery(ACTION_ADD_EDIT_DISPLAY.EDIT)}
+              fw={500}
+              fz={16}
+              className='shadow-sm'
+            >
+              تعديل
+            </Button>
+          )}
+        </Group>
+        <form onSubmit={handleSubmit} className='flex flex-col items-center w-full'>
           <SimpleGrid
             cols={{ base: 1, md: 3 }}
             my={20}

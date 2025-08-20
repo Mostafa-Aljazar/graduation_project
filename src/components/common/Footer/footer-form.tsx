@@ -2,7 +2,6 @@
 
 import { Button, Textarea, TextInput, Box, Text, Flex, LoadingOverlay, Stack } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
-import React from 'react';
 import { notifications } from '@mantine/notifications';
 import { contactUsSchema, contactUsType } from '@/validation/landing/contactUsSchema';
 import { useMutation } from '@tanstack/react-query';

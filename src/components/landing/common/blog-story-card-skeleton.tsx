@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Flex, Stack, Skeleton, Divider, ThemeIcon } from '@mantine/core';
-import { Calendar, ArrowRight } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 
 export default function Blog_Story_Card_Skeleton() {
   return (

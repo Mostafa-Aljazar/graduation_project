@@ -367,8 +367,7 @@ export default function Delegate_Profile_Form({
           <Text ta='start' fz={20} fw={600} className='!text-primary'>
             {isAddMode ? 'إضافة مندوب جديد:' : 'البيانات الشخصية:'}
           </Text>
-
-          {(isManager || isOwner) && isDisplayMode && (
+          {isManager && isDisplayMode && (
             <Button
               variant='filled'
               size='xs'

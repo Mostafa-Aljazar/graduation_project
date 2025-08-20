@@ -4,12 +4,12 @@ import { Drawer } from '@mantine/core';
 import React from 'react';
 import Header_Links from './header-links';
 import { usePathname } from 'next/navigation';
-import Actor_Navbar from '@/components/actors/common/navbar/Actor_Navbar';
+import Actor_Navbar from '@/components/actors/common/navbar/actor-navbar';
 
-type Props = {
+interface Props {
   opened: boolean;
   toggle: () => void;
-};
+}
 export default function Header_Drawer({ opened, toggle }: Props) {
   const pathname = usePathname();
 

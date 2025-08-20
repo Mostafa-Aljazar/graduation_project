@@ -11,7 +11,7 @@ export interface UpdateDelegateProfileProps {
 
 export const updateDelegateProfile = async ({ delegate_Id, payload }: UpdateDelegateProfileProps): Promise<DelegateProfileResponse> => {
 
-    const fakeData: DelegateProfileResponse = {
+    const fakeResponse: DelegateProfileResponse = {
         status: 200,
         message: "تم تحديث الملف الشخصي بنجاح",
         user: {
@@ -24,7 +24,7 @@ export const updateDelegateProfile = async ({ delegate_Id, payload }: UpdateDele
     };
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 
@@ -42,12 +42,15 @@ export const updateDelegateProfile = async ({ delegate_Id, payload }: UpdateDele
         throw new Error("فشل في تحديث الملف الشخصي");
 
     } catch (error: any) {
+
         const errorMessage = error.response?.data?.error || error.message || "bbbbحدث خطأ أثناء تحديث الملف الشخصي";
+
         return {
             status: error.response?.status || 500,
             message: errorMessage,
             user: {} as DelegateProfile,
             error: errorMessage,
         };
+
     }
 };

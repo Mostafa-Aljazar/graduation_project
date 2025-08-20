@@ -54,27 +54,14 @@ export default function Profile_Info() {
           </>
         ) : (
           <>
-            <Text
-              fw={600}
-              fz={16}
-              ta='right'
-              c='white'
-              className='!text-primary'
-            >
+            <Text fw={600} fz={16} ta='right' c='white' className='!text-primary'>
               {`ال${USER_RANK_LABELS[user?.rank as UserRank]} : `}
               {user?.name}
             </Text>
 
             <Group gap={5}>
               <IdCard size={20} className='!text-primary' />
-              <Text
-                fw={600}
-                fz={14}
-                c='white'
-                ta='center'
-                className='!text-primary'
-                dir='ltr'
-              >
+              <Text fw={600} fz={14} c='white' ta='center' className='!text-primary' dir='ltr'>
                 {user?.identity ?? 'لا يوجد رقم هوية'} :
               </Text>
             </Group>
