@@ -21,8 +21,8 @@ export const GENERAL_ACTOR_ROUTES = {
   ADD_DELEGATES: '/actor/delegates/add',
   DISPLACEDS: '/actor/displaceds',
   ADD_DISPLACEDS: '/actor/displaceds/add',
-  SECURITIES: '/actor/security',
-  ADD_SECURITIES: '/actor/security/add',
+  SECURITIES: '/actor/securities',
+  ADD_SECURITIES: '/actor/securities/add',
   NOTIFICATIONS: '/actor/notifications',
 
 } as const;
@@ -97,8 +97,8 @@ export const SECURITY_ROUTES_fUNC = (
     security_Id: number,
   }) => {
   return {
-    PROFILE: `/actor/security/${security_Id}/profile`,
-    COMPLAINTS: `/actor/security/${security_Id}/complaints`,
-    TASKS: `/actor/security/${security_Id}/tasks`,
+    PROFILE: `/actor/securities/${security_Id}/profile`,
+    COMPLAINTS: `/actor/securities/${security_Id}/complaints`,
+    TASKS: `/actor/securities/${security_Id}/tasks`,
   } as const;
 };

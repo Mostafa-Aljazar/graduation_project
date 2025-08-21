@@ -51,18 +51,9 @@ export default function Login() {
     mutationFn: login,
     onSuccess: (data) => {
       form.reset();
+
       if (data.status === 200) {
-        notifications.show({
-          title: 'مرحبا بك',
-          message: 'تم تسجيل الدخول بنجاح',
-          color: 'grape',
-          position: 'top-left',
-          withBorder: true,
-          loading: true,
-        });
-
-        localStorage.setItem(LOCALSTORAGE_SESSION_KEY, JSON.stringify(data));
-
+        // redirect immediately
         const roleRedirects = {
           [USER_TYPE.DISPLACED]: () =>
             router.replace(DISPLACED_ROUTES_fUNC({ displaced_Id: data.user.id }).PROFILE),
@@ -75,10 +66,28 @@ export default function Login() {
         };
 
         roleRedirects[data.user.role]?.();
+
+        // defer non-critical work
+        setTimeout(() => {
+          try {
+            localStorage.setItem(LOCALSTORAGE_SESSION_KEY, JSON.stringify(data));
+
+            notifications.show({
+              title: 'مرحبا بك',
+              message: 'تم تسجيل الدخول بنجاح',
+              color: 'grape',
+              position: 'top-left',
+              withBorder: true,
+            });
+          } catch (err) {
+            console.error('Error saving session or showing notification', err);
+          }
+        }, 0);
+
         return;
-      } else {
-        throw new Error(data.error || 'فشل في تسجيل الدخول');
       }
+
+      throw new Error(data.error || 'فشل في تسجيل الدخول');
     },
     onError: (error: any) => {
       const errorMessage = error?.response?.data?.error || error?.message;

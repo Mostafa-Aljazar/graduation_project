@@ -32,7 +32,7 @@ export const login = async ({ email, password, userType }: loginProps): Promise<
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
-        }, 500);
+        }, 0);
     });
 
     /////////////////////////////////////////////////////////////

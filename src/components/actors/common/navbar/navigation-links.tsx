@@ -19,6 +19,7 @@ import {
   manager_OR_Security_Guest_Security_NavLinks,
 } from '@/content/actor/security/navLinks';
 import { displaced_NavLinks, guest_Displaced_NavLinks } from '@/content/actor/displaced/navLinks';
+import { GENERAL_ACTOR_ROUTES } from '@/constants/routes';
 
 interface NavLink {
   label: string;
@@ -62,13 +63,13 @@ export default function Navigation_Links() {
       }
     }
 
-    if (pathname.includes('/security/')) {
-      if (pathname.includes('/security/add') && isManager) {
+    if (pathname.includes('/securities/')) {
+      if (pathname.includes('/securities/add') && isManager) {
         return managerNavLinks(userId);
-      } else if (pathname.includes('/security/add') && isSecurityOfficer) {
+      } else if (pathname.includes('/securities/add') && isSecurityOfficer) {
         return security_NavLinks(userId);
       } else {
-        const id = extractId('security');
+        const id = extractId('securities');
         if ((isSecurity || isSecurityOfficer) && userId === id) return security_NavLinks(userId);
         return manager_OR_Security_Guest_Security_NavLinks(id);
       }
@@ -88,11 +89,17 @@ export default function Navigation_Links() {
     return [];
   }, [pathname, userId, isDisplaced, isDelegate, isSecurity, isSecurityOfficer, isManager]);
 
+  const isLinkActive = (href: string) => {
+    return href === GENERAL_ACTOR_ROUTES.SECURITIES
+      ? pathname === GENERAL_ACTOR_ROUTES.SECURITIES
+      : pathname.includes(href);
+  };
+
   return (
     <Box w='100%' className='bg-white shadow-lg border border-gray-200 rounded-2xl overflow-hidden'>
       <Stack gap={0}>
         {navLinks.map((link, index) => {
-          const isActive = pathname.includes(link.href);
+          const isActive = isLinkActive(link.href);
 
           return (
             <Link
