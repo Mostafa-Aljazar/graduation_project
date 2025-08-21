@@ -20,10 +20,7 @@ interface SecurityTaskActionProps {
   task: Task;
 }
 
-export default function Security_Task_Actions({
-  security_Id,
-  task,
-}: SecurityTaskActionProps) {
+export default function Security_Task_Actions({ security_Id, task }: SecurityTaskActionProps) {
   const { isSecurityOfficer } = useAuth();
   const [openedPopover, setOpenedPopover] = useState(false);
   const [modalType, setModalType] = useState<'edit' | 'delete' | null>(null);

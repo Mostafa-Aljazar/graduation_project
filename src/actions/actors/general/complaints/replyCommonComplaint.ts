@@ -18,14 +18,14 @@ export const replyCommonComplaint = async ({
     reply,
 }: replyCommonComplaintProps): Promise<commonActionResponse> => {
 
-    const fakeData: commonActionResponse = {
+    const fakeResponse: commonActionResponse = {
         status: 200,
         message: `تم ارسال الرد بنجاح`,
 
     }
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 
@@ -39,10 +39,11 @@ export const replyCommonComplaint = async ({
             reply,
         });
 
-        return {
-            status: 200,
-            message: `تم ارسال الرد بنجاح`,
-        };
+        if (response.data) {
+            return response.data
+        }
+
+        throw new Error("حدث خطأ أثناء ارسال الرد");
 
     } catch (error: any) {
         const errorMessage =

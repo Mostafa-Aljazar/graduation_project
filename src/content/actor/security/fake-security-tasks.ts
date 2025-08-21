@@ -169,15 +169,15 @@ export const FAKE_TASKS: Task[] = [
 export const getFakeTasksResponse = ({
     page = 1,
     limit = 10,
-    type
+    task_type
 }: {
     page?: number;
     limit?: number;
-    type?: TASKS_TABS
+    task_type?: TASKS_TABS
 }): TasksResponse => {
 
 
-    const filteredTasks = type ? FAKE_TASKS.filter(task => task.type === type) : FAKE_TASKS;
+    const filteredTasks = task_type ? FAKE_TASKS.filter(task => task.type === task_type) : FAKE_TASKS;
 
     const start = (page - 1) * limit;
     const end = start + limit;

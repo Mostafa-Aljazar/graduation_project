@@ -11,11 +11,7 @@ export default async function Manager_Complaints({
 
   return (
     <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
-      {/* <Common_Complaints_Header_Tabs /> */}
-      <Common_Complaints_Content
-        actor_Id={Number(manager_Id)}
-        rank={USER_RANK.MANAGER}
-      />
+      <Common_Complaints_Content actor_Id={Number(manager_Id)} rank={USER_RANK.MANAGER} />
     </Stack>
   );
 }

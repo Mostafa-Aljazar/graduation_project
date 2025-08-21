@@ -23,14 +23,14 @@ export const addSecurityTask = async ({
     type,
 }: addSecurityTaskProps): Promise<commonActionResponse> => {
 
-    const fakeData: commonActionResponse = {
+    const fakeResponse: commonActionResponse = {
         status: 200,
         message: `تم اضافة المهمة بنجاح`,
 
     }
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 

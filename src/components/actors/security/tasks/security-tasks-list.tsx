@@ -1,6 +1,6 @@
 'use client';
 
-import { Stack, Group, Text, Flex, Pagination } from '@mantine/core';
+import { Stack, Text, Flex, Pagination, Center } from '@mantine/core';
 import { MessageCircleWarning } from 'lucide-react';
 import { parseAsInteger, useQueryStates } from 'nuqs';
 import { Task } from '@/@types/actors/security/tasks/TasksResponse.type';
@@ -35,23 +35,22 @@ export default function Security_Tasks_List({
           ))}
         </Stack>
       ) : tasks.length === 0 ? (
-        <Group gap={10} w={'100%'} justify='center' mt={30}>
-          <MessageCircleWarning size={25} className='!text-primary' />
-          <Text fw={500} fz={24} ta='center' className='!text-primary'>
-            لا توجد مهام لعرضها
-          </Text>
-        </Group>
+        <Center mt={30} mih={200} className='bg-gray-50 p-6 border-1 border-gray-200 rounded-md'>
+          <Stack align='center' gap={6}>
+            <MessageCircleWarning size={40} className='text-primary' />
+            <Text fw={600} fz='lg' className='text-primary'>
+              لا توجد مهام لعرضها
+            </Text>
+          </Stack>
+        </Center>
       ) : (
         <Stack gap='xs'>
           {tasks.map((task, index) => (
-            <Security_Tasks_Card
-              key={index}
-              task={task}
-              security_Id={security_Id}
-            />
+            <Security_Tasks_Card key={index} task={task} security_Id={security_Id} />
           ))}
         </Stack>
       )}
+
       {!loading && total_pages > 1 && (
         <Flex justify='center' mt='xl'>
           <Pagination

@@ -4,7 +4,6 @@ import { Card, Center, Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { CheckCircle2, Clock } from 'lucide-react';
 import { Task } from '@/@types/actors/security/tasks/TasksResponse.type';
-import useAuth from '@/hooks/useAuth';
 import Security_Task_Modal from './security-task-modal';
 import { cn } from '@/utils/cn';
 import Security_Task_Actions from './security-task-actions';
@@ -16,27 +15,15 @@ interface SecurityTasksCardProps {
   security_Id: number;
 }
 
-export default function Security_Tasks_Card({
-  task,
-  security_Id,
-}: SecurityTasksCardProps) {
-  const [modalOpened, { open: openModal, close: closeModal }] =
-    useDisclosure(false);
+export default function Security_Tasks_Card({ task, security_Id }: SecurityTasksCardProps) {
+  const [modalOpened, { open: openModal, close: closeModal }] = useDisclosure(false);
 
   const isCompleted = task.type === TASKS_TABS.COMPLETED_TASKS;
-  const taskIcon = isCompleted ? (
-    <CheckCircle2 size={18} />
-  ) : (
-    <Clock size={18} />
-  );
+  const taskIcon = isCompleted ? <CheckCircle2 size={18} /> : <Clock size={18} />;
   const taskColor = isCompleted ? 'green' : 'red';
 
-  const formattedDate = task.dateTime
-    ? format(new Date(task.dateTime), 'yyyy-MM-dd')
-    : '';
-  const formattedTime = task.dateTime
-    ? format(new Date(task.dateTime), 'HH:mm')
-    : '';
+  const formattedDate = task.dateTime ? format(new Date(task.dateTime), 'yyyy-MM-dd') : '';
+  const formattedTime = task.dateTime ? format(new Date(task.dateTime), 'HH:mm') : '';
 
   const handleOpenModal = (e: React.MouseEvent) => {
     e.stopPropagation(); // إضافة هذه السطر لمنع تصاعد الحدث
@@ -44,10 +31,7 @@ export default function Security_Tasks_Card({
     const path = e.nativeEvent.composedPath() as HTMLElement[];
     const clickedOnAction = path.some((el) => {
       if (!(el instanceof HTMLElement)) return false;
-      return (
-        el.getAttribute('data-click') === 'action' ||
-        el.classList.contains('action')
-      );
+      return el.getAttribute('data-click') === 'action' || el.classList.contains('action');
     });
 
     if (!clickedOnAction) openModal();
@@ -90,11 +74,7 @@ export default function Security_Tasks_Card({
         </Group>
       </Card>
 
-      <Security_Task_Modal
-        opened={modalOpened}
-        onClose={closeModal}
-        task={task}
-      />
+      <Security_Task_Modal opened={modalOpened} onClose={closeModal} task={task} />
     </>
   );
 }

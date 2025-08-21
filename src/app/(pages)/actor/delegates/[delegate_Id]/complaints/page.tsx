@@ -14,10 +14,7 @@ export default async function Delegate_Complaints({
     <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
       <Common_Complaints_Header_Tabs />
 
-      <Common_Complaints_Content
-        actor_Id={Number(delegate_Id)}
-        rank={USER_RANK.DELEGATE}
-      />
+      <Common_Complaints_Content actor_Id={Number(delegate_Id)} rank={USER_RANK.DELEGATE} />
     </Stack>
   );
 }

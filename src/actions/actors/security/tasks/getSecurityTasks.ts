@@ -8,7 +8,7 @@ import { TASKS_TABS } from "@/@types/actors/common-types/index.type";
 interface GetSecurityTasksProps {
     page?: number;
     limit?: number;
-    type?: TASKS_TABS;
+    task_type: TASKS_TABS;
     security_Id: number;
 }
 
@@ -16,10 +16,10 @@ export async function getSecurityTasks({
     page = 1,
     limit = 5,
     security_Id,
-    type,
+    task_type,
 }: GetSecurityTasksProps): Promise<TasksResponse> {
 
-    const fakeData: TasksResponse = getFakeTasksResponse({ limit, page, type });
+    const fakeData: TasksResponse = getFakeTasksResponse({ limit, page, task_type });
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve(fakeData);
@@ -35,7 +35,7 @@ export async function getSecurityTasks({
                 page,
                 limit,
                 security_Id,
-                type
+                task_type
             }
         });
 

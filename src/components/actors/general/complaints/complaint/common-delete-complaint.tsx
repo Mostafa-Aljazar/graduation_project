@@ -10,7 +10,7 @@ import {
   deleteCommonComplaint,
   deleteCommonComplaintProps,
 } from '@/actions/actors/general/complaints/deleteCommonComplaint';
-import { USER_TYPE, UserRank, UserType } from '@/constants/userTypes';
+import { UserRank, UserType } from '@/constants/userTypes';
 
 interface CommonDeleteComplaintProps {
   complaint_Id: number;

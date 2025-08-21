@@ -1,27 +1,16 @@
 'use client';
 
-import {
-  GET_TASKS_TABS,
-  TASKS_TABS,
-} from '@/@types/actors/common-types/index.type';
+import { GET_TASKS_TABS, TASKS_TABS } from '@/@types/actors/common-types/index.type';
 import { cn } from '@/utils/cn';
-import {
-  Divider,
-  FloatingIndicator,
-  Group,
-  Stack,
-  Tabs,
-  Text,
-  ThemeIcon,
-} from '@mantine/core';
+import { Divider, FloatingIndicator, Group, Stack, Tabs, Text, ThemeIcon } from '@mantine/core';
 import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import { useState, useRef } from 'react';
 
 export default function Security_Tasks_Header_Tabs() {
   const [query, setQuery] = useQueryStates({
-    'tasks-tab': parseAsStringEnum<TASKS_TABS>(
-      Object.values(TASKS_TABS)
-    ).withDefault(TASKS_TABS.COMPLETED_TASKS),
+    'tasks-tab': parseAsStringEnum<TASKS_TABS>(Object.values(TASKS_TABS)).withDefault(
+      TASKS_TABS.COMPLETED_TASKS
+    ),
     'tasks-page': parseAsInteger.withDefault(1),
   });
 
@@ -31,10 +20,9 @@ export default function Security_Tasks_Header_Tabs() {
     [TASKS_TABS.UPCOMING_TASKS]: null,
   });
 
-  const setControlRef =
-    (tabKey: TASKS_TABS) => (node: HTMLButtonElement | null) => {
-      controlsRefs.current[tabKey] = node;
-    };
+  const setControlRef = (tabKey: TASKS_TABS) => (node: HTMLButtonElement | null) => {
+    controlsRefs.current[tabKey] = node;
+  };
 
   const activeTabSection = (tabKey: TASKS_TABS) => {
     const { label, icon: IconComponent } = GET_TASKS_TABS[tabKey];
@@ -62,18 +50,10 @@ export default function Security_Tasks_Header_Tabs() {
             {label}
           </Text>
           {IconComponent && (
-            <ThemeIcon
-              variant='transparent'
-              className='flex-shrink-0 !text-dark'
-              size={18}
-            >
+            <ThemeIcon variant='transparent' className='flex-shrink-0 !text-dark' size={18}>
               <IconComponent
                 size={18}
-                className={cn(
-                  query['tasks-tab'] === tabKey
-                    ? '!text-primary'
-                    : '!text-[#817C74]'
-                )}
+                className={cn(query['tasks-tab'] === tabKey ? '!text-primary' : '!text-[#817C74]')}
               />
             </ThemeIcon>
           )}
@@ -89,7 +69,10 @@ export default function Security_Tasks_Header_Tabs() {
         variant='unstyled'
         onChange={(value: string | null) => {
           if (value) {
-            setQuery({ 'tasks-tab': value as TASKS_TABS, 'tasks-page': 1 });
+            setQuery({
+              'tasks-tab': value as TASKS_TABS,
+              'tasks-page': 1,
+            });
           }
         }}
         w={'100%'}

@@ -17,15 +17,7 @@ import {
 import { DateTimePicker } from '@mantine/dates';
 import { useForm, zodResolver } from '@mantine/form';
 import { useEffect, useState } from 'react';
-import {
-  Send,
-  X,
-  ShieldAlert,
-  Clock4,
-  FileText,
-  UserCheck,
-  ClipboardList,
-} from 'lucide-react';
+import { Send, X, ShieldAlert, Clock4, FileText, UserCheck, ClipboardList } from 'lucide-react';
 import { z } from 'zod';
 import { addSecurityTask } from '@/actions/actors/security/tasks/addSecurityTask';
 import { updateSecurityTask } from '@/actions/actors/security/tasks/updateSecurityTask';
@@ -33,7 +25,6 @@ import { notifications } from '@mantine/notifications';
 import { Task } from '@/@types/actors/security/tasks/TasksResponse.type';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { TASKS_TABS } from '@/@types/actors/common-types/index.type';
-import { getSecurityData } from '@/actions/actors/general/security-data/getSecurityData';
 import { getSecurityNames } from '@/actions/actors/general/security-data/getSecurityNames';
 import { SecurityNamesResponse } from '@/@types/actors/general/security-data/securitiesDataResponse.types';
 
@@ -102,12 +93,10 @@ export default function Security_Task_Form_Modal({
 
   useEffect(() => {
     if (securityNames?.security_names) {
-      const securityNamesMapped = securityNames.security_names.map(
-        (security) => ({
-          ...security,
-          id: security.id.toString(),
-        })
-      );
+      const securityNamesMapped = securityNames.security_names.map((security) => ({
+        ...security,
+        id: security.id.toString(),
+      }));
       setSecurityData(securityNamesMapped);
     }
   }, [securityNames]);
@@ -229,9 +218,7 @@ export default function Security_Task_Form_Modal({
             size='sm'
             radius='md'
             value={form.values.dateTime}
-            onChange={(value) =>
-              form.setFieldValue('dateTime', new Date(value))
-            }
+            onChange={(value) => form.setFieldValue('dateTime', new Date(value))}
             error={form.errors.dateTime}
             classNames={{
               input: 'placeholder:!text-sm !text-primary !font-normal',

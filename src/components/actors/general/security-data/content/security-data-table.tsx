@@ -24,6 +24,7 @@ import { SecuritiesResponse } from '@/@types/actors/general/security-data/securi
 import { ListChecks, ListX, Users } from 'lucide-react';
 import { USER_RANK_LABELS } from '@/constants/userTypes';
 import { cn } from '@/utils/cn';
+import useAuth from '@/hooks/useAuth';
 
 export default function Security_Data_Table() {
   const [query, setQuery] = useQueryStates(
@@ -32,6 +33,8 @@ export default function Security_Data_Table() {
     },
     { shallow: true }
   );
+
+  const { isManager, isSecurityOfficer, isSecurity } = useAuth();
 
   const [selectedSecurityIds, setSelectedSecurityIds] = useState<number[]>([]);
   const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
@@ -60,11 +63,8 @@ export default function Security_Data_Table() {
     error: allQueryError,
   } = useQuery({
     queryKey: ['securities_all'],
-    queryFn: async () => {
-      const response = await getSecuritiesIds();
+    queryFn: async () => (await getSecuritiesIds()).security_Ids,
 
-      return response.security_Ids;
-    },
     enabled: selectAllAcrossPages,
     retry: 1,
     staleTime: 1000 * 60 * 5,
@@ -132,9 +132,11 @@ export default function Security_Data_Table() {
       <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         الرتبة
       </Table.Th>
-      <Table.Th px={5} ta='center' w='fit-content'>
-        الإجراءات
-      </Table.Th>
+      {(isManager || isSecurityOfficer) && (
+        <Table.Th px={5} ta='center' w='fit-content'>
+          الإجراءات
+        </Table.Th>
+      )}
     </Table.Tr>
   );
 
@@ -166,9 +168,12 @@ export default function Security_Data_Table() {
         <Table.Td px={5} ta='center' style={{ whiteSpace: 'nowrap' }}>
           {USER_RANK_LABELS[element.role]}
         </Table.Td>
-        <Table.Td px={5} ta='center'>
-          <Security_Data_Table_Actions security_Id={element.id} />
-        </Table.Td>
+
+        {(isManager || isSecurityOfficer) && (
+          <Table.Td px={5} ta='center'>
+            <Security_Data_Table_Actions security_Id={element.id} />
+          </Table.Td>
+        )}
       </Table.Tr>
     ));
   }, [securityData, selectedSecurityIds]);

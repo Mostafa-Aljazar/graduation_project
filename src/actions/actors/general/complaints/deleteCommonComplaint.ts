@@ -16,14 +16,14 @@ export const deleteCommonComplaint = async ({
     role,
 }: deleteCommonComplaintProps): Promise<commonActionResponse> => {
 
-    const fakeData: commonActionResponse = {
+    const fakeResponse: commonActionResponse = {
         status: 200,
         message: `تم حذف الشكوى بنجاح`,
 
     }
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 
@@ -39,10 +39,11 @@ export const deleteCommonComplaint = async ({
             }
         });
 
-        return {
-            status: 200,
-            message: `تم حذف الشكوى بنجاح`,
-        };
+        if (response.data) {
+            return response.data
+        }
+
+        throw new Error("حدث خطأ أثناء حذف الشكوى");
 
     } catch (error: any) {
         const errorMessage =

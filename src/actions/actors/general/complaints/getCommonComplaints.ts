@@ -29,8 +29,11 @@ export async function getCommonComplaints({
 }: GetCommonComplaintsProps): Promise<ComplaintResponse> {
 
     const fakeResponse = fakeComplaintsResponse({ page, limit, status, date_range, search, complaint_type, role, actor_Id })
-
-    return new Promise((resolve) => setTimeout(() => resolve(fakeResponse), 500));
+    return await new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(fakeResponse);
+        }, 500);
+    });
 
     /////////////////////////////////////////////////////////////
     // FIXME: THIS IS THE REAL IMPLEMENTATION

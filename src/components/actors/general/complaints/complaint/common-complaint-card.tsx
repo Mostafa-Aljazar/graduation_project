@@ -51,7 +51,7 @@ export default function Common_Complaint_Card({
   >({
     mutationFn: changeStatusCommonComplaint,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تمت العملية بنجاح',
           message: data.message,

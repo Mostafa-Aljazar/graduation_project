@@ -13,39 +13,34 @@ export const getSecurityData = async ({
     page = 1,
     limit = 15,
 }: getSecurityDataProps): Promise<SecuritiesResponse> => {
-    // FIXME: Remove this fake data logic in production
-    const fakeData = fakeSecuritiesResponse({ page, limit });
-
+    const fakeResponse = fakeSecuritiesResponse({ page, limit });
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 
-    // Real API logic
+    /////////////////////////////////////////////////////////////
+    // FIXME: THIS IS THE REAL IMPLEMENTATION
+    /////////////////////////////////////////////////////////////
     try {
+
         const response = await AqsaAPI.get<SecuritiesResponse>("/securities", {
             params: {
                 page, limit
             }
         });
 
+
         if (response.data?.securities) {
-            return {
-                status: 200,
-                message: "تم جلب بيانات أفراد الأمن بنجاح",
-                securities: response.data.securities,
-                pagination: response.data.pagination || {
-                    page,
-                    limit,
-                    totalItems: response.data.securities.length,
-                    totalPages: Math.ceil(response.data.securities.length / limit),
-                },
-            };
+            return response.data
         }
 
         throw new Error("بيانات أفراد الأمن غير متوفرة");
+
+
     } catch (error: any) {
+
         const errorMessage =
             error.response?.data?.error ||
             error.message ||
@@ -63,5 +58,6 @@ export const getSecurityData = async ({
             },
             error: errorMessage,
         };
+
     }
 };

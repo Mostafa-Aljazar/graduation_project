@@ -1,22 +1,8 @@
 'use client';
-import {
-  Button,
-  Group,
-  Select,
-  SimpleGrid,
-  Stack,
-  Text,
-  TextInput,
-} from '@mantine/core';
+import { Button, Group, Select, SimpleGrid, Stack, Text, TextInput } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { useForm, zodResolver } from '@mantine/form';
-import {
-  Activity,
-  Calendar,
-  ListFilter,
-  RotateCcw,
-  Search,
-} from 'lucide-react';
+import { Activity, Calendar, ListFilter, RotateCcw, Search } from 'lucide-react';
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
 import { Dispatch, SetStateAction, useState } from 'react';
 import {
@@ -96,14 +82,10 @@ export default function Common_Complaints_Filters({
     <Stack w='100%' mb={20} gap={20}>
       <Group justify={'space-between'}>
         <Group flex={1} gap={10}>
-          <Text fw={600} fz={20} className='!text-primary'>
-            الفلاتر:
+          <Text fw={600} fz={18} className='!text-primary'>
+            الفلاتر :
           </Text>
-          <Text
-            fz={14}
-            px={5}
-            className='border-1 border-second rounded-md text-dark'
-          >
+          <Text fz={14} px={5} className='border-1 border-second rounded-md text-dark'>
             {complaintsNum ?? 0}
           </Text>
           <Text fw={500} fz={18} className='!text-dark'>
@@ -126,8 +108,7 @@ export default function Common_Complaints_Filters({
           size='sm'
           value={searchInput}
           classNames={{
-            input:
-              '!border-none !outline-none placeholder:!text-sm !text-primary !font-normal',
+            input: '!border-none !outline-none placeholder:!text-sm !text-primary !font-normal',
           }}
           leftSection={<Search size={18} />}
           onChange={(e) => setSearchInput(e.target.value)}

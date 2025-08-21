@@ -23,6 +23,7 @@ import { getDisplaceds } from '@/actions/actors/general/displaceds/getDisplaceds
 import Displaced_Table_Actions from '@/components/actors/general/displaceds/displaced-table-actions';
 import { ListChecks, ListX, Users } from 'lucide-react';
 import { getDisplacedsIds } from '@/actions/actors/general/displaceds/getDisplacedsIds';
+import { cn } from '@/utils/cn';
 
 interface DisplacedsTableProps {
   localFilters: displacedsFilterValuesType;
@@ -235,26 +236,29 @@ export default function Displaceds_Table({ localFilters, setDisplacedNum }: Disp
         </Group>
       </Group>
 
-      <ScrollArea pos={'relative'}>
-        <LoadingOverlay
-          visible={isLoading}
-          zIndex={49}
-          overlayProps={{ radius: 'sm', blur: 0.3 }}
-        />
-        <Table striped highlightOnHover withTableBorder withColumnBorders>
-          <Table.Thead
-            style={{
-              position: 'sticky',
-              top: 0,
-              background: 'white',
-              zIndex: 1,
-            }}
-          >
-            {columns}
-          </Table.Thead>
+      <Table.ScrollContainer
+        minWidth='100%'
+        pos='relative'
+        className={cn(isLoading && '!min-h-[300px]')}
+      >
+        <>
+          <LoadingOverlay
+            visible={isLoading || isLoadingAll}
+            zIndex={1000}
+            overlayProps={{ radius: 'sm', blur: 0.3 }}
+          />
+          {error && (
+            <Text fw={500} size='sm' ta='center' c='red'>
+              {error.message}
+            </Text>
+          )}
+        </>
+
+        <Table horizontalSpacing='xs' striped highlightOnHover withTableBorder withColumnBorders>
+          <Table.Thead>{columns}</Table.Thead>
           <Table.Tbody>{rows.length === 0 ? noDisplaceds : rows}</Table.Tbody>
         </Table>
-      </ScrollArea>
+      </Table.ScrollContainer>
 
       <Pagination
         value={currentPage}

@@ -26,13 +26,13 @@ export const sendCommonComplaint = async ({
     content
 }: sendCommonComplaintProps): Promise<commonActionResponse> => {
 
-    const fakeData: commonActionResponse = {
+    const fakeResponse: commonActionResponse = {
         status: 200,
         message: `تم ارسال الشكوي بنجاح`,
     }
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 
@@ -48,10 +48,11 @@ export const sendCommonComplaint = async ({
             content
         });
 
-        return {
-            status: 200,
-            message: `تم ارسال الشكوي بنجاح`,
-        };
+        if (response.data) {
+            return response.data
+        }
+
+        throw new Error("حدث خطأ أثناء ارسال الشكوى");
 
     } catch (error: any) {
         const errorMessage =

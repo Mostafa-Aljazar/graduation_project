@@ -65,7 +65,7 @@ export default function Common_Complaint_Modal({
   const replyMutation = useMutation<commonActionResponse, unknown, replyCommonComplaintProps>({
     mutationFn: replyCommonComplaint,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تم الإرسال',
           message: data.message,

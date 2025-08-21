@@ -10,8 +10,9 @@ export default async function Security_Tasks({
   const { security_Id } = await params;
 
   return (
-    <Stack align={'center'}>
+    <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
       <Security_Tasks_Header_Tabs />
+
       <Security_Tasks_Content security_Id={Number(security_Id)} />
     </Stack>
   );

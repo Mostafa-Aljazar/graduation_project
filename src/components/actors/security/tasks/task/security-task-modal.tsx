@@ -32,19 +32,11 @@ interface SecurityMan {
   name: string;
 }
 
-export default function Security_Task_Modal({
-  opened,
-  onClose,
-  task,
-}: SecurityTaskModalProps) {
+export default function Security_Task_Modal({ opened, onClose, task }: SecurityTaskModalProps) {
   const isCompleted = task.type === TASKS_TABS.COMPLETED_TASKS;
 
-  const formattedDate = task.dateTime
-    ? format(new Date(task.dateTime), 'yyyy-MM-dd')
-    : '';
-  const formattedTime = task.dateTime
-    ? format(new Date(task.dateTime), 'HH:mm')
-    : '';
+  const formattedDate = task.dateTime ? format(new Date(task.dateTime), 'yyyy-MM-dd') : '';
+  const formattedTime = task.dateTime ? format(new Date(task.dateTime), 'HH:mm') : '';
 
   const [securityData, setSecurityData] = useState<SecurityMan[]>([]);
 
@@ -59,12 +51,10 @@ export default function Security_Task_Modal({
 
   useEffect(() => {
     if (securityNames?.security_names) {
-      const securityNamesMapped = securityNames.security_names.map(
-        (security) => ({
-          ...security,
-          id: security.id.toString(),
-        })
-      );
+      const securityNamesMapped = securityNames.security_names.map((security) => ({
+        ...security,
+        id: security.id.toString(),
+      }));
       setSecurityData(securityNamesMapped);
     }
   }, [securityNames]);
@@ -85,20 +75,11 @@ export default function Security_Task_Modal({
       centered
       onClick={(e) => e.stopPropagation()}
     >
-      <LoadingOverlay
-        visible={isLoading}
-        zIndex={49}
-        overlayProps={{ radius: 'sm', blur: 0.3 }}
-      />
+      <LoadingOverlay visible={isLoading} zIndex={49} overlayProps={{ radius: 'sm', blur: 0.3 }} />
 
       <Stack gap='md'>
         <Group mb='xs'>
-          <Badge
-            color={isCompleted ? 'green' : 'blue'}
-            variant='light'
-            size='lg'
-            radius='sm'
-          >
+          <Badge color={isCompleted ? 'green' : 'blue'} variant='light' size='lg' radius='sm'>
             {isCompleted ? 'مهمة منجزة' : 'مهمة قادمة'}
           </Badge>
         </Group>
@@ -150,9 +131,7 @@ export default function Security_Task_Modal({
                   <Text size='xs' c='dimmed'>
                     عناصر الأمن
                   </Text>
-                  <Text size='sm'>
-                    {securityData.map((item) => `# ${item.name}`).join(' ')}
-                  </Text>
+                  <Text size='sm'>{securityData.map((item) => `# ${item.name}`).join(' ')}</Text>
                 </Stack>
               </Group>
             </Paper>

@@ -11,10 +11,7 @@ export default async function Displaced_Complaints({
 
   return (
     <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
-      <Common_Complaints_Content
-        actor_Id={Number(displaced_Id)}
-        rank={USER_RANK.DISPLACED}
-      />
+      <Common_Complaints_Content actor_Id={Number(displaced_Id)} rank={USER_RANK.DISPLACED} />
     </Stack>
   );
 }

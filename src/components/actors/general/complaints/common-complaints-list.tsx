@@ -29,7 +29,7 @@ export default function Common_Complaints_List({
   });
 
   return (
-    <Stack pos={'relative'} gap='sm'>
+    <Stack pos={'relative'}>
       {loading ? (
         <Stack gap='xs'>
           {Array.from({ length: 8 }).map((_, index) => (
@@ -37,11 +37,7 @@ export default function Common_Complaints_List({
           ))}
         </Stack>
       ) : complaints.length === 0 ? (
-        <Center
-          mt={30}
-          mih={200}
-          className='bg-gray-50 p-6 border-1 border-gray-200 rounded-md'
-        >
+        <Center mt={30} mih={200} className='bg-gray-50 p-6 border-1 border-gray-200 rounded-md'>
           <Stack align='center' gap={6}>
             <MessageCircleWarning size={40} className='text-primary' />
             <Text fw={600} fz='lg' className='text-primary'>

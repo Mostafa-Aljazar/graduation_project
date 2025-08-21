@@ -1,19 +1,8 @@
 'use client';
 
-import {
-  COMPLAINTS_TABS,
-  GET_COMPLAINTS_TABS,
-} from '@/@types/actors/common-types/index.type';
+import { COMPLAINTS_TABS, GET_COMPLAINTS_TABS } from '@/@types/actors/common-types/index.type';
 import { cn } from '@/utils/cn';
-import {
-  Divider,
-  FloatingIndicator,
-  Group,
-  Stack,
-  Tabs,
-  Text,
-  ThemeIcon,
-} from '@mantine/core';
+import { Divider, FloatingIndicator, Group, Stack, Tabs, Text, ThemeIcon } from '@mantine/core';
 import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import { useState, useRef } from 'react';
 
@@ -26,17 +15,14 @@ export default function Common_Complaints_Header_Tabs() {
   });
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
-  const controlsRefs = useRef<
-    Record<COMPLAINTS_TABS, HTMLButtonElement | null>
-  >({
+  const controlsRefs = useRef<Record<COMPLAINTS_TABS, HTMLButtonElement | null>>({
     [COMPLAINTS_TABS.SENT_COMPLAINTS]: null,
     [COMPLAINTS_TABS.RECEIVED_COMPLAINTS]: null,
   });
 
-  const setControlRef =
-    (tabKey: COMPLAINTS_TABS) => (node: HTMLButtonElement | null) => {
-      controlsRefs.current[tabKey] = node;
-    };
+  const setControlRef = (tabKey: COMPLAINTS_TABS) => (node: HTMLButtonElement | null) => {
+    controlsRefs.current[tabKey] = node;
+  };
 
   const activeTabSection = (tabKey: COMPLAINTS_TABS) => {
     const { label, icon: IconComponent } = GET_COMPLAINTS_TABS[tabKey];
@@ -51,11 +37,7 @@ export default function Common_Complaints_Header_Tabs() {
       >
         <Group flex={1} wrap='nowrap' gap={3} justify='center' align='center'>
           {IconComponent && (
-            <ThemeIcon
-              variant='transparent'
-              className='flex-shrink-0 !text-dark'
-              size={18}
-            >
+            <ThemeIcon variant='transparent' className='flex-shrink-0 !text-dark' size={18}>
               <IconComponent size={18} />
             </ThemeIcon>
           )}

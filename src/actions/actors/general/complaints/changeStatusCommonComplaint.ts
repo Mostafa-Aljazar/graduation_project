@@ -15,14 +15,14 @@ export const changeStatusCommonComplaint = async ({
     complaint_Id, actor_Id, role
 }: changeStatusCommonComplaintProps): Promise<commonActionResponse> => {
 
-    const fakeData: commonActionResponse = {
+    const fakeResponse: commonActionResponse = {
         status: 200,
         message: `تم تغيير حالة الشكوى بنجاح`,
     }
 
     return await new Promise((resolve) => {
         setTimeout(() => {
-            resolve(fakeData);
+            resolve(fakeResponse);
         }, 500);
     });
 
@@ -31,14 +31,16 @@ export const changeStatusCommonComplaint = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.put<commonActionResponse>(`/complaints/${complaint_Id}/changeStatus`, {
+        const response = await AqsaAPI.put<commonActionResponse>(`/complaints/${complaint_Id}/change-status`, {
             actor_Id, role
         });
 
-        return {
-            status: 200,
-            message: `تم تغيير حالة الشكوى بنجاح`,
-        };
+        if (response.data) {
+            return response.data
+        }
+
+        throw new Error("حدث خطأ أثناء تغيير حالة الشكوى");
+
     } catch (error: any) {
         const errorMessage =
             error.response?.data?.error || error.message || "حدث خطأ أثناء تغيير حالة الشكوى";

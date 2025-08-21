@@ -26,7 +26,7 @@ export default function Security_Delete_Task_Modal({
   const deleteMutation = useMutation<commonActionResponse, unknown, deleteSecurityTaskProps>({
     mutationFn: deleteSecurityTask,
     onSuccess: (data) => {
-      if (Number(data.status) === 200) {
+      if (data.status === 200) {
         notifications.show({
           title: 'تم الحذف',
           message: data.message,
