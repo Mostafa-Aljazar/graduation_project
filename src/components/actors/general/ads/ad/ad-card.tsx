@@ -1,7 +1,7 @@
 import { AdBlogStory } from '@/@types/actors/manager/ads-blogs-stories/adsBlogsStoriesResponse.type';
 import { GENERAL_ACTOR_ROUTES } from '@/constants/routes';
 import { Box, Card, Stack, Text, Group, ThemeIcon } from '@mantine/core';
-import { Calendar, Eye, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -19,7 +19,6 @@ export default function Ad_Card({ ad }: AdCardProps) {
         shadow='sm'
         className='flex flex-col hover:shadow-md h-full hover:scale-[1.02] transition-transform duration-200 ease-in-out'
       >
-        {/* Image */}
         <Box className='relative'>
           <Image
             src={ad.imgs[0]}

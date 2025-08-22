@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Card, Flex, Group, Stack, Text } from '@mantine/core';
+import { Box, Card, Flex, Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { cn } from '@/utils/cn';
 import { Complaint } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
 import Image from 'next/image';
@@ -19,6 +19,7 @@ import Common_Delete_Complaint from './common-delete-complaint';
 import Common_Complaint_Modal from './common-complaint-modal';
 import useAuth from '@/hooks/useAuth';
 import { COMPLAINTS_STATUS, COMPLAINTS_TABS } from '@/@types/actors/common-types/index.type';
+import { Calendar, User, FileText, MailWarning, CheckCircle2, Clock } from 'lucide-react';
 
 interface CommonComplaintCardProps {
   complaint: Complaint;
@@ -38,7 +39,6 @@ export default function Common_Complaint_Card({
   });
 
   const { user } = useAuth();
-
   const isOwner = user?.id === actor_Id && user?.role === role;
 
   const [opened, { open, close }] = useDisclosure(false);
@@ -108,7 +108,7 @@ export default function Common_Complaint_Card({
         shadow='sm'
         className={cn(
           'hover:shadow-md !border !border-gray-300 transition-all cursor-pointer',
-          complaint.status === COMPLAINTS_STATUS.READ ? '!bg-gray-50' : '!bg-red-100'
+          complaint.status === COMPLAINTS_STATUS.READ ? '!bg-gray-50' : '!bg-red-50'
         )}
         onClick={handleClick}
       >
@@ -118,44 +118,57 @@ export default function Common_Complaint_Card({
             w={60}
             h={60}
           >
-            <Image
-              src={MAN.src} //FIXME:
-              alt='Profile'
-              width={60}
-              height={60}
-              className='object-cover'
-            />
+            <Image src={MAN.src} alt='Profile' width={60} height={60} className='object-cover' />
           </Box>
 
-          <Stack flex={1} gap={4}>
-            <Flex justify='space-between' wrap='wrap'>
-              <Text size='xs' c='dimmed'>
-                {/* {complaint.date} - {complaint.time} */}
-                {complaint.date}
-              </Text>
-              <Text size='xs' c='dimmed'>
-                الحالة: {complaint.status === COMPLAINTS_STATUS.READ ? 'مقروءة' : 'قيد الانتظار'}
-              </Text>
+          <Stack flex={1} gap={6}>
+            <Flex justify='space-between' align='center'>
+              <Group gap={6}>
+                <ThemeIcon size='sm' variant='light' color='blue'>
+                  <Calendar size={14} />
+                </ThemeIcon>
+                <Text size='xs' c='dimmed'>
+                  {complaint.date}
+                </Text>
+              </Group>
+              <Group gap={6}>
+                <ThemeIcon
+                  size='sm'
+                  variant='light'
+                  color={complaint.status === COMPLAINTS_STATUS.READ ? 'green' : 'orange'}
+                >
+                  {complaint.status === COMPLAINTS_STATUS.READ ? (
+                    <CheckCircle2 size={14} />
+                  ) : (
+                    <Clock size={14} />
+                  )}
+                </ThemeIcon>
+                <Text size='xs' c='dimmed'>
+                  {complaint.status === COMPLAINTS_STATUS.READ ? 'مقروءة' : 'قيد الانتظار'}
+                </Text>
+              </Group>
             </Flex>
-            <Group flex={1} gap={5}>
-              <Text fz={16} className='!text-primary'>
+
+            <Group gap={6}>
+              <ThemeIcon size='sm' variant='light' color='violet'>
+                <User size={14} />
+              </ThemeIcon>
+              <Text fz={15} fw={600} c='dark'>
                 {query['complaints-tab'] == COMPLAINTS_TABS.RECEIVED_COMPLAINTS &&
-                  `من ${USER_RANK_LABELS[complaint.sender.role]}`}
+                  `من ${USER_RANK_LABELS[complaint.sender.role]}: ${complaint.sender.name}`}
                 {query['complaints-tab'] == COMPLAINTS_TABS.SENT_COMPLAINTS &&
-                  `الى ${USER_RANK_LABELS[complaint.receiver.role]}`}
-                {' :'}
-              </Text>
-              <Text fz={16} className='!text-dark'>
-                {query['complaints-tab'] == COMPLAINTS_TABS.RECEIVED_COMPLAINTS &&
-                  complaint.sender.name}
-                {query['complaints-tab'] == COMPLAINTS_TABS.SENT_COMPLAINTS &&
-                  complaint.receiver.name}
+                  `إلى ${USER_RANK_LABELS[complaint.receiver.role]}: ${complaint.receiver.name}`}
               </Text>
             </Group>
 
-            <Text size='sm' fw={600}>
-              العنوان: {complaint.title}
-            </Text>
+            <Group gap={6}>
+              <ThemeIcon size='sm' variant='light' color='grape'>
+                <FileText size={14} />
+              </ThemeIcon>
+              <Text size='sm' fw={600}>
+                العنوان: {complaint.title}
+              </Text>
+            </Group>
           </Stack>
 
           {isOwner &&
