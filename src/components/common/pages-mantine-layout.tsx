@@ -3,8 +3,9 @@
 import { AppShell } from '@mantine/core';
 import { useDisclosure, useHeadroom } from '@mantine/hooks';
 import { ReactNode } from 'react';
-import Footer_Comp from '@/components/common/footer/Footer_Comp';
-import Header_Comp from '@/components/common/header/Header_Comp';
+import Footer_Comp from '@/components/common/footer/footer-comp';
+import Header_Comp from './header/header-comp';
+// import Header_Comp from '@/components/common/header/header-comp';
 
 export default function Pages_Mantine_Layout({
   children,
