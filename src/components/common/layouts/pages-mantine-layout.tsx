@@ -3,8 +3,8 @@
 import { AppShell } from '@mantine/core';
 import { useDisclosure, useHeadroom } from '@mantine/hooks';
 import { ReactNode } from 'react';
-import Header from '../header/header';
-import Footer from '../footer/footer';
+import Header from '../header/header-comp';
+import Footer from '../footer/footer-comp';
 
 export default function Pages_Mantine_Layout({
   children,

@@ -22,8 +22,8 @@ import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displaces
 import { getDisplaceds } from '@/actions/actors/general/displaceds/getDisplaceds';
 import Displaced_Table_Actions from '@/components/actors/general/displaceds/displaced-table-actions';
 import { ListChecks, ListX, Users } from 'lucide-react';
-import { getDisplacedsIds } from '@/actions/actors/general/displaceds/getDisplacedsIds';
 import { cn } from '@/utils/cn';
+import { getDisplacedsIds } from '@/actions/actors/general/displaceds/getDisplaceds-Ids';
 
 interface DisplacedsTableProps {
   localFilters: displacedsFilterValuesType;

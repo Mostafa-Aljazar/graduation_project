@@ -35,7 +35,7 @@ import {
 } from '@/@types/actors/common-types/index.type';
 import { getDelegates } from '@/actions/actors/general/delegates/getDelegates';
 import { getDelegatesByIds } from '@/actions/actors/general/delegates/getDelegatesByIds';
-import { getDelegatesIds } from '@/actions/actors/general/delegates/getDelegatesIds';
+import { getDelegatesIds } from '@/actions/actors/general/delegates/getDelegates-Ids';
 import {
   Delegate,
   DelegatesResponse,
@@ -44,9 +44,7 @@ import {
 interface CommonAidDelegatesTableProps {
   destination: DESTINATION_AID;
   selectedDelegatesPortions: SelectedDelegatePortion[];
-  setSelectedDelegatesPortions: React.Dispatch<
-    React.SetStateAction<SelectedDelegatePortion[]>
-  >;
+  setSelectedDelegatesPortions: React.Dispatch<React.SetStateAction<SelectedDelegatePortion[]>>;
   aid_Data?: Aid;
   aid_Id?: number;
 }
@@ -62,31 +60,22 @@ export default function Common_Aid_Delegates_Table({
    *  ============================== */
   const [query, setQuery] = useQueryStates(
     {
-      existingQuantity: parseAsInteger.withDefault(
-        aid_Data?.existing_quantity || 0
-      ),
+      existingQuantity: parseAsInteger.withDefault(aid_Data?.existing_quantity || 0),
       quantityAvailability: parseAsStringEnum<QUANTITY_AVAILABILITY>(
         Object.values(QUANTITY_AVAILABILITY)
-      ).withDefault(
-        aid_Data?.quantity_availability || QUANTITY_AVAILABILITY.LIMITED
-      ),
+      ).withDefault(aid_Data?.quantity_availability || QUANTITY_AVAILABILITY.LIMITED),
       distributionMechanism: parseAsStringEnum<DISTRIBUTION_MECHANISM>(
         Object.values(DISTRIBUTION_MECHANISM)
-      ).withDefault(
-        aid_Data?.distribution_mechanism ||
-          DISTRIBUTION_MECHANISM.DELEGATES_LISTS
-      ),
+      ).withDefault(aid_Data?.distribution_mechanism || DISTRIBUTION_MECHANISM.DELEGATES_LISTS),
       delegatesPortions: parseAsStringEnum<DELEGATE_PORTIONS>(
         Object.values(DELEGATE_PORTIONS)
       ).withDefault(
-        aid_Data?.distribution_mechanism ===
-          DISTRIBUTION_MECHANISM.DELEGATES_LISTS
+        aid_Data?.distribution_mechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS
           ? aid_Data?.delegates_portions
           : DELEGATE_PORTIONS.EQUAL
       ),
       delegateSinglePortion: parseAsInteger.withDefault(
-        aid_Data?.distribution_mechanism ===
-          DISTRIBUTION_MECHANISM.DELEGATES_LISTS
+        aid_Data?.distribution_mechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS
           ? (aid_Data?.delegate_single_portion as number)
           : 0
       ),
@@ -118,11 +107,7 @@ export default function Common_Aid_Delegates_Table({
         }))
       );
     }
-  }, [
-    query.delegatesPortions,
-    query.delegateSinglePortion,
-    setSelectedDelegatesPortions,
-  ]);
+  }, [query.delegatesPortions, query.delegateSinglePortion, setSelectedDelegatesPortions]);
 
   /** ==============================
    *  Local State
@@ -184,8 +169,7 @@ export default function Common_Aid_Delegates_Table({
    *  ============================== */
 
   const delegatesData =
-    destination === DESTINATION_AID.ADD_AIDS ||
-    destination === DESTINATION_AID.EDIT_AIDS
+    destination === DESTINATION_AID.ADD_AIDS || destination === DESTINATION_AID.EDIT_AIDS
       ? addDelegatesData
       : specificDelegatesDataById;
 
@@ -207,10 +191,7 @@ export default function Common_Aid_Delegates_Table({
   /** ==============================
    *  Helpers
    *  ============================== */
-  const selectedDelegatesSet = useMemo(
-    () => new Set(selectedDelegatesIds),
-    [selectedDelegatesIds]
-  );
+  const selectedDelegatesSet = useMemo(() => new Set(selectedDelegatesIds), [selectedDelegatesIds]);
 
   const isRowSelected = useCallback(
     (id: number) => selectedDelegatesSet.has(id),
@@ -248,9 +229,7 @@ export default function Common_Aid_Delegates_Table({
    *  Select All Logic
    *  ============================== */
   const areAllRowsSelected = useCallback(
-    () =>
-      selectedDelegatesIds.length ===
-      (addDelegatesData?.pagination?.total_items || 0),
+    () => selectedDelegatesIds.length === (addDelegatesData?.pagination?.total_items || 0),
     [selectedDelegatesIds, addDelegatesData]
   );
 
@@ -260,12 +239,8 @@ export default function Common_Aid_Delegates_Table({
       setSelectAllAcrossPages(true);
 
       if (checked) {
-        const totalRequired =
-          (allDelegatesIds?.length as number) * query.delegateSinglePortion;
-        console.log(
-          '🚀 ~ query.delegateSinglePortion:',
-          query.delegateSinglePortion
-        );
+        const totalRequired = (allDelegatesIds?.length as number) * query.delegateSinglePortion;
+        console.log('🚀 ~ query.delegateSinglePortion:', query.delegateSinglePortion);
         console.log('🚀 ~ allDelegatesIds:', allDelegatesIds);
         console.log('🚀 ~ totalRequired:', totalRequired);
 
@@ -293,12 +268,7 @@ export default function Common_Aid_Delegates_Table({
         setSelectedDelegatesPortions([]);
       }
     },
-    [
-      allDelegatesIds,
-      remainQ,
-      query.delegateSinglePortion,
-      selectAllAcrossPages,
-    ]
+    [allDelegatesIds, remainQ, query.delegateSinglePortion, selectAllAcrossPages]
   );
 
   const handlePortionChange = useCallback(
@@ -308,8 +278,7 @@ export default function Common_Aid_Delegates_Table({
           return prev.filter((item) => item.delegate_Id !== delegateId);
         }
 
-        const currentPortion =
-          prev.find((item) => item.delegate_Id === delegateId)?.portion || 0;
+        const currentPortion = prev.find((item) => item.delegate_Id === delegateId)?.portion || 0;
         const totalWithoutThis = totalSelectedPortion - currentPortion;
         const newTotal = totalWithoutThis + value;
 
@@ -348,11 +317,7 @@ export default function Common_Aid_Delegates_Table({
             aria-label='Select all'
             onClick={() => handleSelectAllAcrossAllPages(!areAllRowsSelected())}
           >
-            {areAllRowsSelected() ? (
-              <ListX size={18} />
-            ) : (
-              <ListChecks size={18} />
-            )}
+            {areAllRowsSelected() ? <ListX size={18} /> : <ListChecks size={18} />}
           </ActionIcon>
         </Table.Th>
         <Table.Th px={5} ta='center'>
@@ -381,12 +346,7 @@ export default function Common_Aid_Delegates_Table({
         </Table.Th>
       </Table.Tr>
     ),
-    [
-      hideSelect,
-      query.delegatesPortions,
-      selectAllAcrossPages,
-      selectedDelegatesPortions,
-    ]
+    [hideSelect, query.delegatesPortions, selectAllAcrossPages, selectedDelegatesPortions]
   );
 
   /** ==============================
@@ -397,73 +357,63 @@ export default function Common_Aid_Delegates_Table({
     destination == DESTINATION_AID.DISPLAY_AIDS ||
     query.delegatesPortions == DELEGATE_PORTIONS.EQUAL;
 
-  const TableRow = React.memo(
-    ({ delegate, index }: { delegate: Delegate; index: number }) => {
-      const selected = isRowSelected(delegate.id);
+  const TableRow = React.memo(({ delegate, index }: { delegate: Delegate; index: number }) => {
+    const selected = isRowSelected(delegate.id);
 
-      return (
-        <Table.Tr
-          key={delegate.id}
-          bg={selected ? 'var(--mantine-color-blue-light)' : undefined}
-        >
-          <Table.Td px={5} ta='center' hidden={hideSelect}>
-            <Checkbox
-              checked={selected}
-              onChange={(e) =>
-                handleRowSelection(delegate.id, e.currentTarget.checked)
-              }
-            />
-          </Table.Td>
-          <Table.Td px={5} ta='center'>
-            {offset + index + 1}
-          </Table.Td>
-          <Table.Td px={5} ta='center'>
-            {delegate.name}
-          </Table.Td>
-          <Table.Td px={5} ta='center'>
-            {delegate.identity}
-          </Table.Td>
-          <Table.Td px={5} ta='center'>
-            {delegate.displaced_number}
-          </Table.Td>
-          <Table.Td px={5} ta='center'>
-            {delegate.family_number}
-          </Table.Td>
-          <Table.Td px={5} ta='center'>
-            {delegate.mobile_number}
-          </Table.Td>
-          <Table.Td px={5} ta='center'>
-            {delegate.tents_number}
-          </Table.Td>
-          <Table.Th px={5} ta='center'>
-            <NumberInput
-              placeholder='ادخل الحصة...'
-              size='sm'
-              w='100%'
-              classNames={{
-                input:
-                  'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
-              }}
-              value={
-                query.delegatesPortions === DELEGATE_PORTIONS.EQUAL
-                  ? query.delegateSinglePortion
-                  : selectedDelegatesPortions.find(
-                      (p) => p.delegate_Id === delegate.id
-                    )?.portion || ''
-              }
-              allowDecimal={false}
-              disabled={disableInput}
-              onChange={(val) =>
-                handlePortionChange(delegate.id, Number(val) || 0)
-              }
-              min={0}
-              max={query.existingQuantity}
-            />
-          </Table.Th>
-        </Table.Tr>
-      );
-    }
-  );
+    return (
+      <Table.Tr key={delegate.id} bg={selected ? 'var(--mantine-color-blue-light)' : undefined}>
+        <Table.Td px={5} ta='center' hidden={hideSelect}>
+          <Checkbox
+            checked={selected}
+            onChange={(e) => handleRowSelection(delegate.id, e.currentTarget.checked)}
+          />
+        </Table.Td>
+        <Table.Td px={5} ta='center'>
+          {offset + index + 1}
+        </Table.Td>
+        <Table.Td px={5} ta='center'>
+          {delegate.name}
+        </Table.Td>
+        <Table.Td px={5} ta='center'>
+          {delegate.identity}
+        </Table.Td>
+        <Table.Td px={5} ta='center'>
+          {delegate.displaced_number}
+        </Table.Td>
+        <Table.Td px={5} ta='center'>
+          {delegate.family_number}
+        </Table.Td>
+        <Table.Td px={5} ta='center'>
+          {delegate.mobile_number}
+        </Table.Td>
+        <Table.Td px={5} ta='center'>
+          {delegate.tents_number}
+        </Table.Td>
+        <Table.Th px={5} ta='center'>
+          <NumberInput
+            placeholder='ادخل الحصة...'
+            size='sm'
+            w='100%'
+            classNames={{
+              input:
+                'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
+            }}
+            value={
+              query.delegatesPortions === DELEGATE_PORTIONS.EQUAL
+                ? query.delegateSinglePortion
+                : selectedDelegatesPortions.find((p) => p.delegate_Id === delegate.id)?.portion ||
+                  ''
+            }
+            allowDecimal={false}
+            disabled={disableInput}
+            onChange={(val) => handlePortionChange(delegate.id, Number(val) || 0)}
+            min={0}
+            max={query.existingQuantity}
+          />
+        </Table.Th>
+      </Table.Tr>
+    );
+  });
 
   TableRow.displayName = 'TableRow';
 
@@ -475,14 +425,7 @@ export default function Common_Aid_Delegates_Table({
       (delegatesData?.delegates || []).map((delegate, index) => (
         <TableRow key={delegate.id} delegate={delegate} index={index} />
       )),
-    [
-      hideSelect,
-      delegatesData,
-      offset,
-      isRowSelected,
-      handleRowSelection,
-      handlePortionChange,
-    ]
+    [hideSelect, delegatesData, offset, isRowSelected, handleRowSelection, handlePortionChange]
   );
 
   const noDelegates = (
@@ -571,9 +514,7 @@ export default function Common_Aid_Delegates_Table({
         <Flex justify='center'>
           <Pagination
             value={query.delegate_page}
-            onChange={(page) =>
-              setQuery((prev) => ({ ...prev, delegate_page: page }))
-            }
+            onChange={(page) => setQuery((prev) => ({ ...prev, delegate_page: page }))}
             total={delegatesData?.pagination?.total_pages as number}
             pt={30}
             size='sm'

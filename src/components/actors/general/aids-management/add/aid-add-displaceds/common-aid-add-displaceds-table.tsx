@@ -2,7 +2,6 @@
 
 import {
   ActionIcon,
-  Button,
   Checkbox,
   Group,
   LoadingOverlay,
@@ -12,22 +11,16 @@ import {
   Text,
 } from '@mantine/core';
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { cn } from '@/utils/cn';
 import { DisplacedsResponse } from '@/@types/actors/general/displaceds/displacesResponse.type';
 import { getDisplaceds } from '@/actions/actors/general/displaceds/getDisplaceds';
 import { Aid } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import {
-  addAidDisplaceds,
-  addAidDisplacedsProps,
-} from '@/actions/actors/general/aids-management/addAidDisplaceds';
-import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import { notifications } from '@mantine/notifications';
 import { displacedsFilterValuesType } from '@/validation/actor/general/displaceds/displaceds-filter-form';
-import { getDisplacedsIds } from '../../../../../../actions/actors/general/displaceds/getDisplacedsIds';
-// import { getDisplacedsIds } from '../actions/actors/general/displaceds/getDisplacedsIds';
-import { ListChecks, ListX, UserPen } from 'lucide-react';
+import { ListChecks, ListX } from 'lucide-react';
+import { getDisplacedsIds } from '@/actions/actors/general/displaceds/getDisplaceds-Ids';
 
 interface DisplacedsTableProps {
   setDisplacedNum: React.Dispatch<React.SetStateAction<number>>;
