@@ -3,8 +3,8 @@
 import { AppShell } from '@mantine/core';
 import { useDisclosure, useHeadroom } from '@mantine/hooks';
 import { ReactNode } from 'react';
-import Header from '../header/header-comp';
-import Footer from '../footer/footer-comp';
+import Header_Comp from '../header/Header_Comp';
+import Footer_Comp from '../footer/Footer_Comp';
 
 export default function Pages_Mantine_Layout({
   children,
@@ -21,7 +21,7 @@ export default function Pages_Mantine_Layout({
       withBorder={false}
       className='!flex !flex-col !w-full !min-h-screen'
     >
-      <Header opened={opened} toggle={toggle} />
+      <Header_Comp opened={opened} toggle={toggle} />
 
       <AppShell.Main
         flex={1}
@@ -33,7 +33,7 @@ export default function Pages_Mantine_Layout({
         {children}
       </AppShell.Main>
 
-      <Footer />
+      <Footer_Comp />
     </AppShell>
   );
 }

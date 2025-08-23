@@ -3,7 +3,7 @@ import { FOOTER_COPYRIGHT, FOOTER_DESC, FOOTER_TITLE } from '@/content/common/fo
 import Footer_Form from './footer-form';
 import Footer_Contact_Info from './footer-contact-info';
 
-export default function Footer() {
+export default function Footer_Comp() {
   return (
     <Box
       component='footer'
