@@ -1,3 +1,5 @@
+'use client';
+
 import { Box, Stack, Text, Divider, Flex } from '@mantine/core';
 import { FOOTER_COPYRIGHT, FOOTER_DESC, FOOTER_TITLE } from '@/content/common/footer';
 import Footer_Form from './footer-form';
