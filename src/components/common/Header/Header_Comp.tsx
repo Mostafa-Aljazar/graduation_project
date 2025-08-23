@@ -16,7 +16,7 @@ interface Props {
   toggle: () => void;
 }
 
-export default function Header({ opened, toggle }: Props) {
+export default function Header_Comp({ opened, toggle }: Props) {
   const pathname = usePathname();
   const isActor = pathname.includes('actor');
   const { isAuthenticated } = useAuth();
