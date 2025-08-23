@@ -25,7 +25,8 @@ import {
 import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import { notifications } from '@mantine/notifications';
 import { displacedsFilterValuesType } from '@/validation/actor/general/displaceds/displaceds-filter-form';
-import { getDisplacedsIds } from '@/actions/actors/general/displaceds/getDisplacedsIds';
+import { getDisplacedsIds } from '../../../../../../actions/actors/general/displaceds/getDisplacedsIds';
+// import { getDisplacedsIds } from '../actions/actors/general/displaceds/getDisplacedsIds';
 import { ListChecks, ListX, UserPen } from 'lucide-react';
 
 interface DisplacedsTableProps {

@@ -1,15 +1,15 @@
 'use client';
 import { AppShell, Burger, Button, Flex, Group, Paper } from '@mantine/core';
 import Image from 'next/image';
-import Header_Links from './header-links';
 import Link from 'next/link';
 import { AUTH_ROUTES, LANDING_ROUTES } from '@/constants/routes';
-import Header_Drawer from './header-drawer';
 import { usePathname } from 'next/navigation';
 import useAuth from '@/hooks/useAuth';
 import { LOGO } from '@/assets/common';
 import { LogIn } from 'lucide-react';
+import Header_Links from './header-links';
 import Header_Avatar from './header-avatar';
+import Header_Drawer from './header-drawer';
 
 interface Props {
   opened: boolean;
