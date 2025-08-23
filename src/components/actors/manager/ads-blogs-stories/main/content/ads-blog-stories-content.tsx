@@ -8,14 +8,11 @@ import { useQuery } from '@tanstack/react-query';
 import { AdsBlogsStoriesResponse } from '@/@types/actors/manager/ads-blogs-stories/adsBlogsStoriesResponse.type';
 import { getAdsBlogsStories } from '@/actions/actors/manager/blog-stories-ads/getAdsBlogsStories';
 import Ads_Blogs_Stories_List from './card/ads-blogs-stories-list';
-import { USER_RANK, UserRank } from '@/constants/userTypes';
 
 interface AdsBlogsStoriesContentProps {
   manager_Id: number;
 }
-export default function Ads_Blogs_Stories_Content({
-  manager_Id,
-}: AdsBlogsStoriesContentProps) {
+export default function Ads_Blogs_Stories_Content({ manager_Id }: AdsBlogsStoriesContentProps) {
   const [query, setQuery] = useQueryStates({
     'written-tab': parseAsStringEnum<TYPE_WRITTEN_CONTENT>(
       Object.values(TYPE_WRITTEN_CONTENT)
@@ -44,12 +41,7 @@ export default function Ads_Blogs_Stories_Content({
   return (
     <Stack w={'100%'}>
       {hasError ? (
-        <Paper
-          p='md'
-          withBorder
-          mt='md'
-          className='!bg-red-100 rounded-md text-center'
-        >
+        <Paper p='md' withBorder mt='md' className='!bg-red-100 rounded-md text-center'>
           <Box>
             <Center mb='sm'>
               <ThemeIcon color='red' variant='light' size='lg'>
@@ -57,9 +49,7 @@ export default function Ads_Blogs_Stories_Content({
               </ThemeIcon>
             </Center>
             <Text c='red' fw={600}>
-              {writtenContentsData?.error ||
-                error?.message ||
-                'حدث خطأ أثناء جلب المحتوى'}
+              {writtenContentsData?.error || error?.message || 'حدث خطأ أثناء جلب المحتوى'}
             </Text>
           </Box>
         </Paper>

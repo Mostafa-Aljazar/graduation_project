@@ -53,12 +53,6 @@ export default function Aid_Add_Displaceds_Table({
           ?.portion as number)
       : -1;
 
-  // const selectedDisplacedIds =
-  //   aid_Data.selected_displaced_Ids.map((res) => res) || [];
-
-  // const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<number[]>(
-  //   aid_Data.selected_displaced_Ids
-  // );
   const [selectAllAcrossPages, setSelectAllAcrossPages] = useState(false);
 
   const [query, setQuery] = useQueryStates(
@@ -254,47 +248,6 @@ export default function Aid_Add_Displaceds_Table({
     </Table.Tr>
   ));
 
-  // const addAidDisplacedsMutation = useMutation<
-  //   commonActionResponse,
-  //   Error,
-  //   addAidDisplacedsProps
-  // >({
-  //   mutationFn: addAidDisplaceds,
-  //   onSuccess: (data) => {
-  //     if (data.status == 200) {
-  //       notifications.show({
-  //         title: data.message,
-  //         message: `تم إضافة النازحين للمساعدة بنجاح`,
-  //         color: 'grape',
-  //         position: 'top-left',
-  //         withBorder: true,
-  //         loading: true,
-  //       });
-  //     } else {
-  //       throw new Error(data.error || 'حدث خطأ أثناء إضافة النازحين للمساعدة');
-  //     }
-  //   },
-  //   onError: (error: any) => {
-  //     const errorMessage = error?.response?.data?.error || error?.message;
-  //     notifications.show({
-  //       title: 'خطأ',
-  //       message: errorMessage,
-  //       color: 'red',
-  //       position: 'top-left',
-  //       withBorder: true,
-  //     });
-  //   },
-  // });
-
-  // const handleOnClick = () => {
-  //   addAidDisplacedsMutation.mutate({
-  //     aid_Id: aid_Data?.id as number,
-  //     actor_Id,
-  //     role,
-  //     displaceds_Ids: selectedDisplacedIds,
-  //   });
-  // };
-
   return (
     <Stack>
       <Group
@@ -321,6 +274,7 @@ export default function Aid_Add_Displaceds_Table({
           </Text>
         )}
       </Group>
+
       <Table.ScrollContainer
         minWidth='100%'
         w='100%'
@@ -332,21 +286,25 @@ export default function Aid_Add_Displaceds_Table({
           zIndex={1000}
           overlayProps={{ radius: 'sm', blur: 0.3 }}
         />
+
         {error && (
           <Text fw={500} size='sm' ta='center' c='red'>
             {error.message}
           </Text>
         )}
+
         {!isLoading && (!displacedData?.displaceds || displacedData.displaceds.length === 0) && (
           <Text fw={500} size='sm' ta='center' c='dimmed'>
             لا توجد بيانات للنازحين
           </Text>
         )}
+
         <Table horizontalSpacing='xs' striped highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead>{headers}</Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
       </Table.ScrollContainer>
+
       <Pagination
         value={query.displaced_page}
         onChange={(page) => setQuery((prev) => ({ ...prev, displaced_page: page }))}
@@ -361,20 +319,6 @@ export default function Aid_Add_Displaceds_Table({
           control: '!rounded-full',
         }}
       />
-      {/* <Button
-        size='sm'
-        fz={16}
-        fw={500}
-        c={'white'}
-        mx={'auto'}
-        mt={20}
-        className='!bg-primary !shadow-lg !w-fit'
-        onClick={handleOnClick}
-        rightSection={<UserPen size={16} />}
-        loading={addAidDisplacedsMutation.isPending}
-      >
-        إضافة
-      </Button> */}
     </Stack>
   );
 }

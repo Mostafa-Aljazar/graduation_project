@@ -25,7 +25,7 @@ export default function Common_Aids_Management_Content({
   actor_Id,
   role,
 }: CommonAidsManagementContentProps) {
-  const [query, setQuery] = useQueryStates({
+  const [query] = useQueryStates({
     'aids-tab': parseAsStringEnum<TYPE_GROUP_AIDS>(Object.values(TYPE_GROUP_AIDS)).withDefault(
       TYPE_GROUP_AIDS.ONGOING_AIDS
     ),

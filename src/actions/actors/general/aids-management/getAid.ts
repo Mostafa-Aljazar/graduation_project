@@ -3,7 +3,7 @@
 
 import { Aid, AidResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { USER_RANK, USER_TYPE, UserRank } from '@/constants/userTypes';
-import { getFakeAidResponse } from '@/content/actor/general/fake-aids';
+import { getFakeAidResponse } from '@/content/actor/general/aids/fake-aids';
 import { AqsaAPI } from '@/services';
 
 export interface getAidProps {

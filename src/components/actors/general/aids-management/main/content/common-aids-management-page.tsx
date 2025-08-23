@@ -1,13 +1,13 @@
 'use client';
-import Common_Aids_Management_Header_Tabs from '@/components/actors/manager/aids-management/main/header/common-aids-management-header-tabs';
 import { USER_TYPE } from '@/constants/userTypes';
 import { Button, Group, Stack, Text } from '@mantine/core';
-import React from 'react';
 import { useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth';
 import { Package, SquarePlus } from 'lucide-react';
 import Common_Aids_Management_Content from './common-aids-management-content';
 import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
+import Common_Aids_Management_Header_Tabs from '../header/common-aids-management-header-tabs';
+import { Suspense } from 'react';
 
 function Aids_Management_Header({
   visibleAdd,
@@ -68,9 +68,13 @@ export default function Common_Aids_Management_Page({
         manager_Id={actor_Id as number}
       />
 
-      <Common_Aids_Management_Header_Tabs />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Common_Aids_Management_Header_Tabs />
+      </Suspense>
 
-      <Common_Aids_Management_Content actor_Id={actor_Id as number} role={role} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Common_Aids_Management_Content actor_Id={actor_Id as number} role={role} />
+      </Suspense>
     </Stack>
   );
 }

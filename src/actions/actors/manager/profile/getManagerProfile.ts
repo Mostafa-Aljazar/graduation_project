@@ -1,7 +1,7 @@
 "use server";
 
 import { ManagerProfile, ManagerProfileResponse } from "@/@types/actors/manager/profile/managerProfileResponse.type";
-import { fakeManagerProfileResponse } from "@/content/actor/manager/fake-manager-profile";
+import { fakeManagerProfileResponse } from "@/content/actor/manager/fake-data/fake-manager-profile";
 import { AqsaAPI } from "@/services";
 
 export interface getManagerProfileProps {

@@ -1,7 +1,7 @@
 'use server';
 import { AqsaAPI } from "@/services";
 import { DelegatesNamesResponse } from '@/@types/actors/general/delegates/delegatesResponse.type';
-import { fakeDelegatesNamesResponse } from '@/content/actor/delegate/fake-delegates';
+import { fakeDelegatesNamesResponse } from '@/content/actor/delegate/fake-data/fake-delegates';
 
 interface getDelegatesNamesProps {
     ids?: number[];

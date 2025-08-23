@@ -1,6 +1,7 @@
 import Ads_Content from '@/components/actors/general/ads/ads-content';
 import { Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { Megaphone } from 'lucide-react';
+import { Suspense } from 'react';
 
 function Ads_Header() {
   return (
@@ -19,7 +20,10 @@ export default function Ads() {
   return (
     <Stack py={20} gap={10} w={'100%'} px={10}>
       <Ads_Header />
-      <Ads_Content />
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <Ads_Content />
+      </Suspense>
     </Stack>
   );
 }

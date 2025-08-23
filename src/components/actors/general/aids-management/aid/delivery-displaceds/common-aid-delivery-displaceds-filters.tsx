@@ -17,10 +17,7 @@ interface CommonAidDeliveryDisplacedsFiltersProps {
 export default function Common_Aid_Delivery_Displaceds_Filters({
   displacedNum,
 }: CommonAidDeliveryDisplacedsFiltersProps) {
-  const [search, setSearch] = useQueryState(
-    'search',
-    parseAsString.withDefault('')
-  );
+  const [search, setSearch] = useQueryState('search', parseAsString.withDefault(''));
 
   const form = useForm<SearchDisplacedFormValues>({
     initialValues: {
@@ -52,11 +49,7 @@ export default function Common_Aid_Delivery_Displaceds_Filters({
           <Text fw={600} fz={18} className='!text-primary'>
             عدد النازحين :
           </Text>
-          <Text
-            fz={14}
-            px={5}
-            className='border-1 border-second rounded-md text-dark'
-          >
+          <Text fz={14} px={5} className='border-1 border-second rounded-md text-dark'>
             {displacedNum ?? 0}
           </Text>
           <Text fw={500} fz={18} className='!text-dark'>
@@ -70,10 +63,7 @@ export default function Common_Aid_Delivery_Displaceds_Filters({
             wrap='nowrap'
             className='border-1 border-gray-300 rounded-lg overflow-hidden'
           >
-            <form
-              onSubmit={form.onSubmit(handleSearch)}
-              style={{ display: 'flex', width: '100%' }}
-            >
+            <form onSubmit={form.onSubmit(handleSearch)} style={{ display: 'flex', width: '100%' }}>
               <TextInput
                 w='100%'
                 placeholder='رقم الهوية/رقم الخيمة...'

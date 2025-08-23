@@ -1,6 +1,6 @@
 "use server";
 import { SecurityProfile, SecurityProfileResponse } from "@/@types/actors/security/profile/securityProfileResponse.type";
-import { fakeSecurityProfileResponse } from "@/content/actor/security/fake-security-profile";
+import { fakeSecurityProfileResponse } from "@/content/actor/security/fake-data/fake-security-profile";
 import { AqsaAPI } from "@/services";
 
 export interface getSecurityProfileProps {

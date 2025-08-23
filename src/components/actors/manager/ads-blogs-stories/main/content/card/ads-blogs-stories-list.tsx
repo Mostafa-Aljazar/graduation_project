@@ -20,10 +20,7 @@ export default function Ads_Blogs_Stories_List({
   isLoading,
   manager_Id,
 }: AdsBlogsStoriesListProps) {
-  const [activePage, setActivePage] = useQueryState(
-    'written-page',
-    parseAsInteger.withDefault(1)
-  );
+  const [activePage, setActivePage] = useQueryState('written-page', parseAsInteger.withDefault(1));
 
   return (
     <Stack pos={'relative'} py={20}>
@@ -43,11 +40,7 @@ export default function Ads_Blogs_Stories_List({
       ) : (
         <Stack gap='xs'>
           {data.map((item) => (
-            <Ad_Blog_Story_Card
-              key={item.id}
-              written_data={item}
-              manager_Id={manager_Id}
-            />
+            <Ad_Blog_Story_Card key={item.id} written_data={item} manager_Id={manager_Id} />
           ))}
         </Stack>
       )}

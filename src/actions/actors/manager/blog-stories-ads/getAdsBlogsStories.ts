@@ -1,7 +1,7 @@
 "use server";
 import { AqsaGuestAPI } from "@/services";
 import { TYPE_WRITTEN_CONTENT } from "@/@types/actors/common-types/index.type";
-import { fakeWrittenContentsResponse } from "@/content/actor/manager/fake-ads-blogs-stories";
+import { fakeWrittenContentsResponse } from "@/content/actor/manager/fake-data/fake-ads-blogs-stories";
 import { AdsBlogsStoriesResponse } from "@/@types/actors/manager/ads-blogs-stories/adsBlogsStoriesResponse.type";
 
 export interface getAdsBlogsStoriesProps {

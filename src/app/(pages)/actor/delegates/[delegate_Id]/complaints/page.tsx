@@ -2,6 +2,7 @@ import Common_Complaints_Content from '@/components/actors/general/complaints/co
 import Common_Complaints_Header_Tabs from '@/components/actors/general/complaints/common-complaints-tabs';
 import { USER_RANK } from '@/constants/userTypes';
 import { Stack } from '@mantine/core';
+import { Suspense } from 'react';
 
 export default async function Delegate_Complaints({
   params,
@@ -12,9 +13,13 @@ export default async function Delegate_Complaints({
 
   return (
     <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
-      <Common_Complaints_Header_Tabs />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Common_Complaints_Header_Tabs />
+      </Suspense>
 
-      <Common_Complaints_Content actor_Id={Number(delegate_Id)} rank={USER_RANK.DELEGATE} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Common_Complaints_Content actor_Id={Number(delegate_Id)} rank={USER_RANK.DELEGATE} />
+      </Suspense>
     </Stack>
   );
 }

@@ -1,7 +1,7 @@
 "use server";
 
 import { SecurityNamesResponse } from "@/@types/actors/general/security-data/securitiesDataResponse.types";
-import { fakeSecuritiesNamesResponse } from "@/content/actor/security/fake-securities";
+import { fakeSecuritiesNamesResponse } from "@/content/actor/security/fake-data/fake-securities";
 import { AqsaAPI } from "@/services";
 
 interface GetSecurityNamesProps {

@@ -3,7 +3,7 @@
 import { AqsaAPI } from '@/services';
 import { ComplaintResponse } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
 import { UserRank, UserType } from '@/constants/userTypes';
-import { fakeComplaintsResponse } from '@/content/actor/common/complaints/fake-complaints';
+import { fakeComplaintsResponse } from '@/content/actor/general/complaints/fake-complaints';
 import { COMPLAINTS_STATUS, COMPLAINTS_TABS } from '@/@types/actors/common-types/index.type';
 
 export interface GetCommonComplaintsProps {

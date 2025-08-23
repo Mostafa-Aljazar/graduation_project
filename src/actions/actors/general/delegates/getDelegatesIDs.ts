@@ -1,7 +1,7 @@
 "use server";
 
 import { DelegatesIdsResponse } from "@/@types/actors/general/delegates/delegatesResponse.type";
-import { fakeDelegatesIdsResponse } from "@/content/actor/delegate/fake-delegates";
+import { fakeDelegatesIdsResponse } from "@/content/actor/delegate/fake-data/fake-delegates";
 import { AqsaAPI } from "@/services";
 
 export const getDelegatesIds = async (): Promise<DelegatesIdsResponse> => {

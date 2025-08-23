@@ -7,10 +7,5 @@ export default async function Delegate_Aid({
 }) {
   const { delegate_Id, aid_Id } = await params;
 
-  return (
-    <Delegate_Aid_Page
-      aid_Id={parseInt(aid_Id)}
-      delegate_Id={parseInt(delegate_Id)}
-    />
-  );
+  return <Delegate_Aid_Page aid_Id={parseInt(aid_Id)} delegate_Id={parseInt(delegate_Id)} />;
 }

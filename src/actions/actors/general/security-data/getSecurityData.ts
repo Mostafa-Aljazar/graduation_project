@@ -1,7 +1,7 @@
 "use server";
 
 import { SecuritiesResponse } from "@/@types/actors/general/security-data/securitiesDataResponse.types";
-import { fakeSecuritiesResponse } from "@/content/actor/security/fake-securities";
+import { fakeSecuritiesResponse } from "@/content/actor/security/fake-data/fake-securities";
 import { AqsaAPI } from "@/services";
 
 export interface getSecurityDataProps {

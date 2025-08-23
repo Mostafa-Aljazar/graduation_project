@@ -19,8 +19,7 @@ export default function Common_Aid_Displaceds_Table({
   setDisplacedNum,
   aid_Data,
 }: CommonAidDisplacedsTableProps) {
-  const receivedDisplacedIds =
-    aid_Data.received_displaceds?.map((res) => res.displaced_Id) || [];
+  const receivedDisplacedIds = aid_Data.received_displaceds?.map((res) => res.displaced_Id) || [];
 
   const [query, setQuery] = useQueryStates(
     {
@@ -53,36 +52,20 @@ export default function Common_Aid_Displaceds_Table({
     setDisplacedNum(DISPLACED_DATA?.pagination?.total_items || 0);
   }, [DISPLACED_DATA, setDisplacedNum]);
 
-  const isRowReceived = (id: number) =>
-    receivedDisplacedIds?.includes(id) || false;
+  const isRowReceived = (id: number) => receivedDisplacedIds?.includes(id) || false;
 
   const headers = (
     <Table.Tr>
       <Table.Th px={5} ta='center' w='fit-content'>
         الرقم
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         اسم النازح
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         رقم الهوية
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         رقم الخيمة
       </Table.Th>
       <Table.Th px={5} ta='center' w='fit-content'>
@@ -91,20 +74,10 @@ export default function Common_Aid_Displaceds_Table({
       <Table.Th px={5} ta='center' w='fit-content'>
         رقم الجوال
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         اسم المندوب
       </Table.Th>
-      <Table.Th
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Th px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         حالة التسليم
       </Table.Th>
     </Table.Tr>
@@ -113,26 +86,15 @@ export default function Common_Aid_Displaceds_Table({
   const rows = (DISPLACED_DATA?.displaceds || []).map((element, index) => (
     <Table.Tr
       key={element.id}
-      bg={
-        isRowReceived(element.id)
-          ? 'var(--mantine-color-blue-light)'
-          : undefined
-      }
+      bg={isRowReceived(element.id) ? 'var(--mantine-color-blue-light)' : undefined}
     >
       <Table.Td px={5} ta='center' w='fit-content'>
-        {((query.displaced_page ??
-          (DISPLACED_DATA?.pagination?.page as number)) -
-          1) *
+        {((query.displaced_page ?? (DISPLACED_DATA?.pagination?.page as number)) - 1) *
           (DISPLACED_DATA?.pagination?.limit || 7) +
           index +
           1}
       </Table.Td>
-      <Table.Td
-        px={5}
-        ta='center'
-        w='fit-content'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Td px={5} ta='center' w='fit-content' style={{ whiteSpace: 'nowrap' }}>
         {element.name}
       </Table.Td>
       <Table.Td px={5} ta='center' w='fit-content'>
@@ -147,12 +109,7 @@ export default function Common_Aid_Displaceds_Table({
       <Table.Td px={5} ta='center' w='fit-content'>
         {element.mobile_number}
       </Table.Td>
-      <Table.Td
-        px={5}
-        w='fit-content'
-        ta='center'
-        style={{ whiteSpace: 'nowrap' }}
-      >
+      <Table.Td px={5} w='fit-content' ta='center' style={{ whiteSpace: 'nowrap' }}>
         {element.delegate.name}
       </Table.Td>
       <Table.Td px={5} ta='center' w='fit-content'>
@@ -186,29 +143,19 @@ export default function Common_Aid_Displaceds_Table({
             {error.message}
           </Text>
         )}
-        {!isLoading &&
-          (!DISPLACED_DATA?.displaceds ||
-            DISPLACED_DATA.displaceds.length === 0) && (
-            <Text fw={500} size='sm' ta='center' c='dimmed'>
-              لا توجد بيانات للنازحين
-            </Text>
-          )}
-        <Table
-          horizontalSpacing='xs'
-          striped
-          highlightOnHover
-          withTableBorder
-          withColumnBorders
-        >
+        {!isLoading && (!DISPLACED_DATA?.displaceds || DISPLACED_DATA.displaceds.length === 0) && (
+          <Text fw={500} size='sm' ta='center' c='dimmed'>
+            لا توجد بيانات للنازحين
+          </Text>
+        )}
+        <Table horizontalSpacing='xs' striped highlightOnHover withTableBorder withColumnBorders>
           <Table.Thead>{headers}</Table.Thead>
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
       </Table.ScrollContainer>
       <Pagination
         value={query.displaced_page}
-        onChange={(value) =>
-          setQuery((prev) => ({ ...prev, displaced_page: value }))
-        }
+        onChange={(value) => setQuery((prev) => ({ ...prev, displaced_page: value }))}
         total={DISPLACED_DATA?.pagination?.total_pages || 0}
         pt={30}
         size='sm'

@@ -1,4 +1,5 @@
 import Displaced_Profile_Form from '@/components/actors/displaced/profile/displaced-profile-form';
+import { Suspense } from 'react';
 
 export default async function Displaced_Profile({
   params,
@@ -7,5 +8,11 @@ export default async function Displaced_Profile({
 }) {
   const { displaced_Id } = await params;
 
-  return <Displaced_Profile_Form displaced_Id={parseInt(displaced_Id)} />;
+  return (
+    <>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Displaced_Profile_Form displaced_Id={parseInt(displaced_Id)} />
+      </Suspense>
+    </>
+  );
 }

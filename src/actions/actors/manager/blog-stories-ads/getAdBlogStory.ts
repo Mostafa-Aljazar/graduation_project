@@ -2,7 +2,7 @@
 import { AqsaAPI, AqsaGuestAPI } from "@/services";
 import { TYPE_WRITTEN_CONTENT } from "@/@types/actors/common-types/index.type";
 import { AdBlogStoryResponse } from "@/@types/actors/manager/ads-blogs-stories/adsBlogsStoriesResponse.type";
-import { fakeWrittenContentResponse } from "@/content/actor/manager/fake-ads-blogs-stories";
+import { fakeWrittenContentResponse } from "@/content/actor/manager/fake-data/fake-ads-blogs-stories";
 
 export interface getAdBlogStoryProps {
     id: number

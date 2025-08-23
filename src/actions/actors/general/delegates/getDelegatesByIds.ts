@@ -1,7 +1,7 @@
 "use server";
 
 import { DelegatesResponse } from "@/@types/actors/general/delegates/delegatesResponse.type";
-import { fakeDelegatesByIdsResponse } from "@/content/actor/delegate/fake-delegates";
+import { fakeDelegatesByIdsResponse } from "@/content/actor/delegate/fake-data/fake-delegates";
 import { AqsaAPI } from "@/services";
 
 

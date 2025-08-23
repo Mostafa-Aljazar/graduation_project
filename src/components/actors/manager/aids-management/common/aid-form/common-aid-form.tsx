@@ -61,36 +61,25 @@ export default function Common_Aid_Form({
   isDisabled = false,
 }: AddFormProps) {
   const [query, setQuery] = useQueryStates({
-    existingQuantity: parseAsInteger.withDefault(
-      initialData?.existing_quantity || 0
-    ),
+    existingQuantity: parseAsInteger.withDefault(initialData?.existing_quantity || 0),
     distributionMechanism: parseAsStringEnum<DISTRIBUTION_MECHANISM>(
       Object.values(DISTRIBUTION_MECHANISM)
-    ).withDefault(
-      initialData?.distribution_mechanism ||
-        DISTRIBUTION_MECHANISM.DELEGATES_LISTS
-    ),
+    ).withDefault(initialData?.distribution_mechanism || DISTRIBUTION_MECHANISM.DELEGATES_LISTS),
     delegatesPortions: parseAsStringEnum<DELEGATE_PORTIONS>(
       Object.values(DELEGATE_PORTIONS)
     ).withDefault(
-      initialData?.distribution_mechanism ===
-        DISTRIBUTION_MECHANISM.DELEGATES_LISTS
+      initialData?.distribution_mechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS
         ? initialData?.delegates_portions
         : DELEGATE_PORTIONS.EQUAL
     ),
     quantityAvailability: parseAsStringEnum<QUANTITY_AVAILABILITY>(
       Object.values(QUANTITY_AVAILABILITY)
-    ).withDefault(
-      initialData?.quantity_availability || QUANTITY_AVAILABILITY.LIMITED
-    ),
+    ).withDefault(initialData?.quantity_availability || QUANTITY_AVAILABILITY.LIMITED),
     distributionMethod: parseAsStringEnum<DISTRIBUTION_METHOD>(
       Object.values(DISTRIBUTION_METHOD)
-    ).withDefault(
-      initialData?.distribution_method || DISTRIBUTION_METHOD.EQUAL
-    ),
+    ).withDefault(initialData?.distribution_method || DISTRIBUTION_METHOD.EQUAL),
     delegateSinglePortion: parseAsInteger.withDefault(
-      initialData?.distribution_mechanism ===
-        DISTRIBUTION_MECHANISM.DELEGATES_LISTS
+      initialData?.distribution_mechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS
         ? (initialData?.delegate_single_portion as number)
         : 0
     ),
@@ -100,9 +89,7 @@ export default function Common_Aid_Form({
     form.setFieldValue('existing_quantity', query.existingQuantity);
   }, [query.existingQuantity]);
 
-  const [categoryPortions, setCategoryPortions] = useState<
-    Record<string, number>
-  >(
+  const [categoryPortions, setCategoryPortions] = useState<Record<string, number>>(
     (initialData?.selected_categories &&
       initialData.selected_categories.reduce(
         (acc, cat) => ({ ...acc, [cat.id]: cat.portion || 1 }),
@@ -164,8 +151,7 @@ export default function Common_Aid_Form({
       }));
 
       const hasChanges = updatedCategories.some(
-        (cat, index) =>
-          cat.portion !== (form.values.selected_categories[index]?.portion ?? 1)
+        (cat, index) => cat.portion !== (form.values.selected_categories[index]?.portion ?? 1)
       );
 
       if (hasChanges) {
@@ -189,13 +175,11 @@ export default function Common_Aid_Form({
 
     if (form.values.distribution_method === DISTRIBUTION_METHOD.EQUAL) {
       return (
-        (form.values.displaced_single_portion as number) *
-        form.values.selected_categories.length
+        (form.values.displaced_single_portion as number) * form.values.selected_categories.length
       );
     } else {
       return form.values.selected_categories.reduce(
-        (total, category) =>
-          total + (categoryPortions[category.id] ?? category.portion ?? 1),
+        (total, category) => total + (categoryPortions[category.id] ?? category.portion ?? 1),
         0
       );
     }
@@ -287,9 +271,7 @@ export default function Common_Aid_Form({
             input: 'placeholder:!text-sm !text-primary !font-normal',
           }}
           value={form.values.delivery_date}
-          onChange={(date) =>
-            !isDisabled && form.setFieldValue('delivery_date', new Date(date))
-          }
+          onChange={(date) => !isDisabled && form.setFieldValue('delivery_date', new Date(date))}
           leftSection={<Calendar size={16} />}
           error={form.errors.deliveryDate}
           valueFormat='DD/MM/YYYY hh:mm A'
@@ -322,16 +304,10 @@ export default function Common_Aid_Form({
             w='100%'
             value={form.values.security_required?.toString()}
             onChange={(value) =>
-              !isDisabled &&
-              form.setFieldValue('security_required', value === 'true')
+              !isDisabled && form.setFieldValue('security_required', value === 'true')
             }
           >
-            <Group
-              w={{ base: '100%', md: '60%' }}
-              gap={30}
-              wrap='nowrap'
-              align='center'
-            >
+            <Group w={{ base: '100%', md: '60%' }} gap={30} wrap='nowrap' align='center'>
               <Radio
                 value='false'
                 label={
@@ -372,22 +348,14 @@ export default function Common_Aid_Form({
             value={form.values.quantity_availability}
             onChange={(value) => {
               if (!isDisabled) {
-                form.setFieldValue(
-                  'quantity_availability',
-                  value as QUANTITY_AVAILABILITY
-                );
+                form.setFieldValue('quantity_availability', value as QUANTITY_AVAILABILITY);
                 setQuery({
                   quantityAvailability: value as QUANTITY_AVAILABILITY,
                 });
               }
             }}
           >
-            <Group
-              w={{ base: '100%', md: '60%' }}
-              gap={30}
-              wrap='nowrap'
-              align='center'
-            >
+            <Group w={{ base: '100%', md: '60%' }} gap={30} wrap='nowrap' align='center'>
               <Radio
                 value={QUANTITY_AVAILABILITY.LIMITED}
                 label={
@@ -468,20 +436,11 @@ export default function Common_Aid_Form({
             w='100%'
             value={form.values.distribution_method}
             onChange={(value) =>
-              !isDisabled &&
-              form.setFieldValue(
-                'distribution_method',
-                value as DISTRIBUTION_METHOD
-              )
+              !isDisabled && form.setFieldValue('distribution_method', value as DISTRIBUTION_METHOD)
             }
             // disabled={isDisabled}
           >
-            <Group
-              w={{ base: '100%', md: '60%' }}
-              gap={30}
-              wrap='nowrap'
-              align='center'
-            >
+            <Group w={{ base: '100%', md: '60%' }} gap={30} wrap='nowrap' align='center'>
               <Radio
                 value={DISTRIBUTION_METHOD.EQUAL}
                 label={
@@ -534,8 +493,7 @@ export default function Common_Aid_Form({
             )}
           </Stack>
         )}
-        {form.values.distribution_method ===
-          DISTRIBUTION_METHOD.FAMILY_NUMBER && (
+        {form.values.distribution_method === DISTRIBUTION_METHOD.FAMILY_NUMBER && (
           <Stack gap={0} style={{ gridColumn: '1 / -1' }}>
             <PortionsManagementModal
               selectedCategories={form.values.selected_categories}
@@ -566,10 +524,7 @@ export default function Common_Aid_Form({
             value={form.values.distribution_mechanism}
             onChange={(value) => {
               if (!isDisabled) {
-                form.setFieldValue(
-                  'distribution_mechanism',
-                  value as DISTRIBUTION_MECHANISM
-                );
+                form.setFieldValue('distribution_mechanism', value as DISTRIBUTION_MECHANISM);
                 setQuery({
                   distributionMechanism: value as DISTRIBUTION_MECHANISM,
                 });
@@ -612,8 +567,7 @@ export default function Common_Aid_Form({
             )}
           </Radio.Group>
         </Stack>
-        {form.values.distribution_mechanism ===
-          DISTRIBUTION_MECHANISM.DELEGATES_LISTS && (
+        {form.values.distribution_mechanism === DISTRIBUTION_MECHANISM.DELEGATES_LISTS && (
           <>
             <Stack gap='xs'>
               <Group gap={5}>
@@ -627,21 +581,13 @@ export default function Common_Aid_Form({
                 value={form.values.delegates_portions}
                 onChange={(value) => {
                   if (!isDisabled) {
-                    form.setFieldValue(
-                      'delegates_portions',
-                      value as DELEGATE_PORTIONS
-                    );
+                    form.setFieldValue('delegates_portions', value as DELEGATE_PORTIONS);
                     setQuery({ delegatesPortions: value as DELEGATE_PORTIONS });
                   }
                 }}
                 // disabled={isDisabled}
               >
-                <Group
-                  w={{ base: '100%', md: '60%' }}
-                  gap={30}
-                  wrap='nowrap'
-                  align='center'
-                >
+                <Group w={{ base: '100%', md: '60%' }} gap={30} wrap='nowrap' align='center'>
                   <Radio
                     value={DELEGATE_PORTIONS.EQUAL}
                     label={
@@ -691,10 +637,7 @@ export default function Common_Aid_Form({
                 value={form.values.delegate_single_portion as number}
                 onChange={(value) => {
                   if (!isDisabled) {
-                    form.setFieldValue(
-                      'delegate_single_portion',
-                      value as number
-                    );
+                    form.setFieldValue('delegate_single_portion', value as number);
                     setQuery({ delegateSinglePortion: value as number });
                   }
                 }}

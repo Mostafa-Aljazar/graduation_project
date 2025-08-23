@@ -17,11 +17,13 @@ import Common_Aid_Form from '../../common/aid-form/common-aid-form';
 import { parseAsStringEnum, useQueryState, useQueryStates } from 'nuqs';
 import { AddAidFormValuesType } from '@/validation/actor/manager/aids-management/add-aid-form-schema';
 import Common_Aid_Delegates_List from '../../common/delegates/common-aid-delegates-list';
-import Delegate_Aid_Add_Displaceds from '@/components/actors/general/aids-management/add/aid-add-displaceds/common-aid-add-displaceds';
 import { notifications } from '@mantine/notifications';
 import { useMutation } from '@tanstack/react-query';
 import { updateAid } from '@/actions/actors/general/aids-management/updateAid';
 import { addAid } from '@/actions/actors/general/aids-management/addAid';
+import { useRouter } from 'next/navigation';
+import { MANAGER_ROUTES_fUNC } from '@/constants/routes';
+import Common_Aid_Add_Displaceds from '@/components/actors/general/aids-management/add/aid-add-displaceds/common-aid-add-displaceds';
 
 function Add_Aid_Header() {
   const [action] = useQueryState(
@@ -62,6 +64,8 @@ export default function Add_Aid_Content({
   manager_Id,
   isLoading,
 }: ManagerAidContentProps) {
+  const router = useRouter();
+
   const distributionMechanismDefault =
     (aid_Data?.distribution_mechanism as DISTRIBUTION_MECHANISM) ||
     DISTRIBUTION_MECHANISM.DELEGATES_LISTS;
@@ -78,38 +82,37 @@ export default function Add_Aid_Content({
     },
     { shallow: true }
   );
-
   const [selectedDelegatesPortions, setSelectedDelegatesPortions] = useState<
     SelectedDelegatePortion[]
   >([]);
 
   const [selectedDisplacedIds, setSelectedDisplacedIds] = useState<number[]>([]);
-  console.log('🚀 ~ selectedDisplacedIds:', selectedDisplacedIds);
 
   useEffect(() => {
+    if (aid_Data) setQuery({ action: ACTION_ADD_EDIT_DISPLAY.EDIT });
+
     if (aid_Data?.selected_delegates_portions) {
       setSelectedDelegatesPortions(aid_Data.selected_delegates_portions);
     } else {
       setSelectedDelegatesPortions([]);
     }
+
     if (aid_Data?.selected_displaced_Ids) {
       setSelectedDisplacedIds(aid_Data?.selected_displaced_Ids);
     } else {
       setSelectedDisplacedIds([]);
     }
-    if (aid_Data) setQuery({ action: ACTION_ADD_EDIT_DISPLAY.EDIT });
   }, [aid_Data]);
 
   const isDisplaced = query.distributionMechanism == DISTRIBUTION_MECHANISM.DISPLACED_FAMILIES;
 
   const actionAidMutation = useMutation({
-    // const { mutate, isPending, isError, error } = useMutation({
     mutationFn: (payload: Aid) =>
       query.action === ACTION_ADD_EDIT_DISPLAY.EDIT && aid_Data?.id
         ? updateAid({ ...payload, id: aid_Data?.id })
         : addAid(payload),
     onSuccess: (response) => {
-      if (response.status === 200) {
+      if (response.status == 200) {
         setQuery({ action: ACTION_ADD_EDIT_DISPLAY.DISPLAY });
         notifications.show({
           title:
@@ -226,6 +229,7 @@ export default function Add_Aid_Content({
     };
 
     actionAidMutation.mutate(payload);
+    router.push(MANAGER_ROUTES_fUNC({ manager_Id: manager_Id }).PROFILE);
   };
 
   return (
@@ -260,7 +264,7 @@ export default function Add_Aid_Content({
 
       <Divider h={1} bg='#DFDEDC' w='100%' flex={1} />
 
-      <Delegate_Aid_Add_Displaceds
+      <Common_Aid_Add_Displaceds
         aid_Data={aid_Data as Aid}
         actor_Id={manager_Id}
         role='MANAGER'

@@ -1,7 +1,7 @@
 'use server';
 
 import { SecurityIDsResponse } from "@/@types/actors/general/security-data/securitiesDataResponse.types";
-import { fakeSecuritiesIDsResponse } from "@/content/actor/security/fake-securities";
+import { fakeSecuritiesIDsResponse } from "@/content/actor/security/fake-data/fake-securities";
 import { AqsaAPI } from "@/services";
 
 

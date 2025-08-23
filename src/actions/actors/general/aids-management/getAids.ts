@@ -1,7 +1,7 @@
 'use server';
 
 import { AidsResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import { getFakeAidsResponse } from '@/content/actor/general/fake-aids';
+import { getFakeAidsResponse } from '@/content/actor/general/aids/fake-aids';
 import { USER_RANK, USER_TYPE, UserRank } from '@/constants/userTypes';
 import { TYPE_AIDS, TYPE_GROUP_AIDS } from '@/@types/actors/common-types/index.type';
 import { AqsaAPI } from '@/services';

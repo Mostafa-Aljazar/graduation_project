@@ -1,6 +1,7 @@
 import { Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { BellRing } from 'lucide-react';
 import Notifications_Content from '@/components/actors/general/notifications/notifications-content';
+import { Suspense } from 'react';
 
 function Notifications_Header() {
   return (
@@ -19,7 +20,9 @@ export default async function Notifications_Page() {
   return (
     <Stack py={20} gap={10} w={'100%'} px={10}>
       <Notifications_Header />
-      <Notifications_Content />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Notifications_Content />
+      </Suspense>
     </Stack>
   );
 }

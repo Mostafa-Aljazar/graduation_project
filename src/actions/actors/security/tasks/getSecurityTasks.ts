@@ -1,7 +1,7 @@
 'use server';
 
 import { Task, TasksResponse } from "@/@types/actors/security/tasks/TasksResponse.type";
-import { FAKE_TASKS, getFakeTasksResponse } from "@/content/actor/security/fake-security-tasks";
+import { FAKE_TASKS, getFakeTasksResponse } from "@/content/actor/security/fake-data/fake-security-tasks";
 import { AqsaAPI } from "@/services";
 import { TASKS_TABS } from "@/@types/actors/common-types/index.type";
 

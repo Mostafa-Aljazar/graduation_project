@@ -9,11 +9,7 @@ import {
 } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import Common_Aid_Delegates_Table from './common-aid-delegates-table';
 
-function Aid_Delegates_List_Header({
-  destination,
-}: {
-  destination: DESTINATION_AID;
-}) {
+function Aid_Delegates_List_Header({ destination }: { destination: DESTINATION_AID }) {
   const title =
     destination == DESTINATION_AID.ADD_AIDS
       ? 'إضافة مناديب للمساعدة'
@@ -39,9 +35,7 @@ interface CommonAidDelegatesListProps {
   aid_Id?: number;
   destination: DESTINATION_AID;
   selectedDelegatesPortions: SelectedDelegatePortion[];
-  setSelectedDelegatesPortions: Dispatch<
-    SetStateAction<SelectedDelegatePortion[]>
-  >;
+  setSelectedDelegatesPortions: Dispatch<SetStateAction<SelectedDelegatePortion[]>>;
   aid_Data?: Aid;
 }
 

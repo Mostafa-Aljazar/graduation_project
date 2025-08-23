@@ -1,7 +1,7 @@
 "use server";
 
 import { DisplacedsResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
-import { fakeDisplacedByIdsResponse } from "@/content/actor/displaced/fake-displaced";
+import { fakeDisplacedByIdsResponse } from "@/content/actor/displaced/fake-data/fake-displaced";
 import { AqsaAPI } from "@/services";
 
 export interface getDisplacedByIdsProps {

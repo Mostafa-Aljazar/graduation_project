@@ -34,8 +34,7 @@ export default function Ad_Blog_Story_Card_Action({
 }: AdBlogStoryActionCardProps) {
   const [openedPopover, setOpenedPopover] = useState(false);
 
-  const [openedDelete, { open: openDelete, close: closeDelete }] =
-    useDisclosure(false);
+  const [openedDelete, { open: openDelete, close: closeDelete }] = useDisclosure(false);
 
   const router = useRouter();
 

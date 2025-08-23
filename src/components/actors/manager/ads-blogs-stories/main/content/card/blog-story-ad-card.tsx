@@ -13,10 +13,7 @@ interface AdBlogStoryCardProps {
   manager_Id: number;
 }
 
-export default function Ad_Blog_Story_Card({
-  written_data,
-  manager_Id,
-}: AdBlogStoryCardProps) {
+export default function Ad_Blog_Story_Card({ written_data, manager_Id }: AdBlogStoryCardProps) {
   const { user, isManager } = useAuth();
   const isOwner = manager_Id == user?.id && isManager;
 
@@ -26,40 +23,20 @@ export default function Ad_Blog_Story_Card({
       align='stretch'
       className='bg-white shadow-md hover:shadow-lg border border-gray-100 rounded-md overflow-hidden transition-all'
     >
-      <Box
-        pos='relative'
-        w={{ base: '100%', sm: 180 }}
-        h={{ base: 120, sm: 130 }}
-      >
+      <Box pos='relative' w={{ base: '100%', sm: 180 }} h={{ base: 120, sm: 130 }}>
         {written_data.imgs?.[0] ? (
-          <Image
-            alt='Blog Image'
-            src={written_data.imgs[0]}
-            fill
-            className='object-cover'
-          />
+          <Image alt='Blog Image' src={written_data.imgs[0]} fill className='object-cover' />
         ) : (
           <Box w='100%' h='100%' bg='gray.2' />
         )}
       </Box>
 
-      <Stack
-        flex={1}
-        justify='space-between'
-        py={10}
-        px={{ base: 12, sm: 16 }}
-        gap={8}
-      >
+      <Stack flex={1} justify='space-between' py={10} px={{ base: 12, sm: 16 }} gap={8}>
         <Group justify='space-between'>
           <Group gap={6} align='center'>
-            <CalendarDays
-              size={14}
-              strokeWidth={1.5}
-              className='text-gray-500'
-            />
+            <CalendarDays size={14} strokeWidth={1.5} className='text-gray-500' />
             <Text fz={11} c='dimmed'>
-              {written_data.created_at &&
-                new Date(written_data.created_at).toLocaleDateString()}
+              {written_data.created_at && new Date(written_data.created_at).toLocaleDateString()}
             </Text>
           </Group>
 
@@ -75,21 +52,13 @@ export default function Ad_Blog_Story_Card({
         <Stack gap={6}>
           <Group gap={6} align='center'>
             <Tag size={14} strokeWidth={1.5} className='mt-1 text-primary' />
-            <Text
-              fw={600}
-              fz={{ base: 14, sm: 16 }}
-              className='!text-primary line-clamp-1'
-            >
+            <Text fw={600} fz={{ base: 14, sm: 16 }} className='!text-primary line-clamp-1'>
               {written_data.title}
             </Text>
           </Group>
 
           <Group gap={6} align='start'>
-            <TextQuote
-              size={16}
-              strokeWidth={1.5}
-              className='mt-1 text-gray-600'
-            />
+            <TextQuote size={16} strokeWidth={1.5} className='mt-1 text-gray-600' />
             <Text fw={400} fz={12} className='!text-dark line-clamp-2'>
               {written_data.brief}
             </Text>

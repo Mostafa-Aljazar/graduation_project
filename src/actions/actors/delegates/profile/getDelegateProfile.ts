@@ -1,7 +1,7 @@
 'use server';
 
 import { DelegateProfile, DelegateProfileResponse } from "@/@types/actors/delegate/profile/delegateProfileResponse.type";
-import { fakeDelegateProfileResponse } from "@/content/actor/delegate/fake-delegates-profile";
+import { fakeDelegateProfileResponse } from "@/content/actor/delegate/fake-data/fake-delegates-profile";
 import { AqsaAPI } from "@/services";
 
 export interface getDelegateProfileProps {

@@ -27,9 +27,7 @@ interface CommonAidDeliveryDisplacedsProps {
 export default function Common_Aid_Delivery_Displaceds({
   aid_Data,
 }: CommonAidDeliveryDisplacedsProps) {
-  const [displacedNum, setDisplacedNum] = useState(
-    aid_Data.selected_displaced_Ids.length
-  );
+  const [displacedNum, setDisplacedNum] = useState(aid_Data.selected_displaced_Ids.length);
 
   return (
     <Stack p={10} pos='relative' w='100%'>
@@ -37,10 +35,7 @@ export default function Common_Aid_Delivery_Displaceds({
 
       <Common_Aid_Delivery_Displaceds_Filters displacedNum={displacedNum} />
 
-      <Common_Aid_Displaceds_Table
-        setDisplacedNum={setDisplacedNum}
-        aid_Data={aid_Data}
-      />
+      <Common_Aid_Displaceds_Table setDisplacedNum={setDisplacedNum} aid_Data={aid_Data} />
     </Stack>
   );
 }
