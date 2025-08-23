@@ -271,7 +271,10 @@ export default function Common_Aid_Form({
             input: 'placeholder:!text-sm !text-primary !font-normal',
           }}
           value={form.values.delivery_date}
-          onChange={(date) => !isDisabled && form.setFieldValue('delivery_date', new Date(date))}
+          onChange={(date) =>
+            !isDisabled &&
+            form.setFieldValue('delivery_date', date ? new Date(date) : form.values.delivery_date)
+          }
           leftSection={<Calendar size={16} />}
           error={form.errors.deliveryDate}
           valueFormat='DD/MM/YYYY hh:mm A'

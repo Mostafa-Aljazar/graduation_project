@@ -106,7 +106,9 @@ export default function Call_Delegate_Modal({
             }}
             valueFormat='DD/MM/YYYY - hh:mm A'
             value={form.values.dateTime}
-            onChange={(value) => form.setFieldValue('dateTime', new Date(value))}
+            onChange={(value) =>
+              form.setFieldValue('dateTime', value ? new Date(value) : form.values.dateTime)
+            }
             error={form.errors.dateTime}
             classNames={{
               input: 'placeholder:!text-sm !text-primary !font-normal',
