@@ -5,6 +5,7 @@ import { useDisclosure, useHeadroom } from '@mantine/hooks';
 import { ReactNode } from 'react';
 import Footer_Comp from '@/components/common/footer/footer-comp';
 import Header_Comp from './header/header-comp';
+// import Header_Comp from './header/header-comp';
 // import Header_Comp from '@/components/common/header/header-comp';
 
 export default function Pages_Mantine_Layout({
