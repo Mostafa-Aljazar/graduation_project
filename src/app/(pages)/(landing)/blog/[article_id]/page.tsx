@@ -4,11 +4,7 @@ import Article_Story from '@/components/landing/common/article-story/article-sto
 import { Stack } from '@mantine/core';
 import { use } from 'react';
 
-export default async function Article_Page({
-  params,
-}: {
-  params: Promise<{ article_id: string }>;
-}) {
+export default function Article_Page({ params }: { params: Promise<{ article_id: string }> }) {
   const { article_id } = use(params);
 
   return (
