@@ -1,0 +1,20 @@
+import Common_Complaints_Content from '@/components/actors/general/complaints/common-complaints-content';
+import { USER_RANK } from '@/constants/userTypes';
+import { Stack } from '@mantine/core';
+import { Suspense } from 'react';
+
+export default async function Displaced_Complaints({
+  params,
+}: {
+  params: Promise<{ displaced: string }>;
+}) {
+  const { displaced } = await params;
+
+  return (
+    <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Common_Complaints_Content actor_Id={Number(displaced)} rank={USER_RANK.DISPLACED} />
+      </Suspense>
+    </Stack>
+  );
+}
