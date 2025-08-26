@@ -3,9 +3,9 @@ import Common_Aids_Management_Page from '@/components/actors/general/aids-manage
 export default async function Delegate_Aids_Management({
   params,
 }: {
-  params: Promise<{ delegate_id: string }>;
+  params: Promise<{ delegate: string }>;
 }) {
-  const { delegate_id } = await params;
+  const { delegate } = await params;
 
-  return <Common_Aids_Management_Page delegate_Id={Number(delegate_id)} />;
+  return <Common_Aids_Management_Page delegate_Id={Number(delegate)} />;
 }

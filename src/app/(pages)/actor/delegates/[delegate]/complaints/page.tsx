@@ -7,9 +7,9 @@ import { Suspense } from 'react';
 export default async function Delegate_Complaints({
   params,
 }: {
-  params: Promise<{ delegate_id: string }>;
+  params: Promise<{ delegate: string }>;
 }) {
-  const { delegate_id } = await params;
+  const { delegate } = await params;
 
   return (
     <Stack justify={'center'} align={'center'} pt={20} w={'100%'} px={10}>
@@ -18,7 +18,7 @@ export default async function Delegate_Complaints({
       </Suspense>
 
       <Suspense fallback={<div>Loading...</div>}>
-        <Common_Complaints_Content actor_Id={Number(delegate_id)} rank={USER_RANK.DELEGATE} />
+        <Common_Complaints_Content actor_Id={Number(delegate)} rank={USER_RANK.DELEGATE} />
       </Suspense>
     </Stack>
   );
