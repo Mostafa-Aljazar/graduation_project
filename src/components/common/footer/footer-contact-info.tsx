@@ -3,7 +3,7 @@ import { Box, Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import { Phone, Mail, MapPin, Instagram, Linkedin, Facebook, X } from 'lucide-react';
 import Link from 'next/link';
 
-export default function Footer_ContactInfo({ className }: { className?: string }) {
+export default function Footer_Contact_Info({ className }: { className?: string }) {
   return (
     <Box className={className}>
       <Stack gap={20} mb={16}>
