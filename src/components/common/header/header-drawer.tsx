@@ -2,7 +2,7 @@
 import { Stack } from '@mantine/core';
 import { Drawer } from '@mantine/core';
 import React from 'react';
-import Header_Links from './header-links';
+import Header_Links from '@/components/common/header/header-links';
 import { usePathname } from 'next/navigation';
 import Actor_Navbar from '@/components/actors/common/navbar/actor-navbar';
 

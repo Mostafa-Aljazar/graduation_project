@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  Avatar,
-  Popover,
-  Button,
-  Stack,
-  Text,
-  Divider,
-  Group,
-} from '@mantine/core';
+import { Avatar, Popover, Button, Stack, Text, Divider, Group } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth';
 import { logout } from '@/utils/auth/logout';

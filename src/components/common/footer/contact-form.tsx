@@ -6,7 +6,7 @@ import { notifications } from '@mantine/notifications';
 import { contactUsSchema, contactUsType } from '@/validation/landing/contactUsSchema';
 import { useMutation } from '@tanstack/react-query';
 import { sendEmailFun } from '@/actions/landing/contact-us';
-import { Custom_Phone_Input } from '../custom/Custom_Phone_Input';
+import { Custom_Phone_Input } from '@/components/common/custom/Custom_Phone_Input';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 

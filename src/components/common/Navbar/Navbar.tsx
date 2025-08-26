@@ -1,13 +1,5 @@
 'use client';
-import {
-  Box,
-  Button,
-  Group,
-  Stack,
-  Text,
-  ThemeIcon,
-  UnstyledButton,
-} from '@mantine/core';
+import { Box, Button, Group, Stack, Text, ThemeIcon } from '@mantine/core';
 import React from 'react';
 import Image from 'next/image';
 import {
@@ -18,7 +10,6 @@ import {
   MessageCircleWarning,
   Newspaper,
   ShieldUser,
-  Speech,
   User,
   Users,
 } from 'lucide-react';
@@ -67,23 +58,12 @@ export default function Navbar() {
             w={85}
             h={85}
           >
-            <Image
-              src={MAN}
-              alt='man'
-              width={85}
-              height={85}
-              className='!object-cover'
-            />
+            <Image src={MAN} alt='man' width={85} height={85} className='!object-cover' />
           </Box>
         </Box>
 
         <Group justify='center' align='baseline' px={5} mt={30} wrap='nowrap'>
-          <Text
-            fw={500}
-            fz={20}
-            c={'white'}
-            className='!text-primary !text-nowrap'
-          >
+          <Text fw={500} fz={20} c={'white'} className='!text-primary !text-nowrap'>
             المدير :
           </Text>
 
@@ -91,13 +71,7 @@ export default function Navbar() {
             مصطفي الجزار
           </Text>
         </Group>
-        <Text
-          fw={500}
-          fz={16}
-          c={'white'}
-          ta={'center'}
-          className='!text-primary'
-        >
+        <Text fw={500} fz={16} c={'white'} ta={'center'} className='!text-primary'>
           960128155
         </Text>
 

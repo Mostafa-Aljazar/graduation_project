@@ -7,24 +7,22 @@ interface CustomPhoneInputProps {
   label?: React.ReactNode;
   [key: string]: any;
 }
-export const Custom_Phone_Input = forwardRef<
-  HTMLInputElement,
-  CustomPhoneInputProps
->(({ value, onChange, label, ...props }, ref) => (
-  <TextInput
-    label={label}
-    ref={ref}
-    value={value}
-    onChange={(event) => onChange?.(event.target.value)}
-    size='sm'
-    w='100%'
-    classNames={{
-      input:
-        'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
-      label: '!w-full',
-    }}
-    {...props}
-  />
-));
+export const Custom_Phone_Input = forwardRef<HTMLInputElement, CustomPhoneInputProps>(
+  ({ value, onChange, label, ...props }, ref) => (
+    <TextInput
+      label={label}
+      ref={ref}
+      value={value}
+      onChange={(event) => onChange?.(event.target.value)}
+      size='sm'
+      w='100%'
+      classNames={{
+        input: 'disabled:!cursor-text !bg-white placeholder:!text-sm !text-primary !font-normal',
+        label: '!w-full',
+      }}
+      {...props}
+    />
+  )
+);
 
 Custom_Phone_Input.displayName = 'Custom_Phone_Input';
