@@ -4,13 +4,13 @@ import { Suspense } from 'react';
 export default async function Manager_Aid({
   params,
 }: {
-  params: Promise<{ manager_Id: string; aid_id_num: string }>;
+  params: Promise<{ manager_id: string; manager_aid_id: string }>;
 }) {
-  const { manager_Id, aid_id_num } = await params;
+  const { manager_id, manager_aid_id } = await params;
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Manager_Aid_Page aid_Id={parseInt(aid_id_num)} manager_Id={parseInt(manager_Id)} />;
+      <Manager_Aid_Page aid_Id={parseInt(manager_aid_id)} manager_Id={parseInt(manager_id)} />;
     </Suspense>
   );
 }

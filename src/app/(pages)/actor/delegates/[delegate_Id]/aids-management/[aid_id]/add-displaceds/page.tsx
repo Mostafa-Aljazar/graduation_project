@@ -3,14 +3,14 @@ import Delegate_Aid_Add_Displaceds_Page from '@/components/actors/delegate/aids-
 export default async function Delegate_Add_Displaceds_Aid({
   params,
 }: {
-  params: Promise<{ delegate_Id: string; aid_id: string }>;
+  params: Promise<{ delegate_id: string; aid_id: string }>;
 }) {
-  const { delegate_Id, aid_id } = await params;
+  const { delegate_id, aid_id } = await params;
 
   return (
     <Delegate_Aid_Add_Displaceds_Page
       aid_Id={parseInt(aid_id)}
-      delegate_Id={parseInt(delegate_Id)}
+      delegate_Id={parseInt(delegate_id)}
     />
   );
 }
