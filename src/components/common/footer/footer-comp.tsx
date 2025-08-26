@@ -2,8 +2,8 @@
 
 import { Box, Stack, Text, Divider, Flex } from '@mantine/core';
 import { FOOTER_COPYRIGHT, FOOTER_DESC, FOOTER_TITLE } from '@/content/common/footer';
-import Footer_Contact_Info from './contact-info';
-import Footer_Form from './contact-form';
+import Footer_Contact_Info from '@/components/common/footer/contact-info';
+import Footer_Form from '@/components/common/footer/contact-form';
 
 export default function Footer_Comp() {
   return (
