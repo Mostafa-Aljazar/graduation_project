@@ -7,9 +7,9 @@ import { usePathname } from 'next/navigation';
 import useAuth from '@/hooks/useAuth';
 import { LOGO } from '@/assets/common';
 import { LogIn } from 'lucide-react';
-import Header_Links from './header-links';
-import Header_Avatar from './header-avatar';
-import Header_Drawer from './header-drawer';
+import Header_Links from '@/components/common/header/header-links';
+import Header_Avatar from '@/components/common/header/header-avatar';
+import Header_Drawer from '@/components/common/header/header-drawer';
 
 interface Props {
   opened: boolean;
