@@ -18,7 +18,9 @@ const tajawal = Tajawal({
 });
 
 export const metadata: Metadata = {
-  title: 'AL-AQSA Camp | إدارة مخيمات النازحين في غزة',
+  title: 'AL-AQSA Camp | إدارة مخيم الأقصى للنازحين',
+  abstract: 'AL-AQSA Camp',
+  applicationName: 'AL-AQSA Camp',
   description:
     'منصة ويب لإدارة مخيمات النازحين في غزة باستخدام تقنيات حديثة لتوزيع المساعدات، التعامل مع الشكاوى، وتحسين التواصل في الوقت الحقيقي.',
   keywords: [
@@ -41,6 +43,7 @@ export const metadata: Metadata = {
     'فلسطين',
   ],
   authors: [{ name: 'Mostafa Ibrahim Mostafa Aljazar' }],
+  icons: '/favicon.ico',
 };
 
 export default function RootLayout({
