@@ -20,10 +20,10 @@ const tajawal = Tajawal({
 
 export const metadata: Metadata = {
   title: 'AL-AQSA Camp | إدارة مخيم الأقصى للنازحين',
-  abstract: 'AL-AQSA Camp',
   applicationName: 'AL-AQSA Camp',
+  abstract: 'AL-AQSA Camp',
   description:
-    'منصة ويب لإدارة مخيمات النازحين في غزة باستخدام تقنيات حديثة لتوزيع المساعدات، التعامل مع الشكاوى، وتحسين التواصل في الوقت الحقيقي.',
+    'منصة ويب لإدارة مخيمات النازحين في غزة باستخدام تقنيات حديثة لتوزيع المساعدات والتعامل مع الشكاوى.',
   keywords: [
     'displacement camps',
     'Gaza',
