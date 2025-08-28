@@ -1,5 +1,6 @@
-import { LOGO } from '@/assets/common';
+import { FAVICON, LOGO } from '@/assets/common';
 import { BLOG_PAGE, HOME_PAGE, STORIES_PAGE } from '@/assets/common/manifest';
+import { LANDING_ROUTES } from '@/constants/routes';
 import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
@@ -13,19 +14,19 @@ export default function manifest(): MetadataRoute.Manifest {
         theme_color: '#3e704c', // Green from University of Palestine logo
         icons: [
             {
-                src: '/favicon.ico',
+                src: FAVICON.src,
                 sizes: 'any',
                 type: 'image/x-icon',
             },
             {
-                src: '/logo.png',
+                src: LOGO.src,
                 sizes: 'any',
                 type: 'image/png',
             },
         ],
         dir: 'rtl',
         lang: 'ar',
-        orientation: 'landscape',
+        orientation: 'any',
         categories: ['humanitarian', 'management', 'aid', 'disaster_response'],
         display_override: ['standalone', 'minimal-ui'],
         file_handlers: [],
@@ -66,13 +67,31 @@ export default function manifest(): MetadataRoute.Manifest {
         // },
         shortcuts: [
             {
-                name: 'Home page',
-                short_name: 'Home',
-                description: 'describe AL-AQSA CAMP',
-                url: '/',
-                icons: [{ src: LOGO.src, sizes: 'any', type: 'image/png' }],
+                name: 'الصفحة الرئيسية',
+                short_name: 'الرئيسية',
+                description:
+                    'الصفحة الرئيسية لمخيم الأقصى حيث نعرض رسالتنا، من نحن، وأهدافنا في تقديم المساعدات الإنسانية والإغاثية في قطاع غزة.',
+                url: LANDING_ROUTES.HOME,
+                icons: [{ src: HOME_PAGE.src, sizes: 'any', type: 'image/png' }],
+            },
+            {
+                name: 'صفحة المدونة',
+                short_name: 'المدونة',
+                description:
+                    'مدونتنا تحتوي على مقالات تسلط الضوء على أنشطتنا، قصص الصمود، الإنجازات، وكل ما يحدث داخل المخيم لمشاركة المعرفة والأمل.',
+                url: LANDING_ROUTES.BLOG,
+                icons: [{ src: BLOG_PAGE.src, sizes: 'any', type: 'image/png' }],
+            },
+            {
+                name: 'صفحة قصص النجاح',
+                short_name: 'قصص النجاح',
+                description:
+                    'قصص نجاحنا التي تحكي عن أبطال المخيم، إرادتهم، وكيف تحول الألم إلى أمل بمساعدة الجهود التطوعية.',
+                url: LANDING_ROUTES.SUCCESS_STORY,
+                icons: [{ src: STORIES_PAGE.src, sizes: 'any', type: 'image/png' }],
             },
         ],
+
 
     };
 } 

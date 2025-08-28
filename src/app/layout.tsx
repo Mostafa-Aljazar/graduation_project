@@ -9,6 +9,7 @@ import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import type { Metadata } from 'next';
 import Providers from '@/providers/providers';
 import { Tajawal } from 'next/font/google';
+import { FAVICON } from '@/assets/common';
 
 const tajawal = Tajawal({
   weight: ['200', '300', '400', '500', '700', '800', '900'],
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
     'فلسطين',
   ],
   authors: [{ name: 'Mostafa Ibrahim Mostafa Aljazar' }],
-  icons: '/favicon.ico',
+  icons: FAVICON.src,
 };
 
 export default function RootLayout({

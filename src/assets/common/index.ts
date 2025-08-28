@@ -1,2 +1,4 @@
 import LOGO from './logo.png';
-export { LOGO };
+import FAVICON from './favicon.ico';
+
+export { LOGO, FAVICON };
