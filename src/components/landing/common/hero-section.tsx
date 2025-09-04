@@ -50,7 +50,7 @@ export default function Hero_Section({ destination }: Props) {
       <Carousel
         w='100%'
         h='100%'
-        withControls
+        withControls={false}
         controlSize={48}
         slideSize='100%'
         emblaOptions={{
