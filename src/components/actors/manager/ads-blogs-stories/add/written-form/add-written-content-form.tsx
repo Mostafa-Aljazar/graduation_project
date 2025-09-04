@@ -239,6 +239,7 @@ export default function Add_Written_Content_Form() {
         content: values.content,
         brief: values.brief,
         image_urls: values.image_urls,
+        type: values.type,
       });
     } else {
       addMutation.mutate(values);

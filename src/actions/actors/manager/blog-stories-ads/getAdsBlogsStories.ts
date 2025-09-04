@@ -24,7 +24,7 @@ export const getAdsBlogsStories = async ({ page = 1, limit = 5, type }: getAdsBl
         const response = await AqsaGuestAPI.get<AdsBlogsStoriesResponse>('/written-content',
             {
                 params: {
-                    type
+                    type, page, limit
                 }
             });
 

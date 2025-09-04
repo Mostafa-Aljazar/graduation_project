@@ -1,19 +1,32 @@
+import type { Metadata, ResolvingMetadata } from 'next';
 import { TYPE_WRITTEN_CONTENT } from '@/@types/actors/common-types/index.type';
-import type { Metadata } from 'next';
-import Article_Story from '@/components/landing/common/article-story/article-story';
-import { Stack } from '@mantine/core';
 import { getAdBlogStory } from '@/actions/actors/manager/blog-stories-ads/getAdBlogStory';
 import { STORIES_PAGE } from '@/assets/common/manifest';
 import { LANDING_ROUTES } from '@/constants/routes';
+import Article_Story from '@/components/landing/common/article-story/article-story';
+import { Stack } from '@mantine/core';
+
+type StoryPageProps = {
+  params: Promise<{ id: string }>;
+  // searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
 // Dynamic SEO metadata
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const storyId = params.id;
+export async function generateMetadata(
+  { params }: StoryPageProps,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { id } = await params;
+
+  const previousImages = (await parent)?.openGraph?.images || [];
+
   const res = await getAdBlogStory({
-    id: parseInt(storyId),
+    id: parseInt(id),
     type: TYPE_WRITTEN_CONTENT.SUCCESS_STORIES,
   });
+
   const story = res.ad_blog_story;
+
   if (!story) return {};
 
   return {
@@ -31,6 +44,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
           height: 720,
           alt: story.title,
         },
+        ...previousImages,
       ],
     },
     twitter: {
@@ -42,8 +56,9 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
-export default async function Story_Page({ params }: { params: { id: string } }) {
-  const { id } = params;
+// Page component
+export default async function Story_Page({ params }: StoryPageProps) {
+  const { id } = await params;
 
   return (
     <Stack pt={60} className='w-full' mih={'100vh'}>

@@ -54,7 +54,6 @@ export default function Header_Links() {
       return pathname === LANDING_ROUTES.HOME && !currentHash;
     }
 
-    // TODO: fix it
     // Blog match
     if (link === LANDING_ROUTES.BLOG) {
       return pathname.startsWith('/blog') && !currentHash;

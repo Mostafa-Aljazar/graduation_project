@@ -1,5 +1,6 @@
 'use server';
 
+import { TYPE_WRITTEN_CONTENT } from '@/@types/actors/common-types/index.type';
 import { commonActionResponse } from '@/@types/common/action/commonActionResponse.type';
 import { AqsaAPI } from '@/services';
 
@@ -9,6 +10,7 @@ export interface updateAdBlogStoryProps {
     content: string;
     brief?: string;
     image_urls?: string[];
+    type: TYPE_WRITTEN_CONTENT;
 }
 
 export const updateAdBlogStory = async ({
@@ -17,6 +19,7 @@ export const updateAdBlogStory = async ({
     content,
     brief = "",
     image_urls,
+    type
 }: updateAdBlogStoryProps): Promise<commonActionResponse> => {
     const fakeData: commonActionResponse = {
         status: 200,
@@ -39,6 +42,7 @@ export const updateAdBlogStory = async ({
             content,
             brief,
             image_urls: image_urls,
+            type
         });
 
         if (response.status === 200) {
