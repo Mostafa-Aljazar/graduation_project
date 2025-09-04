@@ -5,11 +5,15 @@ import { STORIES_PAGE } from '@/assets/common/manifest';
 import { LANDING_ROUTES } from '@/constants/routes';
 import Article_Story from '@/components/landing/common/article-story/article-story';
 import { Stack } from '@mantine/core';
+import { APP_URL } from '@/constants/services';
 
-type StoryPageProps = {
+interface StoryPageProps {
   params: Promise<{ id: string }>;
-  // searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-};
+}
+
+const FALLBACK_TITLE = 'قصة نجاح | AL-AQSA Camp';
+const FALLBACK_DESCRIPTION = 'محتوى قصة النجاح غير متوفر';
+const FALLBACK_IMAGE = STORIES_PAGE.src;
 
 // Dynamic SEO metadata
 export async function generateMetadata(
@@ -17,51 +21,71 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { id } = await params;
-
   const previousImages = (await parent)?.openGraph?.images || [];
 
-  const res = await getAdBlogStory({
-    id: parseInt(id),
-    type: TYPE_WRITTEN_CONTENT.SUCCESS_STORIES,
-  });
+  try {
+    const { ad_blog_story: story } = await getAdBlogStory({
+      id: parseInt(id),
+      type: TYPE_WRITTEN_CONTENT.SUCCESS_STORIES,
+    });
 
-  const story = res.ad_blog_story;
+    if (!story)
+      return {
+        title: FALLBACK_TITLE,
+        description: FALLBACK_DESCRIPTION,
+        metadataBase: new URL(APP_URL),
+      };
 
-  if (!story) return {};
-
-  return {
-    title: story.title,
-    description: story.brief,
-    openGraph: {
-      title: story.title,
-      description: story.brief,
-      type: 'article',
-      url: `https://al-aqsa-camp.vercel.app${LANDING_ROUTES.SUCCESS_STORY}/${story.id}`,
-      images: [
-        {
-          url: story.imgs?.[0] || STORIES_PAGE.src,
+    const storyImages = story.imgs.length
+      ? story.imgs.map((img: string) => ({
+          url: img,
           width: 1280,
           height: 720,
           alt: story.title,
-        },
-        ...previousImages,
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: story.title,
+        }))
+      : [
+          {
+            url: FALLBACK_IMAGE,
+            width: 1280,
+            height: 720,
+            alt: story.title ?? FALLBACK_TITLE,
+          },
+        ];
+
+    return {
+      title: story.title ?? FALLBACK_TITLE,
       description: story.brief,
-      images: [story.imgs?.[0] || STORIES_PAGE.src],
-    },
-  };
+      metadataBase: new URL(APP_URL),
+      openGraph: {
+        siteName: 'AL-AQSA Camp',
+        title: story.title ?? FALLBACK_TITLE,
+        description: story.brief,
+        type: 'article',
+        url: `${APP_URL + LANDING_ROUTES.SUCCESS_STORY}/${story.id}`,
+        images: [...storyImages, ...previousImages],
+        locale: 'ar',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: story.title,
+        description: story.brief,
+        images: storyImages,
+      },
+    };
+  } catch {
+    return {
+      title: FALLBACK_TITLE,
+      description: FALLBACK_DESCRIPTION,
+      metadataBase: new URL(APP_URL),
+    };
+  }
 }
 
-// Page component
 export default async function Story_Page({ params }: StoryPageProps) {
   const { id } = await params;
 
   return (
-    <Stack pt={60} className='w-full' mih={'100vh'}>
+    <Stack pt={60} className='w-full' mih='100vh'>
       <Article_Story
         written_content_Id={parseInt(id)}
         destination={TYPE_WRITTEN_CONTENT.SUCCESS_STORIES}

@@ -1,16 +1,18 @@
 import OTP from '@/components/auth/otp';
 import { AUTH_ROUTES } from '@/constants/routes';
+import { APP_URL } from '@/constants/services';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'رمز التحقق | AL-AQSA Camp',
   description:
     'أدخل رمز التحقق المرسل إلى بريدك الإلكتروني لإعادة تعيين كلمة المرور في منصة مخيم الأقصى.',
+  metadataBase: new URL(APP_URL),
   openGraph: {
     title: 'رمز التحقق | AL-AQSA Camp',
     description:
       'أدخل رمز التحقق المرسل إلى بريدك الإلكتروني لإعادة تعيين كلمة المرور في منصة مخيم الأقصى.',
-    url: process.env.APP_URL + AUTH_ROUTES.OTP,
+    url: APP_URL + AUTH_ROUTES.OTP,
     siteName: 'AL-AQSA Camp',
     images: [
       {

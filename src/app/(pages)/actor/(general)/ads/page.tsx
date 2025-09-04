@@ -1,29 +1,40 @@
-import Ads_Content from '@/components/actors/general/ads/ads-content';
-import { Group, Stack, Text, ThemeIcon } from '@mantine/core';
-import { Megaphone } from 'lucide-react';
-import { Suspense } from 'react';
+import Ads_Component from '@/components/actors/general/ads/ads-component';
+import { GENERAL_ACTOR_ROUTES } from '@/constants/routes';
+import { APP_URL } from '@/constants/services';
+import type { Metadata } from 'next';
 
-function Ads_Header() {
-  return (
-    <Group gap={8}>
-      <ThemeIcon color='green' radius={'100%'} variant='light' size='lg'>
-        <Megaphone size={16} className='!text-primary' />
-      </ThemeIcon>
-      <Text fw={600} fz={{ base: 16, md: 20 }} className='!text-primary'>
-        الإعلانات :
-      </Text>
-    </Group>
-  );
-}
+const FALLBACK_TITLE = 'الإعلانات | AL-AQSA Camp';
+const FALLBACK_DESCRIPTION = 'شاهد أحدث الإعلانات والمحتوى المقدم على منصة مخيم الأقصى للنازحين.';
+const FALLBACK_IMAGE = '/favicon.ico';
 
-export default function Ads() {
-  return (
-    <Stack py={20} gap={10} w={'100%'} px={10}>
-      <Ads_Header />
+export const metadata: Metadata = {
+  title: FALLBACK_TITLE,
+  description: FALLBACK_DESCRIPTION,
+  metadataBase: new URL(APP_URL),
+  openGraph: {
+    title: FALLBACK_TITLE,
+    description: FALLBACK_DESCRIPTION,
+    url: `${APP_URL + GENERAL_ACTOR_ROUTES.ADS}`,
+    siteName: 'AL-AQSA Camp',
+    images: [
+      {
+        url: FALLBACK_IMAGE,
+        width: 64,
+        height: 64,
+        alt: 'AL-AQSA Camp favicon',
+      },
+    ],
+    locale: 'ar',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: FALLBACK_TITLE,
+    description: FALLBACK_DESCRIPTION,
+    images: [FALLBACK_IMAGE],
+  },
+};
 
-      <Suspense fallback={<div>Loading...</div>}>
-        <Ads_Content />
-      </Suspense>
-    </Stack>
-  );
+export default function AdsPage() {
+  return <Ads_Component />;
 }
