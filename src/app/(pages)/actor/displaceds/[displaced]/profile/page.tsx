@@ -9,7 +9,7 @@ import { MAN } from '@/assets/actor';
 const FALLBACK = {
   TITLE: 'الملف الشخصي للنازح | AL-AQSA Camp',
   DESCRIPTION: 'تفاصيل الملف الشخصي للنازحين على منصة مخيم الأقصى.',
-  IMAGE: MAN.src,
+  IMAGE: MAN?.src,
 };
 
 interface Props {
