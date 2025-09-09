@@ -26,10 +26,8 @@ export const getDisplaceds = async ({ page = 1, limit = 7, search = '', filters 
     /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.get<DisplacedsResponse>("/displaced", {
-            params: {
-                page, limit, filters
-            }
+        const response = await AqsaAPI.post<DisplacedsResponse>("/displaceds", {
+            page, limit, search, filters
         });
 
         if (response.data?.displaceds) {

@@ -21,7 +21,7 @@ import {
   Delegate,
   DelegatesResponse,
 } from '@/@types/actors/general/delegates/delegatesResponse.type';
-import { getDelegatesIds } from '@/actions/actors/general/delegates/getDelegates-Ids';
+import { getDelegatesIds } from '@/actions/actors/general/delegates/getDelegatesIds';
 import Delegates_Table_Actions from '../delegates-table-actions';
 import { ListChecks, ListX, Users } from 'lucide-react';
 

@@ -1,23 +1,24 @@
 import type { Metadata, ResolvingMetadata } from 'next';
-import { TYPE_WRITTEN_CONTENT } from '@/@types/actors/common-types/index.type';
 import { getAdBlogStory } from '@/actions/actors/manager/blog-stories-ads/getAdBlogStory';
+import { TYPE_WRITTEN_CONTENT } from '@/@types/actors/common-types/index.type';
+import Article_Story from '@/components/landing/common/article-story/article-story';
 import { STORIES_PAGE } from '@/assets/common/manifest';
 import { LANDING_ROUTES } from '@/constants/routes';
-import Article_Story from '@/components/landing/common/article-story/article-story';
-import { Stack } from '@mantine/core';
 import { APP_URL } from '@/constants/services';
+import { Stack } from '@mantine/core';
 
-interface StoryPageProps {
+interface Props {
   params: Promise<{ id: string }>;
 }
 
-const FALLBACK_TITLE = 'قصة نجاح | AL-AQSA Camp';
-const FALLBACK_DESCRIPTION = 'محتوى قصة النجاح غير متوفر';
-const FALLBACK_IMAGE = STORIES_PAGE.src;
+const FALLBACK = {
+  TITLE: 'قصة نجاح | AL-AQSA Camp',
+  DESCRIPTION: 'محتوى قصة النجاح غير متوفر',
+  IMAGE: STORIES_PAGE.src,
+};
 
-// Dynamic SEO metadata
 export async function generateMetadata(
-  { params }: StoryPageProps,
+  { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { id } = await params;
@@ -29,59 +30,69 @@ export async function generateMetadata(
       type: TYPE_WRITTEN_CONTENT.SUCCESS_STORIES,
     });
 
-    if (!story)
-      return {
-        title: FALLBACK_TITLE,
-        description: FALLBACK_DESCRIPTION,
-        metadataBase: new URL(APP_URL),
-      };
+    const title = story?.title ?? FALLBACK.TITLE;
+    const description = story?.brief?.substring(0, 160) ?? FALLBACK.DESCRIPTION;
 
-    const storyImages = story.imgs.length
-      ? story.imgs.map((img: string) => ({
-          url: img,
-          width: 1280,
-          height: 720,
-          alt: story.title,
-        }))
-      : [
-          {
-            url: FALLBACK_IMAGE,
-            width: 1280,
-            height: 720,
-            alt: story.title ?? FALLBACK_TITLE,
-          },
-        ];
+    const images = (story?.imgs.length ? story.imgs : [FALLBACK.IMAGE]).map((img) => ({
+      url: typeof img === 'string' ? img : FALLBACK.IMAGE,
+      width: 1280,
+      height: 720,
+      alt: title,
+    }));
 
     return {
-      title: story.title ?? FALLBACK_TITLE,
-      description: story.brief,
+      title,
+      description,
       metadataBase: new URL(APP_URL),
       openGraph: {
         siteName: 'AL-AQSA Camp',
-        title: story.title ?? FALLBACK_TITLE,
-        description: story.brief,
+        title,
+        description,
         type: 'article',
-        url: `${APP_URL + LANDING_ROUTES.SUCCESS_STORY}/${story.id}`,
-        images: [...storyImages, ...previousImages],
+        url: `${APP_URL + LANDING_ROUTES.SUCCESS_STORY}/${id}`,
+        images: [...images, ...previousImages],
         locale: 'ar',
       },
       twitter: {
         card: 'summary_large_image',
-        title: story.title,
-        description: story.brief,
-        images: storyImages,
+        title,
+        description,
+        images,
       },
     };
-  } catch {
+  } catch (error) {
     return {
-      title: FALLBACK_TITLE,
-      description: FALLBACK_DESCRIPTION,
+      title: FALLBACK.TITLE,
+      description: FALLBACK.DESCRIPTION,
       metadataBase: new URL(APP_URL),
+      openGraph: {
+        siteName: 'AL-AQSA Camp',
+        title: FALLBACK.TITLE,
+        description: FALLBACK.DESCRIPTION,
+        type: 'article',
+        url: `${APP_URL + LANDING_ROUTES.SUCCESS_STORY}/${id}`,
+        images: [
+          {
+            url: FALLBACK.IMAGE,
+            width: 1280,
+            height: 720,
+            alt: FALLBACK.TITLE,
+          },
+          ...previousImages,
+        ],
+        locale: 'ar',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: FALLBACK.TITLE,
+        description: FALLBACK.DESCRIPTION,
+        images: [FALLBACK.IMAGE],
+      },
     };
   }
 }
 
-export default async function Story_Page({ params }: StoryPageProps) {
+export default async function Story_Page({ params }: Props) {
   const { id } = await params;
 
   return (

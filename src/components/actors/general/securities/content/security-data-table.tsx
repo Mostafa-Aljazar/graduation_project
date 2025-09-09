@@ -18,7 +18,7 @@ import { useQuery } from '@tanstack/react-query';
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs';
 
 import { getSecurityData } from '@/actions/actors/general/security-data/getSecurityData';
-import { getSecuritiesIds } from '@/actions/actors/general/security-data/getSecuritiesIds';
+import { getSecuritiesIds } from '@/actions/actors/general/security-data/getSecurities-Ids';
 import Security_Data_Table_Actions from '../security-data-table-actions';
 import { SecuritiesResponse } from '@/@types/actors/general/security-data/securitiesDataResponse.types';
 import { ListChecks, ListX, Users } from 'lucide-react';

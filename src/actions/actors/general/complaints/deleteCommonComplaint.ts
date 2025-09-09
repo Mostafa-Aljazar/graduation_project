@@ -33,7 +33,7 @@ export const deleteCommonComplaint = async ({
     try {
 
         const response = await AqsaAPI.delete<commonActionResponse>(`/complaints/${complaint_Id}`, {
-            params: {
+            data: {
                 actor_Id,
                 role
             }

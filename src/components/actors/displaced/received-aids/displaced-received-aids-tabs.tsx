@@ -5,15 +5,7 @@ import {
   GET_DISPLACED_RECEIVED_AIDS_TABS,
 } from '@/@types/actors/common-types/index.type';
 import { cn } from '@/utils/cn';
-import {
-  Divider,
-  FloatingIndicator,
-  Group,
-  Stack,
-  Tabs,
-  Text,
-  ThemeIcon,
-} from '@mantine/core';
+import { Divider, FloatingIndicator, Group, Stack, Tabs, Text, ThemeIcon } from '@mantine/core';
 import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import { useState, useRef } from 'react';
 
@@ -26,22 +18,18 @@ export default function Displaced_Received_Aid_Header_Tabs() {
   });
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
-  const controlsRefs = useRef<
-    Record<DISPLACED_RECEIVED_AIDS_TABS, HTMLButtonElement | null>
-  >({
+  const controlsRefs = useRef<Record<DISPLACED_RECEIVED_AIDS_TABS, HTMLButtonElement | null>>({
     [DISPLACED_RECEIVED_AIDS_TABS.RECEIVED_AIDS]: null,
     [DISPLACED_RECEIVED_AIDS_TABS.PROVIDED_AIDS]: null,
   });
 
   const setControlRef =
-    (tabKey: DISPLACED_RECEIVED_AIDS_TABS) =>
-    (node: HTMLButtonElement | null) => {
+    (tabKey: DISPLACED_RECEIVED_AIDS_TABS) => (node: HTMLButtonElement | null) => {
       controlsRefs.current[tabKey] = node;
     };
 
   const activeTabSection = (tabKey: DISPLACED_RECEIVED_AIDS_TABS) => {
-    const { label, icon: IconComponent } =
-      GET_DISPLACED_RECEIVED_AIDS_TABS[tabKey];
+    const { label, icon: IconComponent } = GET_DISPLACED_RECEIVED_AIDS_TABS[tabKey];
 
     const secondWord = label.split(' ')[1] || label; // التقاط الكلمة الثانية
 
@@ -56,11 +44,7 @@ export default function Displaced_Received_Aid_Header_Tabs() {
       >
         <Group flex={1} wrap='nowrap' gap={3} justify='center' align='center'>
           {IconComponent && (
-            <ThemeIcon
-              variant='transparent'
-              className='flex-shrink-0 !text-dark'
-              size={18}
-            >
+            <ThemeIcon variant='transparent' className='flex-shrink-0 !text-dark' size={18}>
               <IconComponent size={18} />
             </ThemeIcon>
           )}

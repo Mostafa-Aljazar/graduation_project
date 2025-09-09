@@ -28,7 +28,7 @@ export const getDisplacedByIds = async ({
     /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.get<DisplacedsResponse>("/displaced/by-ids",
+        const response = await AqsaAPI.get<DisplacedsResponse>("/displaceds/by-ids",
             {
                 params: {
                     page, limit, Ids

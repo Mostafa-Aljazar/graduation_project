@@ -2,36 +2,39 @@ import Ads_Component from '@/components/actors/general/ads/ads-component';
 import { GENERAL_ACTOR_ROUTES } from '@/constants/routes';
 import { APP_URL } from '@/constants/services';
 import type { Metadata } from 'next';
+import { FAVICON } from '@/assets/common';
 
-const FALLBACK_TITLE = 'الإعلانات | AL-AQSA Camp';
-const FALLBACK_DESCRIPTION = 'شاهد أحدث الإعلانات والمحتوى المقدم على منصة مخيم الأقصى للنازحين.';
-const FALLBACK_IMAGE = '/favicon.ico';
+const FALLBACK = {
+  TITLE: 'الإعلانات | AL-AQSA Camp',
+  DESCRIPTION: 'شاهد أحدث الإعلانات والمحتوى المقدم على منصة مخيم الأقصى للنازحين.',
+  IMAGE: FAVICON.src,
+};
 
 export const metadata: Metadata = {
-  title: FALLBACK_TITLE,
-  description: FALLBACK_DESCRIPTION,
+  title: FALLBACK.TITLE,
+  description: FALLBACK.DESCRIPTION,
   metadataBase: new URL(APP_URL),
   openGraph: {
-    title: FALLBACK_TITLE,
-    description: FALLBACK_DESCRIPTION,
-    url: `${APP_URL + GENERAL_ACTOR_ROUTES.ADS}`,
     siteName: 'AL-AQSA Camp',
+    title: FALLBACK.TITLE,
+    description: FALLBACK.DESCRIPTION,
+    type: 'website',
+    url: APP_URL + GENERAL_ACTOR_ROUTES.ADS,
     images: [
       {
-        url: FALLBACK_IMAGE,
+        url: FALLBACK.IMAGE,
         width: 64,
         height: 64,
-        alt: 'AL-AQSA Camp favicon',
+        alt: FALLBACK.TITLE,
       },
     ],
     locale: 'ar',
-    type: 'website',
   },
   twitter: {
     card: 'summary',
-    title: FALLBACK_TITLE,
-    description: FALLBACK_DESCRIPTION,
-    images: [FALLBACK_IMAGE],
+    title: FALLBACK.TITLE,
+    description: FALLBACK.DESCRIPTION,
+    images: [FALLBACK.IMAGE],
   },
 };
 

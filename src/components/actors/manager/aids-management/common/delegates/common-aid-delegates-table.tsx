@@ -35,7 +35,7 @@ import {
 } from '@/@types/actors/common-types/index.type';
 import { getDelegates } from '@/actions/actors/general/delegates/getDelegates';
 import { getDelegatesByIds } from '@/actions/actors/general/delegates/getDelegatesByIds';
-import { getDelegatesIds } from '@/actions/actors/general/delegates/getDelegates-Ids';
+import { getDelegatesIds } from '@/actions/actors/general/delegates/getDelegatesIds';
 import {
   Delegate,
   DelegatesResponse,

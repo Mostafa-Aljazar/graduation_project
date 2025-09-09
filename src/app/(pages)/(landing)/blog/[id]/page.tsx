@@ -1,67 +1,102 @@
 import type { Metadata, ResolvingMetadata } from 'next';
-import { TYPE_WRITTEN_CONTENT } from '@/@types/actors/common-types/index.type';
 import { getAdBlogStory } from '@/actions/actors/manager/blog-stories-ads/getAdBlogStory';
-import { BLOG_PAGE } from '@/assets/common/manifest';
-import { LANDING_ROUTES } from '@/constants/routes';
+import { TYPE_WRITTEN_CONTENT } from '@/@types/actors/common-types/index.type';
 import Article_Story from '@/components/landing/common/article-story/article-story';
+import { LANDING_ROUTES } from '@/constants/routes';
+import { APP_URL } from '@/constants/services';
+import { BLOG_PAGE } from '@/assets/common/manifest';
 import { Stack } from '@mantine/core';
 
-type ArticlePageProps = {
+interface Props {
   params: Promise<{ id: string }>;
-  // searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+const FALLBACK = {
+  TITLE: 'مقال | AL-AQSA Camp',
+  DESCRIPTION: 'اقرأ مقالات منصة مخيم الأقصى حول المواضيع المختلفة.',
+  IMAGE: BLOG_PAGE.src,
 };
 
-// Dynamic SEO metadata
 export async function generateMetadata(
-  { params }: ArticlePageProps,
+  { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { id } = await params;
-
   const previousImages = (await parent)?.openGraph?.images || [];
 
-  const res = await getAdBlogStory({
-    id: parseInt(id),
-    type: TYPE_WRITTEN_CONTENT.BLOG,
-  });
+  try {
+    const { ad_blog_story: article } = await getAdBlogStory({
+      id: parseInt(id),
+      type: TYPE_WRITTEN_CONTENT.BLOG,
+    });
 
-  const article = res.ad_blog_story;
+    const title = article?.title ?? FALLBACK.TITLE;
+    const description = article?.brief?.substring(0, 160) ?? FALLBACK.DESCRIPTION;
 
-  if (!article) return {};
+    const images = (article?.imgs.length ? article.imgs : [FALLBACK.IMAGE]).map((img) => ({
+      url: typeof img === 'string' ? img : FALLBACK.IMAGE,
+      width: 1280,
+      height: 720,
+      alt: title,
+    }));
 
-  return {
-    title: article.title,
-    description: article.brief,
-    openGraph: {
-      title: article.title,
-      description: article.brief,
-      type: 'article',
-      url: `https://al-aqsa-camp.vercel.app${LANDING_ROUTES.BLOG}/${article.id}`,
-      images: [
-        {
-          url: article.imgs?.[0] || BLOG_PAGE.src,
-          width: 1280,
-          height: 720,
-          alt: article.title,
-        },
-        ...previousImages,
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: article.title,
-      description: article.brief,
-      images: [article.imgs?.[0] || BLOG_PAGE.src],
-    },
-  };
+    return {
+      title,
+      description,
+      metadataBase: new URL(APP_URL),
+      openGraph: {
+        siteName: 'AL-AQSA Camp',
+        title,
+        description,
+        type: 'article',
+        url: `${APP_URL + LANDING_ROUTES.BLOG}/${id}`,
+        images: [...images, ...previousImages],
+        locale: 'ar',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images,
+      },
+    };
+  } catch (error) {
+    return {
+      title: FALLBACK.TITLE,
+      description: FALLBACK.DESCRIPTION,
+      metadataBase: new URL(APP_URL),
+      openGraph: {
+        siteName: 'AL-AQSA Camp',
+        title: FALLBACK.TITLE,
+        description: FALLBACK.DESCRIPTION,
+        type: 'article',
+        url: `${APP_URL + LANDING_ROUTES.BLOG}/${id}`,
+        images: [
+          {
+            url: FALLBACK.IMAGE,
+            width: 1280,
+            height: 720,
+            alt: FALLBACK.TITLE,
+          },
+          ...previousImages,
+        ],
+        locale: 'ar',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: FALLBACK.TITLE,
+        description: FALLBACK.DESCRIPTION,
+        images: [FALLBACK.IMAGE],
+      },
+    };
+  }
 }
 
-// Page component
-export default async function Article_Page({ params }: ArticlePageProps) {
+export default async function Article_Page({ params }: Props) {
   const { id } = await params;
 
   return (
-    <Stack pt={60} className='w-full' mih={'100vh'}>
+    <Stack pt={60} className='w-full' mih='100vh'>
       <Article_Story written_content_Id={parseInt(id)} destination={TYPE_WRITTEN_CONTENT.BLOG} />
     </Stack>
   );

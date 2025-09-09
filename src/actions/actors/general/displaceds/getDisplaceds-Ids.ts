@@ -23,7 +23,7 @@ export const getDisplacedsIds = async ({ filters }: getDisplacedsIdsProps): Prom
     /////////////////////////////////////////////////////////////
     try {
 
-        const response = await AqsaAPI.get<DisplacedsIdsResponse>("/displaced/ids", {
+        const response = await AqsaAPI.get<DisplacedsIdsResponse>("/displaceds/ids", {
             params: {
                 filters
             }

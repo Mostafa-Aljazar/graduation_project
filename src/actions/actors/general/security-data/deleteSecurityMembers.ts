@@ -26,11 +26,13 @@ export const deleteSecurityMembers = async ({
     // FIXME: THIS IS THE REAL IMPLEMENTATION
     /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.delete<commonActionResponse>("/securities/delete", {
-            params: {
-                security_Ids
-            },
-        });
+        const response = await AqsaAPI.delete<commonActionResponse>("/securities/delete",
+            {
+                data: {
+                    security_Ids,
+                },
+            }
+        );
 
         return {
             status: 200,

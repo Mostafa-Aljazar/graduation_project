@@ -1,15 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import {
-  Box,
-  Text,
-  Center,
-  Loader,
-  Stack,
-  ThemeIcon,
-  Paper,
-} from '@mantine/core';
+import { Box, Text, Center, ThemeIcon, Paper } from '@mantine/core';
 import { parseAsInteger, parseAsStringEnum, useQueryStates } from 'nuqs';
 import { getDisplacedReceivedAids } from '@/actions/actors/displaced/received-aids/getDisplacedReceivedAids';
 import { DisplacedReceivedAidsResponse } from '@/@types/actors/displaced/received-aids/displacedReceivedAidsResponse.type';
@@ -54,12 +46,7 @@ export default function Displaced_Received_Aid_Content({
   return (
     <Box dir='rtl' w='100%'>
       {hasError ? (
-        <Paper
-          p='md'
-          withBorder
-          mt='md'
-          className='!bg-red-100 rounded-md text-center'
-        >
+        <Paper p='md' withBorder mt='md' className='!bg-red-100 rounded-md text-center'>
           <Box>
             <Center mb='sm'>
               <ThemeIcon color='red' variant='light' size='lg'>
@@ -67,9 +54,7 @@ export default function Displaced_Received_Aid_Content({
               </ThemeIcon>
             </Center>
             <Text c='red' fw={600}>
-              {displacedReceivedAids?.error ||
-                error?.message ||
-                'حدث خطأ أثناء جلب المساعدات'}
+              {displacedReceivedAids?.error || error?.message || 'حدث خطأ أثناء جلب المساعدات'}
             </Text>
           </Box>
         </Paper>
