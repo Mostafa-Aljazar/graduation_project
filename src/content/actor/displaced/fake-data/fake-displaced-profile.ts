@@ -5,11 +5,11 @@ import { USER_TYPE } from "@/constants/userTypes";
 
 export const fakeDisplacedProfile: DisplacedProfile = {
     id: 1,
-    email: "mostafa@gmail.com",
-    name: 'سعيد يوسف',
+    email: "ameerabudraze@gmail.com",
+    name: "ameer abu draze",
     gender: GENDER.MALE,
     profile_image: '',
-    identity: '123456789',
+    identity: '960128163',
     nationality: 'فلسطيني',
     original_address: 'غزة - الشجاعية',
     phone_number: "0599999999",
@@ -54,7 +54,7 @@ export const fakeDisplacedProfile: DisplacedProfile = {
         family_status_type: FAMILY_STATUS_TYPE.DIFFICULT,
         displacement_date: '2023-10-01',
         delegate: {
-            id: "101", name: 'محمد صالح بن عبد'
+            id: "1", name: "mostafa aljzar"
         },
 
     },

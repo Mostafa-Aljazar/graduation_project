@@ -4,10 +4,10 @@ import { getSecurityDataProps } from "@/actions/actors/general/security-data/get
 export const fakeSecurities: Security[] = [
     {
         id: 1,
-        name: "محمد عادل",
+        name: "faisal abuzakari",
         identity: "405100001",
         mobile_number: "0599000001",
-        job: "SECURITY",
+        job: "SECURITY_OFFICER",
         role: "SECURITY"
     },
     {

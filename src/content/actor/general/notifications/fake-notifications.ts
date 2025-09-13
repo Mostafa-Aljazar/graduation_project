@@ -15,16 +15,16 @@ export const fakeNotifications: NotificationItem[] = [
         body: "تم تسليم مساعدات غذائية إلى العائلة رقم 5",
         status: NotificationStatus.UNREAD,
         notification_type: { action: "add-aid", aid_type: TYPE_AIDS.FOOD_AID },
-        from: { id: 101, name: "محمد صالح", role: "DELEGATE" }
+        from: { id: 1, name: "mostafa aljzar", role: "DELEGATE" }
     },
     {
         id: 2,
         dateTime: new Date("2025-08-14T10:30"),
         title: "تم تعديل بيانات المندوب",
-        body: "قام المدير بتعديل بيانات المندوب رقم 101",
+        body: "قام المدير بتعديل بيانات المندوب رقم  1",
         status: NotificationStatus.READ,
         notification_type: { action: "edit" },
-        from: { id: 201, name: "أحمد علي", role: "MANAGER" }
+        from: { id: 1, name: "mostafa aljzar", role: "DELEGATE" }
     },
     {
         id: 3,
@@ -33,7 +33,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "تم حذف شكوى من المندوب",
         status: NotificationStatus.READ,
         notification_type: { action: "delete" },
-        from: { id: 202, name: "سارة حسن", role: "MANAGER" }
+        from: { id: 1, name: 'مصطفى يوسف', role: "MANAGER" }
     },
     {
         id: 4,
@@ -42,7 +42,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "تم تحديث موعد اجتماع فريق الدعم إلى 5 يوليو 2025",
         status: NotificationStatus.UNREAD,
         notification_type: { action: "meeting" },
-        from: { id: 301, name: "ليلى كمال", role: USER_TYPE.SECURITY }
+        from: { id: 1, name: "faisal abuzakari", role: USER_TYPE.SECURITY }
     },
     {
         id: 5,
@@ -51,7 +51,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "تم تسليم مساعدات طبية للعائلة رقم 8",
         status: NotificationStatus.UNREAD,
         notification_type: { action: "add-aid", aid_type: TYPE_AIDS.MEDICAL_AID },
-        from: { id: 105, name: "رامي زيد", role: "DELEGATE" }
+        from: { id: 5, name: "رامي زيد", role: "DELEGATE" }
     },
     {
         id: 6,
@@ -60,7 +60,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "يرجى الحضور إلى مقر الإدارة الساعة 10 صباحًا",
         status: NotificationStatus.UNREAD,
         notification_type: { action: "call" },
-        from: { id: 206, name: "نور الدين", role: "MANAGER" }
+        from: { id: 1, name: 'مصطفى يوسف', role: "MANAGER" }
     },
     {
         id: 7,
@@ -69,7 +69,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "تم تعديل بيانات المساعدة للعائلة رقم 12",
         status: NotificationStatus.READ,
         notification_type: { action: "update" },
-        from: { id: 103, name: "رنا يوسف", role: "DELEGATE" }
+        from: { id: 3, name: "رنا يوسف", role: "DELEGATE" }
     },
     {
         id: 8,
@@ -78,7 +78,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "يرجى مراجعة إشعار الأمان الخاص بمكان الإقامة",
         status: NotificationStatus.UNREAD,
         notification_type: { action: "another-notification" },
-        from: { id: 302, name: "فادي عمر", role: USER_TYPE.SECURITY }
+        from: { id: 1, name: "faisal abuzakari", role: USER_TYPE.SECURITY }
     },
     {
         id: 9,
@@ -87,7 +87,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "تم تسليم مبلغ مالي لعائلة رقم 9",
         status: NotificationStatus.UNREAD,
         notification_type: { action: "add-aid", aid_type: TYPE_AIDS.FINANCIAL_AID },
-        from: { id: 104, name: "منى إبراهيم", role: "DELEGATE" }
+        from: { id: 4, name: "منى إبراهيم", role: "DELEGATE" }
     },
     {
         id: 10,
@@ -96,16 +96,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "تم تغيير المندوب المسؤول عن العائلة رقم 7",
         status: NotificationStatus.READ,
         notification_type: { action: "change_delegate" },
-        from: { id: 203, name: "عماد جابر", role: "MANAGER" }
-    },
-    {
-        id: 11,
-        dateTime: new Date("2025-07-05T09:30"),
-        title: "إشعار جديد بخصوص الحالة الصحية",
-        body: "يرجى التواصل مع الطبيب المشرف لتحديث البيانات",
-        status: NotificationStatus.UNREAD,
-        notification_type: { action: "call" },
-        from: { id: 303, name: "خالد سالم", role: USER_TYPE.SECURITY }
+        from: { id: 1, name: 'مصطفى يوسف', role: "MANAGER" }
     },
     {
         id: 12,
@@ -114,7 +105,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "تم تعديل عدد أفراد العائلة رقم 11",
         status: NotificationStatus.READ,
         notification_type: { action: "edit" },
-        from: { id: 102, name: "هند جمال", role: "DELEGATE" }
+        from: { id: 2, name: "هند جمال", role: "DELEGATE" }
     },
     {
         id: 13,
@@ -123,7 +114,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "يرجى الحضور في تمام الساعة 2 مساءً",
         status: NotificationStatus.UNREAD,
         notification_type: { action: "meeting" },
-        from: { id: 304, name: "ياسر عبد", role: USER_TYPE.SECURITY }
+        from: { id: 1, name: "faisal abuzakari", role: USER_TYPE.SECURITY }
     },
     {
         id: 14,
@@ -132,7 +123,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "تم إلغاء مساعدة مالية لعائلة رقم 6",
         status: NotificationStatus.READ,
         notification_type: { action: "delete" },
-        from: { id: 205, name: "ميساء نبيل", role: "MANAGER" }
+        from: { id: 1, name: 'مصطفى يوسف', role: "MANAGER" }
     },
     {
         id: 15,
@@ -141,7 +132,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "تم تسليم ملابس شتوية للعائلة رقم 10",
         status: NotificationStatus.UNREAD,
         notification_type: { action: "add-aid", aid_type: TYPE_AIDS.CLOTHING_AIDS },
-        from: { id: 106, name: "جهاد طارق", role: "DELEGATE" }
+        from: { id: 6, name: "جهاد طارق", role: "DELEGATE" }
     },
     {
         id: 16,
@@ -150,7 +141,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "تم تحديث رقم الهوية للفرد رقم 15",
         status: NotificationStatus.READ,
         notification_type: { action: "update" },
-        from: { id: 204, name: "لبنى فهد", role: "MANAGER" }
+        from: { id: 1, name: 'مصطفى يوسف', role: "MANAGER" }
     },
     {
         id: 17,
@@ -159,7 +150,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "يرجى التواصل مع الإدارة بخصوص حالة العائلة",
         status: NotificationStatus.UNREAD,
         notification_type: { action: "call" },
-        from: { id: 207, name: "عادل نمر", role: "MANAGER" }
+        from: { id: 1, name: 'مصطفى يوسف', role: "MANAGER" }
     },
     {
         id: 18,
@@ -168,7 +159,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "تم تعديل الكمية المسلمة للعائلة رقم 2",
         status: NotificationStatus.READ,
         notification_type: { action: "edit" },
-        from: { id: 107, name: "ربى علاء", role: "DELEGATE" }
+        from: { id: 7, name: "ربى علاء", role: "DELEGATE" }
     },
     {
         id: 19,
@@ -177,7 +168,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "يرجى مراجعة تفاصيل الإخلاء الفوري",
         status: NotificationStatus.UNREAD,
         notification_type: { action: "another-notification" },
-        from: { id: 305, name: "مروان صالح", role: USER_TYPE.SECURITY }
+        from: { id: 1, name: "faisal abuzakari", role: USER_TYPE.SECURITY }
     },
     {
         id: 20,
@@ -186,7 +177,7 @@ export const fakeNotifications: NotificationItem[] = [
         body: "تم تسليم مواد نظافة للعائلة رقم 14",
         status: NotificationStatus.UNREAD,
         notification_type: { action: "add-aid", aid_type: TYPE_AIDS.CLEANING_AID },
-        from: { id: 108, name: "سهى ناصر", role: "DELEGATE" }
+        from: { id: 8, name: "سهى ناصر", role: "DELEGATE" }
     }
 ];
 

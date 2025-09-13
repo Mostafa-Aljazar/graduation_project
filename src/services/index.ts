@@ -2,8 +2,8 @@ import { getSession } from "@/utils/auth/getSession"
 import { logout } from "@/utils/auth/logout"
 import axios from "axios"
 
-// const baseURL = "https://aqsa.com/api"
-const baseURL = ""
+const baseURL = "https://travel-and-explore.online/api"
+// const baseURL = ""
 
 
 // Create an Axios instance for guest/public requests

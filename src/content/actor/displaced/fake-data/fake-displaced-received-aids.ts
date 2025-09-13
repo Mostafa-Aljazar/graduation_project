@@ -12,7 +12,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         delivery_location: "مخيم النصيرات",
         delivery_date: new Date("2025-06-01"),
         receipt_date: new Date("2025-06-02"),
-        aid_giver: { giver_id: 101, name: "محمد عبد الله", role: "DELEGATE" },
+        aid_giver: { giver_id: 1, name: "mostafa aljzar", role: "DELEGATE" },
     },
     {
         id: 2,
@@ -22,7 +22,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         aid_content: "400 شيكل",
         delivery_location: "خان يونس - مكتب الشؤون",
         delivery_date: new Date("2025-06-03"),
-        aid_giver: { giver_id: 1, name: "هيئة الإغاثة", role: "MANAGER" },
+        aid_giver: { giver_id: 1, name: "مصطفى يوسف", role: "MANAGER" },
     },
     {
         id: 3,
@@ -33,7 +33,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         delivery_location: "مستشفى الشفاء",
         delivery_date: new Date("2025-06-04"),
         receipt_date: new Date("2025-06-04"),
-        aid_giver: { giver_id: 102, name: "أحمد الزين", role: "DELEGATE" },
+        aid_giver: { giver_id: 1, name: "mostafa aljzar", role: "DELEGATE" },
     },
     {
         id: 4,
@@ -43,7 +43,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         aid_content: "صابون، كلور، معقم",
         delivery_location: "جباليا - مركز التوزيع",
         delivery_date: new Date("2025-06-05"),
-        aid_giver: { giver_id: 2, name: "اللجنة الدولية", role: "MANAGER" },
+        aid_giver: { giver_id: 1, name: "mostafa aljzar", role: "DELEGATE" },
     },
     {
         id: 5,
@@ -54,7 +54,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         delivery_location: "مخيم البريج",
         delivery_date: new Date("2025-06-06"),
         receipt_date: new Date("2025-06-07"),
-        aid_giver: { giver_id: 103, name: "هالة شلبي", role: "DELEGATE" },
+        aid_giver: { giver_id: 1, name: "مصطفى يوسف", role: "MANAGER" },
     },
     {
         id: 6,
@@ -64,7 +64,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         aid_content: "حقيبة، دفاتر، أقلام",
         delivery_location: "مدرسة العودة",
         delivery_date: new Date("2025-06-08"),
-        aid_giver: { giver_id: 3, name: "التعليم للجميع", role: "MANAGER" },
+        aid_giver: { giver_id: 1, name: "مصطفى يوسف", role: "MANAGER" },
     },
     {
         id: 7,
@@ -75,7 +75,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         delivery_location: "رفح - البلدية",
         delivery_date: new Date("2025-06-09"),
         receipt_date: new Date("2025-06-10"),
-        aid_giver: { giver_id: 104, name: "ليلى سمير", role: "DELEGATE" },
+        aid_giver: { giver_id: 1, name: "mostafa aljzar", role: "DELEGATE" },
     },
     {
         id: 8,
@@ -85,7 +85,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         aid_content: "بطانيتان، وسادتان",
         delivery_location: "النصيرات - جمعية الرحمة",
         delivery_date: new Date("2025-06-11"),
-        aid_giver: { giver_id: 4, name: "الهلال الأحمر", role: "MANAGER" },
+        aid_giver: { giver_id: 1, name: "مصطفى يوسف", role: "MANAGER" },
     },
     {
         id: 9,
@@ -96,7 +96,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         delivery_location: "الشمال - السوق المركزي",
         delivery_date: new Date("2025-06-12"),
         receipt_date: new Date("2025-06-13"),
-        aid_giver: { giver_id: 105, name: "مؤسسة الخير", role: "DELEGATE" },
+        aid_giver: { giver_id: 1, name: "mostafa aljzar", role: "DELEGATE" },
     },
     {
         id: 10,
@@ -106,7 +106,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         aid_content: "جهاز لوحي مع اتصال إنترنت",
         delivery_location: "جامعة غزة",
         delivery_date: new Date("2025-06-14"),
-        aid_giver: { giver_id: 5, name: "التعليم الرقمي", role: "MANAGER" },
+        aid_giver: { giver_id: 1, name: "مصطفى يوسف", role: "MANAGER" },
     },
     {
         id: 11,
@@ -117,7 +117,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         delivery_location: "مركز الإحسان",
         delivery_date: new Date("2025-06-15"),
         receipt_date: new Date("2025-06-16"),
-        aid_giver: { giver_id: 106, name: "جمعية الرحمة", role: "DELEGATE" },
+        aid_giver: { giver_id: 1, name: "mostafa aljzar", role: "DELEGATE" },
     },
     {
         id: 12,
@@ -127,7 +127,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         aid_content: "دفع رسوم الترم الأول",
         delivery_location: "جامعة الأزهر",
         delivery_date: new Date("2025-06-17"),
-        aid_giver: { giver_id: 6, name: "صندوق الطالب", role: "MANAGER" },
+        aid_giver: { giver_id: 1, name: "mostafa aljzar", role: "DELEGATE" },
     },
     {
         id: 13,
@@ -138,7 +138,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         delivery_location: "مخيم الشاطئ",
         delivery_date: new Date("2025-06-18"),
         receipt_date: new Date("2025-06-19"),
-        aid_giver: { giver_id: 107, name: "سعيد عوض", role: "DELEGATE" },
+        aid_giver: { giver_id: 1, name: "مصطفى يوسف", role: "MANAGER" },
     },
     {
         id: 14,
@@ -148,7 +148,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         aid_content: "خيمة، بطانية، فرشة",
         delivery_location: "خزاعة",
         delivery_date: new Date("2025-06-20"),
-        aid_giver: { giver_id: 7, name: "اللجنة العليا", role: "MANAGER" },
+        aid_giver: { giver_id: 1, name: "mostafa aljzar", role: "DELEGATE" },
     },
     {
         id: 15,
@@ -159,7 +159,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         delivery_location: "رفح - الهلال الأحمر",
         delivery_date: new Date("2025-06-21"),
         receipt_date: new Date("2025-06-21"),
-        aid_giver: { giver_id: 108, name: "سامي يوسف", role: "DELEGATE" },
+        aid_giver: { giver_id: 1, name: "mostafa aljzar", role: "DELEGATE" },
     },
     {
         id: 16,
@@ -169,7 +169,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         aid_content: "دواء كيماوي",
         delivery_location: "مستشفى الأوروبي",
         delivery_date: new Date("2025-06-22"),
-        aid_giver: { giver_id: 8, name: "منظمة الصحة", role: "MANAGER" },
+        aid_giver: { giver_id: 1, name: "مصطفى يوسف", role: "MANAGER" },
     },
     {
         id: 17,
@@ -180,7 +180,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         delivery_location: "مركز شباب الرمال",
         delivery_date: new Date("2025-06-23"),
         receipt_date: new Date("2025-06-24"),
-        aid_giver: { giver_id: 109, name: "جمعية الرياضة للجميع", role: "DELEGATE" },
+        aid_giver: { giver_id: 1, name: "mostafa aljzar", role: "DELEGATE" },
     },
     {
         id: 18,
@@ -190,7 +190,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         aid_content: "1000 شيكل",
         delivery_location: "غزة - بنك فلسطين",
         delivery_date: new Date("2025-06-25"),
-        aid_giver: { giver_id: 9, name: "مشاريع صغيرة", role: "MANAGER" },
+        aid_giver: { giver_id: 1, name: "mostafa aljzar", role: "DELEGATE" },
     },
     {
         id: 19,
@@ -201,7 +201,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         delivery_location: "مدرسة الكرامة",
         delivery_date: new Date("2025-06-26"),
         receipt_date: new Date("2025-06-26"),
-        aid_giver: { giver_id: 110, name: "هدى سالم", role: "DELEGATE" },
+        aid_giver: { giver_id: 1, name: "mostafa aljzar", role: "DELEGATE" },
     },
     {
         id: 20,
@@ -211,7 +211,7 @@ export const fakeDisplacedReceivedAids: DisplacedReceivedAid[] = [
         aid_content: "ثلاجة، غاز صغير",
         delivery_location: "الزوايدة",
         delivery_date: new Date("2025-06-27"),
-        aid_giver: { giver_id: 10, name: "جمعية الإحسان", role: "MANAGER" },
+        aid_giver: { giver_id: 1, name: "مصطفى يوسف", role: "MANAGER" },
     },
 ];
 
