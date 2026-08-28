@@ -5,26 +5,18 @@ import { AqsaAPI } from "@/services";
 
 
 export const addAid = async (payload: Aid): Promise<commonActionResponse> => {
-    const fakeResponse: commonActionResponse = {
-        status: 200,
-        message: "تم إضافة المساعدة بنجاح",
-    }
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeResponse);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-
-        const response = await AqsaAPI.post<commonActionResponse>('/aids/add', payload);
+        const response = await AqsaAPI.post('/aids', {
+            title: payload.aid_name,
+            type: payload.aid_type,
+            description: payload.aid_content,
+            quantity: payload.existing_quantity,
+            distributionDate: payload.delivery_date?.toISOString(),
+        });
 
         if (response.data) {
             return {
-                status: 200,
+                status: response.status,
                 message: "تم إضافة المساعدة بنجاح",
             };
         }

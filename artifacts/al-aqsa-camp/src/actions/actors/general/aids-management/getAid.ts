@@ -2,7 +2,6 @@
 
 import { Aid, AidResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
 import { USER_RANK, USER_TYPE, UserRank } from '@/constants/userTypes';
-import { getFakeAidResponse } from '@/content/actor/general/aids/fake-aids';
 import { AqsaAPI } from '@/services';
 
 export interface getAidProps {
@@ -18,25 +17,11 @@ export interface getAidProps {
 
 export const getAid = async ({ aid_Id, actor_Id, role }: getAidProps): Promise<AidResponse> => {
 
-    const fakeResponse: AidResponse = getFakeAidResponse({ aid_Id, actor_Id, role });
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeResponse);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.get<AidResponse>(`/aids/${aid_Id}`, {
-            params: {
-                actor_Id, role
-            },
-        });
+        const response = await AqsaAPI.get(`/aids/${aid_Id}`);
 
-        if (response.data?.aid) {
-            return response.data
+        if (response.data?.id !== undefined) {
+            return { status: response.status, aid: response.data as Aid };
         }
 
         throw new Error('بيانات المساعدة غير متوفرة');

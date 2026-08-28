@@ -14,28 +14,13 @@ export const changeStatusCommonComplaint = async ({
     complaint_Id, actor_Id, role
 }: changeStatusCommonComplaintProps): Promise<commonActionResponse> => {
 
-    const fakeResponse: commonActionResponse = {
-        status: 200,
-        message: `تم تغيير حالة الشكوى بنجاح`,
-    }
-
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeResponse);
-        }, 500);
-    });
-
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.put<commonActionResponse>(`/complaints/${complaint_Id}/change-status`, {
-            actor_Id, role
-        });
+        // This legacy signature has no target state; retain its historical
+        // "advance" behavior by moving an open complaint into progress.
+        const response = await AqsaAPI.patch(`/complaints/${complaint_Id}/status`, { status: "inProgress" });
 
         if (response.data) {
-            return response.data
+            return { status: response.status, message: "تم تغيير حالة الشكوى بنجاح" };
         }
 
         throw new Error("حدث خطأ أثناء تغيير حالة الشكوى");

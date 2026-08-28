@@ -12,10 +12,15 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('staff@alaqsa.local');
   const [password, setPassword] = useState('123456');
   const [error, setError] = useState('');
-  const submit = () => {
+  const submit = async () => {
     if (!email.includes('@') || password.length < 6) return setError('تحقق من البريد وكلمة المرور (6 أحرف على الأقل).');
-    signIn();
-    router.dismissAll();
+    setError('');
+    try {
+      await signIn(email.trim(), password);
+      router.dismissAll();
+    } catch {
+      setError('تعذر تسجيل الدخول. تحقق من بيانات الحساب واتصال الإنترنت ثم حاول مرة أخرى.');
+    }
   };
   return (
     <KeyboardAwareScrollViewCompat contentContainerStyle={styles.content} bottomOffset={60}>
@@ -25,7 +30,7 @@ export default function LoginScreen() {
       <Field label="البريد الإلكتروني" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
       <Field label="كلمة المرور" value={password} onChangeText={setPassword} secureTextEntry />
       {error ? <Text style={[styles.error, { color: colors.destructive }]}>{error}</Text> : null}
-      <PrimaryButton testID="login-submit" label="دخول" icon="arrow-back" onPress={submit} />
+      <PrimaryButton testID="login-submit" label="دخول" icon="arrow-back" onPress={() => void submit()} />
       <Pressable onPress={() => router.push('/auth/forgot')}><Text style={[styles.link, { color: colors.primary }]}>نسيت كلمة المرور؟</Text></Pressable>
     </KeyboardAwareScrollViewCompat>
   );

@@ -9,33 +9,27 @@ export interface UpdateDelegateProfileProps {
 }
 
 export const updateDelegateProfile = async ({ delegate_Id, payload }: UpdateDelegateProfileProps): Promise<DelegateProfileResponse> => {
-
-    const fakeResponse: DelegateProfileResponse = {
-        status: 200,
-        message: "تم تحديث الملف الشخصي بنجاح",
-        user: {
-            ...payload,
-            id: delegate_Id,//FIXME:
-            phone_number: payload.phone_number as string,
-            alternative_phone_number: payload.alternative_phone_number as string,
-            profile_image: payload.profile_image as string,
-        },
-    };
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeResponse);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-
-        const response = await AqsaAPI.put<DelegateProfileResponse>(`/delegates/${delegate_Id}/profile`, payload);
-
-        if (response.data?.user) {
-            return response.data
+        const response = await AqsaAPI.patch(`/delegates/${delegate_Id}`, {
+            name: payload.name,
+            email: payload.email,
+            phone: payload.phone_number,
+        });
+        const delegate = response.data;
+        if (delegate?.id !== undefined) {
+            return {
+                status: response.status,
+                message: "تم تحديث الملف الشخصي بنجاح",
+                user: {
+                    ...payload,
+                    id: delegate.id,
+                    name: delegate.name,
+                    email: delegate.email,
+                    phone_number: delegate.phone,
+                    profile_image: payload.profile_image ?? null,
+                    alternative_phone_number: payload.alternative_phone_number ?? undefined,
+                },
+            };
         }
 
         throw new Error("فشل في تحديث الملف الشخصي");

@@ -17,29 +17,11 @@ export const replyCommonComplaint = async ({
     reply,
 }: replyCommonComplaintProps): Promise<commonActionResponse> => {
 
-    const fakeResponse: commonActionResponse = {
-        status: 200,
-        message: `تم ارسال الرد بنجاح`,
-
-    }
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeResponse);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post<commonActionResponse>(`/complaints/${complaint_Id}/reply`, {
-            actor_Id,
-            role,
-            reply,
-        });
+        const response = await AqsaAPI.post(`/complaints/${complaint_Id}/reply`, { reply });
 
         if (response.data) {
-            return response.data
+            return { status: response.status, message: "تم ارسال الرد بنجاح" };
         }
 
         throw new Error("حدث خطأ أثناء ارسال الرد");

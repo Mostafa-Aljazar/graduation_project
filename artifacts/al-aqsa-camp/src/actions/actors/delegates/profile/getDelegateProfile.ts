@@ -1,6 +1,5 @@
 
 import { DelegateProfile, DelegateProfileResponse } from "@/@types/actors/delegate/profile/delegateProfileResponse.type";
-import { fakeDelegateProfileResponse } from "@/content/actor/delegate/fake-data/fake-delegates-profile";
 import { AqsaAPI } from "@/services";
 
 export interface getDelegateProfileProps {
@@ -11,22 +10,19 @@ export const getDelegateProfile = async ({
     delegate_Id,
 }: getDelegateProfileProps): Promise<DelegateProfileResponse> => {
 
-    const fakeData = fakeDelegateProfileResponse({ delegate_Id });
-
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeData);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.get<DelegateProfileResponse>(`/delegates/${delegate_Id}/profile`);
+        const response = await AqsaAPI.get(`/delegates/${delegate_Id}`);
+        const delegate = response.data;
 
-        if (response.data?.user) {
-            return response.data
+        if (delegate?.id !== undefined) {
+            return {
+                status: response.status,
+                user: {
+                    ...delegate,
+                    phone_number: delegate.phone,
+                    profile_image: null,
+                } as DelegateProfile,
+            };
         }
 
         throw new Error("فشل في تحميل بيانات الملف الشخصي");

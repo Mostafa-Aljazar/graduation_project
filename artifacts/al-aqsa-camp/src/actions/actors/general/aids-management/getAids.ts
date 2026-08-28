@@ -1,6 +1,5 @@
 
 import { AidsResponse } from '@/@types/actors/manager/aid-management/add-aid-management.types';
-import { getFakeAidsResponse } from '@/content/actor/general/aids/fake-aids';
 import { USER_RANK, USER_TYPE, UserRank } from '@/constants/userTypes';
 import { TYPE_AIDS, TYPE_GROUP_AIDS } from '@/@types/actors/common-types/index.type';
 import { AqsaAPI } from '@/services';
@@ -32,33 +31,20 @@ export const getAids = async ({
     type_group_aids
 }: getAidsProps): Promise<AidsResponse> => {
 
-    const fakeResponse: AidsResponse = getFakeAidsResponse({ page, limit, aid_status: type_group_aids });
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeResponse);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
+        const response = await AqsaAPI.get('/aids', { params: { page, limit, status: type_group_aids } });
 
-        const response = await AqsaAPI.get<AidsResponse>('/aids', {
-            params: {
-                actor_Id,
-                role,
-                page,
-                limit,
-                type,
-                date_range,
-                recipients_range,
-                type_group_aids
-            }
-        });
-
-        if (response.data?.aids) {
-            return response.data
+        if (response.data?.items) {
+            return {
+                status: response.status,
+                aids: response.data.items as AidsResponse["aids"],
+                pagination: {
+                    page: response.data.pagination.page,
+                    limit: response.data.pagination.limit,
+                    total_items: response.data.pagination.totalItems,
+                    total_pages: response.data.pagination.totalPages,
+                },
+            };
         }
 
         throw new Error('بيانات المساعدات غير متوفرة');

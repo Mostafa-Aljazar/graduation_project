@@ -1,78 +1,170 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import {
+  Aid as ApiAid,
+  createAid,
+  createDelegate,
+  createDisplacedPerson,
+  Delegate,
+  DisplacedPerson,
+  listAids,
+  listDelegates,
+  listDisplacedPersons,
+  login,
+  SessionResponse,
+  setAuthTokenGetter,
+  setBaseUrl,
+} from '@workspace/api-client-react';
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 export type Aid = { id: string; title: string; type: string; families: number; status: 'نشطة' | 'مكتملة'; date: string };
 export type Person = { id: string; name: string; role: 'نازح' | 'مندوب' | 'حارس'; phone: string; location: string };
 
-const initialAids: Aid[] = [
-  { id: 'aid-1', title: 'حملة السلال الغذائية', type: 'غذاء', families: 128, status: 'نشطة', date: '28 آب 2026' },
-  { id: 'aid-2', title: 'توزيع مستلزمات النظافة', type: 'صحة', families: 84, status: 'نشطة', date: '26 آب 2026' },
-  { id: 'aid-3', title: 'دفعة الأغطية الصيفية', type: 'إيواء', families: 63, status: 'مكتملة', date: '22 آب 2026' },
-];
-const initialPeople: Person[] = [
-  { id: 'p-1', name: 'محمود الحسن', role: 'مندوب', phone: '0599 123 456', location: 'المربع أ' },
-  { id: 'p-2', name: 'أمينة سالم', role: 'نازح', phone: '0598 221 184', location: 'الخيمة 42' },
-  { id: 'p-3', name: 'سامي منصور', role: 'حارس', phone: '0597 315 009', location: 'البوابة الشمالية' },
-  { id: 'p-4', name: 'ليلى أحمد', role: 'نازح', phone: '0598 114 730', location: 'الخيمة 18' },
-];
+type SessionMetadata = Pick<SessionResponse, 'user' | 'expiresAt'>;
+type StoredSession = { token: string; session: SessionMetadata };
 
 type AppValue = {
   signedIn: boolean;
   aids: Aid[];
   people: Person[];
-  signIn: () => void;
-  signOut: () => void;
-  addAid: (title: string, type: string) => void;
-  addPerson: (name: string, role: Person['role'], phone: string) => void;
+  signIn: (email: string, password: string) => Promise<void>;
+  signOut: () => Promise<void>;
+  addAid: (title: string, type: string) => Promise<void>;
+  addPerson: (name: string, role: Person['role'], phone: string, email?: string) => Promise<void>;
 };
 
 const AppContext = createContext<AppValue | null>(null);
-const STORAGE_KEY = 'al-aqsa-mobile-state-v1';
+const STORAGE_KEY = 'al-aqsa-mobile-session-v1';
+
+const domain = process.env.EXPO_PUBLIC_DOMAIN;
+setBaseUrl(domain ? (domain.startsWith('http://') || domain.startsWith('https://') ? domain : `https://${domain}`) : null);
+
+let authToken: string | null = null;
+setAuthTokenGetter(() => authToken);
+
+function formatDate(value: string | null | undefined) {
+  if (!value) return 'غير محدد';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function mapAid(aid: ApiAid): Aid {
+  return {
+    id: String(aid.id),
+    title: aid.title,
+    type: aid.type,
+    families: aid.recipientCount,
+    status: aid.status === 'completed' || aid.status === 'cancelled' ? 'مكتملة' : 'نشطة',
+    date: formatDate(aid.distributionDate ?? aid.createdAt),
+  };
+}
+
+function mapDelegate(delegate: Delegate): Person {
+  return { id: `delegate-${delegate.id}`, name: delegate.name, role: 'مندوب', phone: delegate.phone, location: delegate.area || 'غير محدد' };
+}
+
+function mapDisplacedPerson(person: DisplacedPerson): Person {
+  return { id: `displaced-${person.id}`, name: person.name, role: 'نازح', phone: person.phone, location: person.location || 'غير محدد' };
+}
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [signedIn, setSignedIn] = useState(false);
-  const [aids, setAids] = useState<Aid[]>(initialAids);
-  const [people, setPeople] = useState<Person[]>(initialPeople);
+  const [session, setSession] = useState<SessionMetadata | null>(null);
+  const [aids, setAids] = useState<Aid[]>([]);
+  const [people, setPeople] = useState<Person[]>([]);
   const [hydrated, setHydrated] = useState(false);
 
-  useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY)
-      .then((raw) => {
-        if (!raw) return;
-        const data = JSON.parse(raw) as { signedIn?: boolean; aids?: Aid[]; people?: Person[] };
-        setSignedIn(data.signedIn ?? false);
-        setAids(data.aids ?? initialAids);
-        setPeople(data.people ?? initialPeople);
-      })
-      .finally(() => setHydrated(true));
+  const hydrateApiData = useCallback(async () => {
+    const [aidPage, delegatePage, displacedPage] = await Promise.all([
+      listAids(),
+      listDelegates(),
+      listDisplacedPersons(),
+    ]);
+    setAids(aidPage.items.map(mapAid));
+    setPeople([...delegatePage.items.map(mapDelegate), ...displacedPage.items.map(mapDisplacedPerson)]);
   }, []);
 
   useEffect(() => {
-    if (hydrated) AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ signedIn, aids, people }));
-  }, [aids, hydrated, people, signedIn]);
+    const restoreSession = async () => {
+      try {
+        const raw = await AsyncStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const saved = JSON.parse(raw) as Partial<StoredSession>;
+        if (!saved.token || !saved.session) {
+          await AsyncStorage.removeItem(STORAGE_KEY);
+          return;
+        }
+        authToken = saved.token;
+        setSession(saved.session);
+        await hydrateApiData();
+      } catch {
+        authToken = null;
+        setSession(null);
+        setAids([]);
+        setPeople([]);
+        await AsyncStorage.removeItem(STORAGE_KEY);
+      } finally {
+        setHydrated(true);
+      }
+    };
+    void restoreSession();
+  }, [hydrateApiData]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    if (!session || !authToken) {
+      void AsyncStorage.removeItem(STORAGE_KEY);
+      return;
+    }
+    void AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ token: authToken, session }));
+  }, [hydrated, session]);
+
+  const signIn = useCallback(async (email: string, password: string) => {
+    const nextSession = await login({ email, password, role: 'manager' });
+    authToken = nextSession.token;
+    try {
+      await hydrateApiData();
+      setSession({ user: nextSession.user, expiresAt: nextSession.expiresAt });
+    } catch (error) {
+      authToken = null;
+      throw error;
+    }
+  }, [hydrateApiData]);
+
+  const signOut = useCallback(async () => {
+    authToken = null;
+    setSession(null);
+    setAids([]);
+    setPeople([]);
+    await AsyncStorage.removeItem(STORAGE_KEY);
+  }, []);
+
+  const addAid = useCallback(async (title: string, type: string) => {
+    const aid = await createAid({ title, type, quantity: 0 });
+    setAids((current) => [mapAid(aid), ...current]);
+  }, []);
+
+  const addPerson = useCallback(async (name: string, role: Person['role'], phone: string, email?: string) => {
+    if (role === 'حارس') {
+      throw new Error('لا يمكن إضافة حارس حالياً لأن واجهة النظام لا توفر نقطة إنشاء لأفراد الأمن.');
+    }
+    if (role === 'مندوب') {
+      if (!email?.trim()) throw new Error('البريد الإلكتروني مطلوب لإضافة المندوب.');
+      const delegate = await createDelegate({ name, phone, email: email.trim() });
+      setPeople((current) => [mapDelegate(delegate), ...current]);
+      return;
+    }
+    const displacedPerson = await createDisplacedPerson({ name, phone, familySize: 1 });
+    setPeople((current) => [mapDisplacedPerson(displacedPerson), ...current]);
+  }, []);
 
   const value = useMemo<AppValue>(() => ({
-    signedIn,
+    signedIn: session !== null,
     aids,
     people,
-    signIn: () => setSignedIn(true),
-    signOut: () => setSignedIn(false),
-    addAid: (title, type) => setAids((current) => [{
-      id: Date.now().toString(),
-      title,
-      type,
-      families: 0,
-      status: 'نشطة',
-      date: 'اليوم',
-    }, ...current]),
-    addPerson: (name, role, phone) => setPeople((current) => [{
-      id: Date.now().toString(),
-      name,
-      role,
-      phone,
-      location: 'بانتظار التحديد',
-    }, ...current]),
-  }), [aids, people, signedIn]);
+    signIn,
+    signOut,
+    addAid,
+    addPerson,
+  }), [addAid, addPerson, aids, people, session, signIn, signOut]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }

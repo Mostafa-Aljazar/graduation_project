@@ -20,33 +20,16 @@ export const updateAdBlogStory = async ({
     image_urls,
     type
 }: updateAdBlogStoryProps): Promise<commonActionResponse> => {
-    const fakeData: commonActionResponse = {
-        status: 200,
-        message: `تم تحديث المحتوى بنجاح`,
-    }
-
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeData);
-        }, 500);
-    });
-
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.put<commonActionResponse>(`/written-content/${id}`, {
+        const response = await AqsaAPI.patch(`/content/${id}`, {
             title,
-            content,
-            brief,
-            image_urls: image_urls,
-            type
+            body: content,
+            imageUrl: image_urls?.[0] ?? null,
         });
 
         if (response.status === 200) {
             return {
-                status: 200,
+                status: response.status,
                 message: 'تم تحديث المحتوى بنجاح',
                 error: undefined,
             };

@@ -9,43 +9,34 @@ export interface loginProps {
 }
 
 export const login = async ({ email, password, userType }: loginProps): Promise<loginResponse> => {
-
-    const fakeData: loginResponse = {
-        status: 200,
-        message: 'تم تسجيل الدخول بنجاح',
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-        user: {
-            id: 1,
-            name: 'John Doe',
-            email,
-            identity: "408656429",
-            phone_number: '+1234567890',
-            created_at: new Date(),
-            role: userType,
-            rank: USER_RANK[userType],
-            profile_image: "",
-
-        },
+    const roles: Record<UserType, "manager" | "delegate" | "displaced" | "security"> = {
+        MANAGER: "manager",
+        DELEGATE: "delegate",
+        DISPLACED: "displaced",
+        SECURITY: "security",
     };
+    const role = roles[userType];
 
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeData);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    //FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaGuestAPI.post("/login", { email, password, role: userType });
+        const response = await AqsaGuestAPI.post("/auth/login", { email, password, role });
 
         if (response.data) {
+            const apiUser = response.data.user;
             return {
                 status: 200,
                 message: "تم تسجيل الدخول بنجاح",
                 token: response.data.token,
-                user: response.data.user,
+                user: {
+                    id: apiUser.id,
+                    name: apiUser.name,
+                    email: apiUser.email,
+                    identity: "",
+                    phone_number: apiUser.phone || "",
+                    created_at: new Date(apiUser.createdAt),
+                    role: userType,
+                    rank: USER_RANK[userType],
+                    profile_image: "",
+                },
             };
         }
 

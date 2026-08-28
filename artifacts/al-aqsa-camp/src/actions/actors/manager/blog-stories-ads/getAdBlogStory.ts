@@ -1,7 +1,6 @@
-import { AqsaAPI, AqsaGuestAPI } from "@/services";
+import { AqsaGuestAPI } from "@/services";
 import { TYPE_WRITTEN_CONTENT } from "@/@types/actors/common-types/index.type";
 import { AdBlogStoryResponse } from "@/@types/actors/manager/ads-blogs-stories/adsBlogsStoriesResponse.type";
-import { fakeWrittenContentResponse } from "@/content/actor/manager/fake-data/fake-ads-blogs-stories";
 
 export interface getAdBlogStoryProps {
     id: number
@@ -10,23 +9,15 @@ export interface getAdBlogStoryProps {
 
 export const getAdBlogStory = async ({ id, type }: getAdBlogStoryProps): Promise<AdBlogStoryResponse> => {
 
-    const fakeResponse = fakeWrittenContentResponse({ id, type });
-
-    return new Promise((resolve) => setTimeout(() => resolve(fakeResponse), 500));
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaGuestAPI.get<AdBlogStoryResponse>(`/written-content/${id}`,
-            {
-                params: {
-                    type
-                }
-            });
+        const response = await AqsaGuestAPI.get(`/content/${id}`);
 
-        if (response.data?.ad_blog_story) {
-            return response.data
+        if (response.data?.id !== undefined) {
+            const post = response.data;
+            return {
+                status: response.status,
+                ad_blog_story: { id: post.id, title: post.title, brief: "", content: post.body, imgs: post.imageUrl ? [post.imageUrl] : [], created_at: new Date(post.createdAt), updated_at: new Date(post.updatedAt), type },
+            } as AdBlogStoryResponse;
         }
 
         throw new Error('بيانات المحتوى غير متوفرة');

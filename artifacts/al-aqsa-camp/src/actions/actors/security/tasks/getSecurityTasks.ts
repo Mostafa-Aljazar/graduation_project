@@ -1,6 +1,5 @@
 
 import { Task, TasksResponse } from "@/@types/actors/security/tasks/TasksResponse.type";
-import { FAKE_TASKS, getFakeTasksResponse } from "@/content/actor/security/fake-data/fake-security-tasks";
 import { AqsaAPI } from "@/services";
 import { TASKS_TABS } from "@/@types/actors/common-types/index.type";
 
@@ -18,28 +17,27 @@ export async function getSecurityTasks({
     task_type,
 }: GetSecurityTasksProps): Promise<TasksResponse> {
 
-    const fakeData: TasksResponse = getFakeTasksResponse({ limit, page, task_type });
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeData);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.get<TasksResponse>('/securities/tasks', {
-            params: {
-                page,
-                limit,
-                security_Id,
-                task_type
-            }
-        });
+        const response = await AqsaAPI.get('/security-tasks', { params: { page, limit } });
 
-        if (response.data?.tasks) {
-            return response.data
+        if (response.data?.items) {
+            return {
+                status: response.status,
+                tasks: response.data.items.map((task: any) => ({
+                    id: task.id,
+                    dateTime: task.dueAt ? new Date(task.dueAt) : new Date(task.createdAt),
+                    title: task.title,
+                    body: task.description || "",
+                    security_men: task.assignedToId == null ? [] : [task.assignedToId],
+                    type: task.status as TASKS_TABS,
+                })),
+                pagination: {
+                    page: response.data.pagination.page,
+                    limit: response.data.pagination.limit,
+                    total_items: response.data.pagination.totalItems,
+                    total_pages: response.data.pagination.totalPages,
+                },
+            };
         }
 
         throw new Error('بيانات المهام غير متوفرة');

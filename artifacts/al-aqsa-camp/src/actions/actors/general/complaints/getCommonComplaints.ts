@@ -2,7 +2,6 @@
 import { AqsaAPI } from '@/services';
 import { ComplaintResponse } from '@/@types/actors/general/Complaints/ComplaintsResponse.type';
 import { UserRank, UserType } from '@/constants/userTypes';
-import { fakeComplaintsResponse } from '@/content/actor/general/complaints/fake-complaints';
 import { COMPLAINTS_STATUS, COMPLAINTS_TABS } from '@/@types/actors/common-types/index.type';
 
 export interface GetCommonComplaintsProps {
@@ -27,32 +26,27 @@ export async function getCommonComplaints({
     actor_Id,
 }: GetCommonComplaintsProps): Promise<ComplaintResponse> {
 
-    const fakeResponse = fakeComplaintsResponse({ page, limit, status, date_range, search, complaint_type, role, actor_Id })
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeResponse);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.get<ComplaintResponse>('/complaints', {
+        const response = await AqsaAPI.get('/complaints', {
             params: {
-                actor_Id,
-                role,
                 page,
                 limit,
-                complaint_type,
-                status,
-                date_range,
                 search: search.trim(),
+                status: status === COMPLAINTS_STATUS.ALL ? undefined : status,
             }
         });
 
-        if (response.data?.complaints) {
-            return response.data
+        if (response.data?.items) {
+            return {
+                status: response.status,
+                complaints: response.data.items,
+                pagination: {
+                    page: response.data.pagination.page,
+                    limit: response.data.pagination.limit,
+                    total_items: response.data.pagination.totalItems,
+                    total_pages: response.data.pagination.totalPages,
+                },
+            } as ComplaintResponse;
         }
 
         throw new Error("بيانات الشكاوى غير متوفرة");

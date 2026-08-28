@@ -19,32 +19,18 @@ export const addAdBlogStory = async ({
     image_urls,
     type
 }: addAdBlogStoryProps): Promise<commonActionResponse> => {
-    const fakeData: commonActionResponse = {
-        status: 200,
-        message: `تم إضافة المحتوى بنجاح`,
-    }
-
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeData);
-        }, 500);
-    });
-
-
     try {
-
-        const response = await AqsaAPI.post<commonActionResponse>(`/written-content/`, {
+        const response = await AqsaAPI.post(`/content`, {
             title,
-            content,
-            brief,
-            image_urls: image_urls,
-            type
+            body: content,
+            imageUrl: image_urls?.[0],
+            status: "published",
         });
 
-        if (response.status === 200) {
+        if (response.status === 201) {
             return {
-                status: 200,
-                message: 'تم تحديث إضافة بنجاح',
+                status: response.status,
+                message: 'تم إضافة المحتوى بنجاح',
                 error: undefined,
             };
         }

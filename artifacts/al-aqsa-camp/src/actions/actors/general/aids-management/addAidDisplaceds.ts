@@ -20,32 +20,12 @@ export const addAidDisplaceds = async ({
     role,
 }: addAidDisplacedsProps): Promise<commonActionResponse> => {
 
-    const fakeData: commonActionResponse = {
-        status: 200,
-        message: 'تم إضافة النازحين للمساعدة بنجاح',
-
-    }
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeData);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-
-        const response = await AqsaAPI.post<commonActionResponse>(`/aids/${aid_Id}/add-displaceds`, {
-            aid_Id,
-            displaceds_Ids,
-            actor_Id,
-            role,
-        });
+        const response = await AqsaAPI.post(`/aids/${aid_Id}/recipients`, { displacedPersonIds: displaceds_Ids });
 
         if (response.data) {
             return {
-                status: 200,
+                status: response.status,
                 message: 'تم إضافة النازحين للمساعدة بنجاح',
             };
         }

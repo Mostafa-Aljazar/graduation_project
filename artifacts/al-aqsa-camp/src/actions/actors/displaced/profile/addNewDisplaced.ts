@@ -1,7 +1,5 @@
 
-import { AGES } from "@/@types/actors/common-types/index.type";
 import { DisplacedProfile, DisplacedProfileResponse } from "@/@types/actors/displaced/profile/displacedProfileResponse.type";
-import { USER_TYPE } from "@/constants/userTypes";
 import { AqsaAPI } from "@/services";
 import { DisplacedProfileSchemaType } from "@/validation/actor/displaceds/profile/displaced-profile-schema";
 
@@ -13,37 +11,13 @@ export const addNewDisplaced = async ({
     payload,
 }: AddNewDisplacedProps): Promise<DisplacedProfileResponse> => {
 
-    const fakeResponse: DisplacedProfileResponse = {
-        status: 201,
-        message: "تم إضافة النازح الجديد بنجاح",
-        user: {
-            ...payload,
-            role: USER_TYPE.DISPLACED,
-            rank: USER_TYPE.DISPLACED,
-            additional_notes: payload.additional_notes || "",
-            profile_image: payload.profile_image as string,
-            alternative_phone_number: payload.alternative_phone_number || "",
-            social_status: {
-                ...payload.social_status,
-                age_groups: Object.fromEntries(
-                    Object.values(AGES).map(
-                        (age) => [age, payload.social_status.age_groups?.[age as keyof typeof payload.social_status.age_groups] ?? 0]
-                    )
-                ) as Record<string, number>,
-            },
-            displacement: payload?.displacement,
-        },
-    };
-    return await new Promise((resolve) => setTimeout(() => resolve(fakeResponse), 500));
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post<DisplacedProfileResponse>("/displaceds/add", payload);
-
-        if (response.data?.user) {
-            return response.data
+        const response = await AqsaAPI.post("/displaced-persons", {
+            name: payload.name, phone: payload.phone_number, nationalId: payload.identity,
+            familySize: payload.social_status.total_family_members, location: payload.original_address,
+        });
+        if (response.data?.id !== undefined) {
+            return { status: response.status, message: "تم إضافة النازح الجديد بنجاح", user: { ...payload, id: response.data.id } as DisplacedProfile };
         }
 
         throw new Error("فشل في إضافة النازح الجديد");

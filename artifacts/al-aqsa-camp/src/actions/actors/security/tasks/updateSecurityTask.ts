@@ -22,31 +22,15 @@ export const updateSecurityTask = async ({
     security_men,
     type,
 }: updateSecurityTaskProps): Promise<commonActionResponse> => {
-    const fakeData: commonActionResponse = {
-        status: 200,
-        message: `تم تعديل المهمة بنجاح`,
-    };
-
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeData);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.put<commonActionResponse>(`/securities/tasks/${task_Id}`, {
-            security_Id,
-            dateTime,
+        const response = await AqsaAPI.patch(`/security-tasks/${task_Id}`, {
             title,
-            body,
-            security_men,
-            type,
+            description: body,
+            assignedToId: security_men[0] ?? security_Id,
+            dueAt: dateTime.toISOString(),
         });
 
-        if (response.data.status == 200) {
+        if (response.status === 200) {
             return {
                 status: 200,
                 message: `تم تعديل المهمة بنجاح`,

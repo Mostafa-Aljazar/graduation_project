@@ -10,34 +10,27 @@ export interface addNewDelegateProps {
 
 
 export const addNewDelegate = async ({ payload }: addNewDelegateProps): Promise<DelegateProfileResponse> => {
-    const fakeResponse: DelegateProfileResponse = {
-        status: 201, // 201 Created
-        message: "تم إضافة المندوب الجديد بنجاح",
-        user: {
-            ...payload,
-            phone_number: payload.phone_number as string,
-            alternative_phone_number: payload.alternative_phone_number as string,
-            profile_image: payload.profile_image as string,
-            number_of_responsible_camps: 0,
-            number_of_families: 0,
-        },
-    };
-
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeResponse);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-
-        const response = await AqsaAPI.post<DelegateProfileResponse>("/delegates/add", payload); // Assuming a manager endpoint for adding delegates
-
-        if (response.data?.user) {
-            return response.data
+        const response = await AqsaAPI.post("/delegates", {
+            name: payload.name,
+            email: payload.email,
+            phone: payload.phone_number,
+        });
+        const delegate = response.data;
+        if (delegate?.id !== undefined) {
+            return {
+                status: response.status,
+                message: "تم إضافة المندوب الجديد بنجاح",
+                user: {
+                    ...payload,
+                    id: delegate.id,
+                    name: delegate.name,
+                    email: delegate.email,
+                    phone_number: delegate.phone,
+                    profile_image: payload.profile_image ?? null,
+                    alternative_phone_number: payload.alternative_phone_number ?? undefined,
+                },
+            };
         }
 
         throw new Error("فشل في إضافة المندوب الجديد");

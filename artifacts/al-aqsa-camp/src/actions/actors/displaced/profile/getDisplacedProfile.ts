@@ -1,6 +1,5 @@
 
 import { DisplacedProfile, DisplacedProfileResponse } from "@/@types/actors/displaced/profile/displacedProfileResponse.type";
-import { fakeDisplacedProfileResponse } from "@/content/actor/displaced/fake-data/fake-displaced-profile";
 import { AqsaAPI } from "@/services";
 
 export interface getDisplacedProfileProps {
@@ -9,22 +8,11 @@ export interface getDisplacedProfileProps {
 
 export const getDisplacedProfile = async ({ displaced_Id }: getDisplacedProfileProps): Promise<DisplacedProfileResponse> => {
 
-    const fakeResponse: DisplacedProfileResponse = fakeDisplacedProfileResponse({ displaced_Id: displaced_Id })
-
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeResponse);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.get<DisplacedProfileResponse>(`/displaceds/${displaced_Id}/profile`);
+        const response = await AqsaAPI.get(`/displaced-persons/${displaced_Id}`);
 
-        if (response.data?.user) {
-            return response.data
+        if (response.data?.id !== undefined) {
+            return { status: response.status, user: { ...response.data, phone_number: response.data.phone, identity: response.data.nationalId } as DisplacedProfile };
         }
 
         throw new Error("فشل في تحميل بيانات الملف الشخصي");

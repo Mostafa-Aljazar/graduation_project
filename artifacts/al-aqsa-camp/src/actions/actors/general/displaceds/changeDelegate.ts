@@ -11,25 +11,8 @@ export const changeDelegate = async ({
     displaced_Ids,
     delegateId,
 }: changeDelegateProps): Promise<commonActionResponse> => {
-    const fakeData: commonActionResponse = {
-        status: 200,
-        message: `تم تغيبر المندوب لـ ${displaced_Ids.length} نازح بنجاح`,
-
-    }
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeData);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post<commonActionResponse>("/displaceds/change-delegate", {
-            displaced_Ids,
-            delegateId,
-        });
+        await Promise.all(displaced_Ids.map((id) => AqsaAPI.patch(`/displaced-persons/${id}/delegate`, { delegateId })));
 
         return {
             status: 200,

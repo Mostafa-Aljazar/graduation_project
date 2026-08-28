@@ -1,6 +1,5 @@
 
 import { DisplacedsResponse } from "@/@types/actors/general/displaceds/displacesResponse.type";
-import { fakeDisplacedResponse } from "@/content/actor/displaced/fake-data/fake-displaced";
 import { AqsaAPI } from "@/services";
 import { displacedsFilterValuesType } from "@/validation/actor/general/displaceds/displaceds-filter-form";
 
@@ -13,24 +12,14 @@ export interface getDisplacedsProps {
 
 export const getDisplaceds = async ({ page = 1, limit = 7, search = '', filters }: getDisplacedsProps): Promise<DisplacedsResponse> => {
 
-    const fakeResponse = fakeDisplacedResponse({ page, limit, search, filters })
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeResponse);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
+        const response = await AqsaAPI.get("/displaced-persons", { params: { page, limit, search } });
 
-        const response = await AqsaAPI.post<DisplacedsResponse>("/displaceds", {
-            page, limit, search, filters
-        });
-
-        if (response.data?.displaceds) {
-            return response.data
+        if (response.data?.items) {
+            return {
+                status: response.status, displaceds: response.data.items,
+                pagination: { page: response.data.pagination.page, limit: response.data.pagination.limit, total_items: response.data.pagination.totalItems, total_pages: response.data.pagination.totalPages },
+            } as DisplacedsResponse;
         }
 
         throw new Error("بيانات النازحين غير متوفرة");

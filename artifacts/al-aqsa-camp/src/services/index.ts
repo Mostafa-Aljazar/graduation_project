@@ -2,8 +2,9 @@ import { getSession } from "@/utils/auth/getSession"
 import { logout } from "@/utils/auth/logout"
 import axios from "axios"
 
-const baseURL = "https://travel-and-explore.online/api"
-// const baseURL = ""
+// The web artifact and API server are served behind the same Replit proxy.
+// Keeping this relative is important for previews, deployments, and local use.
+const baseURL = "/api"
 
 
 // Create an Axios instance for guest/public requests

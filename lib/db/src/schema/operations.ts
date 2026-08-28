@@ -1,0 +1,212 @@
+import {
+  index,
+  integer,
+  jsonb,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  serial,
+  text,
+  timestamp,
+  uniqueIndex,
+  varchar,
+} from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod/v4";
+import { usersTable } from "./auth";
+import { displacedPersonsTable } from "./people";
+
+export const aidStatusEnum = pgEnum("aid_status", ["DRAFT", "ACTIVE", "COMPLETED", "CANCELLED"]);
+export const allocationStatusEnum = pgEnum("allocation_status", [
+  "ASSIGNED",
+  "RECEIVED",
+  "CANCELLED",
+]);
+export const complaintStatusEnum = pgEnum("complaint_status", [
+  "PENDING",
+  "IN_PROGRESS",
+  "RESOLVED",
+  "REJECTED",
+]);
+export const taskStatusEnum = pgEnum("security_task_status", [
+  "UPCOMING",
+  "IN_PROGRESS",
+  "COMPLETED",
+  "CANCELLED",
+]);
+
+export const aidsTable = pgTable(
+  "aids",
+  {
+    id: serial("id").primaryKey(),
+    title: varchar("title", { length: 240 }).notNull(),
+    type: varchar("type", { length: 100 }).notNull(),
+    description: text("description"),
+    status: aidStatusEnum("status").notNull().default("ACTIVE"),
+    targetFamilies: integer("target_families").notNull().default(0),
+    startsAt: timestamp("starts_at", { withTimezone: true }),
+    endsAt: timestamp("ends_at", { withTimezone: true }),
+    createdBy: integer("created_by")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "restrict" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [index("aids_status_idx").on(table.status), index("aids_type_idx").on(table.type)],
+);
+
+export const aidRecipientsTable = pgTable(
+  "aid_recipients",
+  {
+    aidId: integer("aid_id")
+      .notNull()
+      .references(() => aidsTable.id, { onDelete: "cascade" }),
+    displacedPersonId: integer("displaced_person_id")
+      .notNull()
+      .references(() => displacedPersonsTable.id, { onDelete: "cascade" }),
+    assignedBy: integer("assigned_by")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "restrict" }),
+    portion: integer("portion").notNull().default(1),
+    status: allocationStatusEnum("status").notNull().default("ASSIGNED"),
+    receivedAt: timestamp("received_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.aidId, table.displacedPersonId] }),
+    index("aid_recipients_status_idx").on(table.status),
+  ],
+);
+
+export const complaintsTable = pgTable(
+  "complaints",
+  {
+    id: serial("id").primaryKey(),
+    authorUserId: integer("author_user_id")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "cascade" }),
+    recipientUserId: integer("recipient_user_id").references(() => usersTable.id, {
+      onDelete: "set null",
+    }),
+    type: varchar("type", { length: 80 }).notNull(),
+    subject: varchar("subject", { length: 240 }).notNull(),
+    body: text("body").notNull(),
+    status: complaintStatusEnum("status").notNull().default("PENDING"),
+    reply: text("reply"),
+    repliedBy: integer("replied_by").references(() => usersTable.id, { onDelete: "set null" }),
+    repliedAt: timestamp("replied_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("complaints_author_idx").on(table.authorUserId),
+    index("complaints_status_idx").on(table.status),
+  ],
+);
+
+export const notificationsTable = pgTable(
+  "notifications",
+  {
+    id: serial("id").primaryKey(),
+    recipientUserId: integer("recipient_user_id")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "cascade" }),
+    actorUserId: integer("actor_user_id").references(() => usersTable.id, {
+      onDelete: "set null",
+    }),
+    type: varchar("type", { length: 80 }).notNull(),
+    action: varchar("action", { length: 80 }).notNull(),
+    title: varchar("title", { length: 240 }).notNull(),
+    body: text("body").notNull(),
+    entityType: varchar("entity_type", { length: 80 }),
+    entityId: integer("entity_id"),
+    readAt: timestamp("read_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("notifications_recipient_idx").on(table.recipientUserId),
+    index("notifications_unread_idx").on(table.recipientUserId, table.readAt),
+  ],
+);
+
+export const securityTasksTable = pgTable(
+  "security_tasks",
+  {
+    id: serial("id").primaryKey(),
+    title: varchar("title", { length: 240 }).notNull(),
+    body: text("body").notNull(),
+    dueAt: timestamp("due_at", { withTimezone: true }).notNull(),
+    status: taskStatusEnum("status").notNull().default("UPCOMING"),
+    createdBy: integer("created_by")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "restrict" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [index("security_tasks_status_idx").on(table.status)],
+);
+
+export const securityTaskAssigneesTable = pgTable(
+  "security_task_assignees",
+  {
+    taskId: integer("task_id")
+      .notNull()
+      .references(() => securityTasksTable.id, { onDelete: "cascade" }),
+    securityUserId: integer("security_user_id")
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "cascade" }),
+    assignedAt: timestamp("assigned_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.taskId, table.securityUserId] }),
+    index("task_assignees_security_idx").on(table.securityUserId),
+  ],
+);
+
+export const auditEventsTable = pgTable(
+  "audit_events",
+  {
+    id: serial("id").primaryKey(),
+    actorUserId: integer("actor_user_id").references(() => usersTable.id, {
+      onDelete: "set null",
+    }),
+    action: varchar("action", { length: 100 }).notNull(),
+    entityType: varchar("entity_type", { length: 80 }).notNull(),
+    entityId: integer("entity_id"),
+    metadata: jsonb("metadata").$type<Record<string, unknown>>().notNull().default({}),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("audit_entity_idx").on(table.entityType, table.entityId)],
+);
+
+export const insertAidSchema = createInsertSchema(aidsTable).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export const insertComplaintSchema = createInsertSchema(complaintsTable).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export const insertSecurityTaskSchema = createInsertSchema(securityTasksTable).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type AidRecord = typeof aidsTable.$inferSelect;
+export type ComplaintRecord = typeof complaintsTable.$inferSelect;
+export type SecurityTaskRecord = typeof securityTasksTable.$inferSelect;
+export type InsertAid = z.infer<typeof insertAidSchema>;
+export type InsertComplaint = z.infer<typeof insertComplaintSchema>;
+export type InsertSecurityTask = z.infer<typeof insertSecurityTaskSchema>;

@@ -22,31 +22,15 @@ export const addSecurityTask = async ({
     type,
 }: addSecurityTaskProps): Promise<commonActionResponse> => {
 
-    const fakeResponse: commonActionResponse = {
-        status: 200,
-        message: `تم اضافة المهمة بنجاح`,
-
-    }
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeResponse);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-        const response = await AqsaAPI.post<commonActionResponse>('/securities/tasks/add', {
-            security_Id,
-            dateTime,
+        const response = await AqsaAPI.post('/security-tasks', {
             title,
-            body,
-            security_men,
-            type,
+            description: body,
+            assignedToId: security_men[0] ?? security_Id,
+            dueAt: dateTime.toISOString(),
         });
 
-        if (response.data.status == 201) {
+        if (response.status === 201) {
             return {
                 status: 201,
                 message: `تم اضافة المهمة بنجاح`,

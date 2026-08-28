@@ -1,7 +1,6 @@
 
 import { NotificationsResponse } from "@/@types/actors/general/notification/notificationResponse.type";
 import { UserType } from "@/constants/userTypes";
-import { fakeNotificationsResponse } from "@/content/actor/general/notifications/fake-notifications";
 import { AqsaAPI } from "@/services";
 
 export interface getNotificationsProps {
@@ -13,31 +12,20 @@ export interface getNotificationsProps {
 
 export const getNotifications = async ({ page = 1, limit = 7, actor_Id, role }: getNotificationsProps): Promise<NotificationsResponse> => {
 
-    const fakeResponse = fakeNotificationsResponse({ page, limit, actor_Id, role })
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeResponse);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
+        const response = await AqsaAPI.get('/notifications', { params: { page, limit } });
 
-        const response = await AqsaAPI.get<NotificationsResponse>('/notifications',
-            {
-                params:
-                    { page, limit, actor_Id, role }
-            }
-        );
-
-        if (response.data?.notifications) {
+        if (response.data?.items) {
             return {
-                status: 200,
+                status: response.status,
                 message: "تم جلب الاشعارات بنجاح",
-                notifications: response.data.notifications,
-                pagination: response.data.pagination
+                notifications: response.data.items,
+                pagination: {
+                    page: response.data.pagination.page,
+                    limit: response.data.pagination.limit,
+                    total_items: response.data.pagination.totalItems,
+                    total_pages: response.data.pagination.totalPages,
+                }
             };
         }
 

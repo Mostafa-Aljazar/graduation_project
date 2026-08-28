@@ -1,6 +1,5 @@
 import { AqsaGuestAPI } from "@/services";
 import { TYPE_WRITTEN_CONTENT } from "@/@types/actors/common-types/index.type";
-import { fakeWrittenContentsResponse } from "@/content/actor/manager/fake-data/fake-ads-blogs-stories";
 import { AdsBlogsStoriesResponse } from "@/@types/actors/manager/ads-blogs-stories/adsBlogsStoriesResponse.type";
 
 export interface getAdsBlogsStoriesProps {
@@ -11,24 +10,19 @@ export interface getAdsBlogsStoriesProps {
 
 export const getAdsBlogsStories = async ({ page = 1, limit = 5, type }: getAdsBlogsStoriesProps): Promise<AdsBlogsStoriesResponse> => {
 
-    const fakeResponse: AdsBlogsStoriesResponse = fakeWrittenContentsResponse({ page, limit, type })
-
-    return new Promise((resolve) => setTimeout(() => resolve(fakeResponse), 500));
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
+        const response = await AqsaGuestAPI.get('/content', { params: { page, limit } });
 
-        const response = await AqsaGuestAPI.get<AdsBlogsStoriesResponse>('/written-content',
-            {
-                params: {
-                    type, page, limit
-                }
-            });
-
-        if (response.data?.ads_blogs_stories) {
-            return response.data
+        if (response.data?.items) {
+            return {
+                status: response.status,
+                ads_blogs_stories: response.data.items.map((post: any) => ({
+                    id: post.id, title: post.title, brief: "", content: post.body,
+                    imgs: post.imageUrl ? [post.imageUrl] : [],
+                    created_at: new Date(post.createdAt), updated_at: new Date(post.updatedAt), type,
+                })),
+                pagination: { page: response.data.pagination.page, limit: response.data.pagination.limit, total_items: response.data.pagination.totalItems, total_pages: response.data.pagination.totalPages },
+            } as AdsBlogsStoriesResponse;
         }
 
         throw new Error('بيانات المحتوى غير متوفرة');

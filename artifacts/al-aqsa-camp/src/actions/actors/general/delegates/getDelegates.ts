@@ -1,6 +1,5 @@
 
 import { DelegatesResponse } from "@/@types/actors/general/delegates/delegatesResponse.type";
-import { fakeDelegatesResponse } from "@/content/actor/delegate/fake-data/fake-delegates";
 import { AqsaAPI } from "@/services";
 
 export interface getDelegatesProps {
@@ -10,27 +9,34 @@ export interface getDelegatesProps {
 
 export const getDelegates = async ({ page = 1, limit = 15 }: getDelegatesProps): Promise<DelegatesResponse> => {
 
-    const fakeData: DelegatesResponse = fakeDelegatesResponse({ page, limit });
-    return await new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(fakeData);
-        }, 500);
-    });
-
-    /////////////////////////////////////////////////////////////
-    // FIXME: THIS IS THE REAL IMPLEMENTATION
-    /////////////////////////////////////////////////////////////
     try {
-
-        const response = await AqsaAPI.get<DelegatesResponse>("/delegates", {
+        const response = await AqsaAPI.get("/delegates", {
             params: {
                 page, limit
             }
         }
         );
 
-        if (response.data?.delegates) {
-            return response.data
+        if (response.data?.items) {
+            const { items, pagination } = response.data;
+            return {
+                status: response.status,
+                delegates: items.map((delegate: any) => ({
+                    id: delegate.id,
+                    name: delegate.name,
+                    identity: "",
+                    displaced_number: 0,
+                    family_number: 0,
+                    mobile_number: delegate.phone,
+                    tents_number: 0,
+                })),
+                pagination: {
+                    page: pagination.page,
+                    limit: pagination.limit,
+                    total_items: pagination.totalItems,
+                    total_pages: pagination.totalPages,
+                },
+            };
         }
 
         throw new Error("بيانات المناديب غير متوفرة");

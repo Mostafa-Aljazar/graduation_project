@@ -1,36 +1,594 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: AL-AQSA Camp API
 servers:
   - url: /api
     description: Base API path
 tags:
-  - name: health
-    description: Health operations
+  - { name: health, description: Health operations }
+  - { name: auth, description: Authentication and sessions }
+  - { name: dashboard, description: Dashboard operations }
+  - { name: delegates, description: Delegate management }
+  - { name: displaced, description: Displaced person management }
+  - { name: aids, description: Aid distribution management }
+  - { name: complaints, description: Complaint management }
+  - { name: notifications, description: Notifications }
+  - { name: security, description: Security task management }
+  - { name: content, description: Camp content management }
+  - { name: contact, description: Contact requests }
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
-        "200":
-          description: Healthy
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HealthStatus"
+        "200": { description: Healthy, content: { application/json: { schema: { $ref: "#/components/schemas/HealthStatus" } } } }
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/LoginInput" } } } }
+      responses:
+        "200": { description: Authenticated, content: { application/json: { schema: { $ref: "#/components/schemas/SessionResponse" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /auth/session:
+    get:
+      operationId: getSession
+      tags: [auth]
+      responses:
+        "200": { description: Current session, content: { application/json: { schema: { $ref: "#/components/schemas/SessionResponse" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      responses:
+        "200": { description: Logged out, content: { application/json: { schema: { $ref: "#/components/schemas/ActionResponse" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [dashboard]
+      responses:
+        "200": { description: Dashboard summary, content: { application/json: { schema: { $ref: "#/components/schemas/DashboardSummary" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /delegates:
+    get:
+      operationId: listDelegates
+      tags: [delegates]
+      parameters: [{ $ref: "#/components/parameters/Page" }, { $ref: "#/components/parameters/Limit" }]
+      responses:
+        "200": { description: Delegates, content: { application/json: { schema: { $ref: "#/components/schemas/DelegateList" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+    post:
+      operationId: createDelegate
+      tags: [delegates]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/DelegateInput" } } } }
+      responses:
+        "201": { description: Delegate created, content: { application/json: { schema: { $ref: "#/components/schemas/Delegate" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /delegates/{id}:
+    get:
+      operationId: getDelegate
+      tags: [delegates]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      responses:
+        "200": { description: Delegate, content: { application/json: { schema: { $ref: "#/components/schemas/Delegate" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      operationId: updateDelegate
+      tags: [delegates]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/DelegateUpdate" } } } }
+      responses:
+        "200": { description: Delegate updated, content: { application/json: { schema: { $ref: "#/components/schemas/Delegate" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /displaced-persons:
+    get:
+      operationId: listDisplacedPersons
+      tags: [displaced]
+      parameters: [{ $ref: "#/components/parameters/Page" }, { $ref: "#/components/parameters/Limit" }]
+      responses:
+        "200": { description: Displaced persons, content: { application/json: { schema: { $ref: "#/components/schemas/DisplacedPersonList" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      operationId: createDisplacedPerson
+      tags: [displaced]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/DisplacedPersonInput" } } } }
+      responses:
+        "201": { description: Person created, content: { application/json: { schema: { $ref: "#/components/schemas/DisplacedPerson" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /displaced-persons/{id}:
+    get:
+      operationId: getDisplacedPerson
+      tags: [displaced]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      responses:
+        "200": { description: Person, content: { application/json: { schema: { $ref: "#/components/schemas/DisplacedPerson" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      operationId: updateDisplacedPerson
+      tags: [displaced]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/DisplacedPersonUpdate" } } } }
+      responses:
+        "200": { description: Person updated, content: { application/json: { schema: { $ref: "#/components/schemas/DisplacedPerson" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /displaced-persons/{id}/delegate:
+    patch:
+      operationId: assignDisplacedPersonDelegate
+      tags: [displaced]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/DelegateAssignmentInput" } } } }
+      responses:
+        "200": { description: Delegate assigned, content: { application/json: { schema: { $ref: "#/components/schemas/DisplacedPerson" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /aids:
+    get:
+      operationId: listAids
+      tags: [aids]
+      parameters: [{ $ref: "#/components/parameters/Page" }, { $ref: "#/components/parameters/Limit" }]
+      responses:
+        "200": { description: Aid campaigns, content: { application/json: { schema: { $ref: "#/components/schemas/AidList" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      operationId: createAid
+      tags: [aids]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/AidInput" } } } }
+      responses:
+        "201": { description: Aid created, content: { application/json: { schema: { $ref: "#/components/schemas/Aid" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /aids/{id}:
+    get:
+      operationId: getAid
+      tags: [aids]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      responses:
+        "200": { description: Aid campaign, content: { application/json: { schema: { $ref: "#/components/schemas/Aid" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      operationId: updateAid
+      tags: [aids]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/AidUpdate" } } } }
+      responses:
+        "200": { description: Aid updated, content: { application/json: { schema: { $ref: "#/components/schemas/Aid" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /aids/{id}/recipients:
+    post:
+      operationId: addAidRecipients
+      tags: [aids]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/AidRecipientsInput" } } } }
+      responses:
+        "200": { description: Recipients added, content: { application/json: { schema: { $ref: "#/components/schemas/Aid" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /aids/{id}/receive:
+    post:
+      operationId: receiveAid
+      tags: [aids]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/AidReceiptInput" } } } }
+      responses:
+        "200": { description: Receipt recorded, content: { application/json: { schema: { $ref: "#/components/schemas/ActionResponse" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /complaints:
+    get:
+      operationId: listComplaints
+      tags: [complaints]
+      parameters: [{ $ref: "#/components/parameters/Page" }, { $ref: "#/components/parameters/Limit" }]
+      responses:
+        "200": { description: Complaints, content: { application/json: { schema: { $ref: "#/components/schemas/ComplaintList" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      operationId: createComplaint
+      tags: [complaints]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/ComplaintInput" } } } }
+      responses:
+        "201": { description: Complaint created, content: { application/json: { schema: { $ref: "#/components/schemas/Complaint" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /complaints/{id}/status:
+    patch:
+      operationId: updateComplaintStatus
+      tags: [complaints]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/ComplaintStatusUpdate" } } } }
+      responses:
+        "200": { description: Status updated, content: { application/json: { schema: { $ref: "#/components/schemas/Complaint" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /complaints/{id}/reply:
+    post:
+      operationId: replyToComplaint
+      tags: [complaints]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/ComplaintReplyInput" } } } }
+      responses:
+        "200": { description: Reply added, content: { application/json: { schema: { $ref: "#/components/schemas/Complaint" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /notifications:
+    get:
+      operationId: listNotifications
+      tags: [notifications]
+      parameters: [{ $ref: "#/components/parameters/Page" }, { $ref: "#/components/parameters/Limit" }]
+      responses:
+        "200": { description: Notifications, content: { application/json: { schema: { $ref: "#/components/schemas/NotificationList" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /notifications/{id}/read:
+    patch:
+      operationId: markNotificationRead
+      tags: [notifications]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/NotificationReadUpdate" } } } }
+      responses:
+        "200": { description: Notification updated, content: { application/json: { schema: { $ref: "#/components/schemas/Notification" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /security-tasks:
+    get:
+      operationId: listSecurityTasks
+      tags: [security]
+      parameters: [{ $ref: "#/components/parameters/Page" }, { $ref: "#/components/parameters/Limit" }]
+      responses:
+        "200": { description: Security tasks, content: { application/json: { schema: { $ref: "#/components/schemas/SecurityTaskList" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      operationId: createSecurityTask
+      tags: [security]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/SecurityTaskInput" } } } }
+      responses:
+        "201": { description: Task created, content: { application/json: { schema: { $ref: "#/components/schemas/SecurityTask" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /security-tasks/{id}:
+    patch:
+      operationId: updateSecurityTask
+      tags: [security]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/SecurityTaskUpdate" } } } }
+      responses:
+        "200": { description: Task updated, content: { application/json: { schema: { $ref: "#/components/schemas/SecurityTask" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /content:
+    get:
+      operationId: listContent
+      tags: [content]
+      parameters: [{ $ref: "#/components/parameters/Page" }, { $ref: "#/components/parameters/Limit" }]
+      responses:
+        "200": { description: Content posts, content: { application/json: { schema: { $ref: "#/components/schemas/ContentPostList" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      operationId: createContentPost
+      tags: [content]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/ContentPostInput" } } } }
+      responses:
+        "201": { description: Post created, content: { application/json: { schema: { $ref: "#/components/schemas/ContentPost" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+  /content/{id}:
+    get:
+      operationId: getContentPost
+      tags: [content]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      responses:
+        "200": { description: Content post, content: { application/json: { schema: { $ref: "#/components/schemas/ContentPost" } } } }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      operationId: updateContentPost
+      tags: [content]
+      parameters: [{ $ref: "#/components/parameters/Id" }]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/ContentPostUpdate" } } } }
+      responses:
+        "200": { description: Post updated, content: { application/json: { schema: { $ref: "#/components/schemas/ContentPost" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+  /contact-requests:
+    post:
+      operationId: createContactRequest
+      tags: [contact]
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/ContactRequestInput" } } } }
+      responses:
+        "201": { description: Request received, content: { application/json: { schema: { $ref: "#/components/schemas/ContactRequest" } } } }
+        "400": { $ref: "#/components/responses/BadRequest" }
 components:
+  parameters:
+    Id: { name: id, in: path, required: true, schema: { type: integer } }
+    Page: { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+    Limit: { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+  responses:
+    BadRequest: { description: Invalid request, content: { application/json: { schema: { $ref: "#/components/schemas/ErrorResponse" } } } }
+    Unauthorized: { description: Authentication required, content: { application/json: { schema: { $ref: "#/components/schemas/ErrorResponse" } } } }
+    Forbidden: { description: Insufficient permissions, content: { application/json: { schema: { $ref: "#/components/schemas/ErrorResponse" } } } }
+    NotFound: { description: Resource not found, content: { application/json: { schema: { $ref: "#/components/schemas/ErrorResponse" } } } }
   schemas:
     HealthStatus:
       type: object
+      required: [status]
+      properties: { status: { type: string } }
+    User:
+      type: object
+      required: [id, name, email, role, createdAt]
       properties:
-        status:
-          type: string
-      required:
-        - status
-
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string, format: email }
+        role: { type: string, enum: [admin, manager, delegate, displaced, security] }
+        phone: { type: [string, "null"] }
+        createdAt: { type: string, format: date-time }
+    SessionResponse:
+      type: object
+      required: [user, token, expiresAt]
+      properties:
+        user: { $ref: "#/components/schemas/User" }
+        token: { type: string }
+        expiresAt: { type: string, format: date-time }
+    DashboardSummary:
+      type: object
+      required: [totalDelegates, totalDisplacedPersons, activeAids, openComplaints, unreadNotifications]
+      properties:
+        totalDelegates: { type: integer }
+        totalDisplacedPersons: { type: integer }
+        activeAids: { type: integer }
+        openComplaints: { type: integer }
+        unreadNotifications: { type: integer }
+    Delegate:
+      type: object
+      required: [id, name, email, phone, status, createdAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string, format: email }
+        phone: { type: string }
+        area: { type: [string, "null"] }
+        status: { type: string, enum: [active, inactive] }
+        createdAt: { type: string, format: date-time }
+    DisplacedPerson:
+      type: object
+      required: [id, name, phone, familySize, createdAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        phone: { type: string }
+        nationalId: { type: [string, "null"] }
+        familySize: { type: integer, minimum: 1 }
+        location: { type: [string, "null"] }
+        delegateId: { type: [integer, "null"] }
+        createdAt: { type: string, format: date-time }
+    Aid:
+      type: object
+      required: [id, title, type, status, quantity, recipientCount, createdAt]
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        type: { type: string }
+        description: { type: [string, "null"] }
+        quantity: { type: integer, minimum: 0 }
+        recipientCount: { type: integer, minimum: 0 }
+        status: { type: string, enum: [planned, active, completed, cancelled] }
+        distributionDate: { type: [string, "null"], format: date-time }
+        createdAt: { type: string, format: date-time }
+    Complaint:
+      type: object
+      required: [id, subject, message, status, createdAt]
+      properties:
+        id: { type: integer }
+        subject: { type: string }
+        message: { type: string }
+        status: { type: string, enum: [open, inProgress, resolved, closed] }
+        displacedPersonId: { type: [integer, "null"] }
+        reply: { type: [string, "null"] }
+        repliedAt: { type: [string, "null"], format: date-time }
+        createdAt: { type: string, format: date-time }
+    Notification:
+      type: object
+      required: [id, title, message, read, createdAt]
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        message: { type: string }
+        read: { type: boolean }
+        createdAt: { type: string, format: date-time }
+    SecurityTask:
+      type: object
+      required: [id, title, status, createdAt]
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        description: { type: [string, "null"] }
+        assignedToId: { type: [integer, "null"] }
+        status: { type: string, enum: [pending, inProgress, completed] }
+        dueAt: { type: [string, "null"], format: date-time }
+        createdAt: { type: string, format: date-time }
+    ContentPost:
+      type: object
+      required: [id, title, body, status, createdAt, updatedAt]
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        body: { type: string }
+        imageUrl: { type: [string, "null"], format: uri }
+        status: { type: string, enum: [draft, published] }
+        publishedAt: { type: [string, "null"], format: date-time }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+    ContactRequest:
+      type: object
+      required: [id, name, email, message, createdAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string, format: email }
+        phone: { type: [string, "null"] }
+        message: { type: string }
+        createdAt: { type: string, format: date-time }
+    ActionResponse:
+      type: object
+      required: [success, message]
+      properties: { success: { type: boolean }, message: { type: string } }
+    Pagination:
+      type: object
+      required: [page, limit, totalItems, totalPages]
+      properties:
+        page: { type: integer }
+        limit: { type: integer }
+        totalItems: { type: integer }
+        totalPages: { type: integer }
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties: { error: { type: string }, message: { type: [string, "null"] } }
+    LoginInput:
+      type: object
+      required: [email, password, role]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, minLength: 1 }
+        role: { type: string, enum: [admin, manager, delegate, displaced, security] }
+    DelegateInput:
+      type: object
+      required: [name, email, phone]
+      properties: { name: { type: string }, email: { type: string, format: email }, phone: { type: string }, area: { type: string } }
+    DelegateUpdate:
+      type: object
+      properties: { name: { type: string }, email: { type: string, format: email }, phone: { type: string }, area: { type: [string, "null"] }, status: { type: string, enum: [active, inactive] } }
+    DisplacedPersonInput:
+      type: object
+      required: [name, phone, familySize]
+      properties: { name: { type: string }, phone: { type: string }, nationalId: { type: string }, familySize: { type: integer, minimum: 1 }, location: { type: string }, delegateId: { type: integer } }
+    DisplacedPersonUpdate:
+      type: object
+      properties: { name: { type: string }, phone: { type: string }, nationalId: { type: [string, "null"] }, familySize: { type: integer, minimum: 1 }, location: { type: [string, "null"] } }
+    DelegateAssignmentInput:
+      type: object
+      required: [delegateId]
+      properties: { delegateId: { type: [integer, "null"] } }
+    AidInput:
+      type: object
+      required: [title, type, quantity]
+      properties: { title: { type: string }, type: { type: string }, description: { type: string }, quantity: { type: integer, minimum: 0 }, distributionDate: { type: string, format: date-time } }
+    AidUpdate:
+      type: object
+      properties: { title: { type: string }, type: { type: string }, description: { type: [string, "null"] }, quantity: { type: integer, minimum: 0 }, status: { type: string, enum: [planned, active, completed, cancelled] }, distributionDate: { type: [string, "null"], format: date-time } }
+    AidRecipientsInput:
+      type: object
+      required: [displacedPersonIds]
+      properties: { displacedPersonIds: { type: array, items: { type: integer }, minItems: 1 } }
+    AidReceiptInput:
+      type: object
+      required: [displacedPersonId]
+      properties: { displacedPersonId: { type: integer }, receivedAt: { type: string, format: date-time } }
+    ComplaintInput:
+      type: object
+      required: [subject, message]
+      properties: { subject: { type: string }, message: { type: string }, displacedPersonId: { type: integer } }
+    ComplaintStatusUpdate:
+      type: object
+      required: [status]
+      properties: { status: { type: string, enum: [open, inProgress, resolved, closed] } }
+    ComplaintReplyInput:
+      type: object
+      required: [reply]
+      properties: { reply: { type: string, minLength: 1 } }
+    NotificationReadUpdate:
+      type: object
+      required: [read]
+      properties: { read: { type: boolean } }
+    SecurityTaskInput:
+      type: object
+      required: [title]
+      properties: { title: { type: string }, description: { type: string }, assignedToId: { type: integer }, dueAt: { type: string, format: date-time } }
+    SecurityTaskUpdate:
+      type: object
+      properties: { title: { type: string }, description: { type: [string, "null"] }, assignedToId: { type: [integer, "null"] }, status: { type: string, enum: [pending, inProgress, completed] }, dueAt: { type: [string, "null"], format: date-time } }
+    ContentPostInput:
+      type: object
+      required: [title, body]
+      properties: { title: { type: string }, body: { type: string }, imageUrl: { type: string, format: uri }, status: { type: string, enum: [draft, published] } }
+    ContentPostUpdate:
+      type: object
+      properties: { title: { type: string }, body: { type: string }, imageUrl: { type: [string, "null"], format: uri }, status: { type: string, enum: [draft, published] } }
+    ContactRequestInput:
+      type: object
+      required: [name, email, message]
+      properties: { name: { type: string }, email: { type: string, format: email }, phone: { type: string }, message: { type: string } }
+    DelegateList: { $ref: "#/components/schemas/DelegatePage" }
+    DisplacedPersonList: { $ref: "#/components/schemas/DisplacedPersonPage" }
+    AidList: { $ref: "#/components/schemas/AidPage" }
+    ComplaintList: { $ref: "#/components/schemas/ComplaintPage" }
+    NotificationList: { $ref: "#/components/schemas/NotificationPage" }
+    SecurityTaskList: { $ref: "#/components/schemas/SecurityTaskPage" }
+    ContentPostList: { $ref: "#/components/schemas/ContentPostPage" }
+    DelegatePage:
+      type: object
+      required: [items, pagination]
+      properties: { items: { type: array, items: { $ref: "#/components/schemas/Delegate" } }, pagination: { $ref: "#/components/schemas/Pagination" } }
+    DisplacedPersonPage:
+      type: object
+      required: [items, pagination]
+      properties: { items: { type: array, items: { $ref: "#/components/schemas/DisplacedPerson" } }, pagination: { $ref: "#/components/schemas/Pagination" } }
+    AidPage:
+      type: object
+      required: [items, pagination]
+      properties: { items: { type: array, items: { $ref: "#/components/schemas/Aid" } }, pagination: { $ref: "#/components/schemas/Pagination" } }
+    ComplaintPage:
+      type: object
+      required: [items, pagination]
+      properties: { items: { type: array, items: { $ref: "#/components/schemas/Complaint" } }, pagination: { $ref: "#/components/schemas/Pagination" } }
+    NotificationPage:
+      type: object
+      required: [items, pagination]
+      properties: { items: { type: array, items: { $ref: "#/components/schemas/Notification" } }, pagination: { $ref: "#/components/schemas/Pagination" } }
+    SecurityTaskPage:
+      type: object
+      required: [items, pagination]
+      properties: { items: { type: array, items: { $ref: "#/components/schemas/SecurityTask" } }, pagination: { $ref: "#/components/schemas/Pagination" } }
+    ContentPostPage:
+      type: object
+      required: [items, pagination]
+      properties: { items: { type: array, items: { $ref: "#/components/schemas/ContentPost" } }, pagination: { $ref: "#/components/schemas/Pagination" } }
