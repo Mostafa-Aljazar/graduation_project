@@ -1,0 +1,28 @@
+kind = "slides"
+previewPath = "/al-aqsa-camp-pitch-deck/"
+title = "AL-AQSA Camp Stakeholder Deck"
+description = "A stakeholder presentation for AL-AQSA Camp, an independent nonprofit connecting humanitarian aid with displaced communities in Gaza through coordinated services, role-based workflows, reporting, and transparent storytelling."
+version = "1.0.0"
+id = "artifacts/al-aqsa-camp-pitch-deck"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/al-aqsa-camp-pitch-deck/" ]
+localPort = 26215
+
+[services.development]
+run = "pnpm --filter @workspace/al-aqsa-camp-pitch-deck run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/al-aqsa-camp-pitch-deck", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/al-aqsa-camp-pitch-deck/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "26215"
+BASE_PATH = "/al-aqsa-camp-pitch-deck/"
