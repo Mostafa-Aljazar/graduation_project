@@ -1,0 +1,9 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "sjMRODBK7c5d8xNXTxoMG"
+uri = "file://artifacts/al-aqsa-camp-showcase/public/audio/bg_music.mp3"
+type = "audio"
+title = "humanitarian showcase background music"
+description = "Generated music: Cinematic uplifting orchestral instrumental background music scoring a humanitarian Arabic-first brand film. Warm oud-inspired plucked strings, restrained piano, soft frame drums, su…"
