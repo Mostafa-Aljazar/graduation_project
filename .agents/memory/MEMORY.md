@@ -1,0 +1,1 @@
+- [Vercel copy dependency versions](vercel-copy-dependencies.md) — verify copied package versions against the import; latest releases can break runtime compatibility.

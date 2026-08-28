@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "AL-AQSA Camp"
+description = "A bilingual humanitarian camp management platform for coordinating displaced-person services, aid distribution, complaints, and community support in Gaza."
+version = "1.0.0"
+id = "artifacts/al-aqsa-camp"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24109
+
+[services.development]
+run = "pnpm --filter @workspace/al-aqsa-camp run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/al-aqsa-camp", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/al-aqsa-camp/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24109"
+BASE_PATH = "/"
